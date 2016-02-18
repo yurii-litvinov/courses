@@ -247,13 +247,259 @@ let calculate =
 		\end{exampleblock}
 \end{frame}
 
+	\begin{frame}
+		\frametitle{Почему тогда все не пишут функционально}
+		\begin{itemize}
+			\item Чистые функции не могут оказывать влияние на внешний мир. Ввод-вывод, работа с данными,
+					вообще выполнение каких-либо действий не укладывается в функциональную модель.
+			\item Сложно анализировать производительность, иногда функциональные программы проигрывают
+					в производительности императивным. <<Железо>>, грубо говоря, представляет собой 
+					реализацию машины Тьюринга, тогда как функциональные программы определяются над
+					$\lambda$-исчислением.
+			\item Требуется математический склад ума и вообще желание думать.
+		\end{itemize}
+	\end{frame}
+
 	\section{Нетипизированное лямбда-исчисление}
 
 	\begin{frame}
 		\frametitle{Лямбда-исчисление}
 		\framesubtitle{Математическая основа функционального программирования}
+		\begin{itemize}
+			\item Формальная система, основанная на $\lambda$-нотации, ещё одна формализация
+					понятия <<вычисление>>, помимо машин Тьюринга (и нормальных алгорифмов
+					Маркова, если кто-то про них помнит)
+			\item Введено Алонзо Чёрчем в 1930-х для исследований в теории вычислимости
+			\item Имеет много разных модификаций, включая <<чистое>> $\lambda$-исчисление и
+					разные типизированные $\lambda$-исчисления
+			\item Реализовано в языке LISP, с тех пор прочно вошло в программистский обиход
+					(даже анонимные делегаты в C\# называют лямбда-функциями, как вы помните)
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Лямбда-нотация}
+		Способ вводить функции, не придумывая для них название каждый раз
+		$$x \rightarrow t[x] \Longrightarrow \lambda x.t[x]$$
+		Например,
+		$$\lambda x.x$$
+		$$\lambda x.x^2$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Применение функции (или аппликация)}
+		Математически привычно
+		$$f(x)$$
+		Но непонятно, о чём идёт речь --- о функции $f$, принимающей аргумент $x$, или о результате применения
+		$f$ к $x$. 
+
+		В лямбда-исчислении $f(x)$ обозначается как
+		$$f \; x$$
+		При этом принято, что
+		$$\lambda x. x \; y = \lambda x.(x + y), \;\;\; 
+		\lambda x. x \; y \neq (\lambda x.x) + y$$
+		Примеры записи:
+		$$(\lambda x.x^2) \; 5 = 25$$
+		$$(\lambda x.\lambda y.x + y) \; 2 \; 5 = 7$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Каррирование (Currying)}
+		В $\lambda$-исчислении не нужны функции нескольких переменных:
+		$$\lambda x.\lambda y.x + y \stackrel{def}{=} \lambda x \; y.x + y$$
+		Можно понимать как функцию, которая возвращает функцию:
+		$$\lambda x.\lambda y.x + y \equiv \lambda x.(\lambda y.x + y)$$
+		$$\mathbb{R} \rightarrow (\mathbb{R} \rightarrow \mathbb{R})$$
+		Частичное применение:
+		$$(\lambda x.\lambda y.x + y) \; 5 \equiv \lambda x.(x + 5)$$
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{$\lambda$-исчисление как формальная система}
+		\framesubtitle{Внезапно, математика на парах по проге}
+		Всё, что было выше, хорошо, но неформально. За нотацией должен стоять чёткий 
+		синтаксис и	семантика.
+		
+		Нетипизированное лямбда-исчисление:
+		\begin{itemize}
+			\item Всё --- $\lambda$-термы (числа и операции вводятся через них)
+			\begin{itemize}
+				\item Не делается различий между данными и функциями, можно применять 
+						функцию к функции
+			\end{itemize}
+			\item Процесс вычисления вводится как набор формальных преобразований над
+					$\lambda$-термами
+			\begin{itemize}
+				\item \textbf{Операционная} семантика
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{$\lambda$-термы}
+		$\lambda$-терм --- это:
+		\begin{itemize}
+			\item Переменная: $v \in V$, где $V$ --- некоторое множество, называемое
+					множеством переменных
+			\item Аппликация: если $A$ и $B$ --- $\lambda$-термы, то $A \; B$ ---
+					$\lambda$-терм.
+			\item $\lambda$-абстракция: если $A$ --- $\lambda$-терм, а $v$ --- переменная,
+					то $\lambda v. A$ --- $\lambda$-терм
+			\item Других способов получить $\lambda$-терм нет
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Соглашения об ассоциативности}
+		\framesubtitle{Чтобы не надо было писать кучу скобок}
+		\begin{itemize}
+			\item Аппликация левоассоциативна: $F \; X \; Y = (F \; X) \; Y$
+			\item $\lambda$-абстракция правоассоциативна: 
+					$\lambda x \; y.M  = \lambda x.(\lambda y.M)$
+			\item $\lambda$-абстракция распространяется вправо настолько, 
+					насколько возможно: $\lambda x.M \; N = (\lambda x.M \; N)$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Свободные и связанные переменные}
+		\begin{itemize}
+			\item $\lambda$-абстракция $\lambda x.T[x]$ \textbf{связывает} переменную $x$ в терме $T[x]$
+			\item Если значение выражения зависит от значения переменной, то говорят, что
+					переменная \textbf{свободно} входит в выражение
+		\end{itemize}
+		Пример:
+		$$\sum_{m = 1}^{n} m = \frac{n(n + 1)}{2}$$
+		Здесь $n$ входит свободно, а $m$ связана.
+		Имя связанной переменной можно менять:
+		$$\int_{0}^{x}2y + a\ dy = x^2 + ax \longrightarrow \int_{0}^{x}2z + a\ dz = x^2 + ax$$
+		но
+		$$\int_{0}^{x}2a + a\ da \neq x^2 + ax$$				
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Свободные и связанные переменные, формально}
+		Как обычно, определение рекурсивно по структуре терма:
+		\begin{itemize}
+			\item $FV(x) = x$
+			\item $FV(S T) = FV(S) \cup FV(T)$
+			\item $FV(\lambda x.S) = FV(S) \setminus \{x\}$
+		\end{itemize}
+
+		\begin{itemize}
+			\item $BV(x) = \emptyset$
+			\item $BV(S T) = BV(S) \cup BV(T)$
+			\item $BV(\lambda x.S) = BV(S) \cup \{x\}$
+		\end{itemize}
+		Примеры:
+		$$S = (\lambda x\ y.x) (\lambda x.z\ x) \Rightarrow FV(S) = {z}, BV(S) = \{x,y\}$$
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Подстановка}
+		$T[x := S]$ - подстановка в терме $T$ терма $S$ вместо всех свободных вхождений 
+		переменной $x$ (например, $x[x := T] = T$).
+		
+		Проблема:
+		$$(\lambda y.x + y)[x := y] = \lambda y. y + y$$
+		
+		Решения:
+		\begin{itemize}
+			\item Запретить свободным переменным иметь одинаковые имена и называться так же, 
+					как связанные (соглашение Барендрегта)
+			\item Переименовывать связанные переменные <<на лету>> перед выполнением подстановки
+		\end{itemize}		
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Подстановка, формально}
+		\begin{itemize}
+			\item $x[x := T] = T$
+			\item $y[x := T] = y$
+			\item $(S_1\ S_2)[x := T] = S_1[x := T]\ S_2[x := T]$
+			\item $(\lambda x.S)[x := z] = \lambda x.S$
+			\item $(\lambda y.S)[x := T] = \lambda y.(S[x := T])$, если $y \notin FV(T)$ или $x \notin FV(S)$
+			\item $(\lambda y.S)[x := T] = \lambda z.(S[y := z][x := T])$, иначе ($z$ при этом выбирается так, 
+					что $z \notin FV(S) \cup FV(T)$
+		\end{itemize}		
 	\end{frame}
 		
+	\begin{frame}
+		\frametitle{Зачем мы это делали}
+		Можно ввести отношение \textbf{равенства} над термами, имеющее физический смысл 
+		<<термы означают одно и то же>> и отношение \textbf{редукции}, означающее <<термы имеют 
+		одинаковое \textbf{значение}>>, что нужно для определения \textbf{вычисления} (хотя заметьте, что пока в
+		формальной системе даже понятия <<значение>> нет).
+		
+		Делать это мы будем, определив аксиомы и правила вывода над термами, через \textbf{преобразования}
+		термов.
+	\end{frame}
+		
+	\begin{frame}
+		\frametitle{Преобразования}
+		\begin{description}
+			\item [$\alpha$-преобразование]: $\lambda x.S \rightarrow_\alpha 
+					\lambda y.S[x := y]$ при условии, что $y \notin FV(S)$. 
+					Даёт возможность переименовывать связанные переменные.
+			\item [$\beta$-преобразование]: $(\lambda x.S) T \rightarrow_\beta S[x := T]$.
+					Определяет процесс вычисления.
+			\item [$\eta$-преобразование]: $\lambda x.T\ x \rightarrow_\eta T$, 
+					если $x \notin FV(T)$. Обеспечивает	\textbf{экстенсиональность} 
+					--- две функции экстенсионально эквивалентны, если на всех
+					одинаковых входных данных дают одинаковый результат:
+					$$\forall x\ F\ x = G\ x$$
+		\end{description}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Аксиомы равенства $\lambda$-термов}
+		$$\dfrac{S \rightarrow_\alpha T\ \ 
+			\mbox{или}\ \ S \rightarrow_\beta T\ \ 
+			\mbox{или}\ \  S \rightarrow_\eta T}{S = T}$$
+		$$\dfrac{}{T = T}$$
+		$$\dfrac{S = T}{T = S}$$
+		$$\dfrac{S = T \wedge T = U}{S = U}$$
+		$$\dfrac{S = T}{S\ U = T\ U}$$
+		$$\dfrac{S = T}{U\ S = U\ T}$$
+		$$\dfrac{S = T}{\lambda x.S = \lambda x.T}$$
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Вычисление, что мы хотим}
+		Очевидно, что равенство --- это отношение эквивалентности. Оно <<не даёт терять
+		информацию>>, потому что всегда можно вернуться к исходному терму. А мы хотим 
+		вычислять значение терма, то есть всё-таки терять информацию о синтаксисе 
+		терма, сохраняя	его <<смысл>>. Так что уберём симметричность, получив 
+		отношение \textbf{$\beta$-редукции}, которое уже не эквивалентность и позволяет 
+		делать с термом что-то осмысленное.
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Аксиомы $\beta$-редукции}
+		$$\dfrac{S \rightarrow_\alpha T\ \ 
+			\mbox{или}\ \ S \rightarrow_\beta T\ \ 
+			\mbox{или}\ \  S \rightarrow_\eta T}{S \rightarrow_\beta T}$$ 
+		$$\dfrac{}{T \rightarrow_\beta T}$$
+		$$\dfrac{S \rightarrow_\beta T \wedge T \rightarrow_\beta U}{S \rightarrow_\beta U}$$
+		$$\dfrac{S \rightarrow_\beta T}{S\ U \rightarrow_\beta T\ U}$$
+		$$\dfrac{S \rightarrow_\beta T}{U\ S \rightarrow_\beta U\ T}$$
+		$$\dfrac{S \rightarrow_\beta T}{\lambda x.S \rightarrow_\beta \lambda x.T}$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример}
+		\framesubtitle{Редукция не всегда уменьшает размер терма}
+		$$(\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x) \rightarrow_\beta$$ 
+		$$(\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x) \rightarrow_\beta$$
+		$$(\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x) \rightarrow_\beta ...$$
+		так что 
+		$$(\lambda x.y)\ ((\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)) \rightarrow_\beta$$ 
+		$$(\lambda x.y)\ ((\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)) \rightarrow_\beta$$
+		$$(\lambda x.y)\ ((\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)) \rightarrow_\beta ...$$
+		но
+		$$(\lambda x.y)\ ((\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)) \rightarrow_\beta y$$		
+	\end{frame}
+
 \end{document}
 
 
