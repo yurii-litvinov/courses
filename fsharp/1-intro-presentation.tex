@@ -1,0 +1,282 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{listings}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\lstset{language=Caml,basicstyle=\small\normalfont,keywordstyle=\color{red}}
+
+\title{Функциональное программирование на языке F\#}
+\subtitle{Введение}
+\author{Юрий Литвинов}
+\date{19.02.2016г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Введение}
+	
+	\begin{frame}
+		\frametitle{О чём этот курс}
+		\begin{itemize}
+			\item Теория и практика функционального программирования
+			\begin{itemize}
+				\item $\lambda$-исчисление
+				\item Базовые принципы ФП (программирование без состояний, 
+					функции высших порядков, каррирование~и~т.д.)
+				\item Типы в функциональном программировании (немутабельные коллекции,
+					генерики, автообобщение~и~т.д.)
+				\item Паттерны функционального программирования (CPS, монады, point-free)
+			\end{itemize}
+			\item Программирование на F\# 
+			\begin{itemize}
+				\item ООП в F\#
+				\item Асинхронное и многопоточное программирование
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Отчётность}
+		\begin{itemize}
+			\item Домашка (довольно много)
+			\item Одна контрольная в середине семестра
+			\item Курсовая работа
+			\item Доклад (-1 домашка)			
+		\end{itemize}					
+	\end{frame}
+	
+	\section{Курсовые}		
+
+	\begin{frame}
+		\frametitle{Отступление про курсовые работы}
+		\begin{itemize}
+			\item Курсовая по дисциплине, отдельно в зачётку не идёт
+			\item Семестровая + некоторая наука + текст
+			\item Объём --- 5-7 страниц содержательного текста
+			\item Конференции
+			\begin{itemize}
+				\item СПИСОК-2016 --- 26 апреля
+				\item {}<<Современные технологии в теории и практике программирования>> --- 20 марта
+				\item SEIM-2016 --- 10 марта
+				\item SYRCoSE --- 1 апреля
+			\end{itemize}
+		\end{itemize}					
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Структура отчёта}
+		\begin{itemize}
+			\item Титульный лист (http://math.spbu.ru/rus/study/alumni\_info.html)
+			\item Оглавление
+			\item Введение в предметную область, постановка задачи
+			\item Обзор литературы и существующих решений
+			\item Описание предлагаемого решения, сравнение с существующими
+			\item Заключение
+			\item Список источников (ГОСТ Р 7.0.5--2008)
+			\item Приложения (если есть)
+		\end{itemize}					
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Где брать темы}
+		\begin{itemize}
+			\item Продолжать начатое
+			\item Студпроекты Теркома
+			\begin{itemize}
+				\item 25 февраля в 12:50 в ауд. 405
+			\end{itemize}
+			\item Придумать самим 
+			\begin{itemize}
+				\item Политически немудро, но может быть интересно
+			\end{itemize}
+			\item Взять что-нибудь новое у меня
+			\begin{itemize}
+				\item GUI для метамоделирования на лету
+				\item Автораскладывалка элементов
+				\item Плагин к Qt Creator
+			\end{itemize}
+		\end{itemize}					
+	\end{frame}		
+	
+	\section{Введение в функциональное программирование}
+	
+	\begin{frame}
+		\frametitle{Императивное программирование}
+		Программа как последовательность \textbf{операторов}, изменяющих \textbf{состояние} вычислителя.
+
+		Для конечных программ есть \textbf{начальное состояние}, \textbf{конечное состояние} и последовательность переходов:
+		$$\sigma = \sigma_1 \rightarrow \sigma_2 \rightarrow ... \rightarrow \sigma_n = \sigma'$$
+		
+		Основные понятия:
+		\begin{itemize}
+			\item Переменная
+			\item Присваивание
+			\item Поток управления
+			\begin{itemize}
+				\item Последовательное исполнение
+				\item Ветвления
+				\item Циклы
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Функциональное программирование}
+		Программа как вычисление значения \textbf{выражения} в математическом смысле на некоторых входных данных.
+		$$\sigma' = f(\sigma)$$
+	
+		\begin{itemize}
+			\item Нет состояния $\Rightarrow$ нет переменных
+			\item Нет переменных $\Rightarrow$ нет циклов
+			\item Нет явной спецификации потока управления
+		\end{itemize}
+		Порядок вычислений не важен, потому что нет состояния, результат вычисления зависит только от входных данных.
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Сравним}
+		\begin{alertblock}{C++}
+			\begin{lstlisting}[language=C++]
+int factorial(int n) {
+    int result = 1;
+    for (int i = 1; i <= n; ++i) {
+        result *= i;
+    }
+    return result;
+}
+            \end{lstlisting}
+		\end{alertblock}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let rec factorial x =
+    if x = 1 then 1 else x * factorial (x - 1)
+            \end{lstlisting}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Как с этим жить}
+		\begin{itemize}
+			\item Состояние и переменные <<эмулируются>> параметрами функций
+			\item Циклы <<эмулируются>> рекурсией
+			\item Последовательность вычислений --- рекурсия + параметры
+		\end{itemize}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let rec sumFirst3 ls acc i =
+    if i = 3 then 
+         acc 
+    else 
+        sumFirst3 
+            (List.tail ls) 
+            (acc + ls.Head) 
+            (i + 1)
+            \end{lstlisting}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Зачем}
+		\begin{itemize}
+			\item Строгая математическая основа
+			\item Семантика программ более естественна
+			\begin{itemize}
+				\item Применима математическая интуиция
+			\end{itemize}
+			\item Программы проще для анализа
+			\begin{itemize}
+				\item Автоматический вывод типов
+				\item Оптимизации
+			\end{itemize}
+			\item Более декларативно
+			\begin{itemize}
+				\item Ленивость
+				\item Распараллеливание
+			\end{itemize}
+			\item Модульность и переиспользуемость
+			\item Программы более выразительны
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Пример: функции высших порядков}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let sumFirst3 ls = 
+    Seq.fold 
+        (fun x acc -> acc + x) 
+        0 
+        (Seq.take 3 ls)
+            \end{lstlisting}
+		\end{exampleblock}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let sumFirst3 ls = ls |> Seq.take 3 |> Seq.fold (+) 0
+            \end{lstlisting}
+		\end{exampleblock}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let sumFirst3 = Seq.take 3 >> Seq.fold (+) 0
+            \end{lstlisting}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё пример}
+		\framesubtitle{Возвести в квадрат и сложить все чётные числа в списке}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let calculate = 
+    Seq.filter (fun x -> x % 2 = 0) 
+    >> Seq.map (fun x -> x * x) 
+    >> Seq.reduce (+)
+            \end{lstlisting}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Почему тогда все не пишут функционально}
+		\begin{itemize}
+			\item Чистые функции не могут оказывать влияние на внешний мир. Ввод-вывод, работа с данными,
+					вообще выполнение каких-либо действий не укладывается в функциональную модель.
+			\item Сложно анализировать производительность, иногда функциональные программы проигрывают
+					в производительности императивным. <<Железо>>, грубо говоря, представляет собой 
+					реализацию машины Тьюринга, тогда как функциональные программы определяются над
+					$\lambda$-исчислением.
+			\item Требуется математический склад ума и вообще желание думать.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Лямбда-исчисление}
+		\framesubtitle{Математическая основа функционального программирования}
+		\begin{itemize}
+			\item Формальная система, основанная на $\lambda$-нотации, ещё одна формализация
+					понятия <<вычисление>>, помимо машин Тьюринга (и нормальных алгорифмов
+					Маркова, если кто-то про них помнит)
+			\item Введено Алонзо Чёрчем в 1930-х для исследований в теории вычислимости
+			\item Имеет много разных модификаций, включая <<чистое>> $\lambda$-исчисление и
+					разные типизированные $\lambda$-исчисления
+			\item Реализовано в языке LISP, с тех пор прочно вошло в программистский обиход
+					(даже анонимные делегаты в C\# называют лямбда-функциями, как вы помните)
+		\end{itemize}
+	\end{frame}
+	
+\end{document}
+
+
+
