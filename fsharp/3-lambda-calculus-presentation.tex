@@ -18,6 +18,8 @@
 
 \lstset{language=Caml,basicstyle=\small\normalfont,keywordstyle=\color{red}}
 
+\newtheorem{rustheorem}{Теорема}
+
 \title{Нетипизированное $\lambda$-исчисление}
 \author{Юрий Литвинов}
 \date{26.02.2016г}
@@ -64,8 +66,8 @@
 		В лямбда-исчислении $f(x)$ обозначается как
 		$$f \; x$$
 		При этом принято, что
-		$$\lambda x. x \; y = \lambda x.(x + y), \;\;\; 
-		\lambda x. x \; y \neq (\lambda x.x) + y$$
+		$$\lambda x. x + y = \lambda x.(x + y), \;\;\; 
+		\lambda x. x + y \neq (\lambda x.x) + y$$
 		Примеры записи:
 		$$(\lambda x.x^2) \; 5 = 25$$
 		$$(\lambda x.\lambda y.x + y) \; 2 \; 5 = 7$$
@@ -87,15 +89,15 @@
 	\begin{frame}
 		\frametitle{$\lambda$-исчисление как формальная система}
 		\framesubtitle{Внезапно, математика на парах по проге}
-		Всё, что было выше, хорошо, но неформально. За нотацией должен стоять чёткий 
-		синтаксис и	семантика.
+		Всё, что было выше, хорошо, но неформально. Формализуем, чтобы иметь возможность
+		применять математические методы.
 		
-		Нетипизированное лямбда-исчисление:
+		\textbf{Нетипизированное лямбда-исчисление:}
 		\begin{itemize}
 			\item Всё --- $\lambda$-термы (числа и операции вводятся через них)
 			\begin{itemize}
 				\item Не делается различий между данными и функциями, можно применять 
-						функцию к функции
+						функцию к функции (вообще говоря, есть только функции, они же являются данными)
 			\end{itemize}
 			\item Процесс вычисления вводится как набор формальных преобразований над
 					$\lambda$-термами
@@ -152,13 +154,13 @@
 		Как обычно, определение рекурсивно по структуре терма:
 		\begin{itemize}
 			\item $FV(x) = x$
-			\item $FV(S T) = FV(S) \cup FV(T)$
+			\item $FV(S \; T) = FV(S) \cup FV(T)$
 			\item $FV(\lambda x.S) = FV(S) \setminus \{x\}$
 		\end{itemize}
 
 		\begin{itemize}
 			\item $BV(x) = \emptyset$
-			\item $BV(S T) = BV(S) \cup BV(T)$
+			\item $BV(S \; T) = BV(S) \cup BV(T)$
 			\item $BV(\lambda x.S) = BV(S) \cup \{x\}$
 		\end{itemize}
 		Примеры:
@@ -269,8 +271,126 @@
 		но
 		$$(\lambda x.y)\ ((\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)) \rightarrow_\beta y$$		
 	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Редексы}
+		\framesubtitle{Reducible expressions}
+		\textbf{Редэксом} называется пара термов, в которой можно выполнить подстановку, или выражение вида
+		$$(\lambda x.S) T$$ 
+		По правилу $\beta$-редукции 
+		$$(\lambda x.S) T \rightarrow_\beta S[x := T]$$
+		Например,
+		$$(\lambda f.\lambda x.f\ x\ x) \textbf{+} \rightarrow_\beta \lambda x.\textbf{+}\ x\ x$$
+		Терм без редэксов называется термом в \textbf{нормальной форме} (он вычислен, его нельзя дальше упростить)
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Стратегии редукции}
+		При выполнении редукции можно выбрать, какой редэкс заменять, это и есть стратегия редукции.
+		\begin{description}
+			\item[аппликативная] стратегия --- заменяем самый левый редэкс, не содержащий в себе других 
+					редэксов (самое маленькое подвыражение)
+			\item[нормальная] стратегия --- заменяем самый левый самый внешний редэкс
+		\end{description}
+		Аппликативная стратегия соответствует передаче параметра по значению (сначала вычисляем параметр, потом 
+		передаём его в функцию), нормальная стратегия соответствует передаче параметра по имени (или ленивому вычислению),
+		когда мы откладываем вычисление параметра до последнего, в надежде, что он нам не понадобится.
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Какая стратегия лучше}
+		\begin{rustheorem}[Карри о нормализации]
+			Если у терма есть нормальная форма, то последовательное сокращение самого левого внешнего 
+			редекса приводит к ней.
+		\end{rustheorem}
+		\begin{rustheorem}[Чёрча-Россера]
+			Если терм $M$ $\beta$-редукцией редуцируется к термам $N$ и $K$, то существует терм $L$ такой, что
+			к нему редуцируются и $N$, и $K$.
+		\end{rustheorem}
+		То есть нормальная форма не всегда есть (см. пример про $(\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)$), но
+		если она есть, её можно получить нормальной стратегией, причём нормальная форма единственная.
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Комбинаторы}
+		\textbf{Комбинатор} формально --- это $\lambda$-терм без свободных переменных. Неформально --- функция,
+		которая позволяет комбинировать функции, без упоминания данных.
+		
+		Известные комбинаторы:
+		$$\textbf{I} \equiv \lambda x.x \mbox{ --- тождественная функция}$$
+		$$\omega \equiv \lambda s.s\ s \mbox{ --- комбинатор самоприменимости}$$
+		$$\Omega \equiv \omega\omega \equiv (\lambda s.s\ s) (\lambda s.s\ s) \mbox{ --- расходящийся комбинатор}$$
+		$$K \equiv \lambda x\ y.x \mbox{ --- канцеллятор (первый элемент пары)}$$
+		$$K_\ast \equiv \lambda x\ y.y \mbox{ --- второй элемент пары}$$
+		$$S \equiv \lambda x\ y\ z. x\ z\ (y\ z) \mbox{ --- коннектор}$$
+		$$B \equiv \lambda f\ g\ x. f\ (g\ x) \mbox{ --- композиция}$$		
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Комбинаторы, примеры}
+		$$I\ I \equiv (\lambda x.x) (\lambda x.x) \rightarrow_\beta \lambda x.x \equiv I$$		
+				
+		$$K\ I \equiv (\lambda x.\lambda y.x) (\lambda x.x) \rightarrow_\beta $$		
+		$$\rightarrow_\beta \lambda y.(\lambda x.x) \rightarrow_\alpha \lambda x.\lambda y.y \equiv K_\ast$$		
+	\end{frame}
+		
+
+	\begin{frame}
+		\frametitle{Комбинатор неподвижной точки}
+		\begin{rustheorem}[О неподвижной точке]
+			Для любого $\lambda$-терма $F$ существует неподвижная точка:
+			$$\forall F\ \ \exists X : F\ X = X$$
+		\end{rustheorem}
+		\begin{rustheorem}[О комбинаторе неподвижной точки]
+			Существует комбинатор неподвижной точки
+			$$Y = \lambda f.(\lambda x.f\ (x\ x)) (\lambda x.f\ (x\ x))$$
+			такой, что 
+			$$\forall F\ \ \ F\ (Y\ F) = Y\ F$$
+		\end{rustheorem}
+		\begin{proof}
+			$$Y\ F \equiv (\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) 
+				= F\ ((\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) = F(Y\ F)$$
+		\end{proof}		
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Зачем это надо}
+		Рекурсия. Проблема $\lambda$-исчисления в том, что у функций нет имён, поэтому они не могут 
+		вызывать сами себя, вообще.
+		
+		Например,
+		$$factorial = \lambda n. if\ (isZero\ n)\ 1\ (mult\ n\ (factorial\ (pred\ n)))$$
+		Но так писать нельзя, $factorial$ в правой части. Перепишем, применив $\eta$-преобразование:
+		$$factorial = (\lambda f.\lambda n.if\ (isZero\ n)\ 1\ (mult\ n\ (f\ (pred\ n)))) factorial$$
+		Внезапно, 
+		$$factorial = Y (\lambda f.\lambda n.if\ (isZero\ n)\ 1\ (mult\ n\ (f\ (pred\ n))))$$
+		(ну, $F\ (Y\ X) = Y\ X$, тут $factorial$ выступает в роли неподвижной точки, а $F$ --- 
+		штуки в скобках).
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример}
+		$$factorial\ 3 = (Y\ F)\ 3$$
+		$$= F\ (Y\ F)\ 3$$
+		$$= if\ (isZero\ 3)\ 1\ (mult\ 3\ ((Y\ F)\ (pred\ 3)))$$
+		$$= mult\ 3\ ((Y\ F)\ 2)$$
+		$$= mult\ 3\ (F\ (Y\ F)\ 2)$$
+		$$= mult\ 3\ (mult\ 2\ ((Y\ F)\ 1))$$
+		$$= mult\ 3\ (mult\ 2\ (mult\ 1\ ((Y\ F)\ 0)))$$
+		$$= mult\ 3\ (mult\ 2\ (mult\ 1\ 1))$$
+		$$= 6$$
+		(очень рекомендую курс "Системы типизации лямбда-исчисления" Дениса Москвина на https://www.lektorium.tv, примеры взяты оттуда)
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Нумералы Чёрча}
+		Теория чисел может быть введена через $\lambda$-исчисление. Числа вводятся так (нумералы
+		Чёрча):
+		$$0 \equiv \lambda s\ z.z$$
+		$$1 \equiv \lambda s\ z.s\ z$$
+		$$2 \equiv \lambda s\ z.s\ (s\ z)$$
+		$$3 \equiv \lambda s\ z.s\ (s\ (s\ z))$$
+		$$4 \equiv \lambda s\ z.s\ (s\ (s\ (s\ z)))$$
+	\end{frame}
 
 \end{document}
-
-
-
