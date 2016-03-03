@@ -1,0 +1,579 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{listings}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\lstset{language=Caml,basicstyle=\small\normalfont,keywordstyle=\color{red},showstringspaces=false}
+
+\DeclareMathSymbol{\mlq}{\mathord}{operators}{``}
+\DeclareMathSymbol{\mrq}{\mathord}{operators}{`'}
+
+\title{F\#: шаблоны, типы. Базовые паттерны ФП.}
+\author{Юрий Литвинов}
+\date{04.03.2016г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Сопоставление шаблонов}
+	
+	\begin{frame}[fragile]
+		\frametitle{Сопоставление шаблонов}
+\begin{exampleblock}{F\#}
+\begin{lstlisting}
+let urlFilter url agent =
+    match (url, agent) with
+    | "http://www.google.com", 99 -> true
+    | "http://www.yandex.ru" , _ -> false
+    | _, 86 -> true
+    | _ -> false
+\end{lstlisting}
+\end{exampleblock}
+
+\begin{exampleblock}{F\#}
+\begin{lstlisting}
+let sign x =
+    match x with
+    | _ when x < 0 -> -1
+    | _ when x > 0 -> 1
+    | _ -> 0
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{F\# --- не Prolog}
+		Не получится писать так:
+\begin{exampleblock}{F\#}
+\begin{lstlisting}
+let isSame pair =
+    match pair with
+    | (a, a) -> true
+    | _ -> false
+\end{lstlisting}
+\end{exampleblock}
+Нужно так:		
+\begin{exampleblock}{F\#}
+\begin{lstlisting}
+let isSame pair =
+    match pair with
+    | (a, b) when a = b -> true
+    | _ -> false
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Какие шаблоны бывают}
+		\begin{small}
+			\begin{tabu} {| X[0.9 l p] | X[1 l p] | X[1 l p] |}
+				\tabucline-
+				Синтаксис                               & Описание                  & Пример                                \\
+				\tabucline-
+				\everyrow{\tabucline-}
+				$(pat, \ldots, pat)$                    & Кортеж                    & $(1, 2, (``3``, x))$                    \\
+				$[pat; \ldots; pat]$                       & Список                    & $[x; y; 3]$                           \\
+				$pat :: pat$                            & cons                      & $h :: t$                              \\
+				$pat\ |\ pat$                             & "Или"                     & $[x]\ |\ [``X``\ |\ x]$                     \\
+				$pat\ \&\ pat$                            & "И"                       & $[p] \& [(x, y)]$                     \\
+				$pat\ as\ id$                             & Именованный шаблон        & $[x]\ as\ inp$                          \\
+				$id$                                    & Переменная                & $x$                                   \\
+				$\_$                                     & Wildcard (что угодно)     & $\_$                                   \\
+				литерал                               & Константа                 & $239, DayOfWeek.Monday$ \\
+				$:?\ type$                               & Проверка на тип           & $:?\ string$                           \\
+			\end{tabu}
+		\end{small}
+	\end{frame}
+
+	\section{Последовательности}
+	
+	\begin{frame}[fragile]
+		\frametitle{Последовательности}
+		\framesubtitle{Ленивый тип данных}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+seq {0 .. 2}
+seq {1I .. 1000000000000I}
+\end{lstlisting}
+\end{exampleblock}
+
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+open System.IO
+let rec allFiles dir =
+    Seq.append
+    (dir |> Directory.GetFiles)
+    (dir |> Directory.GetDirectories 
+         |> Seq.map allFiles 
+         |> Seq.concat)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Типичные операции с последовательностями}
+		\begin{small}
+			\begin{tabu} {| X[0.5 l p] | X[1 l p] |}
+				\tabucline-
+				Операция                               & Тип                    \\
+				\tabucline-
+				\everyrow{\tabucline-}
+				Seq.append                    & $\#seq<'a> \to \#seq<'a> \to seq<'a>$ \\
+				Seq.concat                    & $\#seq<\#seq<'a>> \to seq<'a>$ \\
+				Seq.choose                    & $('a \to 'b option) \to \#seq<'a> \to seq<'b>$ \\
+				Seq.empty                     & $seq<'a>$ \\
+				Seq.map                       & $('a \to 'b) \to \#seq<'a> \to \#seq<'b>$ \\
+				Seq.filter                    & $('a \to bool) \to \#seq<'a> \to seq<'a>$ \\
+				Seq.fold                      & $('s \to 'a \to 's) \to 's \to seq<'a> \to 's$ \\
+				Seq.initInfinite          & $(int \to 'a) \to seq<'a>$ \\
+\end{tabu}
+\end{small}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Задание последовательностей}
+			\begin{exampleblock}{F\#}
+				\begin{lstlisting}
+let squares = seq { for i in 0 .. 10 -> (i, i * i) }
+seq { for (i, isquared) in squares -> 
+         (i, isquared, i * isquared) }
+\end{lstlisting}
+\end{exampleblock}
+			
+			\begin{exampleblock}{F\#}
+				\begin{lstlisting}
+let checkerboardCoordinates n =
+    seq { for row in 1 .. n do
+        for col in 1 .. n do
+            if (row + col) % 2 = 0 then
+                yield (row, col) }
+\end{lstlisting}
+\end{exampleblock}	
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ленивое чтение из файла}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let rec allFiles dir =
+    seq { for file in Directory.GetFiles(dir) -> file
+        for subdir in Directory.GetDirectories dir ->> 
+            (allFiles subdir) }
+\end{lstlisting}
+\end{exampleblock}
+		
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let reader =
+    seq { 
+        use reader = new StreamReader(
+            File.OpenRead("test.txt")
+            )
+        while not reader.EndOfStream do
+            yield reader.ReadLine() }
+\end{lstlisting}
+\end{exampleblock}	
+\end{frame}
+
+	\section{Записи}
+	
+	\begin{frame}[fragile]
+		\frametitle{Записи}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Person =
+    { Name: string;
+      DateOfBirth: System.DateTime; }
+\end{lstlisting}
+\end{exampleblock}
+
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+{ Name = "Bill"; 
+  DateOfBirth = new System.DateTime(1962, 09, 02) }
+
+{ new Person
+  with Name = "Anna"
+  and DateOfBirth = new System.DateTime(1968, 07, 23) }
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Клонирование записей}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Car =
+    {
+        Make : string
+        Model : string
+        Year : int
+    }
+\end{lstlisting}
+\end{exampleblock}
+		
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let thisYear's = { Make = "SomeCar"; 
+                   Model = "Luxury Sedan"; 
+                   Year = 2010 }
+let nextYear's = { thisYear's with Year = 2011 }
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+	\section{Размеченные объединения}
+	
+	\begin{frame}[fragile]
+		\frametitle{Размеченные объединения}
+		\framesubtitle{Discriminated unions}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Route = int
+type Make = string
+type Model = string
+
+type Transport =
+    | Car of Make * Model
+    | Bicycle
+    | Bus of Route
+\end{lstlisting}
+\end{exampleblock}
+		
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Известные примеры}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type 'a option =
+    | None
+    | Some of 'a
+\end{lstlisting}
+\end{exampleblock}
+
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type 'a list =
+    | ([])
+    | (::) of 'a * 'a list
+\end{lstlisting}
+\end{exampleblock}
+		
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Использование размеченных объединений}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type IntOrBool = I of int | B of bool
+let i = I 99
+let b = B true
+\end{lstlisting}
+\end{exampleblock}
+		
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type C = Circle of int | Rectangle of int * int
+
+[1..10]
+|> List.map Circle
+
+[1..10]
+|> List.zip [21..30]
+|> List.map Rectangle
+\end{lstlisting}
+\end{exampleblock}
+		
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Использование в match}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Tree<'a> =
+    | Tree of 'a * Tree<'a> * Tree<'a>
+    | Tip of 'a
+
+let rec size tree =
+    match tree with
+    | Tree(_, l, r) -> 1 + size l + size r
+    | Tip _ -> 1
+\end{lstlisting}
+\end{exampleblock}
+		
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{Дерево разбора логического выражения}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Proposition =
+    | True
+    | And of Proposition * Proposition
+    | Or of Proposition * Proposition
+    | Not of Proposition
+
+let rec eval (p: Proposition) =
+    match p with
+    | True -> true
+    | And(p1, p2) -> eval p1 && eval p2
+    | Or (p1, p2) -> eval p1 || eval p2
+    | Not(p1) -> not (eval p1)
+
+printfn "%A" <| eval (Or(True, And(True, Not True)))
+\end{lstlisting}
+\end{exampleblock}
+		
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Взаимосвязанные типы}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type node =
+    { Name : string;
+      Links : link list }
+and link =
+    | Dangling
+    | Link of node
+\end{lstlisting}
+\end{exampleblock}
+		
+\end{frame}
+
+	\section{Паттерны ФП}
+
+	\begin{frame}[fragile]
+		\frametitle{Замена цикла рекурсией}
+		\framesubtitle{Императивное разложение на множители}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let factorizeImperative n =
+    let mutable primefactor1 = 1
+    let mutable primefactor2 = n
+    let mutable i = 2
+    let mutable fin = false
+    while (i < n && not fin) do
+        if (n % i = 0) then
+            primefactor1 <- i
+            primefactor2 <- n / i
+            fin <- true
+        i <- i + 1
+    if (primefactor1 = 1) then None
+    else Some (primefactor1, primefactor2)
+\end{lstlisting}
+\end{exampleblock}
+
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Замена цикла рекурсией}
+		\framesubtitle{Рекурсивное разложение на множители}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let factorizeRecursive n =
+    let rec find i =
+        if i >= n then None
+        elif (n % i = 0) then Some(i, n / i)
+        else find (i + 1)
+    find 2
+\end{lstlisting}
+\end{exampleblock}
+		
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Хвостовая рекурсия, проблема}
+	\framesubtitle{Императивный вариант}
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+open System.Collections.Generic
+
+let createMutableList() =
+    let l = new List<int>()
+    for i = 0 to 100000 do
+        l.Add(i)
+    l
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Хвостовая рекурсия, проблема}
+	\framesubtitle{Рекурсивный вариант, казалось бы}
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+let createImmutableList() =
+    let rec createList i max =
+        if i = max then
+            []	
+        else
+            i :: createList (i + 1) max
+    createList 0 100000
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Факториал без хвостовой рекурсии}
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+let rec factorial x =
+    if x <= 1
+    then 1 
+    else x * factorial (x - 1)
+\end{lstlisting}
+\end{exampleblock}
+	
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+let rec factorial x =
+    if x <= 1
+    then
+        1
+    else
+        let resultOfRecusion = factorial (x - 1)
+        let result = x * resultOfRecusion
+        result
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Факториал с хвостовой рекурсией}
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+let factorial x =
+    let rec tailRecursiveFactorial x acc =
+        if x <= 1 then
+            acc
+        else
+            tailRecursiveFactorial (x - 1) (acc * x)
+        tailRecursiveFactorial x 1
+\end{lstlisting}
+\end{exampleblock}
+
+\end{frame}
+	
+\begin{frame}[fragile]
+	\frametitle{После декомпиляции в C\#}
+		\begin{alertblock}{C\#}
+			\begin{lstlisting}[language=Java]
+public static int tailRecursiveFactorial(int x, int acc)
+{
+    while (true)
+    {
+        if (x <= 1)
+        {
+            return acc;
+        }
+        acc *= x;
+        x--;
+    }
+}
+\end{lstlisting}
+\end{alertblock}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Паттерн ``Аккумулятор''}
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+let rec map f list =
+    match list with
+    | [] -> []
+    | hd :: tl -> (f hd) :: (map f tl)
+
+let map f list =
+    let rec mapTR f list acc =
+        match list with
+        | [] -> acc
+        | hd :: tl -> mapTR f tl (f hd :: acc)
+    mapTR f (List.rev list) []
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Continuation Passing Style}
+	\frametitle{Аккумулятор --- функция}
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+let printListRev list =
+    let rec printListRevTR list cont =
+        match list with
+        | [] -> cont ()
+        | hd :: tl ->
+            printListRevTR tl (fun () -> 
+                printf "%d " hd; cont () )
+    printListRevTR list (fun () -> printfn "Done!")
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Обход дерева}
+	\frametitle{Когда всё не так просто}
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+type ContinuationStep<'a> =
+    | Finished
+    | Step of 'a * (unit -> ContinuationStep<'a>)
+    
+let rec linearize binTree cont =
+match binTree with
+    | Empty -> cont()
+    | Node(x, l, r) ->
+        Step(x, (fun () -> linearize l (fun () -> 
+                           linearize r cont)))
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Обход дерева}
+	\frametitle{Собственно, обход}
+	\begin{exampleblock}{F\#}
+		\begin{lstlisting}
+let iter f binTree =
+    let steps = linearize binTree (fun () -> Finished)
+
+    let rec processSteps step =
+        match step with
+        | Finished -> ()
+        | Step(x, getNext) -> f x
+            processSteps (getNext())
+    
+    processSteps steps
+\end{lstlisting}
+\end{exampleblock}
+	
+\end{frame}
+
+\end{document}
