@@ -471,7 +471,7 @@ let factorial x =
             acc
         else
             tailRecursiveFactorial (x - 1) (acc * x)
-        tailRecursiveFactorial x 1
+    tailRecursiveFactorial x 1
 \end{lstlisting}
 \end{exampleblock}
 
@@ -546,7 +546,7 @@ type ContinuationStep<'a> =
     | Step of 'a * (unit -> ContinuationStep<'a>)
     
 let rec linearize binTree cont =
-match binTree with
+    match binTree with
     | Empty -> cont()
     | Node(x, l, r) ->
         Step(x, (fun () -> linearize l (fun () -> 
