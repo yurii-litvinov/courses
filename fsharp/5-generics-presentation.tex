@@ -617,4 +617,25 @@ let fstGt0'4 : (int * int) list -> (int * int) list =
 \end{exampleblock}
 \end{frame}
 
+	\section{Арифметические операторы}
+
+	\begin{frame}[fragile]
+		\frametitle{Арифметические операторы}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+let twice x = (x + x)
+let threeTimes x = (x + x + x)
+let sixTimesInt64 (x:int64) = threeTimes x + threeTimes x
+\end{lstlisting}
+\end{exampleblock}
+
+\begin{alertblock}{F\# Interactive}
+\begin{lstlisting}[keywordstyle=\color{black}]
+val twice : x:int -> int
+val threeTimes : x:int64 -> int64
+val sixTimesInt64 : x:int64 -> int64
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
 \end{document}
