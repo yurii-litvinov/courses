@@ -1,0 +1,786 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{listings}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\lstset{language=Caml,basicstyle=\small\normalfont,keywordstyle=\color{red},showstringspaces=false}
+
+\lstset{emph={member,float,int,static,open,class,val,new,inherit,abstract,override,default,base,interface,int,bool,unit,string,module,struct,namespace},emphstyle={\color{red}},deletekeywords={value}}
+
+\DeclareMathSymbol{\mlq}{\mathord}{operators}{``}
+\DeclareMathSymbol{\mrq}{\mathord}{operators}{`'}
+
+\title{Объектно-ориентированное программирование в F\#}
+\author{Юрий Литвинов}
+\date{18.03.2016г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Введение}
+
+	\begin{frame}
+		\frametitle{"За" и "против" ООП в функциональных языках}
+		За:
+		\begin{itemize}
+    		\item Портирование существующего кода
+    		\item Интеграция с другими языками
+    		\item Использование в основном для ООП с возможностью писать красивый код
+		\end{itemize}
+		
+		Против:
+		\begin{itemize}
+    		\item Не очень дружит с системой вывода типов
+    		\item Нет встроенной поддержки печати, сравнения и т.д.
+		\end{itemize}
+	\end{frame}
+	
+	\section{Методы}
+	
+	\begin{frame}[fragile]
+		\frametitle{Методы у типов}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector = {x : float; y : float} with
+    member v.Length = sqrt(v.x * v.x + v.y * v.y)
+    
+let vector = {x = 1.0; y = 1.0}
+let length = vector.Length
+
+type Vector with
+    member v.Scale k = {x = v.x * k; y = v.y * k}
+
+let scaled = vector.Scale 2.0
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы у Discriminated Union-ов}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Tree<'a> =
+    | Tree of 'a * Tree<'a> * Tree<'a>
+    | Tip of 'a
+    with
+        member t.Size = 
+            match t with
+            | Tree(_, l, r) -> 1 + l.Size + r.Size
+            | Tip _ -> 1
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Расширения}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type System.Int32 with
+    member i.IsPrime = 
+        let limit = i |> float |> sqrt |> int
+        let rec check j =
+            j > limit or (i % j <> 0 && check (j + 1))
+        check 2
+
+printfn "%b" (5).IsPrime
+printfn "%b" (8).IsPrime
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Статические методы}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector = {x : float; y : float} with
+    static member Create x y = {x = x; y = y}
+    
+let vector = Vector.Create 1.0 1.0
+
+type System.Int32 with
+    static member IsEven x = x % 2 = 0
+
+printfn "%b" <| System.Int32.IsEven 10
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы и существующие функции}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector = {x : float; y : float} with
+    static member Create x y = {x = x; y = y}
+
+let length (v : Vector) = sqrt(v.x * v.x + v.y * v.y)
+
+type Vector with
+    member v.Length = length v
+
+printfn "%f" <| (Vector.Create 1.0 1.0).Length
+printfn "%f" <| (length (Vector.Create 1.0 1.0))
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы и каррирование}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+open Operators
+
+type Vector = {x : float; y : float} with
+    static member Create x y = {x = x; y = y}
+
+let transform v rotate scale = 
+    let r = System.Math.PI * rotate / 180.0
+    { x = scale * v.x * cos r - scale * v.y * sin r;
+      y = scale * v.x * sin r + scale * v.y * cos r }
+
+type Vector with
+    member v.Transform = transform v
+
+printfn "%A" <| (Vector.Create 1.0 1.0).Transform 45.0 2.0
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Каррирование против кортежей}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector with
+    member v.TupledTransform (r, s) = transform v r s
+    member v.CurriedTransform r s = transform v r s
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (45.0, 2.0)
+printfn "%A" <| v.CurriedTransform 45.0 2.0
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Кортежи: именованные аргументы}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector with
+    member v.TupledTransform (r, s) = 
+       transform v r s
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (r = 45.0, s = 2.0)
+printfn "%A" <| v.TupledTransform (s = 2.0, r = 45.0)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Кортежи: опциональные параметры}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector with
+    member v.TupledTransform (r, ?s) = 
+        match s with
+        | Some scale -> transform v r scale
+        | None -> transform v r 1.0
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (45.0, 2.0)
+printfn "%A" <| v.TupledTransform (90.0)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{defaultArg}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector with
+    member v.TupledTransform (r, ?s) = 
+       transform v r <| defaultArg s 1.0
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (45.0, 2.0)
+printfn "%A" <| v.TupledTransform (90.0)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Кортежи: перегрузка}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector with
+    member v.TupledTransform (r, s) = 
+       transform v r s
+    member v.TupledTransform r = 
+       transform v r 1.0
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (45.0, 2.0)
+printfn "%A" <| v.TupledTransform (90.0)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Кортежи против каррирования}
+		За:
+		\begin{itemize}
+    		\item Можно вызывать из .NET-кода
+    		\item Опциональные и именованные аргументы, перегрузки
+		\end{itemize}
+		Против:
+		\begin{itemize}
+    		\item Не поддерживают частичное применение
+    		\item Не дружат с функциями высших порядков
+   		\end{itemize}
+    \end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы против свободных функций}
+		\framesubtitle{Вывод типов}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector = {x : float; y : float} with
+    member v.Length = v.x * v.x + v.y * v.y |> sqrt
+   
+let length v = v.x * v.x + v.y * v.y |> sqrt
+
+let compareWrong v1 v2 =
+    v1.Length < v2.Length
+
+let compareRight v1 v2 =
+    length v1 < length v2
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы против свободных функций}
+		\framesubtitle{Функции высших порядков}
+		\begin{exampleblock}{F\#}
+			\begin{lstlisting}
+type Vector = {x : float; y : float} with
+    member v.Length = v.x * v.x + v.y * v.y |> sqrt
+   
+let length v = v.x * v.x + v.y * v.y |> sqrt
+
+let lengths1 = [{x = 1.0; y = 1.0}; {x = 2.0; y = 2.0}]
+               |> List.map (fun x -> x.Length)
+
+let lengths2 = [{x = 1.0; y = 1.0}; {x = 2.0; y = 2.0}]
+               |> List.map length
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+    \section{Классы}
+    
+   	\begin{frame}[fragile]
+   		\frametitle{Классы, основной конструктор}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x, y) = 
+    member v.Length = x * x + y * y |> sqrt
+
+printfn "%A" <| Vector (1.0, 1.0)
+\end{lstlisting}
+\end{exampleblock}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{lstlisting}
+FSI_0003+Vector
+type Vector =
+  class
+    new : x:float * y:float -> Vector
+    member Length : float
+  end
+val it : unit = ()
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Методы и свойства}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x : float, y : float) = 
+    member v.Scale s = Vector(x * s, y * s)
+    member v.X = x
+    member v.Y = y
+\end{lstlisting}
+\end{exampleblock}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{lstlisting}
+type Vector =
+  class
+    new : x:float * y:float -> Vector
+    member Scale : s:float -> Vector
+    member X : float
+    member Y : float
+  end
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Private-поля и private-методы}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x : float, y : float) = 
+    let mutable mX = x
+    let mutable mY = y
+    let lengthSqr = mX * mX + mY * mY
+    member v.Length = sqrt lengthSqr
+    member v.X = mX
+    member v.Y = mY
+    member v.SetX x = mX <- x
+    member v.SetY y = mY <- y
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Мутабельные свойства}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x, y) = 
+    let mutable mX = x
+    let mutable mY = y
+    member v.X 
+        with get () = mX
+        and set x = mX <- x
+    member v.Y
+        with get () = mY
+        and set y = mY <- y
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Автоматические свойства}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x, y) = 
+    member val X = x with get,set
+    member val Y = y with get,set
+
+let v = Vector(1.0, 1.0)
+v.X <- 2.0
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Индексеры}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+open System.Collections.Generic
+
+type SparseVector(items : seq<int * float>) =
+    let elems = new SortedDictionary<_, _>()
+    do items |> Seq.iter (fun (k, v) -> elems.Add(k, v))
+
+    member t.Item
+        with get(idx) =
+            if elems.ContainsKey(idx) then elems.[idx]
+            else 0.0
+            
+let v = SparseVector [(3, 547.0)]
+printfn "%f" v.[4]
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Операторы}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x : float, y : float) =
+    member v.X = x
+    member v.Y = y
+
+    static member (+) (v1 : Vector, v2 : Vector) =
+            Vector(v1.X + v2.X, v1.Y + v2.Y)
+
+    static member (-) (v1 : Vector, v2 : Vector) =
+            Vector (v1.X - v2.X, v1.Y - v2.Y)
+
+let v = Vector (1.0, 1.0) + Vector (2.0, 2.0)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Вернёмся к конструкторам}
+   		\framesubtitle{Дополнительное поведение}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x : float, y : float) = 
+    let length () = x * x + y * y |> sqrt
+    do 
+        printfn "Vector (%f, %f), length = %f" 
+            x y <| length ()
+        printfn "Have a nice day"
+    let mutable x = x
+    let mutable y = y
+
+let v = Vector(1.0, 1.0)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{let-функции и методы}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x : float, y : float) = 
+    let length () = x * x + y * y |> sqrt
+    let normalize () = Vector(x / length(), y / length())
+    member this.Normalize = normalize
+    member this.X = x
+    member this.Y = y
+
+let v = Vector(2.0, 2.0)
+let v' = v.Normalize ()
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Рекурсивные методы}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Math() = 
+    member this.Fibonacci x = 
+        match x with
+        | 0 | 1 -> 1
+        | _ -> this.Fibonacci (x - 1) 
+                + this.Fibonacci (x - 2)
+
+let math = new Math()
+printfn "%i" <| math.Fibonacci 10
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Много конструкторов}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector(x : float, y : float) = 
+    member this.X = x
+    member this.Y = y
+    new () = 
+        printfn "Constructor with no parameters"
+        Vector(0.0, 0.0)
+
+let v = Vector(2.0, 2.0)
+let v' = Vector()
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Модификаторы видимости}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Example() = 
+    let mutable privateValue = 42
+
+    member this.PublicValue = 1
+    member private this.PrivateValue = 2
+    member internal this.InternalValue = 3
+
+    member this.PrivateSetProperty 
+        with get () = 
+            privateValue 
+        and private set(value) = 
+            privateValue <- value
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+    \section{Наследование}
+    
+   	\begin{frame}[fragile]
+   		\frametitle{Наследование}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Shape() =
+    class
+    end
+
+type Circle(r) =
+    inherit Shape()
+    member this.R = r
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Абстрактные классы}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+[<AbstractClass>]
+type Shape() =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+
+type Circle(r) =
+    inherit Shape()
+    member this.R = r
+    override this.Draw () = 
+        printfn "Drawing circle"
+    override this.Name = "Circle"
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Реализация по умолчанию}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Shape() =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+    default this.Draw () =
+        printfn "Drawing shape"
+    default this.Name =
+        "Shape"
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Вызов метода родителя}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Shape() =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+    default this.Draw () = printfn "Drawing shape"
+    default this.Name = "Shape"
+
+type Circle(r) =
+    inherit Shape()
+    member this.R = r
+    override this.Draw () = 
+        base.Draw ()
+        printfn "Drawing circle"
+    override this.Name = "Circle"
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Интерфейсы}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Shape =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+
+type Circle(r) =
+    member this.R = r
+    interface Shape with
+        member this.Draw () = 
+            printfn "Drawing circle"
+        member this.Name = "Circle"
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Явное приведение типов}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+let c = Circle 10
+c.Draw ()  // Ошибка
+(c :> Shape).Draw ()  // Ок
+
+let draw (s : Shape) = s.Draw ()
+
+draw c  // Ок
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+   	\begin{frame}[fragile]
+   		\frametitle{Наследование интерфейсов}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type IEnumerable<'a> =
+    abstract GetEnumerator : unit -> IEnumerator<'a>
+
+type ICollection<'a> =
+    inherit IEnumerable<'a>
+    abstract Count : int
+    abstract IsReadOnly : bool
+    abstract Add : 'a -> unit
+    abstract Clear : unit -> unit
+    abstract Contains : 'a -> bool
+    abstract CopyTo : 'a[] * int -> unit
+    abstract Remove : 'a -> unit
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+    \section{Объектные выражения}
+    
+   	\begin{frame}[fragile]
+   		\frametitle{Объектные выражения}
+   		\framesubtitle{Реализация интерфейсов на лету}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Shape =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+
+let rect w h = 
+    { new Shape with
+          member this.Draw () = 
+              printfn "Drawing rect, w = %d, h = %d" w h
+          member this.Name = "Rectange"
+    }
+
+(rect 10 10).Draw ()
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}    
+
+   	\begin{frame}[fragile]
+   		\frametitle{Частичная реализация интерфейса}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Shape =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+
+let simpleShape nameFunc = 
+    { new Shape with
+          member this.Draw () = 
+              printfn "Drawing %s" this.Name
+          member this.Name = nameFunc ()
+    }
+
+(simpleShape (fun () ->"Star")).Draw ()
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}  
+
+   	\begin{frame}[fragile]
+   		\frametitle{Делегация вложенному классу}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Printer =
+    abstract member WriteString : string -> unit
+
+type HtmlWriter() =
+    let mutable count = 0
+    let printer =
+        { new Printer with
+            member this.WriteString s =
+                count <- count + s.Length
+                System.Console.Write(s) }
+    member x.CharCount = count
+    member x.Header () = printer.WriteString "<html>"
+    member x.Footer () = printer.WriteString "</html>"
+    member x.WriteString s = printer.WriteString s
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}    
+  
+    \section{Структурирование кода}
+  
+   	\begin{frame}[fragile]
+   		\frametitle{Модули}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+type Vector =
+    { x : float; y : float }
+
+module VectorOps =
+    let length v = sqrt(v.x * v.x + v.y * v.y)
+    let scale k v = { x = k * v.x; y = k * v.y }
+    let shiftX x v = { v with x = v.x + x }
+    let shiftY y v = { v with y = v.y + y }
+    let shiftXY (x, y) v = { x = v.x + x; y = v.y + y }
+    let zero = { x = 0.0; y = 0.0 }
+    let constX dx = { x = dx; y = 0.0 }
+    let constY dy = { x = 0.0; y = dy }
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}    
+
+   	\begin{frame}[fragile]
+   		\frametitle{Расширения модулей}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+module List =
+    let rec pairwise l =
+        match l with
+        | [] | [_] -> []
+        | h1 :: (h2 :: _ as t) -> (h1, h2) :: pairwise t
+
+let x = List.pairwise [1; 2; 3; 4]
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}   
+
+   	\begin{frame}[fragile]
+   		\frametitle{Дотнетовские структуры}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+[<Struct>]
+type VectorStruct =
+    val x : float
+    val y : float
+    new (x, y) = {x = x; y = y}
+    member v.X = v.x
+    member v.Y = v.y
+    member v.Length = v.x * v.x + v.y * v.y |> sqrt
+
+type VectorStruct' =
+    struct
+        val x: float
+        val y: float
+    end
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}   
+
+   	\begin{frame}[fragile]
+   		\frametitle{Пространства имён}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+namespace Vectors
+
+type Vector =
+    { x : float; y : float }
+
+module VectorOps =
+    let length v = sqrt(v.x * v.x + v.y * v.y)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}  
+
+\end{document}
