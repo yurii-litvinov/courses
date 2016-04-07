@@ -1,0 +1,562 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{listings}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\lstset{language=Caml,basicstyle=\small\normalfont,keywordstyle=\color{red},showstringspaces=false}
+
+\lstset{emph={member,float,int,static,open,class,val,new,inherit,abstract,override,default,base,interface,int,bool,unit,string,module,struct,namespace,return,public,throw,use},emphstyle={\color{red}},deletekeywords={value}}
+
+\DeclareMathSymbol{\mlq}{\mathord}{operators}{``}
+\DeclareMathSymbol{\mrq}{\mathord}{operators}{`'}
+
+\title{Async и многопоточное программирование}
+\author{Юрий Литвинов}
+\date{08.04.2016г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+    \begin{frame}
+        \frametitle{Многопоточное программирование}
+        Зачем это нужно:
+        \begin{itemize}
+            \item Не ``вешать'' GUI
+            \item Использовать ресурсы ``железа''
+            \item Использовать асинхронные операции ввода-вывода
+            \item Показывать прогресс
+        \end{itemize}
+    \end{frame}
+    
+    \begin{frame}
+        \frametitle{Основные понятия}
+        \begin{description}
+            \item[Процесс] --- экземпляр выполняемой программы и все связанные с ней данные и ресурсы
+            \item[Поток] --- поток исполняемых команд (стек, регистры)
+            \item[Параллельная программа] --- программа с несколькими исполняемыми потоками или процессами
+            \item[Асинхронная программа] выполняет запросы, которые выполняются не мгновенно, а через некоторое время
+            \item[Реактивная программа] --- программа, нормальное состояние которой --- ожидать наступление какого-нибудь события
+        \end{description}
+    \end{frame}
+    
+    \begin{frame}[fragile]
+        \frametitle{Простой способ: Async workflow}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}[basicstyle=\scriptsize]
+open System.Net
+open System.IO
+let sites = ["http://se.math.spbu.ru";
+             "http://spisok.math.spbu.ru"]
+let fetchAsync url =
+    async { 
+        do printfn "Creating request for %s..." url
+        let request = WebRequest.Create(url)
+        use! response = request.AsyncGetResponse()
+        do printfn "Getting response stream for %s..." url
+        use stream = response.GetResponseStream()
+        do printfn "Reading response for %s..." url
+        use reader = new StreamReader(stream)
+        let html = reader.ReadToEnd()
+        do printfn "Read %d characters for %s..." html.Length url 
+    }
+
+sites |> List.map (fun site -> site |> fetchAsync |> Async.Start) 
+    |> ignore
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Что получится}
+		\begin{alertblock}{F\# Interactive}
+			\begin{lstlisting}[basicstyle=\scriptsize,keywordstyle=\color{black},emphstyle=\color{black}]
+Creating request for http://se.math.spbu.ru...
+Creating request for http://spisok.math.spbu.ru...
+val sites : string list =
+  ["http://se.math.spbu.ru"; "http://spisok.math.spbu.ru"]
+val fetchAsync : url:string -> Async<unit>
+val it : unit = ()
+
+> Getting response stream for http://spisok.math.spbu.ru...
+Reading response for http://spisok.math.spbu.ru...
+Read 4475 characters for http://spisok.math.spbu.ru...
+Getting response stream for http://se.math.spbu.ru...
+Reading response for http://se.math.spbu.ru...
+Read 217 characters for http://se.math.spbu.ru...
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Переключение между потоками}
+        Распечатаем Id потоков, в которых вызываются методы printfn:
+        \begin{exampleblock}{F\#}
+    		\begin{lstlisting}
+open System.Threading
+
+let tprintfn fmt =
+    printf "[.NET Thread %d]"   
+        Thread.CurrentThread.ManagedThreadId;
+    printfn fmt
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+    
+    \begin{frame}[fragile]
+        \frametitle{Что получилось теперь}
+   		\begin{alertblock}{F\# Interactive}
+   			\begin{lstlisting}[basicstyle=\scriptsize,keywordstyle=\color{black},emphstyle=\color{black}]
+[.NET Thread 47][.NET Thread 49]Creating request 
+        for http://se.math.spbu.ru...
+Creating request for http://spisok.math.spbu.ru...
+val sites : string list =
+  ["http://se.math.spbu.ru"; "http://spisok.math.spbu.ru"]
+val tprintfn : fmt:Printf.TextWriterFormat<'a> -> 'a
+val fetchAsync : url:string -> Async<unit>
+val it : unit = ()
+
+> [.NET Thread 49]Getting response stream for 
+        http://spisok.math.spbu.ru...
+[.NET Thread 49]Reading response for http://spisok.math.spbu.ru...
+[.NET Thread 50]Getting response stream for http://se.math.spbu.ru...
+[.NET Thread 50]Reading response for http://se.math.spbu.ru...
+[.NET Thread 50][.NET Thread 49]Read 217 characters 
+        for http://se.math.spbu.ru...
+Read 4475 characters for http://spisok.math.spbu.ru...
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+    
+    \begin{frame}[fragile]
+        \frametitle{Пул потоков}
+        \framesubtitle{Почему такие результаты}
+        Пул потоков --- набор заранее созданных потоков, управляемых рантаймом .NET автоматически.
+        \begin{exampleblock}{F\#}
+    		\begin{lstlisting}
+open System.Threading
+
+fun _ -> printfn "Hello from %d!" 
+      <| Thread.CurrentThread.ManagedThreadId
+|> List.replicate 10
+|> List.map ThreadPool.QueueUserWorkItem 
+|> ignore
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Что получится}
+   		\begin{alertblock}{F\# Interactive}
+   			\begin{lstlisting}[keywordstyle=\color{black},emphstyle=\color{black}]
+valHello from 73! 
+Hello from 73! 
+Hello from 73! 
+Hello from 73! 
+ it Hello from 77: Hello from Hello from 74! 
+! 
+unit = 65! 
+Hello from Hello from 76! 
+78! 
+()
+
+> Hello from 75! 
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Подробнее про Async}
+        \framesubtitle{Async --- это Workflow}
+        \begin{exampleblock}{F\#}
+    		\begin{lstlisting}
+type Async<'a> = Async of ('a -> unit) * (exn -> unit) 
+        -> unit
+
+type AsyncBuilder with
+    member Return : 'a -> Async<'a>
+    member Delay : (unit -> Async<'a>) -> Async<'a>
+    member Using: 'a * ('a -> Async<'b>) -> 
+            Async<'b> when 'a :> System.IDisposable
+    member Let: 'a * ('a -> Async<'b>) -> Async<'b>
+    member Bind: Async<'a> * ('a -> Async<'b>) 
+            -> Async<'b>
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Во что Async раскрывает компилятор}
+        \framesubtitle{Если кто не помнит про Workflow-ы}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}[basicstyle=\footnotesize]
+async { 
+    let request = WebRequest.Create(url)
+    let! response = request.AsyncGetResponse()
+    let stream = response.GetResponseStream()
+    let reader = new StreamReader(stream)
+    let html = reader.ReadToEnd()
+    html
+} 
+
+async.Delay(fun () ->
+    WebRequest.Create(url) |> (fun request ->
+        async.Bind(request.AsyncGetResponse(), (fun response ->
+            response.GetResponseStream() |> fun stream ->
+                new StreamReader(stream) |> fun reader ->
+                    reader.ReadToEnd() |> fun html ->
+                        async.Return(html)))))
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Какие конструкции поддерживает Async}
+		\begin{footnotesize}
+			\begin{tabu} {| X[0.3 l p] | X[1 l p] |}
+				\tabucline-
+				Конструкция               & Описание           \\
+				\tabucline-
+				\everyrow{\tabucline-}
+				let! pat = expr           & Выполняет асинхронное вычисление expr и присваивает результат pat, когда оно заканчивается   \\
+				let pat = expr            & Выполняет синхронное вычисление expr и присваивает результат pat немедленно \\
+				use! pat = expr           & Выполняет асинхронное вычисление expr и присваивает результат pat, когда оно заканчивается. Вызовет Dispose для каждого имени из pat, когда Async закончится.    \\
+				use pat = expr            & Выполняет синхронное вычисление expr и присваивает результат pat немедленно. Вызовет Dispose для каждого имени из pat, когда Async закончится. \\
+				do! expr                  & Выполняет асинхронную операцию expr, эквивалентно let! () = expr \\
+				do expr                   & Выполняет синхронную операцию expr, эквивалентно let () = expr \\
+				return expr               & Оборачивает expr в Async<'T> и возвращает его как результат Workflow \\
+				return! expr              & Возвращает expr типа Async<'T> как результат Workflow \\
+   			\end{tabu}
+		\end{footnotesize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Control.Async}
+		\framesubtitle{Что можно делать со значением Async<'T>, сконструированным билдером}
+		\begin{footnotesize}
+			\begin{tabu} {| X[0.7 l p] | X[1 l p] | X[1 l p] |}
+				\tabucline-
+				Метод              & Тип                                         & Описание           \\
+				\tabucline-
+				\everyrow{\tabucline-}
+				RunSynchronously   & Async<'T> * ?int * ?CancellationToken -> 'T & Выполняет вычисление синхронно, возвращает результат \\
+				Start              & Async<unit> * ?CancellationToken -> unit    & Запускает вычисление асинхронно, тут же возвращает управление \\
+				Parallel           & seq<Async<'T> > -> Async<'T []>             & По последовательности Async-ов делает новый Async, исполняющий все Async-и параллельно и возвращающий массив результатов \\
+				Catch              & Async<'T> -> Async<Choice<'T,exn> >         & По Async-у делает новый Async, исполняющий Async и возвращающий либо результат, либо исключение \\
+   			\end{tabu}
+		\end{footnotesize}
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+let writeFile fileName bufferData =
+    async {
+      use outputFile = System.IO.File.Create(fileName)
+      do! outputFile.AsyncWrite(bufferData) 
+    }
+
+Seq.init 1000 (fun num -> createSomeData num)
+|> Seq.mapi (fun num value -> 
+      writeFile ("file" + num.ToString() + ".dat") value)
+|> Async.Parallel
+|> Async.RunSynchronously
+|> ignore
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}	
+	
+	\begin{frame}[fragile]
+		\frametitle{Подробнее про Async.Catch}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+asyncTaskX
+    |> Async.Catch
+    |> Async.RunSynchronously
+    |> fun x ->
+        match x with
+        | Choice1Of2 result -> 
+           printfn "Async operation completed: %A" result
+        | Choice2Of2 (ex : exn) -> 
+           printfn "Exception thrown: %s" ex.Message
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Обработка исключений прямо внутри Async}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+async {
+    try
+        // ...
+    with
+    | :? IOException as ioe ->
+        printfn "IOException: %s" ioe.Message
+    | :? ArgumentException as ae ->
+        printfn "ArgumentException: %s" ae.Message
+}
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Отмена операции}
+		\framesubtitle{Задача, которую можно отменить}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+open System
+open System.Threading
+
+let cancelableTask =
+    async {
+        printfn "Waiting 10 seconds..."
+        for i = 1 to 10 do
+            printfn "%d..." i
+            do! Async.Sleep(1000)
+        printfn "Finished!"
+    }
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Отмена операции}
+		\framesubtitle{Код, который её отменяет}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+let cancelHandler (ex : OperationCanceledException) =
+    printfn "The task has been canceled."
+
+Async.TryCancelled(cancelableTask, cancelHandler)
+|> Async.Start
+
+// ...
+
+Async.CancelDefaultToken()
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{CancellationToken}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+open System.Threading
+
+let computation = Async.TryCancelled(cancelableTask, 
+        cancelHandler)
+let cancellationSource = new CancellationTokenSource()
+
+Async.Start(computation, cancellationSource.Token)
+
+// ...
+
+cancellationSource.Cancel()
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Async.StartWithContinuations}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+Async.StartWithContinuations(
+    someAsyncTask,
+    (fun result -> printfn "Task completed with result %A" result),
+    (fun exn -> 
+        printfn "Task threw an exception with Message: 
+                %s" exn.Message),
+    (fun oce -> printfn "Task was cancelled. 
+                Message: %s" oce.Message)
+)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Async.FromContinuations}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}[basicstyle=\scriptsize]
+open System
+
+let trylet f x = (try Choice1Of2 (f x) with exn -> Choice2Of2(exn))
+
+let protect cont econt f x =
+    match trylet f x with
+    | Choice1Of2 v -> cont v
+    | Choice2Of2 exn -> econt exn
+
+type System.IO.Stream with
+    member stream.ReadAsync (buffer, offset, count) =
+        Async.FromContinuations (fun (cont, econt, cancel) ->
+            stream.BeginRead
+                (buffer = buffer,
+                 offset = offset,
+                 count = count,
+                 state = null,
+                 callback = 
+                     AsyncCallback(protect cont econt stream.EndRead))
+            |> ignore)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{Реализация Async.Parallel}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}[basicstyle=\footnotesize]
+open System.Threading   			
+
+let Parallel(taskSeq) =
+    Async.FromContinuations (fun (cont, econt, cancel) ->
+        let tasks = Seq.toArray taskSeq
+        let count = ref tasks.Length
+        let results = Array.zeroCreate tasks.Length
+        tasks |> Array.iteri (fun i p ->
+            Async.Start
+                (async { let! res = p
+                         do results.[i] <- res;
+                         let n = Interlocked.Decrement(count)
+                         do if n = 0 then cont results })))
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Async.AwaitEvent}
+		\framesubtitle{Для более простых случаев}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+open System
+
+let timer = new Timers.Timer(2000.0)
+let timerEvent = Async.AwaitEvent (timer.Elapsed) 
+    |> Async.Ignore
+
+printfn "Waiting for timer at %O" DateTime.Now.TimeOfDay
+timer.Start()
+
+printfn "Doing something useful while waiting for event"
+Async.RunSynchronously timerEvent
+
+printfn "Timer ticked at %O" DateTime.Now.TimeOfDay
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Большой пример: обработка ``изображений''}
+		\framesubtitle{Шаг 1: подготовка тестовых данных}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}[basicstyle=\footnotesize]
+open System.IO
+
+let numImages = 200
+let size = 512
+let numPixels = size * size
+
+let MakeImageFiles() =
+    printfn "making %d %dx%d images... " numImages size size
+    let pixels = Array.init numPixels (fun i -> byte i)
+    for i = 1 to numImages do
+        File.WriteAllBytes(sprintf "Image%d.tmp" i, pixels)
+    printfn "done."
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Большой пример: обработка ``изображений''}
+		\framesubtitle{Шаг 2: вычислительно сложная функция над ``изображением''}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+let processImageRepeats = 20
+
+let TransformImage(pixels, imageNum) =
+    printfn "TransformImage %d" imageNum
+    // Perform a CPU-intensive operation on the image.
+    let mutable newPixels = pixels
+    for i in 1..processImageRepeats do 
+        newPixels <- Array.map (fun b -> b + 1uy)) pixels
+    newPixels
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Большой пример: обработка ``изображений''}
+		\framesubtitle{Шаг 3: синхронная обработка}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+let ProcessImageSync(i) =
+    use inStream = File.OpenRead(sprintf "Image%d.tmp" i)
+    let pixels = Array.zeroCreate numPixels
+    let nPixels = inStream.Read(pixels, 0, numPixels);
+    let pixels' = TransformImage(pixels, i)
+    use outStream 
+            = File.OpenWrite(sprintf "Image%d.done" i)
+    outStream.Write(pixels', 0, numPixels)
+
+let ProcessImagesSync() =
+    printfn "ProcessImagesSync...";
+    for i in 1 .. numImages do
+        ProcessImageSync(i)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Большой пример: обработка ``изображений''}
+		\framesubtitle{Шаг 4: асинхронная обработка}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}[basicstyle=\scriptsize]
+open Microsoft.FSharp.Control
+open Microsoft.FSharp.Control.CommonExtensions
+
+let ProcessImageAsync i =
+    async { use inStream = File.OpenRead(sprintf "Image%d.tmp" i)
+            let! pixels = inStream.AsyncRead(numPixels)
+            let pixels' = TransformImage(pixels, i)
+            use outStream = File.OpenWrite(sprintf "Image%d.done" i)
+            do! outStream.AsyncWrite(pixels') }
+
+let ProcessImagesAsync() =
+    printfn "ProcessImagesAsync..."
+    let tasks = [ for i in 1 .. numImages -> ProcessImageAsync(i) ]
+    Async.Parallel tasks |> Async.RunSynchronously |> ignore
+    printfn "ProcessImagesAsync finished!"
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Доклады}
+		Как обычно, успешный доклад --- -1 домашка. 2 недели на подготовку.
+		\begin{itemize}
+    		\item Юнит-тестирование в F\# (NUnit, FsUnit, FsCheck)
+    		\item Единицы измерения в F\# 
+    		\item Ленивые вычисления в F\# (lazy, seq)
+    		\item Active patterns
+    		\item Code Quotations
+    		\item WebSharper    		
+		\end{itemize}
+    \end{frame}
+
+\end{document}
