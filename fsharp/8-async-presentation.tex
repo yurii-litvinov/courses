@@ -202,8 +202,8 @@ type AsyncBuilder with
     \begin{frame}[fragile]
         \frametitle{Во что Async раскрывает компилятор}
         \framesubtitle{Если кто не помнит про Workflow-ы}
-   		\begin{exampleblock}{F\#}
-   			\begin{lstlisting}[basicstyle=\footnotesize]
+        \begin{exampleblock}{F\#}
+            \begin{lstlisting}[basicstyle=\footnotesize]
 async { 
     let request = WebRequest.Create(url)
     let! response = request.AsyncGetResponse()
