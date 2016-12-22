@@ -912,5 +912,168 @@ let combinePredicates = predicates |> List.reduce predAnd
     		\end{itemize}
 		\end{small}
     \end{frame}
+	
+    \begin{frame}[fragile]
+        \frametitle{Пример: Async workflow}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}[basicstyle=\scriptsize]
+open System.Net
+open System.IO
+let sites = ["http://se.math.spbu.ru";
+             "http://spisok.math.spbu.ru"]
+let fetchAsync url =
+    async { 
+        do printfn "Creating request for %s..." url
+        let request = WebRequest.Create(url)
+        use! response = request.AsyncGetResponse()
+        do printfn "Getting response stream for %s..." url
+        use stream = response.GetResponseStream()
+        do printfn "Reading response for %s..." url
+        use reader = new StreamReader(stream)
+        let html = reader.ReadToEnd()
+        do printfn "Read %d characters for %s..." html.Length url 
+    }
+
+sites |> List.map (fun site -> site |> fetchAsync |> Async.Start) 
+    |> ignore
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Что получится}
+		\begin{alertblock}{F\# Interactive}
+			\begin{lstlisting}[basicstyle=\scriptsize,keywordstyle=\color{black},emphstyle=\color{black}]
+Creating request for http://se.math.spbu.ru...
+Creating request for http://spisok.math.spbu.ru...
+val sites : string list =
+  ["http://se.math.spbu.ru"; "http://spisok.math.spbu.ru"]
+val fetchAsync : url:string -> Async<unit>
+val it : unit = ()
+
+> Getting response stream for http://spisok.math.spbu.ru...
+Reading response for http://spisok.math.spbu.ru...
+Read 4475 characters for http://spisok.math.spbu.ru...
+Getting response stream for http://se.math.spbu.ru...
+Reading response for http://se.math.spbu.ru...
+Read 217 characters for http://se.math.spbu.ru...
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Использование пула потоков}
+        Распечатаем Id потоков, в которых вызываются методы printfn:
+        \begin{exampleblock}{F\#}
+    		\begin{lstlisting}
+open System.Threading
+
+let tprintfn fmt =
+    printf "[.NET Thread %d]"   
+        Thread.CurrentThread.ManagedThreadId;
+    printfn fmt
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+    
+    \begin{frame}[fragile]
+        \frametitle{Что получилось теперь}
+   		\begin{alertblock}{F\# Interactive}
+   			\begin{lstlisting}[basicstyle=\scriptsize,keywordstyle=\color{black},emphstyle=\color{black}]
+[.NET Thread 47][.NET Thread 49]Creating request 
+        for http://se.math.spbu.ru...
+Creating request for http://spisok.math.spbu.ru...
+val sites : string list =
+  ["http://se.math.spbu.ru"; "http://spisok.math.spbu.ru"]
+val tprintfn : fmt:Printf.TextWriterFormat<'a> -> 'a
+val fetchAsync : url:string -> Async<unit>
+val it : unit = ()
+
+> [.NET Thread 49]Getting response stream for 
+        http://spisok.math.spbu.ru...
+[.NET Thread 49]Reading response for http://spisok.math.spbu.ru...
+[.NET Thread 50]Getting response stream for http://se.math.spbu.ru...
+[.NET Thread 50]Reading response for http://se.math.spbu.ru...
+[.NET Thread 50][.NET Thread 49]Read 217 characters 
+        for http://se.math.spbu.ru...
+Read 4475 characters for http://spisok.math.spbu.ru...
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Какие конструкции поддерживает Async}
+		\begin{footnotesize}
+			\begin{tabu} {| X[0.3 l p] | X[1 l p] |}
+				\tabucline-
+				Конструкция               & Описание           \\
+				\tabucline-
+				\everyrow{\tabucline-}
+				let! pat = expr           & Выполняет асинхронное вычисление expr и присваивает результат pat, когда оно заканчивается   \\
+				let pat = expr            & Выполняет синхронное вычисление expr и присваивает результат pat немедленно \\
+				use! pat = expr           & Выполняет асинхронное вычисление expr и присваивает результат pat, когда оно заканчивается. Вызовет Dispose для каждого имени из pat, когда Async закончится.    \\
+				use pat = expr            & Выполняет синхронное вычисление expr и присваивает результат pat немедленно. Вызовет Dispose для каждого имени из pat, когда Async закончится. \\
+				do! expr                  & Выполняет асинхронную операцию expr, эквивалентно let! () = expr \\
+				do expr                   & Выполняет синхронную операцию expr, эквивалентно let () = expr \\
+				return expr               & Оборачивает expr в Async<'T> и возвращает его как результат Workflow \\
+				return! expr              & Возвращает expr типа Async<'T> как результат Workflow \\
+   			\end{tabu}
+		\end{footnotesize}
+	\end{frame}
+
+		\begin{frame}
+		\frametitle{Control.Async}
+		\framesubtitle{Что можно делать со значением Async<'T>, сконструированным билдером}
+		\begin{footnotesize}
+			\begin{tabu} {| X[0.7 l p] | X[1 l p] | X[1 l p] |}
+				\tabucline-
+				Метод              & Тип                                         & Описание           \\
+				\tabucline-
+				\everyrow{\tabucline-}
+				RunSynchronously   & Async<'T> * ?int * ?CancellationToken -> 'T & Выполняет вычисление синхронно, возвращает результат \\
+				Start              & Async<unit> * ?CancellationToken -> unit    & Запускает вычисление асинхронно, тут же возвращает управление \\
+				Parallel           & seq<Async<'T> > -> Async<'T []>             & По последовательности Async-ов делает новый Async, исполняющий все Async-и параллельно и возвращающий массив результатов \\
+				Catch              & Async<'T> -> Async<Choice<'T,exn> >         & По Async-у делает новый Async, исполняющий Async и возвращающий либо результат, либо исключение \\
+   			\end{tabu}
+		\end{footnotesize}
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+let writeFile fileName bufferData =
+    async {
+      use outputFile = System.IO.File.Create(fileName)
+      do! outputFile.AsyncWrite(bufferData) 
+    }
+
+Seq.init 1000 (fun num -> createSomeData num)
+|> Seq.mapi (fun num value -> 
+      writeFile ("file" + num.ToString() + ".dat") value)
+|> Async.Parallel
+|> Async.RunSynchronously
+|> ignore
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}	
+
+	\begin{frame}[fragile]
+		\frametitle{Отмена операции}
+		\framesubtitle{Код, который её отменяет}
+   		\begin{exampleblock}{F\#}
+   			\begin{lstlisting}
+let cancelHandler (ex : OperationCanceledException) =
+    printfn "The task has been canceled."
+
+Async.TryCancelled(cancelableTask, cancelHandler)
+|> Async.Start
+
+// ...
+
+Async.CancelDefaultToken()
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
 
 \end{document}
