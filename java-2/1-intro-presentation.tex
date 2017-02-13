@@ -96,22 +96,22 @@ public interface Lazy<T> {
 
 \end{frame}
 
-  \begin{frame}
+	\begin{frame}
 		\frametitle{LazyFactory}
 		Создавать объекты надо не вручную, а с помощью класса \textit{LazyFactory}, который должен
 		иметь три метода с сигнатурами вида \textit{public static <T> Lazy<T> 
 		createLazy(Supplier<T>)}, возвращающих три разные реализации \textit{Lazy<T>}:
 		\begin{itemize}
 			\item Простая версия с гарантией корректной работы в однопоточном режиме 
-			  (без синхронизации)
+				(без синхронизации)
 			\item Гарантия корректной работы в многопоточном режиме; вычисление не должно
 				производиться более одного раза
-      \begin{itemize}
+			\begin{itemize}
 				\item Что-то наподобие многопоточного синглтона
 			\end{itemize}
 			\item То же, что и предыдущее, но lock-free; вычисление может производиться более одного
-			  раза, но при этом \textit{Lazy.get} всегда должен возвращать один и тот же объект
-      \begin{itemize}
+				раза, но при этом \textit{Lazy.get} всегда должен возвращать один и тот же объект
+			\begin{itemize}
 				\item см. \textit{AtomicReference}/\textit{AtomicReferenceFieldUpdater}
 			\end{itemize}
 		\end{itemize}
@@ -141,6 +141,4 @@ public interface Lazy<T> {
 	\end{frame}
 
 \end{document}
-
-
 
