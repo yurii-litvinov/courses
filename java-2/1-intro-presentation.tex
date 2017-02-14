@@ -1,7 +1,7 @@
 \documentclass[xetex,mathserif,serif]{beamer}
 \usepackage{polyglossia}
 \setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{listings}
+\usepackage{minted}
 \usepackage{tabu}
 
 \useoutertheme{infolines}
@@ -16,10 +16,6 @@
 
 \setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
 \setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
-\lstset{language=Java,basicstyle=\small\normalfont,keywordstyle=\color{red},showstringspaces=false}
-
-\lstset{emph={float,int,static,class,new},emphstyle={\color{red}},deletekeywords={value}}
 
 \DeclareMathSymbol{\mlq}{\mathord}{operators}{``}
 \DeclareMathSymbol{\mrq}{\mathord}{operators}{`'}
@@ -79,11 +75,11 @@
 Реализовать следующий интерфейс, представляющий ленивое вычисление:
 
 \begin{exampleblock}{Java}
-\begin{lstlisting}[basicstyle=\footnotesize\normalfont]
+\begin{minted}{java}
 public interface Lazy<T> {
   T get();
 }
-\end{lstlisting}
+\end{minted}
 \end{exampleblock}
 
 \begin{itemize}
