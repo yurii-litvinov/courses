@@ -1,0 +1,180 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\DeclareMathSymbol{\mlq}{\mathord}{operators}{``}
+\DeclareMathSymbol{\mrq}{\mathord}{operators}{`'}
+
+\tabulinesep=0.7mm
+
+\title{Проектирование программного обеспечения (практика)}
+\subtitle{Практика 1: Введение, задача про CLI}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{22.02.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Формальности}
+		\begin{itemize}
+			\item Чтобы получить зачёт, надо:
+			\begin{itemize}
+				\item Сдать \textbf{все} домашние работы
+				\item Успеть сдать каждую задачу до дедлайна
+			\end{itemize}
+			\item Условия, материалы и сдача домашек через \url{http://hwproj.me/}
+			\begin{itemize}
+				\item Ссылка на пуллреквест в собственный репозиторий на GitHub
+				\item Задач будет несколько, так что выкладывать лучше так, чтобы их все было можно смерджить
+				\item Формулировки условий могут появляться много где, приоритет у тех, что на странице курса на HwProj
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Краткое содержание курса по практике}
+		\begin{itemize}
+			\item Снова лекции
+			\begin{itemize}
+				\item Немного про технику кодирования
+				\item Про архитектурную документацию
+				\item Про UML и другие языки проектирования
+				\item Про реализацию паттернов
+				\item Про антипаттерны
+				\item Различные примеры архитектуры
+			\end{itemize}
+			\item Небольшие задачи прямо на паре
+			\item Задачи на дом и их разбор на паре
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Что ожидается от решений}
+		\begin{itemize}
+			\item Работоспособность и соответствие требованиям условия
+			\item Наличие архитектурной документации
+			\begin{itemize}
+				\item Комментарии к каждому классу, интерфейсу и public-методу
+				\item Краткое описание деталей реализации в README
+			\end{itemize}
+			\item Следование стайлгайдам и правилам здравого смысла 
+			\item Наличие юнит-тестов
+			\item Кроссплатформенность
+			\item Применение индустриальных практик: логирование, Continuous Integration, обработка исключений
+		\end{itemize}	
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё комментарии}
+		\begin{itemize}
+			\item Овердизайн и активное использование знаний с лекций приветствуются
+			\item Обоснованность принятых решений важнее, чем техника кодирования
+			\item Некоторые требования могут показаться ненужными --- это нормально
+			\begin{itemize}
+				\item Мы учимся не написанию кода, а инструментам и техникам проектирования
+			\end{itemize}	
+			\item Комментарии вида ``у вас неправильная архитектура'' будут очень редки, как ни странно
+		\end{itemize}	
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Задача про CLI}
+		Реализовать простой интерпретатор командной строки, поддерживающий команды:
+		\begin{itemize}
+			\item \textbf{cat [FILE]} --- вывести на экран содержимое файла
+			\item \textbf{echo} --- вывести на экран свой аргумент (или аргументы)
+			\item \textbf{wc [FILE]} --- вывести количество строк, слов и байт в файле
+			\item \textbf{pwd} --- распечатать текущую директорию
+			\item \textbf{exit} --- выйти из интерпретатора
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Задача про CLI (продолжение)}
+		\begin{itemize}
+			\item Должны поддерживаться одинарные и двойные кавычки (full and weak quoting)
+			\item Окружение (команды вида ``имя=значение''), оператор \$
+			\item Вызов внешней программы через Process (или его аналоги)
+			\begin{itemize}
+				\item если введено что-то, чего интерпретатор не знает
+			\end{itemize}
+			\item Пайплайны (оператор ``|'')
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Примеры}
+\begin{minted}{sh}
+>echo "Hello, world!"
+Hello, world!
+> FILE=example.txt
+> cat $FILE
+Some example text
+> cat example.txt | wc
+1 3 18
+> echo 123 | wc
+1 1 3
+> x=exit
+> $x
+\end{minted}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Нефункциональные требования}
+		\begin{itemize}
+			\item Легко добавлять новые команды (расширяемость)
+			\item Наличие возможности реализовать что-то новое из того, что умеют другие шеллы (сопровождаемость)
+			\item Адекватное покрытие юнит-тестами (качество, сопровождаемость)
+			\item Комментарии в коде (сопровождаемость)
+			\item Архитектурное описание, как умеете (сопровождаемость)
+			\item Стайлгайд (сопровождаемость)
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Как сдавать}
+		\begin{itemize}
+			\item Сделать для этого курса репозиторий
+			\item Выложить решение в отдельную ветку
+			\item Сделать пуллреквест к себе в мастер
+			\item Зарегистрироваться на \url{http://hwproj.me/}
+			\item Подождать, пока регистрацию подтвердят
+			\item Приложить там ссылку на пуллреквест к решению
+			\item Если я за неделю не откомментил, написать мне на почту
+			\item Смерджить пуллреквест, когда задача зачтена
+			\item \textbf{Дедлайн 23:59 07.03.2017}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Что делать сейчас}
+		Первые фазы жизненного цикла
+		\begin{itemize}
+			\item Выполнить анализ и определить подходы к решению
+			\item Выявить подводные камни и способы их преодоления
+			\item Декомпозировать задачу на подсистемы, классы и методы
+			\item Нарисовать диаграмму классов
+			\item Словами описать принцип работы и основные принятые решения
+			\item К концу пары все должны понимать, что и как надо кодить
+		\end{itemize}
+	\end{frame}
+
+\end{document}
