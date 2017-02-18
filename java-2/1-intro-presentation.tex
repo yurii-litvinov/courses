@@ -35,12 +35,14 @@
 	\begin{frame}
 		\frametitle{Правила игры}
 		\begin{itemize}
-			\item Как обычно, куча домашек, немного контрольных, баллы и дедлайны, HwProj
+			\item Как обычно, куча домашек, две контрольные (и переписывание в конце), баллы и дедлайны, HwProj
 			\begin{itemize}
 				\item Будет три крупные задачи (разбитые на части) и несколько мелких
 			\end{itemize}
-			\item Для зачёта надо набрать 75\% баллов по домашкам и 50\% баллов по контрольным
-			\item Тех, кто не наберёт баллы к зачёту, ждёт Что-То Ужасное в конце (например, ещё задачи)
+			\item За практику будет выставляться оценка, которая потом будет учитываться при сдаче экзамена
+			\begin{itemize}
+				\item по какой-то хитрой формуле, учитывающей баллы за домашку и контрольные
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
@@ -114,7 +116,7 @@ public interface Lazy<T> {
 	\end{frame}
 	
 	\begin{frame}
-	\frametitle{Чтобы было не скучно}
+		\frametitle{Чтобы было не скучно}
 		\begin{itemize}
 			\item Ограничение по памяти на каждый \textit{Lazy}-объект: не больше двух ссылок
 			\item \textit{Supplier.get} вправе вернуть \textit{null}
@@ -122,7 +124,7 @@ public interface Lazy<T> {
 	\end{frame}
 
 	\begin{frame}
-	\frametitle{Дополнительные требования}
+		\frametitle{Дополнительные требования}
 		\begin{itemize}
 			\item Gradle/Maven
 			\item CI, на котором проходят ваши тесты

@@ -1,7 +1,7 @@
 \documentclass[xetex,mathserif,serif]{beamer}
 \usepackage{polyglossia}
 \setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{listings}
+\usepackage{minted}
 
 \useoutertheme{infolines}
 
@@ -16,12 +16,10 @@
 \setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
 \setbeamercolor*{block body alerted}{fg=black,bg=red!10}
 
-\lstset{language=Caml,basicstyle=\small\normalfont,keywordstyle=\color{red}}
-
 \title{Функциональное программирование на языке F\#}
 \subtitle{Введение}
 \author{Юрий Литвинов}
-\date{19.02.2016г}
+\date{17.02.2017г}
 
 \begin{document}
 	
@@ -69,9 +67,9 @@
 			\item Объём --- 5-7 страниц содержательного текста
 			\item Конференции
 			\begin{itemize}
-				\item СПИСОК-2016 --- 26 апреля
-				\item {}<<Современные технологии в теории и практике программирования>> --- 20 марта
-				\item SEIM-2016 --- 10 марта
+				\item СПИСОК-2017 --- 30 апреля
+				\item {}<<Современные технологии в теории и практике программирования>> --- 31 марта
+				\item SEIM-2017 --- 5 марта
 				\item SYRCoSE --- 1 апреля
 			\end{itemize}
 		\end{itemize}					
@@ -96,18 +94,16 @@
 		\begin{itemize}
 			\item Продолжать начатое
 			\item Студпроекты Теркома
-			\begin{itemize}
-				\item 25 февраля в 12:50 в ауд. 405
-			\end{itemize}
 			\item Придумать самим 
 			\begin{itemize}
 				\item Политически немудро, но может быть интересно
 			\end{itemize}
 			\item Взять что-нибудь новое у меня
+			\item Взять что-нибудь у кого-нибудь ещё
 			\begin{itemize}
-				\item GUI для метамоделирования на лету
-				\item Автораскладывалка элементов
-				\item Плагин к Qt Creator
+				\item Робототехника
+				\item Формальные методы
+				\item Machine Learning
 			\end{itemize}
 		\end{itemize}					
 	\end{frame}		
@@ -150,7 +146,7 @@
 	\begin{frame}[fragile]
 		\frametitle{Сравним}
 		\begin{alertblock}{C++}
-			\begin{lstlisting}[language=C++]
+			\begin{minted}{fsharp}
 int factorial(int n) {
     int result = 1;
     for (int i = 1; i <= n; ++i) {
@@ -158,13 +154,13 @@ int factorial(int n) {
     }
     return result;
 }
-            \end{lstlisting}
+            \end{minted}
 		\end{alertblock}
 		\begin{exampleblock}{F\#}
-			\begin{lstlisting}
+			\begin{minted}{fsharp}
 let rec factorial x =
     if x = 1 then 1 else x * factorial (x - 1)
-            \end{lstlisting}
+            \end{minted}
 		\end{exampleblock}
 \end{frame}
 
@@ -176,7 +172,7 @@ let rec factorial x =
 			\item Последовательность вычислений --- рекурсия + параметры
 		\end{itemize}
 		\begin{exampleblock}{F\#}
-			\begin{lstlisting}
+			\begin{minted}{fsharp}
 let rec sumFirst3 ls acc i =
     if i = 3 then 
          acc 
@@ -185,7 +181,7 @@ let rec sumFirst3 ls acc i =
             (List.tail ls) 
             (acc + ls.Head) 
             (i + 1)
-            \end{lstlisting}
+            \end{minted}
 		\end{exampleblock}
 \end{frame}
 
@@ -215,23 +211,23 @@ let rec sumFirst3 ls acc i =
 	\begin{frame}[fragile]
 		\frametitle{Пример: функции высших порядков}
 		\begin{exampleblock}{F\#}
-			\begin{lstlisting}
+			\begin{minted}{fsharp}
 let sumFirst3 ls = 
     Seq.fold 
         (fun x acc -> acc + x) 
         0 
         (Seq.take 3 ls)
-            \end{lstlisting}
+            \end{minted}
 		\end{exampleblock}
 		\begin{exampleblock}{F\#}
-			\begin{lstlisting}
+			\begin{minted}{fsharp}
 let sumFirst3 ls = ls |> Seq.take 3 |> Seq.fold (+) 0
-            \end{lstlisting}
+            \end{minted}
 		\end{exampleblock}
 		\begin{exampleblock}{F\#}
-			\begin{lstlisting}
+			\begin{minted}{fsharp}
 let sumFirst3 = Seq.take 3 >> Seq.fold (+) 0
-            \end{lstlisting}
+            \end{minted}
 		\end{exampleblock}
 \end{frame}
 
@@ -239,12 +235,12 @@ let sumFirst3 = Seq.take 3 >> Seq.fold (+) 0
 		\frametitle{Ещё пример}
 		\framesubtitle{Возвести в квадрат и сложить все чётные числа в списке}
 		\begin{exampleblock}{F\#}
-			\begin{lstlisting}
+			\begin{minted}{fsharp}
 let calculate = 
     Seq.filter (fun x -> x % 2 = 0) 
     >> Seq.map (fun x -> x * x) 
     >> Seq.reduce (+)
-            \end{lstlisting}
+            \end{minted}
 		\end{exampleblock}
 \end{frame}
 
