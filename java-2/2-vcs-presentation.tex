@@ -28,6 +28,84 @@
 	
 	\frame{\titlepage}
 	
+	\section{Разбор домашки про Lazy}
+
+	\begin{frame}[fragile]
+		\frametitle{Double-checked locking}
+		Вот так неправильно:
+		\begin{minted}{java}
+private T value;
+
+T get() {
+    if (value == NONE) {
+        synchronized (this) {
+            if (value == NONE) {
+                value = supplier.get();
+            }
+        }
+    }
+    return value;
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Double-checked locking}
+		Вот так правильно (начиная с Java 5):
+		\begin{minted}{java}
+private volatile T value;
+
+T get() {
+    if (value == NONE) {
+        synchronized (this) {
+            if (value == NONE) {
+                value = supplier.get();
+            }
+        }
+    }
+    return value;
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Double-checked locking}
+		Или даже так:
+		\begin{minted}{java}
+private volatile T value;
+
+T get() {
+    T result = value;
+    if (result == NONE) {
+        synchronized (this) {
+            result = value;
+            if (result == NONE) {
+                result = value = supplier.get();
+            }
+        }
+    }
+    return result;
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Lock-free}
+		\begin{minted}{java}
+T get() {
+    if (value == NONE) {
+        Supplier<T> local = supplier;
+        if (local != null) {
+            if (updater.compareAndSet(this, NONE, local.get())) {
+                supplier = null;
+            }
+        }
+    }
+    return value;
+}}
+		\end{minted}
+\end{frame}
+
 	\section{Внутреннее устройство Git}
 
 	\begin{frame}
