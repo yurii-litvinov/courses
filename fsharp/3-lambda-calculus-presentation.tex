@@ -22,7 +22,7 @@
 
 \title{Нетипизированное $\lambda$-исчисление}
 \author{Юрий Литвинов}
-\date{26.02.2016г}
+\date{10.03.2017г}
 
 \begin{document}
 	
@@ -350,7 +350,7 @@
 		\begin{proof}
 			$$Y\ F \equiv (\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) 
 				= F\ ((\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) = F(Y\ F)$$
-		\end{proof}		
+		\end{proof}
 	\end{frame}
 
 	\begin{frame}
@@ -383,14 +383,92 @@
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{Булевые выражения}
+		Пока что на $\lambda$-исчислении факториал не написать, нет чисел и \textit{if}-ов. Начнём с булевых выражений:
+		$$TRUE \equiv \lambda x.\lambda y.x$$
+		$$FALSE \equiv \lambda x.\lambda y.y$$
+		Ну и оператор \textbf{IF}:
+		$$IF \equiv \lambda b.\lambda t.\lambda f.b\ t\ f$$
+		--- обратите внимание, булевые константы вводились так, чтобы \textit{IF} получился таким простым
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Булевые операторы}
+		Ввести булевые операторы очень просто через \textit{IF}:
+		$$AND \equiv \lambda a\ b. IF\ a\ b\ FALSE$$
+		$$OR \equiv \lambda a\ b. IF\ a\ TRUE\ b$$
+		$$NOT \equiv \lambda b.IF\ b\ FALSE\ TRUE$$
+		Какова нормальная форма терма \textit{NOT}?
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ответ}
+		$$NOT = \lambda b.IF\ b\ FALSE\ TRUE$$
+		$$= \lambda b.((\lambda b'.\lambda t.\lambda f.b'\ t\ f)\ b\ (\lambda x.\lambda y.y)\ (\lambda x.\lambda y.x))$$
+		$$\rightarrow_\beta \lambda b.((\lambda t.\lambda f.b\ t\ f)\ (\lambda x.\lambda y.y)\ (\lambda x.\lambda y.x))$$
+		$$\rightarrow_\beta \lambda b.((\lambda f.b\ (\lambda x.\lambda y.y)\ f)\ (\lambda x.\lambda y.x))$$
+		$$\rightarrow_\beta \lambda b.(b\ (\lambda x.\lambda y.y)\ (\lambda x.\lambda y.x))$$
+		А если $b$ может быть только $TRUE$ и $FALSE$, всё проще:
+		$$NOT = \lambda b\ t\ f.b\ f\ t$$
+		Легко убедиться подстановкой $TRUE$ и $FALSE$ в обе формулы
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Нумералы Чёрча}
-		Теория чисел может быть введена через $\lambda$-исчисление. Числа вводятся так (нумералы
-		Чёрча):
+		Теория чисел может быть введена через $\lambda$-исчисление. Числа вводятся так (нумералы Чёрча):
 		$$0 \equiv \lambda s\ z.z$$
 		$$1 \equiv \lambda s\ z.s\ z$$
 		$$2 \equiv \lambda s\ z.s\ (s\ z)$$
 		$$3 \equiv \lambda s\ z.s\ (s\ (s\ z))$$
 		$$4 \equiv \lambda s\ z.s\ (s\ (s\ (s\ z)))$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Арифметические операции}
+		$$S \equiv \lambda n.\lambda f.\lambda x.f\ ((n\ f)\ x)$$
+		то есть
+		$$S\ n = (\lambda n\ f\ x.f\ (n\ f\ x))\ n$$
+		$$\rightarrow_\beta \lambda f\ x.f\ (n\ f\ x)$$
+		$$= n + 1$$
+		
+		Сложение:
+		$$ADD \equiv \lambda m\ n.\lambda f\ x.(m\ f)\ ((n\ f)\ x))$$
+		или
+		$$ADD \equiv \lambda m\ n.(m\ S)\ n$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Умножение и степень}
+		$$MUL \equiv \lambda m\ n.m\ (ADD\ n)\ 0$$
+		$$EXP \equiv \lambda m\ n.m\ (MUL\ n)\ 1$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пары}
+		Конструктор пары:
+		$$PAIR \equiv \lambda x\ y\ f.f\ x\ y$$
+		идея такая же, как у булевых констант и \textit{IF}-а --- обернуть значения в аппликацию функции. Конкретная пара:
+		$$PAIR\ a\ b = \lambda f.f\ a\ b$$
+		
+		Проекции:
+		$$FST \equiv \lambda p.p\ TRUE$$
+		$$SND \equiv \lambda p.p\ FALSE$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Почему}
+		Потому что мы так определили $TRUE$ и $FALSE$:
+		$$FST\ (PAIR\ a\ b) = PAIR\ a\ b\ TRUE$$
+		$$\equiv (\lambda x\ y\ f.f\ x\ y)\ a\ b\ TRUE$$
+		$$= TRUE\ a\ b$$
+		$$= (\lambda x.\lambda y.x)\ a\ b$$
+		$$= a$$
+
+		$$SND\ (PAIR\ a\ b) = PAIR\ a\ b\ FALSE$$
+		$$\equiv (\lambda x\ y\ f.f\ x\ y)\ a\ b\ FALSE$$
+		$$= FALSE\ a\ b$$
+		$$= (\lambda x.\lambda y.y)\ a\ b$$
+		$$= b$$
 	\end{frame}
 
 \end{document}
