@@ -44,7 +44,7 @@
 			\end{itemize}
 			\item Post-mortem-анализ
 			\begin{itemize}
-				\item "Отладочный вывод" должен работать и на развёрнутой системе
+				\item ``Отладочный вывод'' должен работать и на развёрнутой системе
 				\item И выводить не в консоль
 				\item И обеспечивать информацию о контексте
 			\end{itemize}
@@ -75,7 +75,7 @@
 	\begin{frame}
 		\frametitle{Архитектура}
 		\begin{center}
-			\includegraphics[width=0.9\textwidth]{log4jClasses.jpg}
+			\includegraphics[width=0.8\textwidth]{log4jClasses.jpg}
 		\end{center}
 	\end{frame}
 
@@ -119,7 +119,7 @@ public class HelloWorld {
 		\frametitle{Куда это писать}
 		Log4j ищет конфигурации в следующих местах в следующем порядке:
 		\begin{itemize}
-			\item Системное свойство "log4j.configurationFile" (указывается при запуске опцией -D)
+			\item Системное свойство ``log4j.configurationFile'' (указывается при запуске опцией -D)
 			\item log4j2-test.properties в classpath
 			\item log4j2-test.yaml или log4j2-test.yml в classpath
 			\item log4j2-test.json или log4j2-test.jsn в classpath
@@ -313,5 +313,73 @@ ThreadContext.clear();
 		Шаблон \textbf{\%X} включает в лог всё, \textbf{\%X\{key\}} --- только значение с заданным ключом
 \end{frame}
 
+	\section{SLF4J}
+
+	\begin{frame}
+		\frametitle{SLF4J}
+		\framesubtitle{Simple Logging Facade for Java}
+		\begin{itemize}
+			\item Фасад (на самом деле, прокси) для библиотек логирования
+			\item Нужен, чтобы код не зависел от конкретной библиотеки логирования, а зависел только от легковесного фасада
+			\item Фасад, в свою очередь, использует ту библиотеку, которую нашёл в CLASSPATH при запуске
+			\item Работает очень быстро и позволяет не навязывать лишних зависимостей
+			\begin{itemize}
+				\item Особенно полезно в библиотечном коде
+				\item Спасает от ситуации, когда есть несколько компонентов, каждый из которых хочет свою библиотеку логирования
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура}
+		\begin{center}
+			\includegraphics[width=\textwidth]{slf4jBindings.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{footnotesize}
+			\begin{minted}{java}
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Wombat {
+  private final Logger logger = LoggerFactory.getLogger(Wombat.class);
+  private Integer t;
+  private Integer oldT;
+
+  public void setTemperature(Integer temperature) {
+    oldT = t;
+    t = temperature;
+
+    logger.debug("Temperature set to {}. Old temperature was {}.", t, oldT);
+
+    if(temperature.intValue() > 50) {
+      logger.info("Temperature has risen above 50 degrees.");
+    }
+  }
+} 
+			\end{minted}
+		\end{footnotesize}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{SLF4J}
+		\begin{itemize}
+			\item Умеет многое из того, что умеют ``настоящие'' библиотеки, так что можно просто выводить в лог, не задумываясь об API
+			\begin{itemize}
+				\item Формирование строк через \{\}
+				\item Маркеры
+			\end{itemize}
+			\item Чтобы всё работало, надо подключить:
+			\begin{itemize}
+				\item slf4j-api --- обязательно, и одно из:
+				\item slf4j-simple --- бэкенд ``из коробки'', умеет выводить в System.err
+				\item log4j-slf4j-impl --- для использования Log4J в качестве бэкенда
+			\end{itemize}
+			\item Не забываем конфигурационный файл Log4J, если используем как бэкенд его
+		\end{itemize}
+	\end{frame}
 
 \end{document}
