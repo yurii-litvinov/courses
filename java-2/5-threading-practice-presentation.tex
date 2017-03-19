@@ -1,0 +1,55 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=0.7mm
+
+\title{Практика}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{23.03.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Слоистая архитектура для VCS}
+
+	\begin{frame}
+		\frametitle{Архитектура VCS}
+	\end{frame}
+
+	\section{Задача на пару}
+
+	\begin{frame}
+		\frametitle{Задача, CountdownLatch}
+		\framesubtitle{Репетиция контрольной}
+		Реализовать свой собственный CountdownLatch:
+		\begin{itemize}
+			\item Конструктор, принимающий число (счётчик) в качестве аргумента
+			\item Метод \mintinline{java}|await()|, который блокирует вызвавший его поток, пока счётчик не станет равным нулю
+			\item Метод \mintinline{java}|countDown()|, который уменьшает счётчик на 1 и запускает все потоки, заблокированные на await, если счётчик достиг 0
+			\begin{itemize}
+				\item \mintinline{java}|countDown()| не должен использовать synchronized
+			\end{itemize}
+		\end{itemize}
+
+		Надо сделать и показать прямо на паре, дома можно не доделывать
+	\end{frame}
+
+\end{document}
