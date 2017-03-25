@@ -1,0 +1,533 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+
+\useoutertheme{infolines}
+
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\title{Проектирование ПО}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+\date{27.03.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Введение}
+
+	\begin{frame}
+		\frametitle{Проектирование ПО}
+		Проектирование --- деятельность, предшествующая разработке
+		\vskip 1.5cm
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{softwareDesign.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Проектирование ПО}
+		\begin{itemize}
+			\item Определение базового архитектурного стиля и структуры приложения
+			\item Определение функционального поведения
+			\item Осуществление декомпозиции на модули и планирование их взаимодействия
+			\item Выбор стратегии и деталей реализации
+			\begin{itemize}
+				\item Используется ли кодогенерация?
+				\item Используются ли сторонние фреймворки?
+				\item Используются ли сторонние библиотеки?
+				\item Какая часть функциональности будет реализовывать ``вручную''?
+			\end{itemize}
+			\item Вопросы распределённости/децентрализованности приложения
+			\item Вопросы безопасности и прочие нефункциональные требования
+			\item Вопросы локализации
+			\item Вопросы размещения
+			\item Вопросы обновления
+			\item ...
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Инструменты проектирования}
+		\begin{itemize}
+			\item Моделирование
+			\begin{itemize}
+				\item Визуальное
+				\item Вербальное
+				\item Формальное
+			\end{itemize}
+			\item Прототипирование
+			\item Архитектурное описание
+			\begin{itemize}
+				\item Неформальное
+				\item Формальное
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Моделирование}
+		\begin{itemize}
+			\item \textbf{Модель} --- упрощённое подобие объектов или явлений
+			\begin{itemize}
+				\item Позволяет изучать некоторые их свойства
+			\end{itemize}
+			\item Свойства моделей
+			\begin{itemize}
+				\item Сжатие информации
+				\item Целенаправленность
+				\item Субъективность
+				\item Ограниченность
+				\item Способность к расширению
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Визуальные модели}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Различный состав моделей и степень детальности
+					\item Метафора визуализации
+					\item Точка зрения моделирования
+					\item Назначение
+					\begin{itemize}
+						\item Одноразовые модели
+						\item Документация
+						\item Графические исходники
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{modelExample.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\section{UML, моделирование структуры}
+
+	\begin{frame}
+		\frametitle{Язык UML}
+		\framesubtitle{Unified Modeling Language}
+		\begin{center}
+			\includegraphics[width=\textwidth]{umlDiagrams.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Представления системы}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{modelTypes.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Моделирование структуры}
+		\begin{itemize}
+			\item Отношения ``часть-целое''
+			\item Статические свойства
+			\item Не рассматриваем
+			\begin{itemize}
+				\item ``Причина-следствие''
+				\item ``Раньше-позже''
+			\end{itemize}
+			\item Основные сущности --- пакеты, классы и отношения между ними
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что моделируем}
+		\begin{itemize}
+			\item Структура связей между объектами во время выполнения программы
+			\item Структура хранения данных
+			\item Структура программного кода
+			\item Структура компонентов в приложении
+			\item Структура артефактов в проекте
+			\item Структура используемых вычислительных ресурсов
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы классов UML}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{umlClassDiagram.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Свойства}
+		\begin{columns}
+			\begin{column}{0.3\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{attributes.png}
+
+					Атрибуты
+				\end{center}
+			\end{column}
+			\begin{column}{0.7\textwidth}
+				\begin{center}
+					\includegraphics[width=0.7\textwidth]{associations.png}
+
+					Ассоциации
+				\end{center}
+			\end{column}
+		\end{columns}
+		\bigskip
+		Синтаксис:
+		\begin{itemize}
+			\item видимость имя: тип кратность = значение по умолчанию \{строка свойств\}
+			\item Видимость: + (public), - (private), \# (protected), \char`~ (package)
+			\item Кратность: 1 (ровно 1 объект), 0..1 (ни одного или один),\newline * (сколько угодно), 1..*, 2..*
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Агрегация и композиция}
+		Агрегация – объект ``знает'' о другом (не управляет его временем жизни, имеет на него ссылку или указатель)
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{aggregations.png}
+		\end{center}
+		Композиция --- объект владеет другим объектом (управляет его временем жизни, хранит его по значению или по указателю, делая delete)
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{compositions.png}
+		\end{center}
+		Уточнение обычной ассоциации, используется только если очень надо
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Прочее}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					Интерфейсы
+
+					\bigskip
+					\includegraphics[width=0.9\textwidth]{interfaces1.png}
+
+					\bigskip
+					\includegraphics[width=0.9\textwidth]{interfaces2.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					Зависимости
+
+					\bigskip
+					\includegraphics[width=0.9\textwidth]{dependencies.png}
+					\bigskip
+
+					Шаблоны
+
+					\bigskip
+					\includegraphics[width=0.9\textwidth]{templates.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы объектов}
+				\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item snapshot структуры классов во время выполнения
+					\item Используются обычно чтобы пояснить диаграмму классов
+					\item Полезны на этапе анализа предметной области, ещё до диаграмм классов
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{objectsDiagram.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы компонентов}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{componentDiagram.png}
+		\end{center}
+	\end{frame}
+
+	\section{CASE-системы}
+
+	\begin{frame}
+		\frametitle{Computer-Aided Software Engineering}
+		\begin{itemize}
+			\item В 80-е годы термином CASE называли всё, что помогает разрабатывать ПО с помощью компьютера
+			\begin{itemize}
+				\item Даже текстовые редакторы
+			\end{itemize}
+			\item Теперь --- прежде всего средства для визуального моделирования (UML-диаграммы, ER-диаграммы и т.д.)
+			\item Отличаются от графических редакторов тем, что ``понимают'', что в них рисуют
+			\item Нынче чаще используются термины ``MDE tool'', ``UML tool'' и т.д.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Типичная функциональность CASE-инструментов}
+		\begin{itemize}
+			\item Набор визуальных редакторов
+			\item Репозиторий
+			\item Набор генераторов
+			\item Текстовый редактор
+			\item Редактор форм
+			\item Средства обратного проектирования (reverse engineering)
+			\item Средства верификации и анализа моделей
+			\item Средства эмуляции и отладки
+			\item Средства обеспечения командной разработки
+			\item API для интеграции с другими инструментами
+			\item Библиотеки шаблонов и примеров
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Примеры CASE-инструментов}
+		\begin{itemize}
+			\item ``Рисовалки''
+			\begin{itemize}
+				\item Visio
+				\item Dia
+				\item SmartDraw
+				\item Creately
+			\end{itemize}
+			\item Полноценные CASE-системы
+			\begin{itemize}
+				\item Enterprise Architect
+				\item Rational Software Architect
+				\item MagicDraw
+				\item Visual Paradigm
+				\item GenMyModel
+			\end{itemize}
+			\item Забавные штуки
+			\begin{itemize}
+				\item \url{https://www.websequencediagrams.com/}
+				\item \url{http://yuml.me/}
+				\item \url{http://plantuml.com/}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерны проектирования}
+
+	\begin{frame}
+		\frametitle{Паттерны проектирования}
+		\framesubtitle{Книжка}
+		\begin{columns}
+			\begin{column}{0.7\textwidth}
+				\textbf{Приемы объектно-ориентированного проектирования. Паттерны проектирования}
+				
+				Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес
+
+				Design Patterns: Elements of Reusable Object-Oriented Software
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{patternsBookCover.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерны проектирования}
+		\textbf{Паттерн проектирования} --- повторимая архитектурная конструкция, являющаяся решением некоторой типичной технической проблемы
+		\begin{itemize}
+			\item Подходит для решения целого класса проблем
+			\item Переиспользуемость знаний
+			\item Унификация терминологии
+			\item Простота в изучении
+			\item Опасность карго-культа!
+		\end{itemize}
+		А ещё есть \textbf{антипаттерны} --- часто встречающиеся неправильные решения типичной проблемы
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример паттерна, компоновщик (1)}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{documentComposition.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример паттерна, компоновщик (2)}
+		\begin{center}
+			\includegraphics[width=0.65\textwidth]{glyphs.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример паттерна, компоновщик (3)}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{composite.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё пример, паттерн ``Стратегия'' (1)}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{glyphCompositor.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё пример, паттерн ``Стратегия'' (2)}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{strategy.png}
+		\end{center}
+	\end{frame}
+
+	\section{Тестирование}
+
+	\begin{frame}
+		\frametitle{Внезапно, тестирование}
+		\begin{itemize}
+			\item Любая программа содержит ошибки
+			\item Если программа не содержит ошибок, их содержит алгоритм, который реализует эта программа
+			\item Если ни программа, ни алгоритм ошибок не содержат, такая программа даром никому не нужна
+		\end{itemize}
+		Тестирование не позволяет доказать отсутствие ошибок, оно позволяет лишь найти ошибки, которые в программе присутствуют
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Виды тестов}
+		\begin{itemize}
+			\item Модульные
+			\item Интеграционные
+			\item Системные
+		\end{itemize}
+		\begin{itemize}
+			\item Регрессионные
+			\item Приёмочные
+			\item Дымовые (smoke-test)
+		\end{itemize}
+		\begin{itemize}
+			\item UI-тесты
+			\item Нагрузочные тесты
+			\item ...
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Модульные тесты}
+		\begin{itemize}
+			\item Тест на каждый отдельный метод, функцию, иногда класс
+			\item Пишутся программистами
+			\item Запускаются часто (как минимум, после каждого коммита)
+			\item Должны работать быстро
+			\item Должны всегда проходить 
+			\item Принято не продолжать разработку, если юнит-тест не проходит
+			\item Помогают быстро искать ошибки (вы ещё помните, что исправляли), рефакторить код (``ремни безопасности''), продумывать архитектуру (мешанину невозможно оттестировать), документировать код (каждый тест --- это рабочий пример вызова)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Почему модульные тесты полезны}
+		\begin{itemize}
+			\item Помогают искать ошибки
+			\begin{itemize}
+				\item Особо эффективны, если налажен процесс Continuous Integration
+			\end{itemize}
+			\item Облегчают изменение программы
+			\begin{itemize}
+				\item Помогают при рефакторинге
+			\end{itemize}
+			\item Тесты --- документация к коду
+			\item Помогают улучшить архитектуру
+			\item НЕ доказывают отсутствие ошибок в программе
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Best practices}
+		\begin{itemize}
+			\item Независимость тестов
+			\begin{itemize}
+				\item Желательно, чтобы поломка одного куска функциональности ломала один тест
+			\end{itemize}
+			\item Тесты должны работать быстро
+			\begin{itemize}
+				\item И запускаться после каждой сборки
+				\begin{itemize}
+					\item Continuous Integration!
+				\end{itemize}
+			\end{itemize}
+			\item Тестов должно быть много
+			\begin{itemize}
+				\item Следить за Code coverage
+			\end{itemize}
+			\item Каждый тест должен проверять конкретный тестовый сценарий
+			\begin{itemize}
+				\item Никаких try-catch внутри теста
+				\begin{itemize}
+					\item \mintinline{java}|@Test(expected = NullPointerException.class)|
+					\item Любая нормальная библиотека юнит-тестирования умеет ожидать исключения
+				\end{itemize}
+			\end{itemize}
+			\item Test-driven development
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Hamcrest}
+		\begin{minted}{java}
+assertThat(someString, is(not(equalTo(someOtherString))));
+assertThat(list, everyItem(greaterThan(1)));
+assertThat(cat.getKittens(), hasItem(someKitten));
+assertThat("test", 
+    anyOf(is("testing"), containsString("est")));
+assertThat(x, 
+    allOf(greaterThan(0), lessThanOrEqualTo(10)));
+		\end{minted}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Mock-объекты}
+		\begin{itemize}
+			\item Объекты-заглушки, симулирующие поведение реальных объектов и контролирующие обращения к своим методам
+			\begin{itemize}
+				\item Как правило, такие объекты создаются с помощью библиотек
+			\end{itemize}
+			\item Используются, когда реальные объекты использовать
+			\begin{itemize}
+				\item Слишком долго
+				\item Слишком опасно
+				\item Слишком трудно
+				\item Для добавления детерминизма в тестовый сценарий
+				\item Пока реального объекта ещё нет
+				\item Для изоляции тестируемого объекта
+			\end{itemize}
+			\item Для mock-объекта требуется, чтобы был интерфейс, который он мог бы реализовать, и какой-то механизм внедрения объекта
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример: Mockito}
+		\begin{minted}{java}
+@Test
+public void test() throws Exception {
+    // Arrange, prepare behaviour
+    Helper aMock = mock(Helper.class);
+    when(aMock.isCalled()).thenReturn(true);
+    // Act
+    testee.doSomething(aMock);
+    // Assert - verify interactions (optional)
+    verify(aMock).isCalled();
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Соотношение тестов}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{testsProportions.png}
+		\end{center}
+	\end{frame}
+
+\end{document}
