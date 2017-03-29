@@ -1,0 +1,41 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\title{Контрольная}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{30.03.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Условие: MD5}
+
+	\begin{frame}
+		\frametitle{Задача, MD5}
+		Реализовать консольное приложение, вычисляющее check-сумму директории файловой системы по такому правилу:
+		\begin{itemize}
+			\item \mintinline{java}|f(file) = MD5(<содержимое>)|
+			\item \mintinline{java}|f(dir) = MD5(<имя папки> + f(file1) + ...)|
+		\end{itemize}
+		Требуется:
+		\begin{itemize}
+			\item Однопоточный вариант
+			\item Вариант с Fork-Join
+			\item Сравнить время их работы в main-е
+		\end{itemize}
+		Файлы могут быть большими и не помещаться в память целиком.
+		
+		Классы \textit{MessageDigest} и \textit{DigestInputStream} могут быть полезны. 
+	\end{frame}
+
+\end{document}
