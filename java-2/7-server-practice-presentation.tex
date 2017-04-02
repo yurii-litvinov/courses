@@ -1,0 +1,177 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\title{Практика, неблокирующий сервер}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{06.04.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Разбор контрольной}
+
+	\begin{frame}[fragile]
+		\frametitle{Разбор контрольной}
+		\framesubtitle{Правильное (в каком-то смысле) решение, однопоточный вариант}
+		\begin{scriptsize}
+			\begin{minted}{java}
+public @NotNull byte[] hash(@NotNull Path path) throws 
+        NoSuchAlgorithmException, IOException {
+    MessageDigest md = MessageDigest.getInstance("MD5");
+    if (Files.isDirectory(path)) {
+        md.update(path.getFileName().toString().getBytes());
+        for (Path subPath : Files.walk(path).filter(Files::isRegularFile).collect(Collectors.toList())) {
+            md.update(hash(subPath));
+        }
+        return md.digest();
+    }
+
+    try (InputStream rawStream = Files.newInputStream(path)) {
+        DigestInputStream stream = new DigestInputStream(rawStream, md);
+        byte[] buffer = new byte[BUFFER_SIZE];
+        while (stream.read(buffer) != -1)
+        {
+        }
+        return stream.getMessageDigest().digest();
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Fork/Join-вариант}
+		\begin{scriptsize}
+			\begin{minted}{java}
+MessageDigest md = MessageDigest.getInstance("MD5");
+if (Files.isDirectory(path)) {
+    md.update(path.getFileName().toString().getBytes());
+    List<ForkJoinHasher> subTasks = new LinkedList<>();
+    for (Path subPath : Files.walk(path).filter(Files::isRegularFile).collect(Collectors.toList())) {
+        ForkJoinHasher task = new ForkJoinHasher(subPath);
+        task.fork();
+        subTasks.add(task);
+    }
+    for (ForkJoinHasher task : subTasks) {
+        md.update(task.join());
+    }
+    return md.digest();
+} else {
+    try (InputStream rawStream = Files.newInputStream(path)) {
+        DigestInputStream stream = new DigestInputStream(rawStream, md);
+        byte[] buffer = new byte[BUFFER_SIZE];
+        while (stream.read(buffer) != -1)
+        {
+        }
+        return stream.getMessageDigest().digest();
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Частые проблемы}
+		\begin{itemize}
+			\item Невнимательное чтение условия
+			\item Недостаток тестов
+			\item Суровый копипаст в тестах
+			\item Конечно же, комментарии
+			\item Излишнее доверие пользователю в main-е
+			\item Нетехнологичность
+			\begin{itemize}
+				\item Отсутствие аннотаций \mintinline{java}|@NotNull/@Nullable|
+				\item \mintinline{java}|@Rule TemporaryFolder|
+				\item try-with-resources
+				\item assertArrayEquals
+				\begin{itemize}
+					\item Hamcrest? Только одно решение, seriously?
+				\end{itemize}
+				\item \textbf{Tools are everything!}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Домашка}
+
+	\begin{frame}
+		\frametitle{Домашка, Simple FTP}
+		Требуется реализовать сервер, обрабатывающий два запроса.
+		\begin{itemize}
+			\item \textbf{list} --- листинг файлов в директории на сервере
+			\item \textbf{get} --- скачивание файла с сервера
+		\end{itemize}
+		И клиент, позволяющий исполнять указанные запросы.
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{List}
+		Формат запроса: \textit{<1: Int> <path: String>}
+
+		\begin{itemize}
+			\item path --- путь к директории
+		\end{itemize}
+
+		Формат ответа: \textit{<size: Int> (<name: String> <is\_dir: Boolean>)*}
+
+		\begin{itemize}
+			\item size --- количество файлов и папок в директории
+			\item name --- название файла или папки
+			\item is\_dir --- флаг, принимающий значение True для директорий
+		\end{itemize}
+		Если директории не существует, сервер посылает ответ с size = 0
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Get}
+		Формат запроса: \textit{<2: Int> <path: String>}
+		\begin{itemize}
+			\item path --- путь к файлу
+		\end{itemize}
+		
+		Формат ответа: \textit{<size: Long> <content: Bytes>}
+		\begin{itemize}
+			\item size --- размер файла
+			\item content --- его содержимое
+		\end{itemize}
+		Если файла не существует, сервер посылает ответ с size = 0
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Примечания}
+		\begin{itemize}
+			\item Разрешается использовать библиотеки для упрощения ввода-вывода
+			\item Рекомендуется взглянуть на DataInputStream и DataOutputStream
+			\item Рекомендуется задуматься об интерфейсе сервера и клиента, возможно стоит сделать что-то подобное:
+			\begin{itemize}
+				\item Server: start/stop
+				\item Client: connect/disconnect/executeList/executeGet
+			\end{itemize}
+		\end{itemize}
+		Срок: \textbf{19.04.2017 23:59}.
+	\end{frame}
+
+	\section{Задача на пару}
+
+	\begin{frame}
+		\frametitle{Задача на пару, Non-blocking server}
+		\begin{itemize}
+			\item Сервер сразу начинает отдавать клиенту содержимое одного файла, после чего разрывает соединение
+			\item Содержимое файла можно перед началом работы прочитать в память
+			\item Работа с клиентскими сокетами и открытие новых должно происходить в неблокирующем режиме
+			\item Сервер должен работать в одном потоке 
+			\item Рекомендуется для клиентских сокетов включать tcpNoDelay
+		\end{itemize}
+	\end{frame}
+
+\end{document}
