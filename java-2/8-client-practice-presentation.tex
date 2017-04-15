@@ -1,0 +1,32 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\title{Практика, клиент}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{13.04.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Задача на пару}
+
+	\begin{frame}
+		\frametitle{Задача на пару, Non-blocking client}
+		Реализовать клиент для сервера с прошлой пары.
+		\begin{itemize}
+			\item Работа с сетью должна происходить в неблокирующем режиме
+			\item Клиент должен работать в одном потоке
+		\end{itemize}
+	\end{frame}
+
+\end{document}
