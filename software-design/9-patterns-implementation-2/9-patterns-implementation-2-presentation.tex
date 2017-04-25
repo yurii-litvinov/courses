@@ -66,25 +66,70 @@
 
 	\begin{frame}
 		\frametitle{``Прототип'' (Prototype), детали реализации}
-		\begin{itemize}
-			\item Паттерн интересен только для языков, где мало runtime-информации о типе (C++)
-			\item Реестр прототипов, обычно ассоциативное хранилище
-			\item Операция Clone
-			\begin{itemize}
-				\item Глубокое и мелкое копирование
-				\item В случае, если могут быть круговые ссылки
-				\item Сериализовать/десериализовать объект (но помнить про идентичность)
-			\end{itemize}
-			\item Инициализация клона
-			\begin{itemize}
-				\item Передавать параметры в Clone --- плохая идея
-			\end{itemize}
-		\end{itemize}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Паттерн интересен только для языков, где мало runtime-информации о типе (C++)
+					\item Реестр прототипов, обычно ассоциативное хранилище
+					\item Операция Clone
+					\begin{itemize}
+						\item Глубокое и мелкое копирование
+						\item В случае, если могут быть круговые ссылки
+						\item Сериализовать/десериализовать объект (но помнить про идентичность)
+					\end{itemize}
+					\item Инициализация клона
+					\begin{itemize}
+						\item Передавать параметры в Clone --- плохая идея
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{prototype.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{``Строитель'' (Builder), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Абстрактные и конкретные строители
+					\begin{itemize}
+						\item Достаточно общий интерфейс
+					\end{itemize}
+					\item Общий интерфейс для продуктов не требуется
+					\begin{itemize}
+						\item Клиент конфигурирует распорядителя конкретным строителем, он же и забирает результат
+					\end{itemize}
+					\item Пустые методы по умолчанию
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{builder.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Строитель'', примеры}
+		\begin{itemize}
+			\item StringBuilder
+			\item Guava, подсистема работы с графами
+			\begin{minted}{java}
+MutableNetwork<Webpage, Link> webSnapshot = NetworkBuilder.directed()
+    .allowsParallelEdges(true)
+    .nodeOrder(ElementOrder.natural())
+    .expectedNodeCount(100000)
+    .expectedEdgeCount(1000000)
+    .build();
+			\end{minted}
+		\end{itemize}
+\end{frame}
 
 	\section{Поведенческие шаблоны}
 
@@ -106,38 +151,339 @@
 
 	\begin{frame}
 		\frametitle{``Посредник'' (Mediator), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Абстрактный класс ``Mediator'' часто не нужен
+					\item Паттерн ``Наблюдатель'': медиатор подписывается на события в коллегах
+					\item Наоборот: коллеги вызывают методы медиатора
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{mediatorClasses.png}
+
+					\includegraphics[width=\textwidth]{mediatorObjects.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{``Команда'' (Command), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Насколько ``умной'' должна быть команда
+					\item Отмена и повторение операций --- тоже от хранения всего состояния в команде до ``вычислимого'' отката
+					\begin{itemize}
+						\item Undo-стек и Redo-стек
+						\item Может потребоваться копировать команды
+						\item ``Искусственные'' команды
+						\item Композитные команды
+					\end{itemize}
+					\item Паттерн ``Хранитель'' для избежания ошибок восстановления
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{command.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Команда'', пример}
+		\begin{itemize}
+			\item Qt, класс QAction:
+			\begin{minted}{c++}
+const QIcon openIcon = QIcon(":/images/open.png");
+    QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
+    openAct->setShortcuts(QKeySequence::Open);
+    openAct->setStatusTip(tr("Open an existing file"));
+    connect(openAct, &QAction::triggered, this, &MainWindow::open);
+    fileMenu->addAction(openAct);
+    fileToolBar->addAction(openAct);
+			\end{minted}
+		\end{itemize}
+\end{frame}
 
 	\begin{frame}
 		\frametitle{``Цепочка ответственности'' (Chain of Responsibility), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Необязательно реализовывать связи в цепочке специально
+					\begin{itemize}
+						\item На самом деле, чаще используются существующие связи
+					\end{itemize}
+					\item По умолчанию в Handler передавать запрос дальше (если ссылки на преемника всё-таки есть)
+					\item Если возможных запросов несколько, их надо как-то различать
+					\begin{itemize}
+						\item Явно вызывать методы --- нерасширяемо
+						\item Использовать объекты-запросы
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{chainOfResponsibility.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Цепочка ответственности'', примеры}
+		\begin{itemize}
+			\item Распространение исключений
+			\item Распространение событий в оконных библиотеках:
+			\begin{minted}{c++}
+void MyCheckBox::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        // handle left mouse button here
+    } else {
+        // pass on other buttons to base class
+        QCheckBox::mousePressEvent(event);
+    }
+}
+			\end{minted}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{``Наблюдатель'' (Observer), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item В ``нормальных'' языках поддержан ``из коробки'' (через механизм событий)
+					\item Могут использоваться хеш-таблицы для отображения субъектов и наблюдателей
+					\begin{itemize}
+						\item Так делает WPF в .NET, есть даже языковая поддержка в C\#
+					\end{itemize}
+					\item Необходимость идентифицировать субъект
+					\item Кто инициирует нотификацию
+					\begin{itemize}
+						\item Операции, модифицирующие субъект
+						\item Клиент, после серии модификаций субъекта
+					\end{itemize}
+					\item Ссылки на субъектов и наблюдателей
+					\begin{itemize}
+						\item Простой способ организовать утечку памяти в C\# или грохнуть программу в C++
+					\end{itemize}
+					\item Консистентность субъекта при отправке нотификации
+					\begin{itemize}
+						\item Очевидно, но легко нарушить, вызвав метод предка в потомке
+						\item ``Шаблонный метод''
+						\item Документировать, кто когда какие события бросает
+					\end{itemize}
+					\item Передача сути изменений --- pull vs push
+					\item Фильтрация по типам событий
+					\item Менеджер изменений (``Посредник'')
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{observer.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Наблюдатель'', пример (1)}
+		\begin{itemize}
+			\item События в C\#:
+			\begin{minted}{csharp}
+internal class NewMessageEventArgs : EventArgs {
+    private readonly string message;
+    public MessageEventArgs(string message) => this.message = message;
+    public string Message => message;
+}
+			\end{minted}
+		\end{itemize}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Наблюдатель'', пример (2)}
+		\begin{itemize}
+			\begin{minted}{csharp}
+internal class Messenger {
+    public event EventHandler<NewMessageEventArgs> NewMessage;
+    protected virtual void OnMessage(NewMessageEventArgs e) {
+        EventHandler<NewMessageEventArgs> temp = Volatile.Read(ref NewMessage);
+        if (temp != null) 
+            temp(this, e);
+    }
+    public void SimulateMessage(String message) {
+        NewMessageEventArgs e = new NewMessageEventArgs(message);
+        OnMessage(e);
+    }
+}
+			\end{minted}
+		\end{itemize}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Наблюдатель'', пример (3)}
+		\begin{itemize}
+			\begin{minted}{csharp}
+internal sealed class Fax {
+    public Fax(Messenger mm) => mm.NewMessage += FaxMsg;
+
+    private void FaxMsg(object sender, NewMessageEventArgs e) {
+        Console.WriteLine("Faxing message:");
+        Console.WriteLine(\$"Message={e.Message}");
+    }
+
+    public void Unregister(MailManager mm) => mm.NewMail -= FaxMsg;
+}
+			\end{minted}
+		\end{itemize}
+\end{frame}
 
 	\begin{frame}
 		\frametitle{``Состояние'' (State), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Переходы между состояниями --- в Context или в State?
+					\item Таблица переходов
+					\begin{itemize}
+						\item Трудно добавить действия по переходу
+					\end{itemize}
+					\item Создание и уничтожение состояний
+					\begin{itemize}
+						\item Создать раз и навсегда
+						\item Создавать и удалять при переходах
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{state.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{``Посетитель'' (Visitor), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Использовать перегрузку методов Visit(...)
+					\item Чаще всего сама коллекция отвечает за обход, но может быть итератор
+					\item Может даже сам Visitor, если обход зависит от результата операции
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{visitor.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
+
+% 	\begin{frame}[fragile]
+% 		\frametitle{``Посетитель'', пример}
+% 		\begin{itemize}
+% 			\begin{minted}{csharp}
+% 				Здесь будет пример кода на ANTLR
+% 			\end{minted}
+% 		\end{itemize}
+% \end{frame}
 
 	\begin{frame}
 		\frametitle{``Хранитель'' (Memento), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Два интерфейса: ``широкий'' для хозяев и ``узкий'' для остальных объектов
+					\begin{itemize}
+						\item Требуется языковая поддержка
+					\end{itemize}
+					\item Можно хранить только дельты состояний
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{memento.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{``Интерпретатор'' (Interpreter), детали реализации}
-	\end{frame}
+	% \begin{frame}
+	% 	\frametitle{``Интерпретатор'' (Interpreter)}
+	% \end{frame}
 
 	\begin{frame}
-		\frametitle{``Итератор'' (Iterator), детали реализации}
+		\frametitle{``Итератор'' (Iterator)}
+		Инкапсулирует способ обхода коллекции.
+		\begin{center}
+			\includegraphics[width=\textwidth]{iterator.png}
+		\end{center}
+		\begin{itemize}
+			\item Разные итераторы для разных способов обхода
+			\item Можно обходить не только коллекции
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Итератор'', примеры}
+		\begin{itemize}
+			\item Java-стиль:
+			\begin{minted}{java}
+public interface Iterator<E> {
+    boolean hasNext();
+    E next();
+    void remove();
+}
+			\end{minted}
+			\item .NET-стиль:
+			\begin{minted}{csharp}
+public interface IEnumerator<T>
+{
+    bool MoveNext();
+    T Current { get; }
+    void Reset();
+}
+			\end{minted}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Итератор'', детали реализации (1)}
+		\begin{itemize}
+			\item Внешние и внутренние итераторы
+			\begin{minted}{csharp}
+foreach (Thing t in collection)
+{
+    Console.WriteLine(t);
+} 
+			\end{minted}
+			vs
+			\begin{minted}{csharp}
+collection.ToList().ForEach(t => Console.WriteLine(t));
+			\end{minted}
+		\end{itemize}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{``Итератор'', детали реализации (2)}
+		\begin{itemize}
+			\item Итераторы и курсоры
+			\item Устойчивые и неустойчивые итераторы
+			\begin{itemize}
+				\item Паттерн ``Наблюдатель''
+				\item Даже обнаружение модификации коллекции может быть непросто
+			\end{itemize}
+			\item Дополнительные операции
+			\item В C++ итераторы --- это сложно
+		\end{itemize}
 	\end{frame}
 
 	% \section{Антипаттерны}
