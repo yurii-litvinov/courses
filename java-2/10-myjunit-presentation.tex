@@ -1,0 +1,121 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\tabulinesep=0.8mm
+
+\title{Аннотации: MyJUnit}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{04.05.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Небольшое напоминание про аннотации}
+		\begin{itemize}
+			\item Нужны для добавления метаданных в классы
+			\begin{itemize}
+				\item Могут потом использоваться во время компиляции или во время выполнения
+				\item Активно используются самим компилятором (\mintinline{java}|@Override|, \mintinline{java}|@SuppressWarnings|)
+			\end{itemize}
+			\item Могут использоваться для генерации кода во время компиляции (например, Lombok)
+			\item Полезны во время выполнения вместе с рефлексией (например, JUnit)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Объявление своей аннотации}
+		\begin{minted}{java}
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Mammal {
+    String sound();
+    int color();
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Использование}
+		\begin{minted}{java}
+@Mammal(color = 0xFFA844, sound = "uuuu")
+class Giraffe {
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Работа с аннотациями в рантайме}
+		\begin{minted}{java}
+@PermissionRequired(User.Permission.USER_MANAGEMENT)
+class UserDeleteAction {
+    public void invoke(User user) { /* */ }
+}
+
+User user = ...;
+Class<?> actionClass = ...;
+PermissionRequired permissionRequired =
+        actionClass.getAnnotation(PermissionRequired.class);
+if (permissionRequired != null)
+    if (user != null && user.getPermissions().contains(
+        permissionRequired.value())) {
+            // выполнить действие
+        }
+    }
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Домашка, MyJUnit}
+		\framesubtitle{Последняя!}
+		Реализовать command-line приложение, принимающее на вход путь и выполняющее запуск тестов, расположенных по этому пути
+		\begin{itemize}
+			\item Тестом считается метод, помеченный аннотацией Test
+			\begin{itemize}
+				\item У аннотации может быть два аргумента --- expected для исключения, ignore --- для отмены запуска и указания причины
+			\end{itemize}
+			\item Перед и после запуска каждого теста в классе должны запускаться методы, помеченные аннотациями Before и After
+			\item Перед и после запуска тестов в классе должны запускаться методы, помеченные аннотациями BeforeClass и AfterClass
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Домашка, MyJUnit (2)}
+		Приложение должно выводить в стандартный поток вывода отчет:
+		\begin{itemize}
+			\item о результате и времени выполнения прошедших и упавших тестов
+			\item о причине отключенных тестов
+		\end{itemize}
+		Дедлайн: \textbf{17.05.2017, 23:59}
+	\end{frame}
+
+
+	\begin{frame}
+		\frametitle{На паре}
+		Реализовать command-line приложение, принимающее на вход имя файла и запускающее все тесты в нём
+		\begin{itemize}
+			\item Тестом считается метод, помеченный аннотацией Test
+			\begin{itemize}
+				\item У аннотации может аргумент ignore --- для отмены запуска и указания причины
+			\end{itemize}
+		\end{itemize}
+		Приложение должно выводить в стандартный поток вывода отчет:
+		\begin{itemize}
+			\item о результате и времени выполнения прошедших и упавших тестов
+			\item о причине отключенных тестов
+		\end{itemize}
+	\end{frame}
+
+\end{document}
