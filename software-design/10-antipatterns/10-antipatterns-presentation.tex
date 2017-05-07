@@ -16,7 +16,7 @@
 \subtitle{То, как делать не надо}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{26.04.2017г}
+\date{10.05.2017г}
 
 \begin{document}
 	
@@ -87,6 +87,135 @@
 				\end{itemize}
 			\end{itemize}
 		\end{footnotesize}
+	\end{frame}
+
+	\section{Антипаттерны реализации}
+
+	\begin{frame}
+		\frametitle{Circular dependency}
+		\begin{itemize}
+			\item Два или больше компонентов, которые зависят друг от друга
+			\begin{itemize}
+				\item Зависимости модулей должны образовывать ациклический граф
+			\end{itemize}
+			\item Часто появляется как результат попыток добавить callback-и
+			\begin{itemize}
+				\item Или просто по неосторожности
+			\end{itemize}
+			\item Имеет впечатляющие последствия в C++, во многих языках невозможен
+			\item Как бороться:
+			\begin{itemize}
+				\item Зависеть от абстракции, а не от реализации
+				\item Разделение на слои
+				\item Observer, Dependency Injection и т.д.
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Sequential coupling}
+		\begin{itemize}
+			\item Необходимость вызывать методы класса в определённом порядке
+			\begin{itemize}
+				\item Например, вызов init() после конструктора
+				\item Бывают более запущенные случаи, когда есть целая цепочка методов
+			\end{itemize}
+			\item Как бороться:
+			\begin{itemize}
+				\item Шаблонный метод
+				\item Фабрики и строители
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Call super}
+		\begin{itemize}
+			\item Необходимость вызывать из переопределённого метода потомка переопределяемый метод предка
+			\begin{itemize}
+				\item Не может быть проверено компилятором
+			\end{itemize}
+			\item Как бороться:
+			\begin{itemize}
+				\item Template Method
+				\begin{itemize}
+					\item \textbf{Позволяет} переопределить поведение предка, а не \textbf{требует} этого
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Yo-yo problem}
+		\begin{itemize}
+			\item Развитие идеи Call Super --- а давайте предок будет тоже вызывать виртуальные методы, переопределённые в потомке, которые будут вызывать методы предка и т.д.
+			\begin{itemize}
+				\item Красивая объектно-ориентированная архитектура же!
+			\end{itemize}
+			\item Как бороться:
+			\begin{itemize}
+				\item Перераспределить функциональность между предками и потомками
+				\item Возможно, распилить иерархию на несколько
+				\begin{itemize}
+					\item Паттерн ``Мост''
+				\end{itemize}
+				\item Вообще избегать глубоких иерархий наследования
+				\begin{itemize}
+					\item И ещё более вообще, использовать наследование только для полиморфных вызовов
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Busy waiting}
+		\begin{itemize}
+			\item Ожидание наступления некоторого события в бесконечном цикле с неблокирующими вызовами проверки наступления события
+			\begin{itemize}
+				\item Ещё использование циклов для задержек
+			\end{itemize}
+			\item Не всегда плохо, может быть валидным решением на встроенных устройствах
+			\item Как бороться:
+			\begin{itemize}
+				\item Использовать планировщик: блокирующие вызовы, ``усыпляющие'' поток до наступления события
+				\begin{itemize}
+					\item select в linux
+					\item Мьютексы, condition\_variable и т.д.
+				\end{itemize}
+				\item Использовать аппаратные возможности: таймеры и прерывания
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Error hiding}
+		\begin{itemize}
+			\item Сообщение об ошибке прячется за ``дружественным к пользователю'' сообщением или прячется вообще
+			\begin{itemize}
+				\item В худшем случае информация об ошибке теряется окончательно
+			\end{itemize}
+			\item Как бороться:
+			\begin{itemize}
+				\item Давать программе упасть (ещё, принцип ``fail fast'')
+				\item Логировать все исключения
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Magic numbers, Magic strings}
+		\begin{itemize}
+			\item Внезапно появляющиеся в коде программы строковые или числовые литералы
+			\begin{itemize}
+				\item 0, 1 и т.д. не считаются
+			\end{itemize}
+			\item Особенно забавно, если автор любезно посчитал значение математического выражения и записал в код результат
+			\item Как бороться:
+			\begin{itemize}
+				\item Константы
+				\item Ресурсы для локализации
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\section{Антипаттерны проектирования}
@@ -257,6 +386,31 @@
 		\end{itemize}
 	\end{frame}
 
+	\section{Design smells}
+
+	\begin{frame}
+		\frametitle{Design smells}
+		\begin{itemize}
+			\item \textbf{Missing abstraction} --- использование примитивных или слишком общих типов данных вместо своих классов
+			\item \textbf{Multifaceted abstraction} --- нарушение единственности ответственности
+			\item \textbf{Duplicate abstraction} --- две абстракции имеют одно предназначение
+			\item \textbf{Deficient encapsulation} --- слишком широкая видимость
+			\item \textbf{Unexploited encapsulation} --- явные проверки типов вместо полиморфизма
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Design smells (2)}
+		\begin{itemize}
+			\item \textbf{Broken modularization} --- неуместное разбиение на классы/пакеты
+			\item \textbf{Insufficient modularization} --- неуместное неразбиение на классы/пакеты
+			\item \textbf{Cyclically-dependent modularization} --- циклические зависимости
+			\item \textbf{Unfactored hierarchy} --- дупликация в иерархии
+			\item \textbf{Broken hierarchy} --- нарушение принципа подстановки и IS-A
+			\item \textbf{Cyclic hierarchy} --- зависимость от потомков
+		\end{itemize}
+	\end{frame}
+
 	\section{Антипаттерны архитектуры}
 
 	\begin{frame}
@@ -363,31 +517,6 @@
 					\item Тактика, описанная у Брукса, когда программирует один человек, остальные занимаются вспомогательными задачами
 				\end{itemize}
 			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\section{Design smells}
-
-	\begin{frame}
-		\frametitle{Design smells}
-		\begin{itemize}
-			\item \textbf{Missing abstraction} --- использование примитивных или слишком общих типов данных вместо своих классов
-			\item \textbf{Multifaceted abstraction} --- нарушение единственности ответственности
-			\item \textbf{Duplicate abstraction} --- две абстракции имеют одно предназначение
-			\item \textbf{Deficient encapsulation} --- слишком широкая видимость
-			\item \textbf{Unexploited encapsulation} --- явные проверки типов вместо полиморфизма
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Design smells (2)}
-		\begin{itemize}
-			\item \textbf{Broken modularization} --- неуместное разбиение на классы/пакеты
-			\item \textbf{Insufficient modularization} --- неуместное неразбиение на классы/пакеты
-			\item \textbf{Cyclically-dependent modularization} --- циклические зависимости
-			\item \textbf{Unfactored hierarchy} --- дупликация в иерархии
-			\item \textbf{Broken hierarchy} --- нарушение принципа подстановки и IS-A
-			\item \textbf{Cyclic hierarchy} --- зависимость от потомков
 		\end{itemize}
 	\end{frame}
 
