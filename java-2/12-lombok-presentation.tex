@@ -270,7 +270,7 @@ public class Foo {      // TypeElement
     public Foo () {}    // ExecuteableElement
 
     public void setA (  // ExecuteableElement
-        int newA        // TypeElement
+        int newA        // VariableElement
         ) {}
 }
 			\end{minted}
@@ -490,13 +490,15 @@ public class FactoryGroupedClasses {
 			\begin{minted}{java}
         jw.beginType(factoryClassName, "class", EnumSet.of(Modifier.PUBLIC));
         jw.emitEmptyLine();
-        jw.beginMethod(qualifiedClassName, "create", EnumSet.of(Modifier.PUBLIC), "String", "id");
+        jw.beginMethod(qualifiedClassName, "create", 
+                EnumSet.of(Modifier.PUBLIC), "String", "id");
         jw.beginControlFlow("if (id == null)");
         jw.emitStatement("throw new IllegalArgumentException(\"id is null!\")");
         jw.endControlFlow();
         for (FactoryAnnotatedClass item : itemsMap.values()) {
             jw.beginControlFlow("if (\"%s\".equals(id))", item.getId());
-            jw.emitStatement("return new %s()", item.getTypeElement().getQualifiedName().toString());
+            jw.emitStatement("return new %s()", 
+                    item.getTypeElement().getQualifiedName().toString());
             jw.endControlFlow();
             jw.emitEmptyLine();
         }
