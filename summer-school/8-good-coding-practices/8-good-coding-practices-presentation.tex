@@ -1,0 +1,250 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+
+\useoutertheme{infolines}
+
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\title{Хорошие практики кодирования}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+\date{13.07.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Абстрактные типы данных}
+		\begin{itemize}
+			\item \mintinline{csharp}|currentFont.size = 16| --- плохо
+			\item \mintinline{csharp}|currentFont.size = PointsToPixels(12)| --- чуть лучше
+			\item \mintinline{csharp}|currentFont.sizeInPixels = PointsToPixels(12)| --- ещё чуть лучше
+			\item \mintinline{csharp}|currentFont.SetSizeInPoints(sizeInPoints)| \newline
+					\mintinline{csharp}|currentFont.SetSizeInPixels(sizeInPixels)| --- совсем хорошо
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример плохой абстракции}
+		\begin{minted}{csharp}
+public class Program {
+   public void InitializeCommandStack() { ... }
+   public void PushCommand(Command command) { ... }
+   public Command PopCommand() { ... }
+   public void ShutdownCommandStack() { ... }
+   public void InitializeReportFormatting() { ... }
+   public void FormatReport(Report report) { ... }
+   public void PrintReport(Report report) { ... }
+   public void InitializeGlobalData() { ... }
+   public void ShutdownGlobalData() { ... }
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример хорошей абстракции}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public class Employee {
+   public Employee(
+           FullName name,
+           string address,
+           string workPhone,
+           string homePhone,
+           TaxId taxIdNumber,
+           JobClassification jobClass
+   ) { ... }
+
+   public FullName Name { get {...}; set {...} }
+   public string Address { get {...}; set {...} }
+   public string WorkPhone { get {...}; set {...} }
+   public string HomePhone { get {...}; set {...} }
+   public TaxId TaxIdNumber { get {...}; set {...} }
+   public JobClassification JobClassification { get {...}; set {...} }
+}
+			\end{minted}
+		\end{footnotesize}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Уровень абстракции (плохо)}
+		\begin{minted}{csharp}
+public class EmployeeRoster : MyList<Employee> {
+   public void AddEmployee(Employee employee) { ... }
+   public void RemoveEmployee(Employee employee) { ... }
+   public Employee NextItemInList() { ... }
+   public Employee FirstItem() { ... }
+   public Employee LastItem() { ... }
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Уровень абстракции (хорошо)}
+		\begin{minted}{csharp}
+public class EmployeeRoster {
+   public void AddEmployee(Employee employee) { ... }
+   public void RemoveEmployee(Employee employee) { ... }
+   public Employee NextEmployee() { ... }
+   public Employee FirstEmployee() { ... }
+   public Employee LastEmployee() { ... }
+}
+		\end{minted}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Общие рекомендации}
+		\begin{itemize}
+			\item Про каждый класс знайте, реализацией какой абстракции он является
+			\item Учитывайте противоположные методы (Add/Remove, On/Off, ...)
+			\item Соблюдайте принцип единственности ответственности
+			\begin{itemize}
+				\item Может потребоваться разделить класс на несколько разных классов просто потому, что методы по смыслу слабо связаны
+			\end{itemize}
+			\item По возможности делайте некорректные состояния невыразимыми в системе типов
+			\begin{itemize}
+				\item Комментарии в духе ``не пользуйтесь объектом, не вызвав  init()'' можно заменить конструктором
+			\end{itemize}
+			\item При рефакторинге надо следить, чтобы интерфейсы не деградировали
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё рекомендации}
+		\begin{itemize}
+			\item Класс не должен ничего знать о своих клиентах
+			\item Лёгкость чтения кода важнее, чем удобство его написания
+			\item Опасайтесь семантических нарушений инкапсуляции
+			\begin{itemize}
+				\item ``Не будем вызывать ConnectToDB(), потому что GetRow() сам его вызовет, если соединение не установлено'' --- это программирование \textit{сквозь} интерфейс
+			\end{itemize}
+			\item Protected- и internal- полей тоже не бывает
+			\begin{itemize}
+				\item На самом деле, у класса два интерфейса --- для внешних объектов и для потомков (может быть отдельно третий, для классов внутри сборки, но это может быть плохо)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Наследование}
+		\begin{itemize}
+			\item Включение лучше
+			\begin{itemize}
+				\item Переконфигурируемо во время выполнения
+				\item Более гибко
+				\item Иногда более естественно
+			\end{itemize}
+			\item Наследование --- отношение ``является'', закрытого наследования не бывает
+			\begin{itemize}
+				\item Наследование --- это наследование интерфейса (полиморфизм подтипов, subtyping)
+			\end{itemize}
+			\item Хороший тон --- явно запрещать наследование (sealed-классы)
+			\item Не вводите новых методов с такими же именами, как у родителя
+			\item Code smells:
+			\begin{itemize}
+				\item Базовый класс, у которого только один потомок
+				\item Пустые переопределения
+				\item Очень много уровней в иерархии наследования
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{footnotesize}
+			\begin{columns}
+				\begin{column}{0.35\textwidth}
+					\begin{minted}{csharp}
+class Operation {
+   private char sign = '+';
+   private int left;
+   private int right;
+   public int Eval()
+   {
+       switch (sign) {
+           case '+': return left + right;
+       }
+       throw new Exception();
+   }
+}
+					\end{minted}
+				\end{column}
+				\begin{column}{0.1\textwidth}
+					vs
+				\end{column}
+				\begin{column}{0.45\textwidth}
+					\begin{minted}{csharp}
+abstract class Operation {
+   private int left;
+   private int right;
+   protected int Left { get { return left; } }
+   protected int Right { get { return right; } }
+   abstract public int Eval();
+}
+
+class Plus : Operation {
+   override public int Eval() { 
+        return this.Left + this.Right; 
+   }
+}
+					\end{minted}
+				\end{column}
+			\end{columns}
+		\end{footnotesize}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Конструкторы}
+		\begin{itemize}
+			\item Инициализируйте все поля, которые надо инициализировать
+			\begin{itemize}
+				\item После конструктора должны выполняться все инварианты
+			\end{itemize}
+			\item НЕ вызывайте виртуальные методы из конструктора
+			\item private-конструкторы для объектов, которые не должны быть созданы (или одиночек)
+			\item Deep copy предпочтительнее Shallow copy
+			\begin{itemize}
+				\item Хотя второе может быть эффективнее
+			\end{itemize}
+			\item Не создавайте ненужных объектов, не храните ссылки, если они не нужны
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{О дизайне классов и интерфейсов}
+		\begin{itemize}
+			\item Минимизируйте видимость классов и методов
+			\item Минимизируйте мутабельность
+			\begin{itemize}
+				\item Лучше разделять методы на те, которые возвращают состояние и те, которые его меняют
+			\end{itemize}
+			\item Не бойтесь принимать и возвращать функции
+			\item Предпочитайте интерфейсы абстрактным классам
+			\item Не используйте ``тэги типов''
+			\item Не используйте без нужды вложенные классы
+			\item Проверяйте параметры public-методов на валидность
+			\begin{itemize}
+				\item Помните о null-ах
+			\end{itemize}
+			\item Fail fast
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Общепрограммистские рекомендации}
+		\begin{itemize}
+			\item Минимизируйте области видимости
+			\item Не используйте числа с плавающей точкой там, где нужны точные значения
+			\begin{itemize}
+				\item Сравнивать числа с плавающей точкой через == нельзя
+			\end{itemize}
+			\item Знайте и используйте библиотеки
+			\item Используйте исключения только в исключительных ситуациях
+			\item Не игнорируйте исключения
+		\end{itemize}
+	\end{frame}
+
+\end{document}
