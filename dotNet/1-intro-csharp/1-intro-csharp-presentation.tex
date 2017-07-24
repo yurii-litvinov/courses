@@ -314,7 +314,7 @@ private static void Main(string[] args)
 \end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Кортежи и декомпозиция}
+		\frametitle{Кортежи и деконструкция}
 		\begin{minted}{csharp}
 static (int prev, int cur) Fibonacci(int n)
 {
@@ -373,6 +373,34 @@ class Circle
 }
 			\end{minted}
 		\end{small}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Статические конструкторы}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public class Bus
+{
+    static Bus()
+    {
+        System.Console.WriteLine("The static constructor invoked.");
+    }
+
+    public static void Drive()
+    {
+        System.Console.WriteLine("The Drive method invoked.");
+    }
+}
+
+class TestBus
+{
+    static void Main()
+    {
+        Bus.Drive();
+    }
+}
+			\end{minted}
+		\end{footnotesize}
 \end{frame}
 
 	\begin{frame}[fragile]
@@ -653,7 +681,7 @@ circle3.Draw();
 
 	\begin{frame}[fragile]
 		\frametitle{Вложенные классы}
-		\begin{footnotesize}
+		\begin{scriptsize}
 			\begin{minted}{csharp}
 class Circle
 {
@@ -676,7 +704,7 @@ class Circle
         Console.WriteLine($"({pos.x}, {pos.y}), radius {r}");
 }
 			\end{minted}
-		\end{footnotesize}
+		\end{scriptsize}
 \end{frame}
 
 	\begin{frame}[fragile]
@@ -694,6 +722,31 @@ if (shape is Circle)
     Circle circle = (Circle)shape;
 }
 		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Преобразование с сопоставлением шаблонов}
+		\begin{small}
+			\begin{minted}{csharp}
+switch (shape)
+{
+    case Circle c:
+        WriteLine($"circle with radius {c.Radius}");
+        break;
+    case Rectangle s when (s.Length == s.Height):
+        WriteLine($"{s.Length} x {s.Height} square");
+        break;
+    case Rectangle r:
+        WriteLine($"{r.Length} x {r.Height} rectangle");
+        break;
+    default:
+        WriteLine("<unknown shape>");
+        break;
+    case null:
+        throw new ArgumentNullException(nameof(shape));
+}
+			\end{minted}
+		\end{small}
 \end{frame}
 
 \end{document}
