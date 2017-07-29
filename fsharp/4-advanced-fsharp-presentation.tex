@@ -393,7 +393,7 @@ let factorial x =
 	\begin{frame}[fragile]
 		\frametitle{После декомпиляции в C\#}
 		\begin{alertblock}{C\#}
-			\begin{minted}{fsharp}
+			\begin{minted}{csharp}
 public static int tailRecursiveFactorial(int x, int acc)
 {
     while (true)
@@ -431,7 +431,7 @@ let map f list =
 
 	\begin{frame}[fragile]
 		\frametitle{Continuation Passing Style}
-		\frametitle{Аккумулятор --- функция}
+		\framesubtitle{Аккумулятор --- функция}
 		\begin{exampleblock}{F\#}
 			\begin{minted}{fsharp}
 let printListRev list =
