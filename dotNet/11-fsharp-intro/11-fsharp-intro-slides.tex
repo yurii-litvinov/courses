@@ -182,6 +182,19 @@ let site1, site2, site3 = sites
 \end{frame}
 
 	\begin{frame}[fragile]
+		\frametitle{Value Tuples}
+		\begin{minted}{fsharp}
+let origin = struct (0,0)
+
+let displace 
+        ((x, y): struct (int * int))
+        ((dx, dy): struct (int * int)) 
+    =
+    struct (x + dx, y + dy)
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
 		\frametitle{Лямбды}
 		\begin{minted}{fsharp}
 let primes = [2; 3; 5; 7]

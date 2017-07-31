@@ -1,0 +1,837 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\title{Типы и генерики в F\#}
+\author{Юрий Литвинов}
+\date{12}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Шаблонные типы}
+	
+	\begin{frame}[fragile]
+		\frametitle{Шаблонные типы}
+		\begin{minted}{fsharp}
+type 'a list = ...
+type list<'a> = ...
+		\end{minted}
+
+		\begin{minted}{fsharp}
+List.map : ('a -> 'b) -> 'a list -> 'b list
+let map<'a,'b> : ('a -> 'b) -> 'a list -> 'b list = 
+    List.map
+
+let rec map (f : 'a -> 'b) (l : 'a list) =
+    match l with
+    | h :: t -> (f h) :: (map f t)
+    | [] -> []
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Автоматическое обобщение}
+		\begin{minted}{fsharp}
+let getFirst (a, b, c) = a
+let mapPair f g (x, y) = (f x, g y)
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val getFirst: 'a * 'b * 'c -> 'a
+val mapPair : ('a -> 'b) -> ('c -> 'd) 
+    -> ('a * 'c) -> ('b * 'd)
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+	
+	\section{Обобщение кода}
+
+	\begin{frame}[fragile]
+		\frametitle{Алгоритм Евклида, не генерик}
+		\begin{minted}{fsharp}
+let rec hcf a b =
+    if a = 0 then b
+    elif a < b then hcf a (b - a)
+    else hcf (a - b) b
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val hcf : int -> int -> int
+
+> hcf 18 12;;
+val it : int = 6
+
+> hcf 33 24;;
+val it : int = 3
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Алгоритм Евклида, генерик}
+		\begin{minted}{fsharp}
+let hcfGeneric (zero, sub, lessThan) =
+    let rec hcf a b =
+        if a = zero then b
+        elif lessThan a b then hcf a (sub b a)
+        else hcf (sub a b) b
+    hcf    
+    
+let hcfInt = hcfGeneric (0, (-), (<))
+let hcfInt64 = hcfGeneric (0L, (-), (<))
+let hcfBigInt = hcfGeneric (0I, (-), (<))
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val hcfGeneric: 'a * ('a -> 'a -> 'a) * ('a -> 'a -> bool) 
+    -> ('a -> 'a -> 'a)
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Словари операций}
+		\begin{minted}{fsharp}
+type Numeric<'a> =
+    { Zero: 'a;
+      Subtract: ('a -> 'a -> 'a);
+      LessThan: ('a -> 'a -> bool); }
+
+let hcfGeneric (ops : Numeric<'a>) =
+    let rec hcf a b =
+        if a = ops.Zero then b
+        elif ops.LessThan a b then hcf a 
+            (ops.Subtract b a)
+        else hcf (ops.Subtract a b) b
+    hcf
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Примеры использования}
+		\begin{minted}{fsharp}
+let intOps = { Zero = 0; 
+    Subtract = (-); 
+    LessThan = (<) }
+    
+let bigintOps = { Zero = 0I; 
+    Subtract = (-); 
+    LessThan = (<) }
+
+let hcfInt = hcfGeneric intOps
+let hcfBigInt = hcfGeneric bigintOps
+		\end{minted}
+\end{frame}
+
+	\section{Наследование и генерики}
+	
+	\begin{frame}[fragile]
+		\frametitle{Повышающий каст}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> let xobj = (1 :> obj);;
+val xobj : obj = 1
+
+> let sobj = ("abc" :> obj);;
+val sobj : obj = "abc"
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Понижающий каст}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> let boxedObject = box "abc";;
+val boxedObject : obj
+
+> let downcastString = (boxedObject :?> string);;
+val downcastString : string = "abc"
+
+> let xobj = box 1;;
+val xobj : obj = 1
+
+> let x = (xobj :?> string);;
+error: InvalidCastException raised at or near stdin:(2,0)
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Каст и сопоставление шаблонов}
+		\begin{minted}{fsharp}
+let checkObject (x: obj) =
+    match x with
+    | :? string -> printfn "The object is a string"
+    | :? int -> printfn "The object is an integer"
+    | _ -> printfn "The input is something else"
+
+let reportObject (x: obj) =
+    match x with
+    | :? string as s -> 
+        printfn "The input is the string '%s'" s
+    | :? int as d -> 
+        printfn "The input is the integer '%d'" d
+    | _ -> printfn "the input is something else"
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Гибкие ограничения}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> open System.Windows.Forms
+> let setTextOfControl (c : #Control) (s:string) = 
+    c.Text <- s;;
+val setTextOfControl: #Control -> string -> unit
+
+> open System.Windows.Forms;;
+> let setTextOfControl (c : 'a when 'a :> Control) 
+    (s:string) = c.Text <- s;;
+val setTextOfControl: #Control -> string -> unit
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Гибкие ограничения: пример}
+		\begin{minted}{fsharp}
+module Seq =
+...
+val append : #seq<'a> -> #seq<'a> -> seq<'a>
+val concat : #seq<#seq<'a>> -> seq<'a>
+...
+
+Seq.append [1; 2; 3] [4; 5; 6]
+Seq.append [| 1; 2; 3 |] [4; 5; 6]
+Seq.append (seq { for x in 1 .. 3 -> x }) [4; 5; 6]
+Seq.append [| 1; 2; 3 |] [| 4; 5; 6 |]
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Повышающий каст: проблема}
+		\begin{minted}{fsharp}
+open System
+open System.IO
+let textReader =
+    if DateTime.Today.DayOfWeek = DayOfWeek.Monday
+    then Console.In
+    else File.OpenText("input.txt")
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+else File.OpenText("input.txt")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+error: FS0001: This expression has type StreamReader 
+but is here used with type TextReader 
+stopped due to error
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Повышающий каст: решение}
+		\begin{minted}{fsharp}
+let textReader =
+    if DateTime.Today.DayOfWeek = DayOfWeek.Monday
+    then Console.In
+    else (File.OpenText("input.txt") :> TextReader)
+		\end{minted}
+\end{frame}
+
+	\section{Отладка типов}
+
+	\begin{frame}[fragile]
+		\frametitle{Проблемы в выводе типов, методы и свойства}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+> let transformData inp =
+    inp |> Seq.map (fun (x, y) -> (x, y.Length));;
+
+inp |> Seq.map (fun (x, y) -> (x, y.Length))
+-----------------------------------------^^^^^^^^^
+stdin(11,36): error: Lookup on object of indeterminate 
+type. A type annotation may be needed prior to this 
+program point to constrain the type of the object. 
+This may allow the lookup to be resolved.
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Решение}
+		\begin{minted}{fsharp}
+let transformData inp =
+    inp |> Seq.map (fun (x, y:string) -> (x, y.Length))
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Уменьшение общности}
+		\begin{minted}{fsharp}
+let printSecondElements (inp : #seq<'a * int>) =
+    inp
+    |> Seq.iter (fun (x, y) -> printfn "y = %d" x)
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+|> Seq.iter (fun (x, y) -> printfn "y = %d" x)
+----------------------------------------^^^^^^^^^
+stdin(21,38): warning: FS0064: This construct causes 
+code to be less generic than indicated by the type 
+annotations. The type variable 'a has been 
+constrained to the type 'int'.
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Уменьшение общности, отладка}
+		\begin{minted}{fsharp}
+type PingPong = Ping | Pong
+
+let printSecondElements (inp : #seq<PingPong * int>) =
+    inp |> Seq.iter (fun (x, y) -> printfn "y = %d" x)
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+|> Seq.iter (fun (x,y) -> printfn "y = %d" x)
+---------------------------------------------------^
+stdin(27,47): error: FS0001: The type 'PingPong' is not 
+compatible with any of the types byte, int16, int32, 
+int64, sbyte, uint16, uint32, uint64, nativeint, 
+unativeint, arising from the use of a printf-style 
+format string
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Value Restriction}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+> let empties = Array.create 100 [];;
+------^^^^^^^^
+error: FS0030: Value restriction. Type inference 
+has inferred the signature 
+val empties : '_a list []
+but its definition is not a simple data constant. 
+Either define 'empties' as a simple data expression, 
+make it a function, or add a type constraint 
+to instantiate the type parameters.
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Корректные определения}
+		\begin{minted}{fsharp}
+let emptyList = []
+let initialLists = ([], [2])
+let listOfEmptyLists = [[]; []]
+let makeArray () = Array.create 100 []
+		\end{minted}
+		
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val emptyList : 'a list
+val initialLists : ('a list * int list)
+val listOfEmptyLists : 'a list list
+val makeArray : unit -> 'a list []
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Способы борьбы}
+		\begin{minted}{fsharp}
+let empties = Array.create 100 []
+let empties : int list [] = Array.create 100 []
+
+
+let mapFirst = List.map fst
+('a * 'b) list -> 'a list
+
+let mapFirst inp = List.map fst inp
+let printFstElements = List.map fst
+    >> List.iter (printf "res = %d")
+
+let printFstElements inp = 
+    inp
+    |> List.map fst
+    |> List.iter (printf "res = %d")
+		\end{minted}
+\end{frame}
+
+	\section{Point-free}
+	
+	\begin{frame}[fragile]
+		\frametitle{Point-free}
+		\begin{minted}{fsharp}
+let fstGt0 xs = List.filter (fun (a, b) -> a > 0) xs
+
+let fstGt0'1 : (int * int) list -> (int * int) list = 
+    List.filter (fun (a, b) -> a > 0)
+
+let fstGt0'2 : (int * int) list -> (int * int) list = 
+    List.filter (fun x -> fst x > 0)
+
+let fstGt0'3 : (int * int) list -> (int * int) list = 
+    List.filter (fun x -> ((<) 0 << fst) x)
+
+let fstGt0'4 : (int * int) list -> (int * int) list = 
+    List.filter ((<=) 0 << fst)
+		\end{minted}
+\end{frame}
+
+	\section{Арифметические операторы}
+
+	\begin{frame}[fragile]
+		\frametitle{Арифметические операторы}
+		\begin{exampleblock}{F\#}
+			\begin{minted}{fsharp}
+let twice x = (x + x)
+let threeTimes x = (x + x + x)
+let sixTimesInt64 (x:int64) = threeTimes x + threeTimes x
+			\end{minted}
+		\end{exampleblock}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val twice : x:int -> int
+val threeTimes : x:int64 -> int64
+val sixTimesInt64 : x:int64 -> int64
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\section{ООП}
+
+	\begin{frame}
+		\frametitle{``За'' и ``против'' ООП в функциональных языках}
+		За:
+		\begin{itemize}
+			\item Портирование существующего кода
+			\item Интеграция с другими языками
+			\item Использование в основном для ООП с возможностью писать красивый код
+		\end{itemize}
+		
+		Против:
+		\begin{itemize}
+			\item Не очень дружит с системой вывода типов
+			\item Нет встроенной поддержки печати, сравнения и т.д.
+		\end{itemize}
+	\end{frame}
+
+	\section{Методы}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы у типов}
+		\begin{minted}{fsharp}
+type Vector = {x : float; y : float} with
+    member v.Length = sqrt(v.x * v.x + v.y * v.y)
+
+let vector = {x = 1.0; y = 1.0}
+let length = vector.Length
+
+type Vector with
+    member v.Scale k = {x = v.x * k; y = v.y * k}
+
+let scaled = vector.Scale 2.0
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Статические методы}
+		\begin{exampleblock}{F\#}
+			\begin{minted}{fsharp}
+type Vector = {x : float; y : float} with
+    static member Create x y = {x = x; y = y}
+
+let vector = Vector.Create 1.0 1.0
+
+type System.Int32 with
+    static member IsEven x = x % 2 = 0
+
+printfn "%b" <| System.Int32.IsEven 10
+			\end{minted}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Каррирование против кортежей}
+		\begin{minted}{fsharp}
+type Vector with
+    member v.TupledTransform (r, s) = transform v r s
+    member v.CurriedTransform r s = transform v r s
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (45.0, 2.0)
+printfn "%A" <| v.CurriedTransform 45.0 2.0
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Кортежи: именованные аргументы}
+		\begin{minted}{fsharp}
+type Vector with
+    member v.TupledTransform (r, s) = 
+       transform v r s
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (r = 45.0, s = 2.0)
+printfn "%A" <| v.TupledTransform (s = 2.0, r = 45.0)
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Кортежи: опциональные параметры}
+		\begin{minted}{fsharp}
+type Vector with
+    member v.TupledTransform (r, ?s) = 
+        match s with
+        | Some scale -> transform v r scale
+        | None -> transform v r 1.0
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (45.0, 2.0)
+printfn "%A" <| v.TupledTransform (90.0)
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Кортежи: перегрузка}
+		\begin{minted}{fsharp}
+type Vector with
+    member v.TupledTransform (r, s) = 
+       transform v r s
+    member v.TupledTransform r = 
+       transform v r 1.0
+
+let v = Vector.Create 1.0 1.0
+printfn "%A" <| v.TupledTransform (45.0, 2.0)
+printfn "%A" <| v.TupledTransform (90.0)
+		\end{minted}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Кортежи против каррирования}
+		За:
+		\begin{itemize}
+			\item Можно вызывать из .NET-кода
+			\item Опциональные и именованные аргументы, перегрузки
+		\end{itemize}
+		Против:
+		\begin{itemize}
+			\item Не поддерживают частичное применение
+			\item Не дружат с функциями высших порядков
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы против свободных функций}
+		\begin{minted}{fsharp}
+type Vector = {x : float; y : float} with
+    member v.Length = v.x * v.x + v.y * v.y |> sqrt
+   
+let length v = v.x * v.x + v.y * v.y |> sqrt
+
+let compareWrong v1 v2 =
+    v1.Length < v2.Length
+
+let compareRight v1 v2 =
+    length v1 < length v2
+		\end{minted}
+\end{frame}
+
+	\section{Классы}
+ 
+	\begin{frame}[fragile]
+		\frametitle{Классы, основной конструктор}
+		\begin{minted}{fsharp}
+type Vector(x, y) = 
+    member v.Length = x * x + y * y |> sqrt
+
+printfn "%A" <| Vector (1.0, 1.0)
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+FSI_0003+Vector
+type Vector =
+  class
+    new : x:float * y:float -> Vector
+    member Length : float
+  end
+val it : unit = ()
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы и свойства}
+		\begin{minted}{fsharp}
+type Vector(x : float, y : float) = 
+    member v.Scale s = Vector(x * s, y * s)
+    member v.X = x
+    member v.Y = y
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+type Vector =
+  class
+    new : x:float * y:float -> Vector
+    member Scale : s:float -> Vector
+    member X : float
+    member Y : float
+  end
+			\end{minted}
+		\end{alertblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Private-поля и private-методы}
+		\begin{minted}{fsharp}
+type Vector(x : float, y : float) = 
+    let mutable mX = x
+    let mutable mY = y
+    let lengthSqr = mX * mX + mY * mY
+    member v.Length = sqrt lengthSqr
+    member v.X = mX
+    member v.Y = mY
+    member v.SetX x = mX <- x
+    member v.SetY y = mY <- y
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Мутабельные свойства}
+		\begin{minted}{fsharp}
+type Vector(x, y) = 
+    let mutable mX = x
+    let mutable mY = y
+    member v.X 
+        with get () = mX
+        and set x = mX <- x
+    member v.Y
+        with get () = mY
+        and set y = mY <- y
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Автоматические свойства}
+		\begin{minted}{fsharp}
+type Vector(x, y) = 
+    member val X = x with get,set
+    member val Y = y with get,set
+
+let v = Vector(1.0, 1.0)
+v.X <- 2.0
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Вернёмся к конструкторам}
+		\framesubtitle{Дополнительное поведение}
+		\begin{minted}{fsharp}
+type Vector(x : float, y : float) = 
+    let length () = x * x + y * y |> sqrt
+    do 
+        printfn "Vector (%f, %f), length = %f" 
+            x y <| length ()
+        printfn "Have a nice day"
+    let mutable x = x
+    let mutable y = y
+
+let v = Vector(1.0, 1.0)
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Много конструкторов}
+		\begin{minted}{fsharp}
+type Vector(x : float, y : float) = 
+    member this.X = x
+    member this.Y = y
+    new () = 
+        printfn "Constructor with no parameters"
+        Vector(0.0, 0.0)
+
+let v = Vector(2.0, 2.0)
+let v' = Vector()
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Модификаторы видимости}
+		\begin{minted}{fsharp}
+type Example() = 
+    let mutable privateValue = 42
+
+    member this.PublicValue = 1
+    member private this.PrivateValue = 2
+    member internal this.InternalValue = 3
+
+    member this.PrivateSetProperty 
+        with get () = 
+            privateValue 
+        and private set(value) = 
+            privateValue <- value
+		\end{minted}
+\end{frame}
+
+	\section{Наследование}
+
+	\begin{frame}[fragile]
+		\frametitle{Наследование}
+		\begin{minted}{fsharp}
+type Shape() =
+    class
+    end
+
+type Circle(r) =
+    inherit Shape()
+    member this.R = r
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Абстрактные классы}
+		\begin{minted}{fsharp}
+[<AbstractClass>]
+type Shape() =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+
+type Circle(r) =
+    inherit Shape()
+    member this.R = r
+    override this.Draw () = 
+        printfn "Drawing circle"
+    override this.Name = "Circle"
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Реализация по умолчанию}
+		\begin{minted}{fsharp}
+type Shape() =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+    default this.Draw () =
+        printfn "Drawing shape"
+    default this.Name =
+        "Shape"
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Интерфейсы}
+		\begin{minted}{fsharp}
+type Shape =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+
+type Circle(r) =
+    member this.R = r
+    interface Shape with
+        member this.Draw () = 
+            printfn "Drawing circle"
+        member this.Name = "Circle"
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Явное приведение типов}
+		\begin{minted}{fsharp}
+let c = Circle 10
+c.Draw ()  // Ошибка
+(c :> Shape).Draw ()  // Ок
+
+let draw (s : Shape) = s.Draw ()
+
+draw c  // Ок
+		\end{minted}
+\end{frame}
+
+	\section{Объектные выражения}
+
+	\begin{frame}[fragile]
+		\frametitle{Объектные выражения}
+		\framesubtitle{Реализация интерфейсов на лету}
+		\begin{minted}{fsharp}
+type Shape =
+    abstract member Draw : unit -> unit
+    abstract member Name : string
+
+let rect w h = 
+    { new Shape with
+          member this.Draw () = 
+              printfn "Drawing rect, w = %d, h = %d" w h
+          member this.Name = "Rectange"
+    }
+
+(rect 10 10).Draw ()
+		\end{minted}
+\end{frame}
+
+	\section{Структурирование кода}
+
+	\begin{frame}[fragile]
+		\frametitle{Модули}
+		\begin{minted}{fsharp}
+type Vector =
+    { x : float; y : float }
+
+module VectorOps =
+    let length v = sqrt(v.x * v.x + v.y * v.y)
+    let scale k v = { x = k * v.x; y = k * v.y }
+    let shiftX x v = { v with x = v.x + x }
+    let shiftY y v = { v with y = v.y + y }
+    let shiftXY (x, y) v = { x = v.x + x; y = v.y + y }
+    let zero = { x = 0.0; y = 0.0 }
+    let constX dx = { x = dx; y = 0.0 }
+    let constY dy = { x = 0.0; y = dy }
+		\end{minted}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пространства имён}
+		\begin{minted}{fsharp}
+namespace Vectors
+
+type Vector =
+    { x : float; y : float }
+
+module VectorOps =
+    let length v = sqrt(v.x * v.x + v.y * v.y)
+		\end{minted}
+\end{frame}
+
+
+
+\end{document}
