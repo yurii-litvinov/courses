@@ -1,0 +1,41 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{F\#, практика}
+\author{Юрий Литвинов}
+\date{11a}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задачи}
+		\begin{enumerate}
+			\item Посчитать факториал
+			\item Посчитать числа Фибоначчи (за линейное время)
+			\item Проверить, что все элемента списка различны
+			\item Реализовать функцию, возвращающую все элементы двоичного дерева, удовлетворяющие переданному как параметр условию
+			\item Описать тип <<полином>> и реализовать функцию, возводящую полином в заданную степень
+			\item Описать бесконечную последовательность \newline
+				1, 2, 2, 3, 3, 3, 4, 4, 4, 4, ...
+		\end{enumerate}
+	\end{frame}
+
+\end{document}
