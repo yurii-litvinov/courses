@@ -1,0 +1,360 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Исключения и модульное тестирование}
+\author{Юрий Литвинов}
+\date{3}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Исключения}
+
+	\begin{frame}[fragile]
+		\frametitle{Бросание исключений}
+		\begin{minted}{csharp}
+if (t == null)
+{
+    throw new NullReferenceException();
+}
+
+throw new NullReferenceException("Hello!");
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Обработка исключений}
+		\begin{minted}{csharp}
+try {
+    // Код, который может бросать исключения
+} catch (Type1 id1) {
+    // Обработка исключений типа Type1
+} catch (Type2 id2) {
+    // Обработка исключений типа Type2
+} catch (Type3 id3) {
+    // Обработка исключений типа Type3
+} finally {
+    // Код, выполняющийся в любом случае
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Иерархия классов-исключений}
+		\begin{tiny}
+			\begin{forest}
+				for tree={rectangle,draw,l sep=1cm,s sep=3mm,edge=open triangle 60-}
+				[Object
+					[Exception
+						[SystemException
+							[IndexOutOfRangeException]
+							[NullReferenceException]
+							[StackOverflowException]
+							[ArgumentException
+								[ArgumentNullException]
+								[ArgumentOutOfRangeException]
+								[\dots]
+							]
+						]
+						[ApplicationException]
+					]
+				]
+			\end{forest}
+		\end{tiny}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Свойства класса Exception}
+		\begin{itemize}
+			\item Data
+			\item HelpLink
+			\item InnerException
+			\item Message
+			\item Source
+			\item StackTrace
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример (плохой)}
+		\begin{minted}{csharp}
+try
+{
+    throw new Exception("Something is very wrong");
+}
+catch (Exception e)
+{
+    Console.WriteLine("Caught Exception");
+    Console.WriteLine("e.Message: " + e.Message);
+    Console.WriteLine("e.ToString(): " + e.ToString());
+    Console.WriteLine("e.StackTrace:\n" + e.StackTrace);
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Перебрасывание исключений}
+		\begin{minted}{csharp}
+try
+{
+    throw new Exception("Something is wrong");
+}
+catch (Exception e)
+{
+    Console.WriteLine("Caught Exception");
+    throw;
+}
+		\end{minted}
+
+		Или
+		\begin{minted}{csharp}
+throw new Exception("Outer exception", e);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Свои классы-исключения}
+		\begin{minted}{csharp}
+public class MyException : ApplicationException
+{
+    public MyException() 
+    {
+    }
+
+    public MyException(string message)
+        : base(message)
+    {
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Идеологически правильное объявление исключения}
+		\begin{minted}{csharp}
+[Serializable]
+public class MyException : Exception
+{
+    public MyException() { }
+    public MyException(string message) : base(message) { }
+    public MyException(string message, Exception inner) 
+        : base(message, inner) { }
+    protected MyException(
+        System.Runtime.Serialization.SerializationInfo info,
+        System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Исключения, best practices}
+		\begin{itemize}
+			\item Не бросать исключения без нужды
+			\begin{itemize}
+				\item В нормальном режиме работы исключения бросаться не должны вообще
+			\end{itemize}
+			\item Свои исключения наследовать от System.Exception
+			\item Документировать все свои исключения, бросаемые методом
+			\item Не ловить Exception, SystemException
+			\begin{itemize}
+				\item Исключения, указывающие на ошибку в коде (например, NullReferenceException) уж точно не ловить
+			\end{itemize}
+			\item По возможности кидать библиотечные исключения или их наследников:
+			\begin{itemize}
+				\item InvalidOperationException
+				\item ArgumentException
+			\end{itemize}
+			\item Имя класса должно заканчиваться на ``Exception''
+			\item Код должен быть безопасным с точки зрения исключений
+			\begin{itemize}
+				\item Не забывать про finally или using
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Модульное тестирование}
+
+	\begin{frame}
+		\frametitle{Модульное тестирование}
+		\begin{itemize}
+			\item Помогает искать ошибки
+			\begin{itemize}
+				\item Особо эффективно, если налажен процесс Continuous Integration
+			\end{itemize}
+			\item Облегчает изменение программы, рефакторинг
+			\begin{itemize}
+				\item Но несколько замедляет процесс, тесты тоже требуют сопровождения
+			\end{itemize}
+			\item Тесты --- документация к коду
+			\item Тесты помогают улучшить архитектуру, спагетти-код не оттестировать
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Популярные библиотеки}
+		\begin{itemize}
+			\item NUnit
+			\begin{itemize}
+				\item Отдельный пакет
+				\item Интегрируется в IDE расширениями
+			\end{itemize}
+			\item Microsoft Unit Test Framework
+			\begin{itemize}
+				\item Работает прямо из коробки в Visual Studio, но требует некоторой возни, если нет
+			\end{itemize}
+			\item \textcolor{red}{XUnit, MbUnit?}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Best practices}
+		\begin{itemize}
+			\item Независимость тестов
+			\begin{itemize}
+				\item Желательно, чтобы поломка одного куска функциональности ломала один тест
+			\end{itemize}
+			\item Тесты должны работать быстро
+			\begin{itemize}
+				\item И запускаться после каждой сборки
+				\begin{itemize}
+					\item Continuous Integration!
+				\end{itemize}
+			\end{itemize}
+			\item Тестов должно быть много
+			\begin{itemize}
+				\item Следить за Code coverage, который многие инструменты умеют считать по тестовому прогону
+			\end{itemize}
+			\item Каждый тест должен проверять конкретный тестовый сценарий
+			\begin{itemize}
+				\item Никаких try-catch внутри теста
+				\item Атрибут ExpectedException для исключений
+				\begin{itemize}
+					\item \mintinline{csharp}|[ExpectedException(typeof(NullReferenceException))]|
+				\end{itemize}
+			\end{itemize}
+			\item Test-driven development
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Mock-объекты}
+		\begin{itemize}
+			\item Объекты-заглушки, симулирующие поведение реальных объектов и контролирующие обращения к своим методам
+			\begin{itemize}
+				\item Как правило, такие объекты создаются с помощью библиотек
+			\end{itemize}
+			\item Используются, когда реальные объекты использовать
+			\begin{itemize}
+				\item Слишком долго
+				\item Слишком опасно
+				\item Слишком трудно
+				\item Для добавления детерминизма в тестовый сценарий
+				\item Пока реального объекта ещё нет
+				\item Для изоляции тестируемого объекта
+			\end{itemize}
+			\item Для mock-объекта требуется, чтобы был интерфейс, который он мог бы реализовать, и какой-то механизм внедрения объекта
+			\begin{itemize}
+				\item Паттерны ``Dependency Injection'', ``Стратегия''
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Популярные библиотеки}
+		\begin{itemize}
+			\item NSubstitute
+			\item Moq
+			\item Rhino Mocks
+			\item ...
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{NSubstitute}
+		Легковесная библиотека, очень удобно описывать поведение объектов:
+		\vspace{3mm}
+		\begin{minted}{csharp}
+var stackStub = Substitute.For<IStack>();
+stackStub.IsEmpty().Returns(false);
+stackStub.Pop().Returns(1);
+
+Assert.AreEqual(1, stackStub.Pop());
+
+stackStub.Received().Pop();
+stackStub.DidNotReceive().Push(Arg.Any<int>());
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Moq}
+		Активно использует лямбда-функции и LINQ:
+		\vspace{3mm}
+		\begin{minted}{csharp}
+var stackMock = new Mock<IStack>();
+stackMock.Setup(st => st.IsEmpty()).Returns(false);
+stackMock.Setup(st => st.Pop()).Returns(1);
+
+var stack = stackMock.Object;
+stack.Push(1);
+stack.Pop();
+
+stackMock.Verify(st => st.IsEmpty(), Times.Never);
+stackMock.Verify(st => st.Pop(), Times.Exactly(1));
+stackMock.Verify(st => st.Push(It.IsAny<int>()), Times.Exactly(1));
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Moq (2)}
+		Или так (LINQ-магия):
+		\vspace{3mm}
+		\begin{minted}{csharp}
+var stack = Mock.Of<IStack>(
+        st => st.IsEmpty() == false && st.Pop() == 1);
+
+stack.Push(1);
+stack.Pop();
+
+Mock.Get(stack).Verify(st => st.Push(It.IsAny<int>()), Times.Exactly(1));
+Mock.Get(stack).Verify(st => st.Pop(), Times.Exactly(1));
+Mock.Get(stack).Verify(st => st.IsEmpty(), Times.Never);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Rhino Mocks}
+		\textcolor{red}{Пару слов про эту библиотеку}
+		\vspace{3mm}
+		\begin{minted}{csharp}
+var stack = MockRepository.Mock<IStack>();
+stack.Expect(st => st.Push(1));
+stack.Expect(st => st.Pop()).Returns(() => 1);
+
+stack.Push(1);
+Assert.AreEqual(1, stack.Pop());
+
+stack.VerifyAllExpectations();
+		\end{minted}
+	\end{frame}
+
+\end{document}
