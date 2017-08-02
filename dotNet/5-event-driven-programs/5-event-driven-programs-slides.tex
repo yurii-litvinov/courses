@@ -1,0 +1,583 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Событийно-ориентированное программирование}
+\subtitle{Делегаты, события, лямбда-функции}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{5}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Наблюдатель''}
+		\todo{Картинка}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Делегаты}
+		\begin{minted}{csharp}
+public delegate void Feedback(Int32 value);
+		\end{minted}
+		\begin{itemize}
+			\item Типобезопасный callback
+			\item \mintinline{csharp}|delegate| объявляет тип функции-делегата
+			\begin{itemize}
+				\item На самом деле, автоматически генерируемый класс
+				\item Наследник System.MulticastDelegate, который в свою очередь наследник System.Delegate
+				\item Методы Invoke, BeginInvoke, EndInvoke
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Как это устроено}
+		\begin{minted}{csharp}
+Feedback fbStatic = new Feedback(Program.FeedbackToConsole);
+Feedback fbInstance = new Feedback(new Program().FeedbackToFile);
+		\end{minted}
+		\todo{Картинка}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример использования}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public delegate int HashFunction(string str, int hashSize);
+
+private static class HashFunctions {
+    public static int Hash1(string str, int hashSize) {
+        return str[0] % hashSize;
+    }
+
+    public static int Hash2(string str, int hashSize) {
+        int result = 0;
+        foreach (var ch in str)
+            result += ch;
+        return result % hashSize;
+    }
+}
+
+static void Main(string[] args) {
+    var h = new HashFunction(HashFunctions.Hash1);
+    var result = h("ololo", 10);
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё пример, который будем дальше мучить}
+		\framesubtitle{Цикл обработки событий}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public class EventLoop {
+    public void Run() {
+        while (true) {
+            var key = Console.ReadKey();
+            switch (key.Key) {
+                case ConsoleKey.LeftArrow:
+                    // Сделать что-то по нажатию на "влево"
+                    break;
+                case ConsoleKey.RightArrow:
+                    // Сделать что-то по нажатию на "вправо"
+                    break;
+            }
+        }
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Цикл с делегатом}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public delegate void ArrowHandler();
+
+public class EventLoop {
+    public void Run(ArrowHandler left, ArrowHandler right) {
+        while (true) {
+            var key = Console.ReadKey(true);
+            switch (key.Key) {
+                case ConsoleKey.LeftArrow:
+                    left();
+                    break;
+                case ConsoleKey.RightArrow:
+                    right();
+                    break;
+            }
+        }
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Обработчики}
+		\begin{minted}{csharp}
+public class Game
+{
+    public void OnLeft()
+    {
+        Console.WriteLine("Going left");
+    }
+
+    public void OnRight()
+    {
+        Console.WriteLine("Going right");
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Main}
+		\begin{minted}{csharp}
+static void Main(string[] args)
+{
+    var eventLoop = new EventLoop();
+    var game = new Game();
+    eventLoop.Run(
+        new ArrowHandler(game.OnLeft), 
+        new ArrowHandler(game.OnRight)
+    );
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Delegate chaining}
+		\begin{minted}{csharp}
+public void Register(SomeDelegateType someDelegate)
+{
+    currentDelegate = Delegate.Combine(currentDelegate, someDelegate);
+}
+		\end{minted}
+		\vspace{3mm}
+		Или
+		\begin{minted}{csharp}
+public void Register(SomeDelegateType someDelegate)
+{
+    currentDelegate += someDelegate;
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Цикл обработки событий с регистрацией (1)}
+		\begin{minted}{csharp}
+public class EventLoop
+{
+    private ArrowHandler leftHandler;
+    private ArrowHandler rightHandler;
+
+    public void RegisterLeftHandler(ArrowHandler left)
+    {
+        leftHandler += left;
+    }
+
+    public void RegisterRightHandler(ArrowHandler right)
+    {
+        rightHandler += right;
+    }
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Цикл обработки событий с регистрацией (2)}
+		\begin{minted}{csharp}
+    public void Run() {
+        while (true) {
+            var key = Console.ReadKey(true);
+            switch (key.Key) {
+                case ConsoleKey.LeftArrow:
+                    if (leftHandler != null)
+                        leftHandler();
+                    break;
+                case ConsoleKey.RightArrow:
+                    if (rightHandler != null)
+                        rightHandler();
+                    break;
+            }
+        }
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Логгер (ещё один наблюдатель)}
+		\begin{minted}{csharp}
+public class Logger
+{
+    private List<string> log = new List<string>();
+
+    public void LeftPressed()
+    {
+        log.Add("left");
+    }
+
+    public void RightPressed()
+    {
+        log.Add("right");
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Main}
+		\begin{minted}{csharp}
+static void Main(string[] args)
+{
+    var eventLoop = new EventLoop();
+    var game = new Game();
+    var logger = new Logger();
+
+    eventLoop.RegisterLeftHandler(game.OnLeft);
+    eventLoop.RegisterRightHandler(game.OnRight);
+
+    eventLoop.RegisterLeftHandler(logger.LeftPressed);
+    eventLoop.RegisterRightHandler(logger.RightPressed);
+
+    eventLoop.Run();
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Отписывание от событий}
+		\begin{minted}{csharp}
+public void UnregisterLeftHandler(ArrowHandler left)
+{
+    leftHandler = (ArrowHandler) Delegate.Remove(leftHandler , left);
+}
+		\end{minted}
+		\vspace{3mm}
+		или
+		\begin{minted}{csharp}
+public void UnregisterLeftHandler(ArrowHandler left)
+{
+    leftHandler -= left;
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Как примерно выглядит Invoke для цепочки}
+		\begin{minted}{csharp}
+public Int32 Invoke(Int32 value) {
+    Int32 result;
+    Delegate[] delegateSet = _invocationList as Delegate[];
+    if (delegateSet != null) {
+        foreach (Feedback d in delegateSet)
+            result = d(value);
+    } else {
+        result = _methodPtr.Invoke(_target, value);
+	}
+	
+    return result;
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Вызов делегатов из цепочки вручную}
+		\begin{small}
+			\begin{minted}{csharp}
+Delegate[] arrayOfDelegates = leftHandler.GetInvocationList();
+foreach (ArrowHandler handler in arrayOfDelegates) {
+    try {
+        handler.Invoke();
+    }
+    catch (InvalidOperationException e) {
+        Object component = handler.Target;
+        Console.WriteLine(
+                "Failed to call handler from {1}{2}{0} Error: {3}{0}{0}",
+                Environment.NewLine,
+                ((component == null) ? "" : component.GetType() + "."),
+                handler.GetMethodInfo().Name,
+               e.Message);
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Шаблонные типы делегатов}
+		\begin{minted}{csharp}
+public delegate int HashFunction(string str, int hashSize);
+		\end{minted}
+		\hspace{2cm}\begin{Large}$\downarrow$\end{Large}
+		\begin{minted}{csharp}
+Func<string, int, int>
+		\end{minted}
+		\begin{itemize}
+			\item \mintinline{csharp}|Func<T1, T2, ..., TResult>|
+			\item \mintinline{csharp}|Action<T1, T2, ...>|
+			\item Не дружат с \mintinline{csharp}|ref| и \mintinline{csharp}|out|
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{События}
+		\mintinline{csharp}|eventLoop.RegisterLeftHandler(game.OnLeft);| --- много работы
+
+		\mintinline{csharp}|eventLoop.leftHandler += game.OnLeft;| --- очень плохо. 
+
+		\vspace{3mm}
+		Надо (в EventLoop):
+		\begin{minted}{csharp}
+public event Action LeftHandler;
+public event Action RightHandler;
+		\end{minted}
+		\vspace{3mm}
+		и (в Main):
+		\begin{minted}{csharp}
+eventLoop.LeftHandler += game.OnLeft;
+eventLoop.RightHandler += game.OnRight;
+
+eventLoop.LeftHandler += logger.LeftPressed;
+eventLoop.RightHandler += logger.RightPressed;
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Анонимные методы}
+		\begin{minted}{csharp}
+static void Main(string[] args) {
+    var eventLoop = new EventLoop();
+    var game = new Game();
+    eventLoop.LeftHandler += game.OnLeft;
+    eventLoop.RightHandler += game.OnRight;
+    var log = new List<string>();
+    eventLoop.LeftHandler += delegate {
+        log.Add("left");
+    };
+    eventLoop.RightHandler += delegate {
+        log.Add("right");
+    };
+    eventLoop.Run();
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Замыкания (1)}
+		\begin{minted}{csharp}
+static Func<Point, Point> CreateRemapFunction(
+        Rectangle rect1, Rectangle rect2)
+{
+    var xScale = rect2.Width() / rect1.Width();
+    var yScale = rect2.Height() / rect1.Height();
+    Func<Point, Point> result = delegate(Point point) {
+        var returnValue = new Point();
+        returnValue.x = point.x * xScale;
+        returnValue.y = point.y * yScale;
+        return returnValue;
+    };
+    return result;
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Замыкания (2, пример использования)}
+		\begin{small}
+			\begin{minted}{csharp}
+static void Main(string[] args) {
+    var rect1 = new Rectangle() {
+        topLeft = new Point() { x = 0, y = 0 },
+        bottomRight = new Point() { x = 2, y = 2 }
+    };
+    var rect2 = new Rectangle() {
+        topLeft = new Point() { x = 0, y = 0 },
+        bottomRight = new Point() { x = 4, y = 6 }
+    };
+
+    var remap = CreateRemapFunction(rect1, rect2);
+    var point = new Point() { x = 1, y = 1 };
+    var transformedPoint = remap(point);
+    Console.WriteLine("Transformed point: x = {0}, y = {1}", 
+          transformedPoint.x, transformedPoint.y);
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Лямбда-выражения}
+		\begin{minted}{csharp}
+delegate(список параметров)
+{
+    тело
+};
+		\end{minted}
+		\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
+		\begin{minted}{csharp}
+(список параметров) => { тело };
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Примеры}
+		\begin{minted}{csharp}
+eventLoop.LeftHandler += () => log.Add("left");
+eventLoop.RightHandler += () => log.Add("right");
+
+Func<int, int> x2 = x => x * 2;
+var n = x2(1);  // n будет 2
+
+List<int> list = new List<int>() { 20, 1, 4, 8, 9, 44 };
+List<int> evenNumbers = list.FindAll(i => (i % 2) == 0);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Каноничное объявление события (1)}
+		Наследник EventArgs, содержащий в себе параметры события
+		\begin{itemize}
+			\item Если параметров нет, то обработчики события всё равно должны принимать EventArgs
+			\begin{itemize}
+				\item Передавать при вызове имеет смысл EventArgs.Empty
+			\end{itemize}
+		\end{itemize}
+
+		\vspace{3mm}
+		\begin{minted}{csharp}
+internal class NewMailEventArgs : EventArgs {
+    private readonly String from, to, subject;
+    public NewMailEventArgs(String from, String to, String subject) {
+        this.from = from; this.to = to; this.subject = subject;
+    }
+    public String From { get { return from; } }
+    public String To { get { return to; } }
+    public String Subject { get { return subject; } }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Каноничное объявление события (2)}
+		Само событие в наблюдаемом классе
+		\begin{itemize}
+			\item Инстанциация шаблона EventHandler
+			\item 
+				\begin{minted}{csharp}
+public delegate void EventHandler<TEventArgs>(
+        Object sender, TEventArgs e);
+				\end{minted}
+		\end{itemize}
+
+		\vspace{7mm}
+		\begin{minted}{csharp}
+internal class MailManager {
+    public event EventHandler<NewMailEventArgs> NewMail;
+    ...
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Каноничное объявление события (3)}
+		Вспомогательный метод, кидающий событие
+		\begin{itemize}
+			\item Сюда идёт проверка списка подписчиков на null
+			\item Вызов лучше делать потокобезопасным
+		\end{itemize}
+		\vspace{5mm}
+		\begin{minted}{csharp}
+internal class MailManager {
+    ...
+    protected virtual void OnNewMail(NewMailEventArgs e) {
+        EventHandler<NewMailEventArgs> temp = 
+                Volatile.Read(ref NewMail);
+        if (temp != null) 
+            temp(this, e);
+    }
+    ...
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Каноничное объявление события (4)}
+		Кидание события
+		\begin{itemize}
+			\item Создаём наследника EventArgs
+			\item Вызываем метод, отправляющий событие наблюдателям
+		\end{itemize}
+		\vspace{5mm}
+		\begin{minted}{csharp}
+internal class MailManager {
+    public void SimulateNewMail(String from, String to, String subject) {
+        NewMailEventArgs e = new NewMailEventArgs(from, to, subject);
+        OnNewMail(e);
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Принимающий событие}
+		\begin{minted}{csharp}
+internal sealed class Fax {
+    public Fax(MailManager mm) {
+        mm.NewMail += FaxMsg;
+    }
+
+    private void FaxMsg(Object sender, NewMailEventArgs e) {
+        Console.WriteLine("Faxing mail message:");
+        Console.WriteLine(" From={0}, To={1}, Subject={2}",
+                e.From, e.To, e.Subject);
+    }
+
+    public void Unregister(MailManager mm) {
+        mm.NewMail -= FaxMsg;
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ручное управление подписчиками}
+		\begin{minted}{csharp}
+public event EventHandler<FooEventArgs> Foo {
+    add { eventSet.Add(fooEventKey, value); }
+    remove { eventSet.Remove(fooEventKey, value); }
+}
+
+protected virtual void OnFoo(FooEventArgs e) {
+    eventSet.Raise(fooEventKey, this, e);
+}
+		\end{minted}
+		\vspace{7mm}
+		eventSet --- рукописный словарь с цепочками обработчиков, не поместившийся в презентацию
+	\end{frame}
+
+\end{document}
