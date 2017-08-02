@@ -1,0 +1,52 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Пользовательский интерфейс, WinForms}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{6}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Windows Forms}
+		\begin{itemize}
+			\item Самая старая из GUI-библиотек для .NET
+			\begin{itemize}
+				\item Замена MFC, в какой-то степени
+				\item Использует GDI+ для отображения контролов
+			\end{itemize}
+			\item Событийно-ориентированная
+			\item Простая
+			\item Хорошо работает под Mono
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Демонстрация}
+		\begin{Huge}\begin{center}Демонстрация\end{center}\end{Huge}
+	\end{frame}
+
+
+\end{document}
