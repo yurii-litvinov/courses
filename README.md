@@ -8,3 +8,5 @@ To build slides and texts you need to install TeXLive, Python 3 and "pygments" p
 ```
 xelatex --shell-escape file-name.tex
 ```
+
+To contribute feel free to fork this repository and make a pull request. Please provide a source for added information as TeX comments (reference to a book, article, blog post etc.)
