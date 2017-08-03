@@ -450,7 +450,99 @@ public class Button: ButtonBase
 
 	\begin{frame}
 		\frametitle{Геометрия контрола}
-		\todo{Картинка с геометрией окна}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{controlGeometry.png}
+		\end{center}
+		\begin{center}{\footnotesize(Из книги Adam Nathan, WPF 4.5 Unleashed.)}\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Управление положением элемента}
+		\begin{columns}
+			\begin{column}{0.7\textwidth}
+				\begin{itemize}
+					\item Абсолютное
+					\begin{itemize}
+						\item Padding
+						\item Margin
+						\item Тип System.Windows.Thickness
+					\end{itemize}
+					\item Выравнивание внутри родителя
+					\begin{itemize}
+						\item HorizontalAlignment, VerticalAlignment
+						\item HorizontalContentAlignment, VerticalContentAlignment
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{geometryTest.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Преобразования системы координат}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{tiny}
+					\begin{minted}{xml}
+<StackPanel>
+    <Button Content="Button1" Background="LightBlue"/>
+    <Button Content="Button2" Background="LightGreen" >
+        <Button.LayoutTransform>
+            <RotateTransform Angle="45"/>
+        </Button.LayoutTransform>
+    </Button>
+    <Button Content="Button3" Background="LightCoral"/>
+</StackPanel>
+					\end{minted}
+				\end{tiny}
+
+				\DownArrow
+				\begin{center}
+					\includegraphics[width=0.6\textwidth]{layoutTransform.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{tiny}
+					\begin{minted}{xml}
+<StackPanel>
+    <Button Content="Button1" Background="LightBlue"/>
+    <Button Content="Button2" Background="LightGreen" >
+        <Button.RenderTransform>
+            <RotateTransform Angle="45"/>
+        </Button.RenderTransform>
+    </Button>
+    <Button Content="Button3" Background="LightCoral"/>
+</StackPanel>
+					\end{minted}
+				\end{tiny}
+
+				\DownArrow
+				\begin{center}
+					\includegraphics[width=0.6\textwidth]{renderTransform.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\section{Заключение}
+	
+	\begin{frame}
+		\frametitle{Литература}
+		\begin{columns}
+			\begin{column}{0.7\textwidth}
+				Adam Nathan, WPF 4.5 Unleashed. Sams Publishing, 2013. 864pp.
+				\vspace{3cm}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{wpfBookCover.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 \end{document}
