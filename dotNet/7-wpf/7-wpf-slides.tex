@@ -177,43 +177,48 @@ b.Background = System.Windows.Media.Brushes.White;
 			\item Элементы коллекции
 			\item Результат вызова конвертеров
 		\end{itemize}
-		\begin{minted}{xml}
+		\vspace{3mm}
+		\begin{scriptsize}
+			\begin{minted}{xml}
 <Button xmlns="http://shcemas.microsoft.com/winfx/2006/xaml/presentation">
     <Button.Content>
         <Rectangle Height="40" Width="40" Fill="Black" />
     </Button.Content>
 </Button>
-		\end{minted}
+			\end{minted}
 
-		\DownArrow
-		\begin{minted}{xml}
+			\DownArrow
+			\begin{minted}{xml}
 <Button xmlns="http://shcemas.microsoft.com/winfx/2006/xaml/presentation">
     <Rectangle Height="40" Width="40" Fill="Black" />
 </Button>
-		\end{minted}
+			\end{minted}
+		\end{scriptsize}
 	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Коллекции}
-		\begin{itemize}
-			\item Списки
-				\begin{minted}{xml}
+		\begin{scriptsize}
+			\begin{itemize}
+				\item Списки
+					\begin{minted}{xml}
 <ListBox xmlns="http://shcemas.microsoft.com/winfx/2006/xaml/presentation">
     <ListBox.Items>
         <ListBoxItem Content="Item 1" />
         <ListBoxItem Content="Item 2" />
     </ListBox.Items>
 </ListBox>
-				\end{minted}
-			\item Словари
-				\begin{minted}{xml}
+					\end{minted}
+				\item Словари
+					\begin{minted}{xml}
 <ResourceDictionary xmlns="http://shcemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://shcemas.microsoft.com/winfx/2006/xaml">
     <Color x:Key="1" A="255" R="255" G="255" B="255" />
     <Color x:Key="2" A="0" R="0" G="0" B="0" />
 </ResourceDictionary>
-				\end{minted}
-		\end{itemize}
+					\end{minted}
+			\end{itemize}
+		\end{scriptsize}
 	\end{frame}
 
 	\section{Архитектура WPF}
@@ -287,7 +292,7 @@ b.Background = System.Windows.Media.Brushes.White;
 									[ContentPresenter
 										[StackPanel
 											[CheckBox
-												[TemlateRoot
+												[TemplateRoot
 													[checkBoxBorder
 														[MarkGrid
 															[optionMark]
