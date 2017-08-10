@@ -32,7 +32,9 @@
 
 	\begin{frame}
 		\frametitle{Паттерн ``Наблюдатель''}
-		\todo{Картинка}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{observer.png}
+		\end{center}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -298,8 +300,8 @@ public Int32 Invoke(Int32 value) {
             result = d(value);
     } else {
         result = _methodPtr.Invoke(_target, value);
-	}
-	
+    }
+
     return result;
 }
 		\end{minted}
@@ -321,7 +323,7 @@ foreach (ArrowHandler handler in arrayOfDelegates) {
                 Environment.NewLine,
                 ((component == null) ? "" : component.GetType() + "."),
                 handler.GetMethodInfo().Name,
-               e.Message);
+                e.Message);
     }
 }
 			\end{minted}
@@ -348,7 +350,7 @@ Func<string, int, int>
 		\frametitle{События}
 		\mintinline{csharp}|eventLoop.RegisterLeftHandler(game.OnLeft);| --- много работы
 
-		\mintinline{csharp}|eventLoop.leftHandler += game.OnLeft;| --- очень плохо. 
+		\mintinline{csharp}|eventLoop.leftHandler += game.OnLeft;| --- очень плохо
 
 		\vspace{3mm}
 		Надо (в EventLoop):
@@ -431,6 +433,32 @@ static void Main(string[] args) {
 	\end{frame}
 
 	\begin{frame}[fragile]
+		\frametitle{Замыкания, способ прострелить себе ногу}
+		\begin{small}
+			\begin{minted}{csharp}
+delegate void F();
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var delegates = new F[10];
+        for (var i = 0; i < 10; ++i)
+        {
+            delegates[i] = delegate { Console.WriteLine(i); };
+        }
+
+        foreach (var f in delegates)
+        {
+            f();
+        }
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
 		\frametitle{Лямбда-выражения}
 		\begin{minted}{csharp}
 delegate(список параметров)
@@ -471,13 +499,13 @@ List<int> evenNumbers = list.FindAll(i => (i % 2) == 0);
 		\vspace{3mm}
 		\begin{minted}{csharp}
 internal class NewMailEventArgs : EventArgs {
-    private readonly String from, to, subject;
-    public NewMailEventArgs(String from, String to, String subject) {
+    private readonly string from, to, subject;
+    public NewMailEventArgs(string from, string to, string subject) {
         this.from = from; this.to = to; this.subject = subject;
     }
-    public String From { get { return from; } }
-    public String To { get { return to; } }
-    public String Subject { get { return subject; } }
+    public string From => from;
+    public string To => to;
+    public string Subject => subject;
 }
 		\end{minted}
 	\end{frame}
@@ -490,7 +518,7 @@ internal class NewMailEventArgs : EventArgs {
 			\item 
 				\begin{minted}{csharp}
 public delegate void EventHandler<TEventArgs>(
-        Object sender, TEventArgs e);
+        object sender, TEventArgs e);
 				\end{minted}
 		\end{itemize}
 
@@ -535,7 +563,7 @@ internal class MailManager {
 		\vspace{5mm}
 		\begin{minted}{csharp}
 internal class MailManager {
-    public void SimulateNewMail(String from, String to, String subject) {
+    public void SimulateNewMail(string from, string to, string subject) {
         NewMailEventArgs e = new NewMailEventArgs(from, to, subject);
         OnNewMail(e);
     }
@@ -551,7 +579,7 @@ internal sealed class Fax {
         mm.NewMail += FaxMsg;
     }
 
-    private void FaxMsg(Object sender, NewMailEventArgs e) {
+    private void FaxMsg(object sender, NewMailEventArgs e) {
         Console.WriteLine("Faxing mail message:");
         Console.WriteLine(" From={0}, To={1}, Subject={2}",
                 e.From, e.To, e.Subject);
