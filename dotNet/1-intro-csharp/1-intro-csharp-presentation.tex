@@ -10,6 +10,9 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
 \setbeamertemplate{blocks}[rounded][shadow=false]
 \setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
 \setbeamercolor*{block body example}{fg=black,bg=green!10}
@@ -245,6 +248,9 @@ struct Point
 			\item Не может иметь конструктор без параметров
 			\item Может быть создан без вызова конструктора
 			\item Может реализовывать интерфейсы
+			\begin{itemize}
+				\item При касте к интерфейсу выполняется боксинг, опасайтесь
+			\end{itemize}
 			\item Не может наследоваться
 		\end{itemize}
 \end{frame}
@@ -747,6 +753,77 @@ switch (shape)
 }
 			\end{minted}
 		\end{small}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Иерархия основных классов}
+	\begin{tiny}
+		\begin{forest}
+			for tree={rectangle,draw,l sep=1cm,s sep=5mm,edge=open triangle 60-}
+			[Object
+				[ValueType
+					[Enum]
+					[Элементарные типы]
+					[Пользовательские структуры]
+				]
+				[Array]
+				[Delegate]
+				[Exception]
+				[Пользовательские классы]
+				[...]
+			]
+		\end{forest}
+	\end{tiny}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Методы System.Object}
+	\begin{itemize}
+		\item Equals --- виртуальный
+		\item GetHashCode --- виртуальный
+		\item ToString --- виртуальный
+		\item GetType --- невиртуальный
+		\item MemberwiseClone --- невиртуальный защищённый
+		\begin{itemize}
+			\item Создаёт объект, не вызывая конструктор
+		\end{itemize}
+		\item Finalize --- виртуальный защищённый
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Объекты в памяти}
+	\begin{columns}
+		\begin{column}{0.4\textwidth}
+			\begin{minted}{csharp}
+void Example() 
+{
+    Employee e = 
+        new Manager();
+    e.GenProgressReport();
+}
+			\end{minted}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\includegraphics[width=0.8\textwidth]{objectInMemory.png}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Литература}
+	\begin{itemize}
+		\item \textbf{Jeffrey Richter.} CLR via C\# --- must read про C\#
+		\item \url{https://blogs.msdn.microsoft.com/dotnet} --- официальный блог о дотнете
+		\item \textbf{Don Syme et al.} Expert F\# --- годная книга по F\# от автора языка
+		\item \url{https://fsharpforfunandprofit.com/} --- набор статей про F\#, где всё объясняется по-человечески
+		\item \url{http://www.slideshare.net/ScottWlaschin/fp-patterns-buildstufflt} --- лучшее объяснение про монады и вообще отличное введение в F\#
+		\item \url{http://tomasp.net/blog} --- ещё один годный блог про C\# и F\#
+		\item \url{https://habrahabr.ru/post/172627/} --- статья про особенности строк в .NET
+		\item \textbf{Adam Nathan.} WPF 4.5 Unleashed --- годная книжка по WPF
+	\end{itemize}
 \end{frame}
 
 \end{document}
