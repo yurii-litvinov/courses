@@ -1,0 +1,79 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Занятие 2: работа с требованиями}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{20.09.2017}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\newcommand{\DownArrow} {
+	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Введение}
+
+	\begin{frame}
+		\frametitle{Требования}
+		\begin{itemize}
+			\item \todo{Напоминание про требования вообще}
+		\end{itemize}
+	\end{frame}
+
+	\section{Инструменты для работы с требованиями}
+
+	\begin{frame}
+		\frametitle{Метод случаев использования}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы требований SysML}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Feature Diagrams}
+	\end{frame}
+
+	\section{Домашнее задание}
+
+	\begin{frame}
+		\frametitle{Домашнее задание}
+		\begin{itemize}
+			\item Описать формально требования к своему проекту
+			\begin{itemize}
+				\item Словесное описание
+				\item Диаграммы в хотя бы одной из предложенных нотаций
+			\end{itemize}
+			\item Подготовить презентацию на 10 минут с представлением идеи проекта
+			\item Дедлайн --- \textbf{20 сентября}
+			\item Пары 13 сентября \textbf{не будет}!
+		\end{itemize}
+	\end{frame}
+
+\end{document}
