@@ -185,6 +185,7 @@ public class MyException : Exception
 			\item TypeInitializationException
 			\item TargetInvocationException
 			\item OutOfMemoryException
+			\item Можно кидать null. При этом рантайм сам кидает NullReferenceException.
 		\end{itemize}
 	\end{frame}
 
@@ -384,6 +385,179 @@ public static class Program {
 		\end{footnotesize}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Пример: как сделать свою плагинную систему}
+		\begin{itemize}
+			\item Сделать отдельную сборку с описанием интерфейса плагина и типов данных, которые он использует
+			\begin{itemize}
+				\item Менять её будет очень проблематично
+			\end{itemize}
+			\item Сделать ``ядро системы'' --- отдельную сборку, ссылающуюся на сборку с интерфейсом плагина
+			\item Делать набор плагинов, ссылающихся на сборку с интерфейсом плагина и реализующих его
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример: интерфейс плагина}
+		\begin{minted}{csharp}
+namespace MyCoolSystem.SDK {
+    public interface IAddIn {
+        string DoSomething(int x);
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример: плагины}
+		\begin{minted}{csharp}
+using MyCoolSystem.SDK;
+
+public sealed class AddInA : IAddIn {
+    public String DoSomething(int x) {
+        return "AddInA: " + x.ToString();
+    }
+}
+
+public sealed class AddInB : IAddIn {
+    public String DoSomething(int x) {
+        return "AddInB: " + (x * 2).ToString();
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример: ядро системы}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public static class Program
+{
+    public static void Main()
+    {
+        string addInDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+        var addInAssemblies = Directory.EnumerateFiles(addInDir, "*.dll");
+        var addInTypes =
+            addInAssemblies.Select(Assembly.Load)
+                .SelectMany(a => a.ExportedTypes)
+                .Where(t => t.IsClass 
+                        && typeof(IAddIn).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()));
+
+        foreach (Type t in addInTypes)
+        {
+            var addIn = (IAddIn)Activator.CreateInstance(t);
+            Console.WriteLine(addIn.DoSomething(5));
+        }
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Информация о типах}
+		\begin{center}
+			\begin{tiny}
+				\begin{forest}
+					for tree={rectangle,draw,l sep=1cm,s sep=3mm,edge=open triangle 60-}
+					[Object
+						[Reflection.MemberInfo
+							[TypeInfo]
+							[Reflection.FieldInfo]
+							[Reflection.MethodBase
+								[Reflection.ConstructorInfo]
+								[Reflection.MethodInfo]
+							]
+							[Reflection.PropertyInfo]
+							[Reflection.EventInfo]
+						]
+					]
+				\end{forest}
+			\end{tiny}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример: распечатать информацию о полях и методах}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+using System;
+using System.Reflection;
+
+public static class Program {
+    public static void Main() {
+        Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        foreach (Assembly a in assemblies) {
+            Console.WriteLine($"Assembly: {a}");
+            foreach (Type t in a.ExportedTypes) {
+                Console.WriteLine($"  Type: {t}");
+                foreach (MemberInfo mi in t.GetTypeInfo().DeclaredMembers) {
+                    var typeName = string.Empty;
+                    if (mi is FieldInfo) typeName = "FieldInfo";
+                    if (mi is MethodInfo) typeName = "MethodInfo";
+                    if (mi is ConstructorInfo) typeName = "ConstructoInfo";
+                    Console.WriteLine($"    {typeName}: {mi}");
+                }
+            }
+        }
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Полезные свойства MemberInfo}
+		\begin{itemize}
+			\item Name (string) --- имя члена класса
+			\item DeclaringType (Type) --- тип
+			\item Module (Module) --- модуль, в котором он объявлен
+			\item CustomAttributes (IEnumerable<CustomAttributeData>) --- коллекция атрибутов, соответствующих этому члену класса
+			\begin{itemize}
+				\item Пример --- модульные тесты
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как что-нибудь сделать с MemberInfo}
+		\begin{itemize}
+			\item GetValue и SetValue для FieldInfo и PropertyInfo
+			\item Invoke для ConstructorInfo и MethodInfo
+			\item AddEventHandler и RemoveEventHandler для EventInfo
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример: создать класс и вызвать его метод}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+using System;
+using System.Reflection;
+using System.Linq;
+
+internal sealed class SomeType {
+    public SomeType(int test) { }
+    private int DoSomething(int x) => x * 2;
+}
+
+public static class Program {
+    public static void Main() {
+        Type t = typeof(SomeType);
+        Type ctorArgument = Type.GetType("System.Int32");
+        ConstructorInfo ctor = t.GetTypeInfo().DeclaredConstructors.First(
+                c => c.GetParameters()[0].ParameterType == ctorArgument);
+        Object[] args = { 12 };
+        Object obj = ctor.Invoke(args);
+        MethodInfo mi = obj.GetType().GetTypeInfo().GetDeclaredMethod("DoSomething");
+        int result = (int)mi.Invoke(obj, new object[]{3});
+        Console.WriteLine($"result = {result}");
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
 	\section{Модульное тестирование}
 
 	\begin{frame}
@@ -414,7 +588,8 @@ public static class Program {
 			\begin{itemize}
 				\item Работает прямо из коробки в Visual Studio, но требует некоторой возни, если нет
 			\end{itemize}
-			\item \textcolor{red}{XUnit, MbUnit?}
+			\item XUnit
+			\item MbUnit
 		\end{itemize}
 	\end{frame}
 
@@ -535,8 +710,6 @@ Mock.Get(stack).Verify(st => st.IsEmpty(), Times.Never);
 
 	\begin{frame}[fragile]
 		\frametitle{Rhino Mocks}
-		\textcolor{red}{Пару слов про эту библиотеку}
-		\vspace{3mm}
 		\begin{minted}{csharp}
 var stack = MockRepository.Mock<IStack>();
 stack.Expect(st => st.Push(1));
