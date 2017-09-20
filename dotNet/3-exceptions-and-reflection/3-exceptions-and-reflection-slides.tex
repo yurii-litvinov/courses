@@ -19,9 +19,9 @@
 
 \tabulinesep=1.2mm
 
-\title{Исключения и модульное тестирование}
-\author{Юрий Литвинов}
-\date{3}
+\title{Исключения, рефлексия, модульное тестирование}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+\date{21.09.2017г}
 
 \begin{document}
 
@@ -50,10 +50,31 @@ try {
     // Обработка исключений типа Type1
 } catch (Type2 id2) {
     // Обработка исключений типа Type2
-} catch (Type3 id3) {
-    // Обработка исключений типа Type3
+} catch {
+    // Обработка всех оставшихся исключений
 } finally {
     // Код, выполняющийся в любом случае
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{minted}{csharp}
+private void ReadData(String pathname) 
+{
+    FileStream fs = null;
+    try {
+        fs = new FileStream(pathname, FileMode.Open);
+        // Делать что-то полезное
+    }
+    catch (IOException) {
+        // Код восстановления после ошибки
+    }
+    finally {
+        // Закрыть файл надо в любом случае
+        if (fs != null) fs.Close();
+    }
 }
 		\end{minted}
 	\end{frame}
@@ -91,24 +112,8 @@ try {
 			\item Message
 			\item Source
 			\item StackTrace
+			\item HResult
 		\end{itemize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Пример (плохой)}
-		\begin{minted}{csharp}
-try
-{
-    throw new Exception("Something is very wrong");
-}
-catch (Exception e)
-{
-    Console.WriteLine("Caught Exception");
-    Console.WriteLine("e.Message: " + e.Message);
-    Console.WriteLine("e.ToString(): " + e.ToString());
-    Console.WriteLine("e.StackTrace:\n" + e.StackTrace);
-}
-		\end{minted}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -121,7 +126,7 @@ try
 catch (Exception e)
 {
     Console.WriteLine("Caught Exception");
-    throw;
+    throw;  // "throw e;" тоже работает, но сбросит stack trace
 }
 		\end{minted}
 
@@ -167,6 +172,38 @@ public class MyException : Exception
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{``Интересные'' классы-исключения}
+		\begin{itemize}
+			\item Corrupted state exceptions (CSE) --- не ловятся catch-ем
+			\begin{itemize}
+				\item StackOverflowException
+				\item AccessViolationException
+				\item System.Runtime.InteropServices.SEHException
+			\end{itemize}
+			\item FileLoadException, BadImageFormatException, InvalidProgramException, ...
+			\item ThreadAbortException
+			\item TypeInitializationException
+			\item TargetInvocationException
+			\item OutOfMemoryException
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Environment.FailFast}
+		\begin{minted}{csharp}
+try {
+     // Делать что-то полезное
+}
+catch (OutOfMemoryException e) 
+{
+    Console.WriteLine("Закончилась память :(");
+    Environment.FailFast(
+        String.Format($"Out of Memory: {e.Message}"));
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Исключения, best practices}
 		\begin{itemize}
 			\item Не бросать исключения без нужды
@@ -187,9 +224,164 @@ public class MyException : Exception
 			\item Имя класса должно заканчиваться на ``Exception''
 			\item Код должен быть безопасным с точки зрения исключений
 			\begin{itemize}
-				\item Не забывать про finally или using
+				\item Не забывать про finally 
+				\item Или using, lock, foreach, которые тоже генерят finally
 			\end{itemize}
 		\end{itemize}
+	\end{frame}
+
+	\section{Контракты}
+
+	\begin{frame}
+		\frametitle{Code Contracts}
+		Набор инструментов для контрактно-ориентированного программирования
+		\begin{itemize}
+			\item Предусловия --- должны выполняться до исполнения метода
+			\item Постусловия --- должны выполняться после исполнения метода
+			\item Инварианты --- должны выполняться всегда, пога объект не исполняет метод
+			\begin{itemize}
+				\item Внутри метода инвариант объекта может нарушаться
+			\end{itemize}
+			\item Класс System.Diagnostics.Contracts.Contract
+			\item Требует серьёзной инструментальной поддержки, чтобы делать что-то интересное
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public sealed class ShoppingCart {
+    private List<Item> cart = new List<Item>();
+    private Decimal totalCost = 0;
+    public void AddItem(Item item) => AddItemHelper(cart, item, ref totalCost);
+
+    private static void AddItemHelper(List<Item> cart, Item newItem, ref Decimal totalCost) {
+        // Предусловия:
+        Contract.Requires(newItem != null);
+        Contract.Requires(Contract.ForAll(cart, s => s != newItem));
+        // Постусловия:
+        Contract.Ensures(Contract.Exists(cart, s => s == newItem));
+        Contract.Ensures(totalCost >= Contract.OldValue(totalCost));
+        Contract.EnsuresOnThrow<IOException>(totalCost == Contract.OldValue(totalCost));
+        // Делаем полезную работу...
+        cart.Add(newItem);
+        totalCost += 1.00M;
+    }
+
+    [ContractInvariantMethod]
+    private void ObjectInvariant() {
+        Contract.Invariant(totalCost >= 0);
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\section{Рефлексия}
+
+	\begin{frame}
+		\frametitle{Рефлексия}
+		\begin{itemize}
+			\item Позволяет во время выполнения получать информацию о типах
+			\begin{itemize}
+				\item И главное, создавать объекты этих типов и вызывать их методы
+			\end{itemize}
+			\item Зачем:
+			\begin{itemize}
+				\item Плагины
+				\item Анализаторы кода
+				\item Тестовые системы
+				\item ...
+			\end{itemize}
+			\item Проблемы:
+			\begin{itemize}
+				\item Медленно
+				\item Нет помощи от системы типов
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Загрузка сборки}
+		\begin{small}
+			\begin{minted}{csharp}
+public class Assembly {
+    public static Assembly Load(AssemblyName assemblyRef);
+    public static Assembly Load(String assemblyString);
+    public static Assembly Load(byte[] rawAssembly)
+    public static Assembly LoadFrom(String path);
+    public static Assembly ReflectionOnlyLoad(String assemblyString);
+    public static Assembly ReflectionOnlyLoadFrom(String assemblyFile);
+}
+			\end{minted}
+			например,
+			\begin{minted}{csharp}
+var a = Assembly.LoadFrom(@"http://example.com/ExampleAssembly.dll");
+			\end{minted}
+			Выгружать сборки нельзя
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{Распечатать имена всех типов в сборке}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+using System;
+using System.Reflection;
+
+public static class Program {
+    public static void Main() {
+        string dataAssembly = "System.Data, version=4.0.0.0, "
+                + "culture=neutral, PublicKeyToken=b77a5c561934e089";
+        LoadAssemblyAndShowPublicTypes(dataAssembly);
+    }
+
+    private static void LoadAssemblyAndShowPublicTypes(string assemblyId) {
+        var a = Assembly.Load(assemblyId);
+        foreach (Type t in a.ExportedTypes) {
+            Console.WriteLine(t.FullName);
+        }
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Создание экземпляра объекта}
+		\begin{itemize}
+			\item System.Activator.CreateInstance --- можно передавать тип или строку с именем типа
+			\begin{itemize}
+				\item Версии со строкой возвращают System.Runtime.Remoting.ObjectHandle, надо вызвать Unwrap()
+			\end{itemize}
+			\item System.Activator.CreateInstanceFrom --- вызывает LoadFrom для сборки
+			\item System.Reflection.ConstructorInfo.Invoke --- просто вызов конструктора (несколько дольше писать, чем предыдущие варианты)
+			\item Рефлексия ничего не знает о синонимах
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Создание экземпляра типа-генерика}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+using System;
+using System.Reflection;
+
+internal sealed class Dictionary<TKey, TValue> { }
+
+public static class Program {
+    public static void Main() {
+        Type openType = typeof(Dictionary<,>);
+        Type closedType = openType.MakeGenericType(
+                typeof(String), typeof(Int32));
+        Object o = Activator.CreateInstance(closedType);
+        Console.WriteLine(o.GetType());
+    }
+}
+			\end{minted}
+		\end{footnotesize}
 	\end{frame}
 
 	\section{Модульное тестирование}
