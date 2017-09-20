@@ -1,0 +1,40 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Практика: модульное тестирование}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+\date{21.09.2017г}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задача}
+		Реализовать стековый калькулятор (класс, реализующий выполнение операций +, -, *, / над стеком чисел).
+		\begin{itemize}
+			\item Стековый калькулятор и стек --- два отдельных класса
+			\item Нужны тесты и к тому, и к другому
+			\item Нужно использовать NSubstitute, чтобы тестировать калькулятор независимо
+		\end{itemize}
+	\end{frame}
+
+\end{document}
