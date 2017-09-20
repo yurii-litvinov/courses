@@ -24,7 +24,7 @@
 \title{Архитектура ПО}
 \subtitle{Лекция 1: Об архитектуре}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{1}
+\date{21.09.2017г}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -54,7 +54,7 @@
 		\frametitle{Размер типичного ПО}
 		\begin{footnotesize}
 			\begin{center}
-				\begin{tabu} {| X[0.5 l p] | X[1 l p] |}
+				\begin{tabu} {| X[0.6 l p] | X[1 l p] |}
 					\tabucline-
 					\everyrow{\tabucline-}
 					Простая игра для iOS            & 10000 LOC  \\
@@ -411,6 +411,46 @@
 			\end{itemize}
 			\item Антипаттерн <<\emph{Big ball of mud}>> --- результат эрозии
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример: Hadoop}
+		\framesubtitle{As-designed}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{hadoopPrescriptive.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Hadoop as-built}
+		\framesubtitle{HDFS}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{hadoopDescriptive.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Hadoop as-built}
+		\framesubtitle{HDFS + MapReduce}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{hdfsMapReduce.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Hadoop as-built}
+		\framesubtitle{Полная архитектура}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{hadoopFull.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Hadoop as-built}
+		\framesubtitle{Граф зависимостей}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{hadoopDependencies.png}
+		\end{center}
 	\end{frame}
 
 \end{document}
