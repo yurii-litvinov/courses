@@ -529,7 +529,7 @@ public static class Program {
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Пример: создать класс и вызвать его метод}
+		\frametitle{Пример: создать объект и вызвать его метод}
 		\begin{scriptsize}
 			\begin{minted}{csharp}
 using System;
@@ -553,6 +553,64 @@ public static class Program {
         int result = (int)mi.Invoke(obj, new object[]{3});
         Console.WriteLine($"result = {result}");
     }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ключевое слово dynamic}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+using System;
+
+internal static class DynamicDemo
+{
+    public static void Main()
+    {
+        dynamic value;
+        for (int demo = 0; demo < 2; demo++)
+        {
+            value = (demo == 0) ? (dynamic)5 : (dynamic)"A";
+            value = value + value;
+            M(value);
+        }
+    }
+
+    private static void M(int n) { Console.WriteLine("M(int): " + n); }
+    private static void M(string s) { Console.WriteLine("M(string): " + s); }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Генерация кода ``на лету''}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public static void Main() {
+    AssemblyName assemblyName = new AssemblyName {Name = "HelloEmit"};
+    AppDomain appDomain = AppDomain.CurrentDomain;
+    AssemblyBuilder assemblyBuilder = appDomain.DefineDynamicAssembly(
+        assemblyName, AssemblyBuilderAccess.Save);
+    ModuleBuilder moduleBuilder = 
+        assemblyBuilder.DefineDynamicModule(assemblyName.Name, "Hello.exe");
+    TypeBuilder typeBuilder = moduleBuilder.DefineType("Test.MainClass",
+        TypeAttributes.Public | TypeAttributes.Class);
+    MethodBuilder methodBuilder = typeBuilder.DefineMethod("Main",
+        MethodAttributes.Public | MethodAttributes.Static,
+        typeof(int), new[] { typeof(string[]) });
+
+    ILGenerator ilGenerator = methodBuilder.GetILGenerator();
+    ilGenerator.Emit(OpCodes.Ldstr, "Hello, World!");
+    ilGenerator.Emit(OpCodes.Call,
+        typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }));
+    ilGenerator.Emit(OpCodes.Ldc_I4_0);
+    ilGenerator.Emit(OpCodes.Ret);
+
+    typeBuilder.CreateType();
+    assemblyBuilder.SetEntryPoint(methodBuilder, PEFileKinds.ConsoleApplication);
+    assemblyBuilder.Save("Hello.exe");
 }
 			\end{minted}
 		\end{scriptsize}
