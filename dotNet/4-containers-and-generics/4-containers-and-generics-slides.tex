@@ -18,8 +18,8 @@
 \tabulinesep=1.2mm
 
 \title{Контейнеры и генерики}
-\author{Юрий Литвинов}
-\date{4}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+\date{28.09.2017г}
 
 \begin{document}
 
@@ -222,54 +222,220 @@ Swap(ref b1, ref b2);
 
 	\begin{frame}[fragile]
 		\frametitle{Генерик-классы}
-		\begin{tiny}
+		\begin{scriptsize}
 			\begin{minted}{csharp}
 public class Point<T>
 {
    private T xPos;
    private T yPos;
 
-   public Point(T xVal, T yVal)
-   {
+   public Point(T xVal, T yVal) {
        xPos = xVal;
        yPos = yVal;
    }
    
-   public T X
-   {
+   public T X {
        get { return xPos; }
        set { xPos = value; }
    }
 
-   public override string ToString()
-       => string.Format("[{0}, {1}]", xPos, yPos);
+   public override string ToString() => $"[{xPos}, {yPos}]";
 
-   public void ResetPoint()
-   {
+   public void ResetPoint() {
        xPos = default(T);
        yPos = default(T);
    }
 }
 			\end{minted}
-		\end{tiny}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Рекомендации по именованию}
+		\begin{itemize}
+			\item Параметр тип должен называться \textbf{T} или хотя бы начинаться с \textbf{T}
+			\begin{itemize}
+				\item Например, \mintinline{csharp}|Data<TKey, TValue>|
+			\end{itemize}
+			\item Если генерики отличаются только параметрами-типами и находятся в разных файлах, то:
+			\begin{itemize}
+				\item Можно добавлять число параметров-типов в имя файла через ``\textbf{`}''
+				\begin{itemize}
+					\item Например, Data`1.cs, Data`2.cs
+				\end{itemize}
+				\item Можно параметры-типы включать в имена файлов в фигурных скобках
+				\begin{itemize}
+					\item Например, Data\{T\}.cs, Data\{TKey,TValue\}.cs
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Использование}
-		\begin{minted}{csharp}
-Point<int> p = new Point<int>(10, 10);
-Point<double> p2 = new Point<double>(5.4, 3.3);
+		\frametitle{Открытые и закрытые типы}
+		\framesubtitle{Как оно устроено внутри}
+		\begin{itemize}
+			\item \textbf{Открытый тип} --- тип с неспецифицированными параметрами-типами, создание его экземпляров невозможно
+			\item \textbf{Закрытый тип} --- тип, у которого для всех параметров-типов указаны фактические типы
+		\end{itemize}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+internal sealed class DictionaryStringKey<TValue> 
+        : Dictionary<String, TValue> {
+}
 
-var p = new Point<int>(10, 10);
-var p2 = new Point<double>(5.4, 3.3);
-		\end{minted}
+public static class Program {
+    public static void Main() {
+        // Открытый тип
+        Type t = typeof(Dictionary<,>);
+        // Открытый тип
+        t = typeof(DictionaryStringKey<>);
+        // Закрытый тип
+        t = typeof(DictionaryStringKey<Guid>);
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Статические конструкторы}
+		Каждый закрытый тип имеет \textbf{свой} объект-тип, статический конструктор вызовется для каждого параметра-типа
+		\vspace{0.8cm}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+internal sealed class GenericTypeThatRequiresAnEnum<T> {
+    static GenericTypeThatRequiresAnEnum() {
+        if (!typeof(T).IsEnum) {
+            throw new ArgumentException("T must be an enumerated type");
+        }
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+		\vspace{0.8cm}
+		Обычно так делать не надо, есть ограничения
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Способ прострелить себе ногу}
+		\framesubtitle{\textcopyright\, Андрей Акиньшин}
+		\begin{small}
+			\begin{minted}{csharp}
+class Foo<T>
+{
+    public static int Bar;
+}
+
+void Main()
+{
+    Foo<int>.Bar++;
+    Console.WriteLine(Foo<double>.Bar);
+}
+			\end{minted}
+		\end{small}
+		Вообще, мутабельные static-поля в generic-классах не нужны. Ещё более вообще, мутабельные static-поля не нужны.
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Генерики и наследование}
+		Подстановка параметра-типа на наследование никак не влияет
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+internal sealed class Node<T> {
+    public T data;
+    public Node<T> next;
+    public Node(T data) : this(data, null) {}
+    public Node(T data, Node<T> next) {
+        this.data = data; this.next = next;
+    }
+}
+
+private static void SameDataLinkedList() {
+    Node<Char> head = new Node<Char>('C');
+    head = new Node<Char>('B', head);
+    head = new Node<Char>('A', head);
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Генерики и наследование, пример}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+internal class Node {
+    protected Node next;
+    public Node(Node next) => this.next = next;
+}
+
+internal sealed class TypedNode<T> : Node {
+    public T data;
+    public TypedNode(T data) : this(data, null) {}
+    public TypedNode(T data, Node next) : base(next) {
+        this.data = data;
+    }
+}
+
+private static void DifferentDataLinkedList() {
+    Node head = new TypedNode<Char>('.');
+    head = new TypedNode<DateTime>(DateTime.Now, head);
+    head = new TypedNode<String>("Today is ", head);
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Идентичность типов-генериков}
+		Иногда вместо
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+List<DateTime> dtl = new List<DateTime>();
+			\end{minted}
+		\end{footnotesize}
+		пишут
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+internal sealed class DateTimeList : List<DateTime> { }
+...
+DateTimeList dtl = new DateTimeList();
+			\end{minted}
+		\end{footnotesize}
+		\vspace{5mm}
+		Теряется эквивалентность типов:
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+Boolean sameType = (typeof(List<DateTime>) == typeof(DateTimeList));
+			\end{minted}
+		\end{footnotesize}
+		\vspace{5mm}
+		Можно
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+using DateTimeList = System.Collections.Generic.List<System.DateTime>;
+			\end{minted}
+		\end{footnotesize}
 	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Генерики и вложенные классы}
-		\center{\textcolor{red}{TODO}}
-		\begin{minted}{csharp}
-		\end{minted}
+		Вложенные в генерик классы могут использовать его параметры-типы (и сами считаются генериками)
+		\vspace{5mm}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public class Outermost<T>
+{
+    public class Inner<U>
+    {
+        public class Innermost1<V> {}
+        public class Innermost2 {}
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+		\vspace{5mm}
+		Объект вложенного класса нельзя создать, не указав параметры-типы объемлющего класса
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -290,6 +456,144 @@ public class MyGenericClass<T, U>
 			\item \mintinline{csharp}|where T : NameOfBaseClass|
 			\item \mintinline{csharp}|where T : NameOfInterface|
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример 1}
+		\framesubtitle{Primary constraint}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+internal sealed class PrimaryConstraintOfStream<T> where T : Stream 
+{
+    public void M(T stream) 
+    {
+        stream.Close();
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример 2}
+		\framesubtitle{Primary constraint}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+internal sealed class PrimaryConstraintOfClass<T> where T : class {
+    public void M() 
+    {
+        // Поскольку T - ссылочный тип, присвоить ему null допустимо
+        T temp = null;
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример 4}
+		\framesubtitle{Secondary constraint}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+private static List<TBase> ConvertIList<T, TBase>(IList<T> list)
+        where T : TBase 
+{
+    List<TBase> baseList = new List<TBase>(list.Count);
+    for (int index = 0; index < list.Count; index++) 
+    {
+        baseList.Add(list[index]);
+    }
+    return baseList;
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример 5}
+		\framesubtitle{Constructor constraint}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+internal sealed class ConstructorConstraint<T> where T : new() {
+    public static T Factory() {
+        // Тут подойдут любые типы-значения и 
+        // ссылочные типы с public-конструктором без параметров
+        return new T();
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ограничения и касты}
+		Так работать не будет:
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+private static void CastingAGenericTypeVariable1<T>(T obj) {
+    int x = (int) obj; 
+    string s = (string) obj;
+}
+			\end{minted}
+		\end{footnotesize}
+		\vspace{5mm}
+		А так будет:
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+private static void CastingAGenericTypeVariable2<T>(T obj) {
+    int x = (int) (object) obj;
+    string s = (string) (object) obj; 
+}
+			\end{minted}
+		\end{footnotesize}
+		\vspace{5mm}
+		И так:
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+private static void CastingAGenericTypeVariable3<T>(T obj) {
+    string s = obj as string;
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Генерики и сравнения}
+		Так работает:
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+private static void ComparingAGenericTypeVariableWithNull<T>(T obj) {
+    if (obj == null) { /* Никогда не вызовется для типов-значений */ }
+}
+			\end{minted}
+		\end{footnotesize}
+		\vspace{5mm}
+		А так нет:
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+private static void ComparingTwoGenericTypeVariables<T>(T o1, T o2) {
+    if (o1 == o2) { }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Генерики и операторы}
+		И так не работает:
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+private static T Sum<T>(T num) where T : struct {
+    T sum = default(T) ;
+    for (T n = default(T) ; n < num ; n++)
+    {
+        sum += n;
+    }
+
+    return sum;
+}
+			\end{minted}
+		\end{footnotesize}
 	\end{frame}
 
 	\begin{frame}[fragile]
