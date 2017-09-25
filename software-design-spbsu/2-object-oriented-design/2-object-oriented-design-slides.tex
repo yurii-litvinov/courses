@@ -21,8 +21,7 @@
 
 \tabulinesep=1.2mm
 
-\title{Архитектура ПО}
-\subtitle{Лекция 2: Декомпозиция, объектно-ориентированное проектирование}
+\title[Декомпозиция, ООП]{Лекция 2: Декомпозиция, объектно-ориентированное проектирование}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
 \date{28.09.2017г}
 
@@ -35,7 +34,7 @@
 }
 
 \newcommand{\attribution}[1] {
-	\begin{flushright}\begin{scriptsize}\textcolor{gray}{#1}\end{scriptsize}\end{flushright}
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
 }
 
 \begin{document}
@@ -43,6 +42,35 @@
 	\frame{\titlepage}
 
 	\section{Декомпозиция и модульность}
+
+	\begin{frame}
+		\frametitle{Сложность}
+		\begin{itemize}
+			\item \textbf{Существенная сложность} (essential complexity) --- сложность, присущая решаемой проблеме; ею можно управлять, но от неё нельзя избавиться
+			\item \textbf{Случайная сложность} (accidental complexity) --- сложность, привнесённая способом решения проблемы
+		\end{itemize}
+		\vskip 0.5cm
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{complexityHiding.png}
+		\end{center}
+		\attribution{G. Booch, ``Object-oriented analysis and design''}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Свойства сложных систем}
+		\begin{itemize}
+			\item Иерархичность --- свойство системы состоять из иерархии подсистем или компонентов
+			\begin{itemize}
+				\item Декомпозиция
+			\end{itemize}
+			\item Наличие относительно небольшого количества видов компонентов, экземпляры которых сложно связаны друг с другом
+			\begin{itemize}
+				\item Выделение общих свойств компонентов, абстрагирование
+			\end{itemize}
+			\item Сложная система, как правило, является результатом эволюции простой системы
+			\item Сложность вполне может превосходить человеческие интеллектуальные возможности
+		\end{itemize}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Подходы к декомпозиции}
@@ -83,6 +111,15 @@
 		\end{center}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Сопряжение и связность}
+		\begin{itemize}
+			\item \textbf{Сопряжение (Coupling)} --- мера того, насколько взаимозависимы разные модули в программе
+			\item \textbf{Связность (Cohesion)} --- степень, в которой задачи, выполняемые одним модулем, связаны друг с другом
+			\item Цель: слабое сопряжение и сильная связность
+		\end{itemize}
+	\end{frame}
+
 	\section{Некоторые принципы ОО-проектирования}
 
 	\begin{frame}
@@ -97,8 +134,51 @@
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{Объекты}
+		\begin{itemize}
+			\item Имеют
+			\begin{itemize}
+				\item Состояние
+				\begin{itemize}
+					\item Инвариант
+				\end{itemize}
+				\item Поведение
+				\item Идентичность
+			\end{itemize}
+			\item Взаимодействуют через посылку и приём сообщений
+			\begin{itemize}
+				\item Объект вправе сам решить, как обработать вызов метода (\textbf{полиморфизм})
+				\item Могут существовать в разных потоках
+			\end{itemize}
+			\item Как правило, являются экземплярами \textbf{классов}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Абстракция}
+		\textbf{Абстракция} выделяет существенные характеристики объекта, отличающие его от остальных объектов, с точки зрения наблюдателя
+		\vskip 1cm
+		\begin{center}
+			\includegraphics[width=0.45\textwidth]{abstraction.png}
+		\end{center}
+		\attribution{G. Booch, ``Object-oriented analysis and design''}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Инкапсуляция}
+		\textbf{Инкапсуляция} разделяет интерфейс (\textbf{контракты}) абстракции и её реализацию
+
+		Инкапсуляция защищает \textbf{инварианты} абстракции
+		\vskip 1cm
+		\begin{center}
+			\includegraphics[width=0.45\textwidth]{incapsulation.png}
+		\end{center}
+		\attribution{G. Booch, ``Object-oriented analysis and design''}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Определение объектов реального мира}
-		Архитектура часто начинается с объектной модели предметной области
+		\framesubtitle{Объектная модель предметной области}
 		\begin{itemize}
 			\item Определение объектов и их атрибутов
 			\item Определение действий, которые могут быть выполнены над каждым объектом (назначение ответственности)
@@ -106,36 +186,78 @@
 			\item Определение интерфейса каждого объекта
 		\end{itemize}
 		\begin{center}
-			\includegraphics[width=0.4\textwidth]{billDomainModel.png}
+			\includegraphics[width=0.35\textwidth]{billDomainModel.png}
 		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Изоляция сложности}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}
+					\item Сложные алгоритмы могут быть инкапсулированы
+					\item Сложные структуры данных --- тоже
+					\item И даже сложные подсистемы
+					\item Надо внимательно следить за интерфейсами
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\includegraphics[width=0.7\textwidth]{complexity.png}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Изоляция возможных изменений}
 		\begin{itemize}
-			\item Определите элементы, изменение которых кажется вероятным
-			\item Отделите элементы, изменение которых кажется вероятным
-			\item Изолируйте элементы, изменение которых кажется вероятным
+			\item Потенциальные изменения могут быть инкапсулированы
 			\item Источники изменений
 			\begin{itemize}
 				\item Бизнес-правила
-				\item Зависимости от оборудования
+				\item Зависимости от оборудования и операционной системы
 				\item Ввод-вывод
 				\item Нестандартные возможности языка
 				\item Сложные аспекты проектирования и конструирования
-				\item Переменные статуса
-				\item Размеры структур данных
+				\item Третьесторонние компоненты
 				\item ...
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Сопряжение и связность}
+		\frametitle{Изоляция служебной функциональности}
 		\begin{itemize}
-			\item \textbf{Сопряжение (Coupling)} --- мера того, насколько взаимозависимы разные модули в программе
-			\item \textbf{Связность (Cohesion)} --- степень, в которой задачи, выполняемые одним модулем, связаны друг с другом
-			\item Цель: слабое сопряжение и сильная связность
+			\item Служебная функциональность может быть инкапсулирована
+			\begin{itemize}
+				\item Репозитории
+				\item Фабрики
+				\item Диспетчеры, медиаторы
+				\item Статические классы (\textit{Сервисы})
+				\item ...
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Наследование и композиция}
+		\begin{itemize}
+			\item \textbf{Наследование}
+			\begin{itemize}
+				\item Отношение ``Является'' (is-a)
+				\item Способ абстрагирования и классификации
+				\item Средство обеспечения полиморфизма
+			\end{itemize}
+			\item \textbf{Композиция}
+			\begin{itemize}
+				\item Отношение ``Имеет'' (has-a)
+				\item Способ создания динамических связей
+				\item Средство обеспечения делегирования
+			\end{itemize}
+			\item Более-менее взаимозаменяемы
+			\begin{itemize}
+				\item Объект-потомок на самом деле включает в себя объект-предок
+				\item Композиция обычно предпочтительнее
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
@@ -166,10 +288,10 @@
 	\begin{frame}
 		\frametitle{Open/closed principle}
 		\begin{itemize}
-			\item программные сущности (классы, модули, функции и т. п.) должны быть открыты для расширения, но закрыты для изменения
+			\item Программные сущности (классы, модули, функции и т. п.) должны быть открыты для расширения, но закрыты для изменения
 			\begin{itemize}
-				\item переиспользование через наследование
-				\item неизменные интерфейсы
+				\item Переиспользование через наследование
+				\item Неизменные интерфейсы
 			\end{itemize}
 		\end{itemize}
 		\begin{flushright}
@@ -192,7 +314,7 @@
 		\begin{itemize}
 			\item Клиенты не должны зависеть от методов, которые они не используют
 			\begin{itemize}
-				\item слишком ``толстые'' интерфейсы необходимо разделять на более мелкие и специфические
+				\item Слишком ``толстые'' интерфейсы необходимо разделять на более мелкие и специфические
 			\end{itemize}
 		\end{itemize}
 		\begin{flushright}
@@ -211,6 +333,8 @@
 		\end{flushright}
 	\end{frame}
 
+	\section{Некоторые принципы хорошего кода}
+
 	\begin{frame}
 		\frametitle{Закон Деметры}
 		\begin{itemize}
@@ -221,10 +345,13 @@
 				\item \mintinline{java}|book.pages().last().text()|
 				\item \mintinline{java}|book.lastPageText()|
 			\end{itemize}
+			\item Иногда называют ``Крушение поезда''
 		\end{itemize}
+		\begin{flushright}
+			\includegraphics[width=0.35\textwidth]{trains.png}
+		\end{flushright}
+		\attribution{Р. Мартин, ``Чистый код''}
 	\end{frame}
-	
-	\section{Некоторые принципы хорошего кода}
 	
 	\begin{frame}
 		\frametitle{Абстрактные типы данных}
@@ -241,15 +368,15 @@
 		\frametitle{Пример плохой абстракции}
 		\begin{minted}{java}
 public class Program {
-	public void initializeCommandStack() { ... }
-	public void pushCommand(Command command) { ... }
-	public Command popCommand() { ... }
-	public void shutdownCommandStack() { ... }
-	public void initializeReportFormatting() { ... }
-	public void formatReport(Report report) { ... }
-	public void printReport(Report report) { ... }
-	public void initializeGlobalData() { ... }
-	public void shutdownGlobalData() { ... }
+    public void initializeCommandStack() { ... }
+    public void pushCommand(Command command) { ... }
+    public Command popCommand() { ... }
+    public void shutdownCommandStack() { ... }
+    public void initializeReportFormatting() { ... }
+    public void formatReport(Report report) { ... }
+    public void printReport(Report report) { ... }
+    public void initializeGlobalData() { ... }
+    public void shutdownGlobalData() { ... }
 }
 		\end{minted}
 \end{frame}
@@ -259,21 +386,21 @@ public class Program {
 		\begin{footnotesize}
 			\begin{minted}{java}
 public class Employee {
-	public Employee(
-			FullName name,
-			String address,
-			String workPhone,
-			String homePhone,
-			TaxId taxIdNumber,
-			JobClassification jobClass
-	) { ... }
+    public Employee(
+            FullName name,
+            String address,
+            String workPhone,
+            String homePhone,
+            TaxId taxIdNumber,
+            JobClassification jobClass
+    ) { ... }
 
-	public FullName getName() { ... }
-	public String getAddress() { ... }
-	public String getWorkPhone() { ... }
-	public String getHomePhone() { ... }
-	public TaxId getTaxIdNumber() { ... }
-	public JobClassification getJobClassification() { ... }
+    public FullName getName() { ... }
+    public String getAddress() { ... }
+    public String getWorkPhone() { ... }
+    public String getHomePhone() { ... }
+    public TaxId getTaxIdNumber() { ... }
+    public JobClassification getJobClassification() { ... }
 }
 			\end{minted}
 		\end{footnotesize}
@@ -283,11 +410,11 @@ public class Employee {
 		\frametitle{Уровень абстракции (плохо)}
 		\begin{minted}{java}
 public class EmployeeRoster implements MyList<Employee> {
-	public void addEmployee(Employee employee) { ... }
-	public void removeEmployee(Employee employee) { ... }
-	public Employee nextItemInList() { ... }
-	public Employee firstItem() { ... }
-	public Employee lastItem() { ... }
+    public void addEmployee(Employee employee) { ... }
+    public void removeEmployee(Employee employee) { ... }
+    public Employee nextItemInList() { ... }
+    public Employee firstItem() { ... }
+    public Employee lastItem() { ... }
 }
 		\end{minted}
 \end{frame}
@@ -296,11 +423,11 @@ public class EmployeeRoster implements MyList<Employee> {
 		\frametitle{Уровень абстракции (хорошо)}
 		\begin{minted}{java}
 public class EmployeeRoster {
-	public void addEmployee(Employee employee) { ... }
-	public void removeEmployee(Employee employee) { ... }
-	public Employee nextEmployee() { ... }
-	public Employee firstEmployee() { ... }
-	public Employee lastEmployee() { ... }
+    public void addEmployee(Employee employee) { ... }
+    public void removeEmployee(Employee employee) { ... }
+    public Employee nextEmployee() { ... }
+    public Employee firstEmployee() { ... }
+    public Employee lastEmployee() { ... }
 }
 		\end{minted}
 \end{frame}
@@ -332,9 +459,9 @@ public class EmployeeRoster {
 			\begin{column}{0.25\textwidth}
 				\begin{minted}{java}
 class Point {
-	public float x;
-	public float y;
-	public float z;
+    public float x;
+    public float y;
+    public float z;
 }
 				\end{minted}
 			\end{column}
@@ -344,15 +471,15 @@ class Point {
 			\begin{column}{0.5\textwidth}
 				\begin{minted}{java}
 class Point {
-	private float x;
-	private float y;
-	private float z;
-	public float getX() { ... }
-	public float getY() { ... }
-	public float getZ() { ... }
-	public void setX(float x) { ... }
-	public void setY(float y) { ... }
-	public void setZ(float z) { ... }
+    private float x;
+    private float y;
+    private float z;
+    public float getX() { ... }
+    public float getY() { ... }
+    public float getZ() { ... }
+    public void setX(float x) { ... }
+    public void setY(float y) { ... }
+    public void setZ(float z) { ... }
 }
 				\end{minted}
 			\end{column}
@@ -406,16 +533,16 @@ class Point {
 				\begin{column}{0.35\textwidth}
 					\begin{minted}{java}
 class Operation {
-	private char sign = '+';
-	private int left;
-	private int right;
-	public int eval()
-	{
-		switch (sign) {
-			case '+': return left + right;
-		}
-		throw new RuntimeException();
-	}
+    private char sign = '+';
+    private int left;
+    private int right;
+    public int eval()
+    {
+        switch (sign) {
+            case '+': return left + right;
+        }
+        throw new RuntimeException();
+    }
 }
 					\end{minted}
 				\end{column}
@@ -425,17 +552,17 @@ class Operation {
 				\begin{column}{0.45\textwidth}
 					\begin{minted}{java}
 abstract class Operation {
-	private int left;
-	private int right;
-	protected int getLeft() { return left; }
-	protected int getRight() { return right; }
-	abstract public int eval();
+    private int left;
+    private int right;
+    protected int getLeft() { return left; }
+    protected int getRight() { return right; }
+    abstract public int eval();
 }
 
 class Plus extends Operation {
-	@Override public int eval() { 
-		return getLeft() + getRight(); 
-	}
+    @Override public int eval() { 
+        return getLeft() + getRight(); 
+    }
 }
 					\end{minted}
 				\end{column}
@@ -460,18 +587,23 @@ class Plus extends Operation {
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Когда создавать классы}
-		\begin{itemize}
-			\item Объекты предметной области
-			\item Абстрактные объекты
-			\item Изоляция сложности
-			\item Сокрытие деталей реализации
-			\item Изоляция изменчивости
-			\item Упаковка родственных операций
-			\begin{itemize}
-				\item Статические классы вполне ок
-			\end{itemize}
-		\end{itemize}
+		\frametitle{Заключение}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.7\textwidth]{wtfsMin.png}
+				\end{center}
+				\vspace{-0.8cm}
+				\attribution{http://commadot.com, Thom Holwerda}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.7\textwidth]{goodCodeXkcd.png}
+				\end{center}
+				\vspace{-0.8cm}
+				\attribution{https://xkcd.com}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 \end{document}
