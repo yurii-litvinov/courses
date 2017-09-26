@@ -25,6 +25,8 @@
 
 	\frame{\titlepage}
 
+	\section{Контейнеры}
+
 	\begin{frame}
 		\frametitle{Интерфейсы контейнеров}
 		\begin{columns}
@@ -112,6 +114,8 @@ var str = list[0];
 		\end{itemize}
 	\end{frame}
 
+	\section{Параметрический полиморфизм}
+
 	\begin{frame}
 		\frametitle{Полиморфизм}
 		\begin{itemize}
@@ -156,6 +160,8 @@ var str = list[0];
 
 		Подробности: Cardelli, Luca, and Peter Wegner. "On understanding types, data abstraction, and polymorphism." ACM Computing Surveys (CSUR) 17.4 (1985): pp. 471-523.
 	\end{frame}
+
+	\section{Генерики в .NET}
 
 	\begin{frame}[fragile]
 		\frametitle{Генерики в .NET}
@@ -438,6 +444,8 @@ public class Outermost<T>
 		Объект вложенного класса нельзя создать, не указав параметры-типы объемлющего класса
 	\end{frame}
 
+	\section{Ограничения}
+	
 	\begin{frame}[fragile]
 		\frametitle{Ограничения}
 		\begin{minted}{csharp}
@@ -596,6 +604,8 @@ private static T Sum<T>(T num) where T : struct {
 		\end{footnotesize}
 	\end{frame}
 
+	\section{Вариантность}
+
 	\begin{frame}[fragile]
 		\frametitle{Вариантность}
 		\begin{minted}{csharp}
@@ -706,7 +716,179 @@ public interface IContainer<out T>
 		\frametitle{Подробности}
 		Взгляд на генерики и вариантность с точки зрения теории категорий:
 
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{covariantFunctors.png}
+
+			\vspace{4mm}
+			\includegraphics[width=0.6\textwidth]{contravariantFunctors.png}
+		\end{center}
+			
 		\href{http://tomasp.net/blog/variance-explained.aspx/}{http://tomasp.net/blog/variance-explained.aspx/}
+	\end{frame}
+
+	\section{LINQ}
+
+	\begin{frame}
+		\frametitle{LINQ}
+		\framesubtitle{Language INtegrated Query}
+		\begin{itemize}
+			\item Набор методов-расширений, позволяющий работать с коллекциями в функциональном стиле
+			\begin{itemize}
+				\item Для IEnumerable<T>
+				\item Для IQueryable<T>
+			\end{itemize}
+			\item Использует синтаксис, схожий с SQL
+			\begin{itemize}
+				\item Select --- map
+				\item Where --- filter
+				\item Aggregate --- fold
+			\end{itemize}
+			\item Реализации:
+			\begin{itemize}
+				\item LINQ to Objects
+				\item LINQ to XML
+				\item LINQ to SQL
+				\item ...
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+var file = System.IO.File.ReadAllText("words.txt"); 
+
+var words = file.Split(delimiters) 
+           .Where(w => !w.IsNullOrWhiteSpace()) 
+           .Select(w => w.ToLower());
+
+var wordcount = words.GroupBy(w => w).Select(group =>
+                    new{ Word = group.Key, Count = group.Count() };
+			\end{minted}
+		\end{footnotesize}
+		\vspace{3mm}
+		или
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+var words = from w in file.Split(delimiters) 
+            where !w.IsNullOrWhiteSpace() 
+            select w.ToLower();
+
+var wordcount = from w in words 
+                group by w into group 
+               select new { Word = group.Key, Count = group.Count() };
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Синтаксический сахар}
+		\begin{minted}{csharp}
+var foo = from baz in bar select qux
+		\end{minted}
+		\vspace{3mm}
+		раскрывается в
+		\begin{minted}{csharp}
+var foo = bar.Select(baz => qux)
+		\end{minted}
+		\vspace{3mm}
+		Поиск метода выполняется после раскрытия, обычными правилами системы типов, так что синтаксис не привязан к коллекциям
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Свои провайдеры}
+		\begin{minted}{csharp}
+var request = Yahoo.WeatherService()
+              .Where(forecast => forecast.City == city)
+              .Where(forecast => forecast.Temperature.In.units); 
+var response = await request;
+		\end{minted}
+		\vspace{3mm}
+		или
+		\begin{minted}{csharp}
+var request = from forecast in Yahoo.WeatherService() 
+              where forecast.City == city 
+              where forecastTemperature.In.units 
+              select forecast; 
+var response = await request;
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Как это может работать}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{yahooWeather.png}
+		\end{center}
+		\begin{minted}{csharp}
+WeatherInCity Where(Weather source, Func<CityPicker, string> city) 
+    => new WeatherInCity{ City = city(new CityPicker()) }; 
+...
+class CityPicker { City City; } 
+class City 
+{ 
+    static string operator == (City c, string s) { return s; } 
+} 
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Больше безумия}
+		\framesubtitle{Тип Expression и разбор лямбда-выражений}
+		\begin{minted}{csharp}
+Expression<Func<int, bool>> filter = n => n < 5;
+BinaryExpression body  = (BinaryExpression)filter.Body;
+ParameterExpression left  = (ParameterExpression)body.Left;
+ConstantExpression right = (ConstantExpression)body.Right;
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Зачем}
+		\framesubtitle{IQueryable<T>}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+class Queryable<T> 
+{ 
+    Expression This { get; set; } 
+
+    Queryable() { This = Expression.Constant(this); } 
+
+    Queryable<S> Select<S>(Expression<Func<T, S>> f) { 
+        return new Queryable<S> { 
+            This = Expression.Call(This, "Select", new[] { typeof(S) }, f) 
+        }; 
+    }
+} 
+			\end{minted}
+		\end{footnotesize}
+		И дальше провайдер делает с результирующим выражением что хочет, например, транслирует в SQL-запрос
+
+		Подробности в \url{http://queue.acm.org/detail.cfm?id=2024658}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{yield return}
+		\framesubtitle{Ленивые вычисления}
+		Большинство вычислений в LINQ to Objects ленивы
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public static class FibonacciCounter {
+    public static IEnumerable<int> Fibonacci() {
+        int prev = 0;
+        int cur = 1;
+        while (true) {
+            yield return cur;
+            int next = prev + cur;
+            prev = cur;
+            cur = next;
+        }
+    }
+}
+...
+FibonacciCounter.Fibonacci().Take(10).ToList().ForEach(Console.WriteLine);
+			\end{minted}
+		\end{footnotesize}
 	\end{frame}
 
 \end{document}
