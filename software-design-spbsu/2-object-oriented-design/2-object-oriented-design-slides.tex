@@ -487,6 +487,47 @@ class Point {
 		\end{columns}
 \end{frame}
 
+\begin{frame}[fragile]
+	\frametitle{Pointer To Implementation}
+	\begin{columns}
+		\begin{column}{0.32\textwidth}
+			\begin{footnotesize}
+				\begin{minted}{c++}
+class Employee {
+public:
+    Employee(...);
+    FullName name() const;
+    std::string address() const;
+private:
+    std::string mName;
+    std::string mAddress;
+    int mJobClass;
+};
+				\end{minted}
+			\end{footnotesize}
+		\end{column}
+		\begin{column}{0.02\textwidth}
+			vs
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{footnotesize}
+				\begin{minted}{c++}
+class EmployeeImplementation;
+
+class Employee {
+public:
+    Employee(...);
+    FullName name() const;
+    std::string address() const;
+private:
+    EmployeeImplementation *mImpl;
+};
+				\end{minted}
+			\end{footnotesize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 	\begin{frame}
 		\frametitle{Ещё рекомендации}
 		\begin{itemize}
@@ -584,6 +625,66 @@ class Plus extends Operation {
 			\begin{itemize}
 				\item Хотя второе может быть эффективнее
 			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Мутабельность}
+		\textbf{Мутабельность} --- способность изменяться
+		\begin{itemize}
+			\item Запутывает поток данных
+			\item Гонки
+		\end{itemize}
+		\vspace{3mm}
+		Чтобы сделать класс немутабельным, надо:
+		\begin{itemize}
+			\item Не предоставлять методы, модифицирующие состояние
+			\begin{itemize}
+				\item Заменить их на методы, возвращающие копию
+			\end{itemize}
+			\item Не разрешать наследоваться от класса
+			\item Сделать все поля константными
+			\item Не давать никому ссылок на поля мутабельных типов
+		\end{itemize}
+		Всё должно быть немутабельно по умолчанию!
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Про оптимизацию}
+		Во имя эффективности (без обязательности ее достижения) делается больше вычислительных ошибок, чем по каким-либо иным причинам, включая непроходимую тупость. \newline
+		-- William A. Wulf 
+	
+		\vspace{3mm}
+		Мы обязаны забывать о мелких усовершенствованиях, ска­жем, на 97\% рабочего времени: опрометчивая оптимизация --- корень всех зол. \newline
+		-- Donald E. Knuth
+	
+		\vspace{3mm}
+		Что касается оптимизации, то мы следуем двум правилам: \newline
+		Правило 1. Не делайте этого.  \newline
+		Правило 2 (только для экспертов). Пока не делайте этого -- т.е. пока у вас нет абсолютно четкого, но неоптимизированного решения. \newline
+		-- M. A. Jackson
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Общие рекомендации}
+		\begin{itemize}
+			\item Fail Fast
+			\begin{itemize}
+				\item Не доверяйте параметрам, переданным извне
+				\item assert-ы -- чем больше, тем лучше
+			\end{itemize}
+			\item Документируйте все открытые элементы API
+			\begin{itemize}
+				\item И заодно всё остальное, для тех, кто будет это сопровождать
+				\item Предусловия и постусловия, исключения, потокобезопасность
+			\end{itemize}
+			\item Статические проверки и статический анализ лучше, чем проверки в рантайме
+			\begin{itemize}
+				\item Используйте систему типов по максимуму
+			\end{itemize}
+			\item Юнит-тесты
+			\item Continious Integration
+			\item Не надо бояться всё переписать
 		\end{itemize}
 	\end{frame}
 
