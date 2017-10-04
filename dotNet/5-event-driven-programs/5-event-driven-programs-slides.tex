@@ -20,7 +20,7 @@
 \title{Событийно-ориентированное программирование}
 \subtitle{Делегаты, события, лямбда-функции}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{5}
+\date{05.10.2017г}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -292,8 +292,8 @@ public void UnregisterLeftHandler(ArrowHandler left)
 	\begin{frame}[fragile]
 		\frametitle{Как примерно выглядит Invoke для цепочки}
 		\begin{minted}{csharp}
-public Int32 Invoke(Int32 value) {
-    Int32 result;
+public int Invoke(int value) {
+    int result;
     Delegate[] delegateSet = _invocationList as Delegate[];
     if (delegateSet != null) {
         foreach (Feedback d in delegateSet)
@@ -607,5 +607,239 @@ protected virtual void OnFoo(FooEventArgs e) {
 		\vspace{7mm}
 		eventSet --- рукописный словарь с цепочками обработчиков, не поместившийся в презентацию
 	\end{frame}
+
+	\begin{frame}
+		\frametitle{Rx.NET}
+		\framesubtitle{Reactive Extensions}
+		\begin{itemize}
+			\item Библиотека, позволяющая работать с событиями как с последовательностями
+			\item Зачем:
+			\begin{itemize}
+				\item Передавать события как параметры, хранить и возвращать как результат
+				\item Фильтровать, отображать, соединять друг с другом и т.д.
+				\item LINQ
+				\item Дружит с многопоточностью
+				\item Чтобы было как в F\#-е и даже лучше
+			\end{itemize}
+			\item Часть библиотеки доступна из коробки в .NET с 4.5, часть --- как пакет в NuGet
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Основные интерфейсы}
+		\begin{minted}{csharp}
+public interface IObservable<out T> 
+{
+    IDisposable Subscribe(IObserver<T> observer); 
+}
+
+public interface IObserver<in T> 
+{ 
+    void OnCompleted();
+    void OnError(Exception error);
+    void OnNext(T value);
+} 
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{minted}{csharp}
+static void Main(string[] args)
+{
+    IObservable<int> source = Observable.Range(1, 10);
+    IDisposable subscription = source.Subscribe(
+        x => Console.WriteLine($"OnNext: {x}"),
+        ex => Console.WriteLine($"OnError: {ex.Message}"),
+        () => Console.WriteLine("OnCompleted"));
+    Console.WriteLine("Press ENTER to unsubscribe...");
+    Console.ReadLine();
+    subscription.Dispose();
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример с таймером}
+		\begin{small}
+			\begin{minted}{csharp}
+Console.WriteLine("Current Time: " + DateTime.Now);
+
+var source = Observable.Timer(
+        TimeSpan.FromSeconds(5), 
+        TimeSpan.FromSeconds(1))
+    .Timestamp();
+
+using (source.Subscribe(x => Console.WriteLine($"{x.Value}: {x.Timestamp}")))
+{
+    Console.WriteLine("Press any key to unsubscribe");
+    Console.ReadKey();
+}
+
+Console.WriteLine("Press any key to exit");
+Console.ReadKey();
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Холодная'' последовательность}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+IObservable<long> source = Observable.Interval(TimeSpan.FromSeconds(1));   
+
+IDisposable subscription1 = source.Subscribe(
+        x => Console.WriteLine($"Observer 1: OnNext: {x}"),
+        ex => Console.WriteLine($"Observer 1: OnError: {ex.Message}"),
+        () => Console.WriteLine("Observer 1: OnCompleted"));
+
+System.Threading.Threading.Thread.Sleep(3000);
+
+IDisposable subscription2 = source.Subscribe(
+        x => Console.WriteLine($"Observer 2: OnNext: {x}"),
+        ex => Console.WriteLine($"Observer 2: OnError: {ex.Message}"),
+        () => Console.WriteLine("Observer 2: OnCompleted"));
+
+Console.WriteLine("Press any key to unsubscribe");
+Console.ReadLine();
+subscription1.Dispose();
+subscription2.Dispose();
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Горячая'' последовательность}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+Console.WriteLine("Current Time: " + DateTime.Now);
+var source = Observable.Interval(TimeSpan.FromSeconds(1));
+
+IConnectableObservable<long> hot = Observable.Publish(source);
+
+IDisposable subscription1 = hot.Subscribe(
+    x => Console.WriteLine($"Observer 1: OnNext: {x}"),
+    ex => Console.WriteLine($"Observer 1: OnError: {ex.Message}"),
+    () => Console.WriteLine("Observer 1: OnCompleted"));
+
+Console.WriteLine("Current Time after 1st subscription: " + DateTime.Now);
+Thread.Sleep(3000);
+hot.Connect();
+Console.WriteLine("Current Time after Connect: " + DateTime.Now);
+Thread.Sleep(3000);
+Console.WriteLine("Current Time just before 2nd subscription: " + DateTime.Now);
+
+IDisposable subscription2 = hot.Subscribe(
+    x => Console.WriteLine($"Observer 2: OnNext: {x}"),
+    ex => Console.WriteLine($"Observer 2: OnError: {ex.Message}"),
+    () => Console.WriteLine("Observer 2: OnCompleted"));
+
+Console.ReadKey();
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Представление событий как IObservable<T>}
+		\begin{minted}{csharp}
+var lbl = new Label(); 
+var frm = new Form { Controls = { lbl } }; 
+
+IObservable<EventPattern<MouseEventArgs>> move 
+        = Observable.FromEventPattern<MouseEventArgs>(
+                frm, "MouseMove");
+
+move.Subscribe(evt => { 
+        lbl.Text = evt.EventArgs.Location.ToString(); 
+        }) ;
+
+Application.Run(frm);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Операторы над IObservable<T>}
+		\begin{minted}{csharp}
+var source1 = Observable.Range(1, 3);
+var source2 = Observable.Range(1, 3);
+source1.Concat(source2)  // Или source1.Merge(source2)
+        .Subscribe(Console.WriteLine);
+
+var source3 = Observable.Throw<int>(
+        new Exception("An error has occurred."));
+var source4 = Observable.Range(1, 3);
+source3.OnErrorResumeNext(source4)
+        .Subscribe(Console.WriteLine);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{LINQ-синтаксис}
+		\begin{small}
+			\begin{minted}{csharp}
+var seqNum = Observable.Range(1, 5);
+var seqString = from n in seqNum
+                select new string('*', (int)n);
+seqString.Subscribe(str => { Console.WriteLine(str); });
+Console.ReadKey();
+
+var frm = new Form();
+IObservable<EventPattern<MouseEventArgs>> move 
+        = Observable.FromEventPattern<MouseEventArgs>(frm, "MouseMove");
+
+IObservable<System.Drawing.Point> points = from evt in move
+                                           select evt.EventArgs.Location;
+
+points.Subscribe(pos => Console.WriteLine("mouse at " + pos));
+Application.Run(frm);
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Или даже вот так}
+		\begin{small}
+			\begin{minted}{csharp}
+var frm = new Form(); 
+IObservable<EventPattern<MouseEventArgs>> move 
+        = Observable.FromEventPattern<MouseEventArgs>(frm, "MouseMove");
+
+IObservable<System.Drawing.Point> points = 
+        from evt in move
+        select evt.EventArgs.Location;
+
+var overFirstBisector = 
+        from pos in points
+        where pos.X == pos.Y 
+        select pos;
+
+var moveSub = overFirstBisector.Subscribe(
+        pos => Console.WriteLine("mouse at " + pos));
+
+Application.Run(frm);
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Subject}
+		\begin{small}
+			\begin{minted}{csharp}
+Subject<int> subject = new Subject<int>();
+var subscription = subject.Subscribe(
+        x => Console.WriteLine("Value published: {0}", x),
+        () => Console.WriteLine("Sequence Completed."));
+
+subject.OnNext(1);
+subject.OnNext(2);
+
+Console.WriteLine("Press any key to continue");
+Console.ReadKey();
+subject.OnCompleted();
+subscription.Dispose();
+			\end{minted}
+		\end{small}
+	\end{frame}
+
 
 \end{document}
