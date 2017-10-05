@@ -369,6 +369,60 @@ public class OrderLine {
 		\end{columns}
 	\end{frame}
 
+	\begin{frame}[fragile]
+		\frametitle{Двунаправленные ассоциации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{scriptsize}
+					\begin{center}
+						\includegraphics[width=0.9\textwidth]{twoWayAssociations.png}
+					\end{center}
+	
+					\begin{minted}{csharp}
+class Car {
+    public Person Owner {
+        get { return _owner; }
+        set {
+            if (_owner != null) 
+                _owner.friendCars().Remove(this);
+            _owner = value;
+            if (_owner != null) 
+                _owner.friendCars().Add(this);
+        }
+    }
+    private Person _owner;
+}
+					\end{minted}
+				\end{scriptsize}
+				\vspace{2mm}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{scriptsize}
+					\begin{center}
+						\includegraphics[width=0.9\textwidth]{personOwnsCar.png}
+					\end{center}
+	
+					\begin{minted}{csharp}
+class Person {
+    public IList Cars {
+        get { return ArrayList.ReadOnly(_cars); }
+    }
+    public void AddCar(Car arg) {
+        arg.Owner = this;
+    }
+    private IList _cars = new ArrayList();
+    internal IList friendCars() {
+        // должен быть использован 
+        // только Car.Owner
+        return _cars;
+    }
+}
+					\end{minted}
+				\end{scriptsize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}
 		\frametitle{Интерфейсы}
 		\begin{center}
