@@ -1,0 +1,256 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,urlcolor=links}
+\hypersetup{linkcolor=}
+
+\tabulinesep=1.2mm
+
+\title{Разбор домашнего задания \#1}
+\subtitle{Trie}
+\author[Михаил Веселов, Юрий Литвинов]{
+	Михаил Веселов\\\small{\textcolor{gray}{mikhail.veselov@gmail.com}}\\
+	\vspace{3mm}
+	Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}
+}
+
+\date{05.10.2017г}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Критерии оценки}
+		\begin{itemize}
+			\item Возможное количество баллов: от 0 до 10
+			\item Оценивался код самой реализации Trie
+			\item Тестовый проект был необязательным
+			\item За неработающую реализацию снимались баллы по формуле $n / 5$ (n --- количество некорректных методов)
+			\item За оформление кода снималось от 1 до 2 баллов, в зависимости от количества замечаний
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Частые ошибки в реализации}
+		\begin{itemize}
+			\item Расчёт на то, что символы --- только латинские
+			\begin{itemize}
+				\item Ломается на добавлении русских букв
+			\end{itemize}
+			\item Отсутствие проверки на конец слова в вершине: \newline 
+				флаг (is)terminal
+			\begin{itemize}
+				\item Ломается на проверке вхождения подстроки ``a'' после добавления полной строки ``ab''
+			\end{itemize}
+			\item Несогласованная работа с пустыми строками
+			\begin{itemize}
+				\item Ломается, когда нельзя добавить пустую строку, но можно удалить
+			\end{itemize}
+			\item Не создан pull-request и ветка для задания
+			\begin{itemize}
+				\item В задании это было обязательным пунктом
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Частые недочёты в Unit-тестах}
+		\begin{itemize}
+			\item Именование тестов
+			\begin{itemize}
+				\item Название теста должно содержать максимум информации об ошибке (удобно при просмотре списка из 200 тестов, упавших после merge)
+				\item Статья \href{http://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html}{Naming standards for unit tests} как \textbf{пример} именования (на MSDN тоже есть длинная \href{https://msdn.microsoft.com/en-us/library/hh694602.aspx}{статья})
+			\end{itemize}
+			\item Один тест --- не один случай проверки
+			\begin{itemize}
+				\item Нехорошо, когда в одном тесте проверяется сразу несколько действий
+				\item Тест состоит из трёх частей, даже в простых случаях: Arrange, Act, Assert
+			\end{itemize}
+			\item Неполное покрытие логики тестами (\href{https://stackoverflow.com/questions/276829/what-can-i-use-for-good-quality-code-coverage-for-c-net}{вопрос на SO про утилиты})
+			\item Повторная инициализация переменных в каждом тесте вместо использования SetUp/TestInitialize/\href{https://xunit.github.io/docs/shared-context.html}{IDisposable}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Стандарты кодирования (holywar!)}
+		\begin{itemize}
+			\item Обратимся к первоисточнику (вспоминаем лекцию введения)
+			\begin{itemize}
+				\item Наберите в Google \textit{C\# Coding Conventions}, нажмите ``Мне повезёт!'', [и если вам повезёт,] вы попадёте на \href{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions}{официальную точку зрения}
+				\item В разделе \href{https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/}{Framework Design Guidelines} раскрыты вопросы дизайна приложения, в том числе именования (об этом дальше)
+			\end{itemize}
+			\item StyleCop
+			\begin{itemize}
+				\item Не все правила соответствуют практике
+				\item Особенно много конфликтов с анализатором ReSharper
+				\item Не надо отключать правила пачками \newline
+					(нет никакого смысла анализировать код, если отключено >= 7 правил)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Holywar \#2: Фигурные скобки}
+		\begin{minted}{csharp}
+if (ch == 'h')
+    Console.Write("H");
+if (ch == 'h') Console.Write("H");
+if (ch == 'h') while (true) for (;;) Console.Write("H");
+		\end{minted}
+		\begin{itemize}
+			\item Выделяйте в блок даже одну короткую строку кода
+			\item Отсутствие скобок ЯВЛЯЕТСЯ ошибкой, НУЖНО исправлять
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Holywar \#2: Фигурные скобки}
+		\begin{itemize}
+			\item Каков результат этого метода?
+			\item Сколько времени ушло на ответ?
+		\end{itemize}
+		\begin{minted}{csharp}
+// корректный C#
+private int GetInt()
+{
+    if (Check());
+        return 4;
+
+    if (Check())
+        return 5;
+        return 6;
+
+    return 7;
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Holywar \#3: поля классов и this}
+		\begin{itemize}
+			\item (мнение \href{https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-type-members\#names-of-fields}{MS}):
+			\begin{itemize}
+				\item \mintinline{csharp}|public| и \mintinline{csharp}|protected| не-\mintinline{csharp}|static| поля запрещены
+				\item Именование \mintinline{csharp}|private| и \mintinline{csharp}|internal| полей не регламентировано
+				\item Не используйте префиксов типа \mintinline{csharp}|m_имяПоля|
+			\end{itemize}
+			\item (мнение StyleCop):
+			\begin{itemize}
+				\item \mintinline{csharp}|this.имяПоля|
+				\item Символ ``\_'' запрещён в начале имени члена класса
+			\end{itemize}
+			\item (мнение Resharper):
+			\begin{itemize}
+				\item \mintinline{csharp}|this| избыточен
+				\item \mintinline{csharp}|private| поле должно начинаться с ``\_''
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Holywar \#3: поля классов и this}
+		\begin{itemize}
+			\item (практика):
+			\begin{itemize}
+				\item Чем дольше вы пишите код, тем очевиднее вам избыточность \mintinline{csharp}|this|:
+					\begin{minted}{csharp}
+this.Count += this.newItems * this.GetPrice();
+					\end{minted}
+				\item ``\_'' - простой способ различать поле класса и параметр/переменную
+				\item Если в вашем проекте подключён StyleCop и не выключены правила про именование полей и \mintinline{csharp}|this|, подобный код НЕ является ошибкой, МОЖНО не исправлять
+				\item В противном случае следуйте мнению Resharper
+			\end{itemize}
+			\item \href{https://stackoverflow.com/questions/2526346/naming-conventions-for-private-members-of-net-types}{Holywar на SO \#1}
+			\item \href{https://stackoverflow.com/questions/4540146/naming-convention-for-private-fields}{Holywar на SO \#2}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Holywar \#4: Керниган \& Ричи}
+		\begin{itemize}
+			\item C, C++, Java, Javascript (\href{https://blog.codinghorror.com/new-programming-jargon/}{египетские скобки}):
+				\begin{minted}{csharp}
+private void method() {
+}
+				\end{minted}
+			\item C\# (\href{https://softwareengineering.stackexchange.com/questions/236995/why-do-c-developers-newline-opening-brackets}{пустая строка с одной фигурной скобкой}):
+				\begin{minted}{csharp}
+private void method() 
+{
+}
+				\end{minted}
+			\item Поведение C\# в Visual Studio \href{https://stackoverflow.com/questions/4860933/how-to-make-visual-studio-not-put-on-a-new-line}{можно отключить}
+			\item Оба способа приемлемы, если соблюдаются по ВСЕМУ проекту
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Holywar \#5: \mintinline{csharp}|for| или \mintinline{csharp}|foreach|}
+		\begin{itemize}
+			\item Разные замеры производительности --- \href{https://stackoverflow.com/questions/365615/in-net-which-loop-runs-faster-for-or-foreach}{разные результаты} (вспоминаем лекцию про benchmarking)
+			\item Обращение по индексу в \mintinline{csharp}|for| может быть быстрее
+			\item \mintinline{csharp}|foreach| отслеживает изменение коллекции и в целом понятнее
+			\item Оба способа приемлемы, если соблюдаются по ВСЕМУ проекту
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Holywar \#6: \mintinline{csharp}|using| внутри или снаружи}
+		\begin{itemize}
+			\item (мнение StyleCop):
+			\begin{itemize}
+				\item Внутри, и \href{https://stackoverflow.com/questions/125319/should-using-statements-be-inside-or-outside-the-namespace/151560\#151560}{вот почему}
+			\end{itemize}
+			\item (мнение MS):
+			\begin{itemize}
+				\item Снаружи, и директивы ``System.*'' в начале списка
+			\end{itemize}
+			\item (практика):
+			\begin{itemize}
+				\item Если у вас код зависит от локальности директив \mintinline{csharp}|using|, это необычно
+				\item Обычно --- один файл, одно пространство имён, директивы снаружи
+				\item Если в вашем проекте подключён StyleCop и не выключено правило про директивы \mintinline{csharp}|using|, подобный код НЕ является ошибкой, МОЖНО не исправлять
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Мысли вслух}
+		\begin{itemize}
+			\item Некоторые решения содержат покрытие тестами на 100\%, а некоторые не работают с \href{https://blogs.msdn.microsoft.com/ericlippert/2011/07/12/what-curious-property-does-this-string-have/}{волшебной строкой}
+			\item Обращение по индексу массива с помощью переменной \mintinline{csharp}|char| это:
+			\begin{itemize}
+				\item нехорошо (можно выпасть за пределы массива)
+				\item непонятно (происходит \href{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/char\#conversions}{неявное преобразование} char в int)
+			\end{itemize}
+			\item NUnit и MSTest можно настроить на получение нескольких аргументов на вход: \href{https://stackoverflow.com/questions/9021881/how-to-run-a-test-method-with-multiple-parameters-in-mstest}{вопрос на SO}
+			\item Чем меньше target версия .Net Framework (4.5.2) или .Net Standard (1.1), тем на большем количестве устройств будет выполняться ваш код
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Итоги}
+		\begin{itemize}
+			\item Стандарты кодирования --- это соглашения
+			\item В случае несогласия --- спорьте
+			\item В случае неясного комментария --- спрашивайте
+		\end{itemize}
+	\end{frame}
+
+\end{document}
