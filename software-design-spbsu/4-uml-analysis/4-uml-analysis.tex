@@ -21,7 +21,7 @@
 
 \tabulinesep=1.2mm
 
-\title[UML и анализ]{Лекция 4: UML и анализ}
+\title[Моделирование и анализ]{Лекция 4: Моделирование и анализ}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
 \date{12.10.2017г}
 
@@ -58,6 +58,8 @@
 		\end{itemize}
 	\end{frame}
 
+	\section{Моделирование случаев использования}
+	
 	\begin{frame}
 		\frametitle{Диаграмма случаев использования UML}
 		\framesubtitle{Диаграмма прецедентов}
@@ -123,6 +125,276 @@
 		\begin{center}
 			\includegraphics[width=0.9\textwidth]{useCaseExample.png}
 			\attribution{R.M. Roth et al., System Analysis and Design}
+		\end{center}
+	\end{frame}
+
+	\section{IDEF0}
+
+	\begin{frame}
+		\frametitle{Контекстная диаграмма IDEF0}
+		\begin{itemize}
+			\item Обозначает границы системы и способы её взаимодействия с внешним миром
+			\item Используется для моделирования не только ПО
+			\item Каждая сторона имеет свой смысл
+			\begin{itemize}
+				\item Слева --- входные данные или материалы
+				\item Сверху --- управление
+				\item Снизу --- механизмы
+				\item Справа --- выходные данные или продукты
+			\end{itemize}
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.4\textwidth]{idef0Example.png}
+			\attribution{http://ecm-journal.ru}
+		\end{center}
+	\end{frame}
+
+	\section{Моделирование характеристик}
+
+	\begin{frame}
+		\frametitle{Диаграмма характеристик}
+		\framesubtitle{Feature Diagram}
+		\begin{itemize}
+			\item Представляет функциональность системы в виде дерева
+			\item Используется в основном для моделирования семейств программных продуктов (Product lines)
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{featureDiagram.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма характеристик, пример}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{featureDiagramExample.png}
+			\attribution{D. Brugali}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Feature Tree}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{featureTree.png}
+		\end{center}
+	\end{frame}
+
+	\section{Моделирование требований в SysML}
+
+	\begin{frame}
+		\frametitle{Диаграмма требований, SysML}
+		\begin{itemize}
+			\item Более формальная нотация дерева фич
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{sysMlRequirementDiagram.png}
+			\attribution{OMG SysML 1.4 Specification}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Какие отношения бывают}
+		\begin{small}
+			\begin{tabu} {X[0.9 r m] X[0.2 l p] X[1 l p]}
+				Contains   & & \includegraphics[width=0.2\textwidth]{sysMlContains.png} \\
+				Derive     & & \includegraphics[width=0.25\textwidth]{sysMlDerive.png}  \\
+				Refine     & & \includegraphics[width=0.25\textwidth]{sysMlRefine.png}  \\
+				Satisfy    & & \includegraphics[width=0.25\textwidth]{sysMlSatisfy.png} \\
+				Verify     & & \includegraphics[width=0.25\textwidth]{sysMlVerify.png}  \\
+				Trace      & & \includegraphics[width=0.25\textwidth]{sysMlTrace.png}   \\
+				Copy       & & \includegraphics[width=0.25\textwidth]{sysMlCopy.png}    \\
+			\end{tabu}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма требований SysML, пример}
+		\begin{center}
+			\includegraphics[width=0.75\textwidth]{sysMlRequirementsExample.png}
+			\attribution{OMG SysML 1.4 Specification}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма требований SysML и тесты}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				Требования:
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{sysMlRequirementsTest.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				Сценарий тестирования:
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{sysMlRequirementsTestActivity.png}
+					\attribution{OMG SysML 1.4 Specification}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\section{Диаграмма активностей UML}
+
+	\begin{frame}
+		\frametitle{Диаграмма активностей UML}
+		\framesubtitle{Диаграммы деятельности}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Используются для моделирования бизнес-процессов, тоже на первых этапах
+					\begin{itemize}
+						\item Может быть визуализацией сценария использования
+					\end{itemize}
+					\item Иногда --- для моделирования алгоритма
+					\item Расширенные блок-схемы
+					\item Семантика на основе сетей Петри
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.7\textwidth]{activityDiagram.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма активностей, разделы}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Раздел представляет отдел организации (или организацию), отвечающий за часть работы
+					\item Визуализирует поток работ между отделами
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{activitySwimlanes.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма активностей, сигналы}
+		\begin{itemize}
+			\item Для визуализации асинхронных процессов
+			\item Сигналом может быть посылка документа, запрос и т.д.
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{activitySignals.png}
+			\attribution{М. Фаулер, UML. Основы}
+		\end{center}
+	\end{frame}
+
+	\section{BPMN}
+
+	\begin{frame}
+		\frametitle{Business Process Model and Notation}
+		\begin{itemize}
+			\item Версия 1.0 в 2004 году, текущая (2.0) --- в 2011
+			\item Для описания бизнес-процессов
+			\begin{itemize}
+				\item Сильно продвинутые диаграммы активностей
+				\item Позволяют описывать группы взаимодействующих процессов
+				\item Исполнимая семанитика
+				\item Правила генерации в BPEL
+				\begin{itemize}
+					\item Business Process Execution Language
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример диаграммы}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{bpmnExample.png}
+			\attribution{OMG BPMN 2.0 Specification}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма хореографии}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{bpmnChoreography.png}
+			\attribution{OMG BPMN 2.0 Specification}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма оркестрации}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{bpmnOrchestration.png}
+			\attribution{OMG BPMN 2.0 Specification}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма диалогов}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{bpmnConversation.png}
+			\attribution{OMG BPMN 2.0 Specification}
+		\end{center}
+	\end{frame}
+
+	\section{Диаграмма развёртывания}
+	
+	\begin{frame}
+		\frametitle{Диаграмма развёртывания UML}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Показывает отображение компонентов и физических артефактов на реальные (или виртуальные) устройства
+					\item Бывает полезна на начальных этапах проектирования, даже до диаграмм компонентов
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{deploymentDiagram.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\section{Диаграммы ``Сущность-связь''}
+
+	\begin{frame}
+		\frametitle{Диаграммы ``Сущность-связь''}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Описывают концептуальную модель предметной области
+					\item Идеальны для моделирования схем реляционных баз данных
+					\item 1976 год, Питер Чен
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{erChenNotation.png}
+					\attribution{https://ru.wikipedia.org}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Нотация ``Вороньей лапки''}
+		\begin{center}
+			\includegraphics[width=\textwidth]{erCrowsFoot.png}
+		\end{center}
+	\end{frame}
+
+	\section{Диаграммы ORM}
+	
+	\begin{frame}
+		\frametitle{Object-Role Modeling}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{orm.png}
+			\attribution{http://www.orm.net}
 		\end{center}
 	\end{frame}
 
