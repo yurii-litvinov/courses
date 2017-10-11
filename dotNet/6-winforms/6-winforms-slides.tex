@@ -3,6 +3,7 @@
 \setdefaultlanguage[babelshorthands=true]{russian}
 \usepackage{minted}
 \usepackage{tabu}
+\usepackage{moresize}
 
 \useoutertheme{infolines}
 
@@ -19,7 +20,7 @@
 
 \title{Пользовательский интерфейс, WinForms}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{6}
+\date{12.10.2017г}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -40,6 +41,236 @@
 			\item Событийно-ориентированная
 			\item Простая
 			\item Хорошо работает под Mono
+			\item Давно не развивается, но поддерживается и используется до сих пор
+			\begin{itemize}
+				\item Например, в .NET Framework 4.7 добавилась поддержка High DPI
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Простой пример}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public class MyForm : Form {
+    public Button button1;
+    public MyForm() {
+        button1 = new Button();
+        button1.Size = new Size(40, 40);
+        button1.Location = new Point(30, 30);
+        button1.Text = "Click me";
+        this.Controls.Add(button1);
+        button1.Click += new EventHandler(button1Click);
+    }
+
+    private void button1Click(object sender, EventArgs e)
+    {
+        MessageBox.Show("Hello World");
+    }
+
+    [STAThread]
+    static void Main()
+    {
+        Application.EnableVisualStyles();
+        Application.Run(new MyForm());
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Control}
+		\begin{itemize}
+			\item Корень иерархии элементов управления
+			\item Отвечает за пользовательский ввод, события, позицию на экране
+			\begin{itemize}
+				\item В том числе, информацию для лейаутов
+			\end{itemize}
+			\item Ambient property --- свойство, наследуемое от родителя
+			\begin{itemize}
+				\item Cursor, Font, BackColor, ForeColor и RightToLeft
+			\end{itemize}
+			\item Controls --- коллекция дочерних контролов
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Обработка пользовательского ввода}
+		\begin{itemize}
+			\item События с клавиатуры
+			\begin{itemize}
+				\item KeyDown, KeyPress, KeyUp
+				\item PreProcessMessage, WndProc
+			\end{itemize}
+			\begin{scriptsize}
+				\begin{minted}{csharp}
+private void textBox1_KeyDown(object sender, KeyEventArgs e)
+{
+    if (e.KeyCode == Keys.F1 && (e.Alt || e.Control || e.Shift))
+    {
+        Help.ShowPopup(textBox1, "Enter your name.", 
+            new Point(textBox1.Bottom, textBox1.Right));
+    }
+}
+				\end{minted}
+			\end{scriptsize}
+			\item События мыши
+			\begin{itemize}
+				\item MouseDown, Click, MouseClick, MouseUp
+				\item Или MouseDown, Click, MouseClick, MouseUp, MouseDown, DoubleClick, MouseDoubleCkick, MouseUp
+				\item Некоторые контролы шлют события по-своему!
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Валидация ввода}
+		\begin{itemize}
+			\item Простой способ --- MaskedTextBox
+			\item ``Правильный'' способ --- событие \textit{Validating}
+			\begin{itemize}
+				\item CancelEventArgs, свойство Cancel
+				\item Последовательность событий при потере фокуса: Leave, Validating, Validated, LostFocus
+				\item Свойство AutoValidate
+				\item Можно инициировать вручную, методом Validate или ValidateChildren
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Data binding}
+		\begin{minted}{csharp}
+public partial class Form1 : Form
+{
+    public string MyText { get; set; } = "Click me";
+
+    public Form1()
+    {
+        InitializeComponent();
+        button1.DataBindings.Add("Text", this, "MyText");
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Data binding, нотификации}
+		\begin{ssmall}
+			\begin{minted}{csharp}
+public partial class Form1 : Form, INotifyPropertyChanged
+{
+    private string _myText = "Click me";
+
+    public string MyText
+    {
+        get => _myText;
+        set
+        {
+            if (value == _myText) return;
+            _myText = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Form1()
+    {
+        InitializeComponent();
+        button1.DataBindings.Add("Text", this, "MyText");
+        button1.Click += (s, a) => MyText = "Clicked!";
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+}
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Data binding, двунаправленный}
+		\begin{ssmall}
+			\begin{minted}{csharp}
+public partial class Form1 : Form, INotifyPropertyChanged
+{
+    private string _myText = "Click me";
+
+    public string MyText
+    {
+        get => _myText;
+        set
+        {
+            if (value == _myText) return;
+            _myText = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Form1()
+    {
+        InitializeComponent();
+        textBox1.DataBindings.Add("Text", this, "MyText");
+        button1.DataBindings.Add("Text", this, "MyText");
+        button1.Click += (s, a) => MyText = "Clicked!";
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+}
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Data binding, коллекции}
+		\begin{ssmall}
+			\begin{minted}{csharp}
+public partial class Form1 : Form
+{
+    private readonly BindingSource _bindingSource = new BindingSource();
+
+    public Form1()
+    {
+        InitializeComponent();
+        _bindingSource.DataSource = Fibonacci(10);
+        listBox1.DataSource = _bindingSource;
+    }
+
+    private static IEnumerable<int> Fibonacci(int n)
+    {
+        var (prev, curr) = (1, 1);
+        for (var i = 0; i < n; ++i)
+        {
+            yield return prev;
+            curr = prev + curr;
+            prev = curr - prev;
+        }
+    }
+}
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Best practices}
+		\begin{itemize}
+			\item Отделяйте логику работы программы от представления
+			\begin{itemize}
+				\item Писать логику прямо в обработчиках совсем плохо
+				\item Уровневая архитектура
+				\item Model-View-Presenter
+				\begin{itemize}
+					\item Может быть overkill-ом для небольших проектов
+				\end{itemize}
+			\end{itemize}
+			\item Форма должна адекватно вести себя при ресайзе
+			\item Пользовательский интерфейс не должен ломать привычек пользователя
+			\item Самые часто используемые элементы интерфейса должны находиться ближе всего к рабочей области
+			\item Не следует думать, что пользователи будут читать документацию
 		\end{itemize}
 	\end{frame}
 
