@@ -1,0 +1,47 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Пользовательский интерфейс, WinForms}
+\subtitle{Практика}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{12.10.2017г}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задача, "Найди пару"}
+		Реализовать игру "Найди пару":
+		\begin{itemize}
+			\item Поле с кнопками размера N x N, кнопки без надписей
+			\item Кнопке ставится в соответствие случайное число от 0 до $\frac{N ^{\ 2}}{2}$
+			\item Игрок нажимает на две произвольные (разные) кнопки, на них показываются соответствующие им числа 
+			\item Если числа совпали, кнопки делаются неактивными
+			\item Если числа не совпали, кнопки возвращаются в изначальное положение
+			\item Игра заканчивается, когда игрок открыл все пары чисел
+		\end{itemize}
+	\end{frame}
+
+\end{document}
