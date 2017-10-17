@@ -21,7 +21,7 @@
 
 \tabulinesep=1.2mm
 
-\title[Моделирование поведения]{Лекция 4: Моделирование поведения}
+\title[Моделирование поведения]{Лекция 5: Моделирование поведения}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
 \date{19.10.2017г}
 
@@ -98,7 +98,7 @@
 	\begin{frame}
 		\frametitle{Пример, мобильный телефон}
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{stateTransitionExample2.png}
+			\includegraphics[width=0.7\textwidth]{stateTransitionExample2.png}
 		\end{center}
 	\end{frame}
 
@@ -214,17 +214,32 @@ public void handleEvent(PanelEvent anEvent) {
 		\frametitle{Диаграммы последовательностей}
 		\begin{columns}
 			\begin{column}{0.5\textwidth}
-				\begin{center}
-					\includegraphics[width=0.9\textwidth]{sequenceDiagramSyntax.png}
-				\end{center}
+				\begin{itemize}
+					\item Применяются для визуализации взаимодействия между объектами
+					\begin{itemize}
+						\item Особо удобно для асинхронных вызовов
+						\item Телекоммуникационные протоколы
+					\end{itemize}
+					\item Могут применяться на этапе анализа предметной области
+					\item Могут применяться для составления плана тестирования
+					\item И даже для визуализации логов работающей системы
+				\end{itemize}
 			\end{column}
 			\begin{column}{0.5\textwidth}
 				\begin{center}
-					\includegraphics[width=\textwidth]{sequenceDiagramSyntax2.png}
+					\includegraphics[width=0.9\textwidth]{sequenceDiagramSyntax.png}
 					\attribution{М. Фаулер, UML. Основы}
 				\end{center}
 			\end{column}
 		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё немного о синтаксисе}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{sequenceDiagramSyntax2.png}
+			\attribution{М. Фаулер, UML. Основы}
+		\end{center}
 	\end{frame}
 
 	\begin{frame}
@@ -242,9 +257,16 @@ public void handleEvent(PanelEvent anEvent) {
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{И ещё пример}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{sequenceDiagramExample3.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Создание и удаление объектов}
 		\begin{center}
-			\includegraphics[width=0.6\textwidth]{sequenceDiagramCreationAndDeletion.png}
+			\includegraphics[width=0.5\textwidth]{sequenceDiagramCreationAndDeletion.png}
 			\attribution{М. Фаулер, UML. Основы}
 		\end{center}
 	\end{frame}
@@ -272,6 +294,198 @@ public void handleEvent(PanelEvent anEvent) {
 					\includegraphics[width=\textwidth]{sequenceDiagramFrames.png}
 					\attribution{М. Фаулер, UML. Основы}
 				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Коммуникационные диаграммы}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Применяются для визуализации взаимодействия между объектами
+					\begin{itemize}
+						\item Более легковесный аналог диаграмм последовательностей
+						\item Тоже отображают один сценарий взаимодействия
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{communicationDiagram.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Коммуникационные диаграммы, пример}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{communicationDiagramExample.png}
+			\attribution{http://www.uml-diagrams.org/}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы составных структур}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item По сути, продвинутые диаграммы компонентов
+					\item Внутри компоненты не другие компоненты, а части (роли)
+				\end{itemize}
+				\vspace{3mm}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{compositeStructureElement.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{compositeStructureDiagram.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы составных структур, пример}
+		\begin{center}
+			\includegraphics[width=0.45\textwidth]{compositeStructureExample.png}
+			\attribution{http://www.uml-diagrams.org/}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы коопераций}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Показывают взаимодействие между объектами (ролями) в рамках одного сценария использования
+				\end{itemize}
+				\vspace{3mm}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{cooperationAlternateNotation.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{cooperationDiagram.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы коопераций, последовательности}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{cooperationDiagram.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{cooperationSequenceDiagram.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Временные диаграммы}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Для моделирования временных ограничений в системах реального времени
+				\end{itemize}
+				\vspace{3mm}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{timingDiagrams.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{timingDiagramsAlternate.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Временная диаграмма, пример}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{timingDiagramExample.png}
+			\attribution{http://www.uml-diagrams.org/}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы обзора взаимодействия}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Диаграммы активностей + диаграммы последовательностей
+					\item Применяются при наличии взаимодействия со сложной логикой, когда фреймы неудобны
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{interactionOverviewDiagrams.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма обзора взаимодействия, пример}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{interactionOverviewExample.png}
+			\attribution{http://www.uml-diagrams.org/}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы потоков данных}
+		\framesubtitle{DFD}
+		\begin{columns}
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}
+					\item Показывают обмен данными в системе
+					\item Внешние сущности, процессы внутри системы, потоки данных
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{dfd.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы IDEF0}
+		\begin{center}
+			\includegraphics[width=0.80\textwidth]{idef0.png}
+			\attribution{https://habrahabr.ru/post/322832/}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Книжка}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.4\textwidth]{umlBookCover.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				М. Фаулер, UML. Основы. Краткое руководство по стандартному языку объектного моделирования. СПб., Символ-Плюс, 2011. 192 С.
 			\end{column}
 		\end{columns}
 	\end{frame}
