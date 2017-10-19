@@ -20,7 +20,7 @@
 
 \title{Пользовательский интерфейс, WPF}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{7}
+\date{19.10.2017}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -45,7 +45,7 @@
 			\end{itemize}
 			\item Отделение разметки пользовательского интерфейса от кода --- язык XAML (eXtensible Application Markup Language)
 			\begin{itemize}
-				\item Специальная среда разработки --- Expression Blend
+				\item Специальная среда разработки --- Microsoft Blend
 			\end{itemize}
 			\item Несколько ``веток'' WPF --- Silverlight, Windows Runtime XAML Framework
 			\item Архитектурно сильно отличается от WinForms, несколько сложнее в изучении
@@ -322,6 +322,8 @@ b.Background = System.Windows.Media.Brushes.White;
 		\end{columns}
 	\end{frame}
 
+	\section{Зависимые свойства}
+
 	\begin{frame}
 		\frametitle{Dependency Properties}
 		\begin{itemize}
@@ -446,9 +448,92 @@ public class Button: ButtonBase
 		\end{center}
 	\end{frame}
 
-	\begin{frame}
+	\section{Маршрутизируемые события}
+	
+	\begin{frame}[fragile]
 		\frametitle{Routed Events}
-		\todo{Рассказ про routed event-ы}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public class Button : ButtonBase
+{
+    public static readonly RoutedEvent ClickEvent;
+
+    static Button()
+    {
+        Button.ClickEvent = EventManager.RegisterRoutedEvent("Click",
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Button));
+    }
+
+    public event RoutedEventHandler Click
+    {
+        add { AddHandler(Button.ClickEvent, value); }
+        remove { RemoveHandler(Button.ClickEvent, value); }
+    }
+
+    protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+    {
+        RaiseEvent(new RoutedEventArgs(Button.ClickEvent, this));
+    }
+    ...
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Routed Events, события}
+		\begin{itemize}
+			\item Стратегии маршрутизации:
+			\begin{itemize}
+				\item \textbf{Bubbling} --- снизу вверх
+				\begin{itemize}
+					\item Контролы в WPF по соглашению реагируют только на них
+				\end{itemize}
+				\item \textbf{Tunneling} --- сверху вниз
+				\begin{itemize}
+					\item По соглашению имеют префикс Preview и парное Bubbling-событие
+				\end{itemize}
+				\item \textbf{Direct} --- как обычные события в C\#
+			\end{itemize}
+			\item RoutedEventArgs:
+			\begin{itemize}
+				\item \textbf{Source} --- элемент логического дерева
+				\item \textbf{OriginalSource} --- элемент визуального дерева
+				\item \textbf{Handled} --- заканчивает распространение события
+				\begin{itemize}
+					\item На самом деле, нет, можно подписаться и на обработанное
+					\item Обработка PreviewX отменяет и bubbling-событие X
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Команды}
+
+	\begin{frame}[fragile]
+		\frametitle{Команды}
+		\begin{itemize}
+			\item Интерфейс ICommand:
+			\begin{itemize}
+				\item Execute
+				\item CanExecute
+				\item CanExecuteChanged
+			\end{itemize}
+			\item Свойство Command
+			\item Большой набор встроенных команд
+			\item Класс CommandBinding
+		\end{itemize}
+		\begin{small}
+			\begin{minted}{xml}
+<Window.CommandBindings>
+    <CommandBinding Command="Help"
+        CanExecute="HelpCanExecute" Executed="HelpExecuted"/>
+</Window.CommandBindings>
+    ...
+    <Button MinWidth="75" Margin="10" Command="Help" Content=
+        "{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}"/>
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 	\section{Геометрия}
