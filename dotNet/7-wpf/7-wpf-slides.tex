@@ -4,6 +4,8 @@
 \usepackage{minted}
 \usepackage{tabu}
 \usepackage{forest}
+\usepackage{moresize}
+\usepackage{textpos}
 
 \useoutertheme{infolines}
 
@@ -28,6 +30,10 @@
 
 \newcommand{\DownArrow} {
 	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
+}
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{#1}\end{scriptsize}\end{flushright}
 }
 
 \begin{document}
@@ -536,6 +542,418 @@ public class Button : ButtonBase
 		\end{small}
 	\end{frame}
 
+	\section{Data Binding}
+
+	\begin{frame}[fragile]
+		\frametitle{Подробнее про Data Binding}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+void treeView_SelectedItemChanged(object sender,
+    RoutedPropertyChangedEventArgs<object> e)
+{
+    currentFolder.Text = (treeView.SelectedItem as TreeViewItem).Header.ToString();
+    Refresh();
+}
+			\end{minted}
+		\end{footnotesize}
+		\DownArrow
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public MainWindow()
+{
+    InitializeComponent();
+    Binding binding = new Binding();
+    binding.Source = treeView;
+    binding.Path = new PropertyPath("SelectedItem.Header");
+    currentFolder.SetBinding(TextBlock.TextProperty, binding);
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{То же в XAML}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public MainWindow()
+{
+    InitializeComponent();
+    Binding binding = new Binding();
+    binding.Source = treeView;
+    binding.Path = new PropertyPath("SelectedItem.Header");
+    currentFolder.SetBinding(TextBlock.TextProperty, binding);
+}
+			\end{minted}
+		\end{footnotesize}
+		\DownArrow
+		\begin{footnotesize}
+			\begin{minted}{xml}
+<TextBlock x:Name="currentFolder" DockPanel.Dock="Top"
+    Text="{Binding ElementName=treeView, Path=SelectedItem.Header}"
+    Background="AliceBlue" FontSize="16" />
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Привязка к ``обычным'' свойствам}
+		\begin{footnotesize}
+			\begin{minted}{xml}
+<Label x:Name="numItemsLabel"
+    Content="{Binding Source={StaticResource photos}, Path=Count}"
+    DockPanel.Dock="Bottom"/>
+			\end{minted}
+		\end{footnotesize}
+		Так оно не будет обновляться, надо, чтобы:
+		\begin{itemize}
+			\item был реализован INotifyPropertyChanged
+			\item было событие XXXChanged, где XXX --- имя свойства
+			\item для коллекций --- ObservableCollection
+		\end{itemize}
+		Target --- всегда DependencyProperty
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Привязка ``составных'' контролов к коллекциям}
+		\begin{footnotesize}
+			\begin{minted}{xml}
+<ListBox x:Name="pictureBox" DisplayMemberPath="Name"
+    ItemsSource="{Binding Source={StaticResource photos}}" ...>
+    ...
+</ListBox>
+			\end{minted}
+		\end{footnotesize}
+		\DownArrow
+		\begin{footnotesize}
+			\begin{minted}{xml}
+<ListBox x:Name="pictureBox"
+    ItemsSource="{Binding Source={StaticResource photos}}" ...>
+    <ListBox.ItemTemplate>
+        <DataTemplate>
+            <Image Source="{Binding Path=FullPath}" Height="35"/>
+        </DataTemplate>
+    </ListBox.ItemTemplate>
+    ...
+</ListBox>
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{DataContext}
+		\begin{footnotesize}
+			\begin{minted}{xml}
+<StackPanel DataContext="{StaticResource photos}">
+    <Label x:Name="numItemsLabel"
+        Content="{Binding Path=Count}" .../>
+    ...
+    <ListBox x:Name="pictureBox" DisplayMemberPath="Name"
+        ItemsSource="{Binding}" ...>
+        ...
+    </ListBox>
+    ...
+</StackPanel>
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Конвертеры}
+		\begin{ssmall}
+			\begin{minted}{xml}
+<Window.Resources>
+    <local:CountToBackgroundConverter x:Key="myConverter"/>
+</Window.Resources>
+...
+<Label Background="{Binding Path=Count, Converter={StaticResource myConverter},
+    Source={StaticResource photos}}" .../>
+			\end{minted}
+			\vspace{3mm}
+			\begin{minted}{csharp}
+public class CountToBackgroundConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter,
+        CultureInfo culture)
+    {
+        if (targetType != typeof(Brush))
+            throw new InvalidOperationException("The target must be a Brush!");
+        int num = int.Parse(value.ToString());
+        return (num == 0 ? Brushes.Yellow : Brushes.Transparent);
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter,
+        CultureInfo culture)
+    {
+        return DependencyProperty.UnsetValue;
+    }
+}
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Data Providers}
+		\begin{center}
+			\includegraphics[width=0.65\textwidth]{xmlDataProvider.png}
+		\end{center}
+		\attribution{Adam Nathan, WPF 4.5 Unleashed.}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Направления привязки}
+		\begin{itemize}
+			\item OneWay --- то, что мы делали до этого
+			\begin{itemize}
+				\item По умолчанию для большинства свойств
+			\end{itemize}
+			\item TwoWay --- в обе стороны, для редактируемых контролов
+			\begin{itemize}
+				\item По умолчанию для, например, TextBox.Text
+				\item UpdateSourceTrigger --- PropertyChanged, LostFocus, Explicit
+			\end{itemize}
+			\item OneWayToSource --- от цели к источнику, для полей ввода
+			\item OneTime --- без нотификаций об изменении вовсе
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Model-View-View Model''}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{mvvm.png}
+		\end{center}
+		\attribution{https://msdn.microsoft.com/en-us/library/hh848246.aspx}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Валидация}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public class JpgValidationRule : ValidationRule
+{
+    public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+    {
+        string filename = value.ToString();
+        if (!File.Exists(filename))
+            return new ValidationResult(false, "Value is not a valid file.");
+        if (!filename.EndsWith(".jpg", StringComparison.InvariantCultureIgnoreCase))
+            return new ValidationResult(false, "Value is not a .jpg file.");
+        return new ValidationResult(true, null);
+    }
+}			\end{minted}
+			\vspace{3mm}
+			\begin{minted}{xml}
+<TextBox>
+    <TextBox.Text>
+        <Binding …>
+            <Binding.ValidationRules>
+                <local:JpgValidationRule/>
+            </Binding.ValidationRules>
+        </Binding>
+    </TextBox.Text>
+</TextBox>
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\section{Стили}
+
+	\begin{frame}[fragile]
+		\frametitle{Стили}
+		\begin{scriptsize}
+			\begin{minted}{xml}
+<StackPanel Orientation="Horizontal">
+    <StackPanel.Resources>
+        <Style x:Key="buttonStyle">
+            <Setter Property="Button.FontSize" Value="22"/>
+            <Setter Property="Button.Background" Value="Purple"/>
+            <Setter Property="Button.Foreground" Value="White"/>
+            <Setter Property="Button.Height" Value="50"/>
+            <Setter Property="Button.Width" Value="50"/>
+            <Setter Property="Button.RenderTransformOrigin" Value=".5,.5"/>
+            <Setter Property="Button.RenderTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="10"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </StackPanel.Resources>
+    <Button Style="{StaticResource buttonStyle}">1</Button>
+    <Button Style="{StaticResource buttonStyle}">2</Button>
+    <Button Style="{StaticResource buttonStyle}">3</Button>
+</StackPanel> 
+			\end{minted}
+		\end{scriptsize}
+		\begin{textblock}{3}(11,-11)
+			\includegraphics[width=\textwidth]{buttons.png}
+		\end{textblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Неявное применение стиля}
+		\begin{scriptsize}
+			\begin{minted}{xml}
+<Application …>
+    <Application.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Background" Value="Purple"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="10"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Application.Resources>
+</Application>
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Триггеры}
+		\begin{scriptsize}
+			\begin{minted}{xml}
+<Style x:Key="buttonStyle" TargetType="{x:Type Button}">
+    <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="10"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="Black"/>
+        </Trigger>
+    </Style.Triggers>
+    <Setter Property="FontSize" Value="22"/>
+    <Setter Property="Background" Value="Purple"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Height" Value="50"/>
+    <Setter Property="Width" Value="50"/>
+    <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+</Style>
+			\end{minted}
+		\end{scriptsize}
+		\begin{textblock}{3}(11,-11)
+			\includegraphics[width=\textwidth]{triggeredButtons.png}
+		\end{textblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Триггеры на значения свойств}
+		\framesubtitle{Data Triggers}
+		\begin{scriptsize}
+			\begin{minted}{xml}
+<StackPanel Width="200">
+    <StackPanel.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <DataTrigger
+                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
+                    Value="disabled">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+            <Setter Property="Background"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+        </Style>
+    </StackPanel.Resources>
+    <TextBox Margin="3"/>
+</StackPanel>
+			\end{minted}
+		\end{scriptsize}
+		\begin{textblock}{4}(11,-11)
+			\includegraphics[width=\textwidth]{triggeredTextBoxes.png}
+		\end{textblock}
+	\end{frame}
+
+	\section{Шаблоны}
+
+	\begin{frame}[fragile]
+		\frametitle{Шаблоны}
+		\framesubtitle{Templates}
+		\begin{ssmall}
+			\begin{minted}{xml}
+<Grid>
+    <Grid.Resources>
+        <ControlTemplate x:Key="buttonTemplate">
+            <Grid>
+                <Ellipse Width="100" Height="100">
+                    <Ellipse.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="Blue"/>
+                            <GradientStop Offset="1" Color="Red"/>
+                        </LinearGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <Ellipse Width="80" Height="80">
+                    <Ellipse.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="White"/>
+                            <GradientStop Offset="1" Color="Transparent"/>
+                        </LinearGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Grid>
+        </ControlTemplate>
+    </Grid.Resources>
+    <Button Template="{StaticResource buttonTemplate}">OK</Button>
+</Grid>
+			\end{minted}
+		\end{ssmall}
+		\begin{textblock}{2}(11,-11)
+			\includegraphics[width=\textwidth]{templatedButton.png}
+		\end{textblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сохранение свойств элемента}
+		\begin{scriptsize}
+			\begin{minted}{xml}
+<Viewbox>
+    <ContentControl Margin="20" Content="{TemplateBinding Content}"/>
+</Viewbox>
+...
+<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0"
+        Color="{Binding RelativeSource={RelativeSource TemplatedParent},
+        Path=Background.Color}"/>
+    <GradientStop Offset="1" Color="Red"/>
+</LinearGradientBrush>
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\section{Ресурсы}
+
+	\begin{frame}[fragile]
+		\frametitle{Ресурсы}
+		\begin{scriptsize}
+			\begin{minted}{xml}
+<Window ...>
+    <Window.Resources>
+        <SolidColorBrush x:Key="backgroundBrush">Yellow</SolidColorBrush>
+        <SolidColorBrush x:Key="borderBrush">Red</SolidColorBrush>
+    </Window.Resources>
+    <Window.Background>
+        <StaticResource ResourceKey="backgroundBrush"/>
+    </Window.Background>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+            HorizontalAlignment="Center">
+        <Button Background="{StaticResource backgroundBrush}"
+            BorderBrush="{StaticResource borderBrush}" Margin="5">
+            <Image Height="21" Source="zoom.gif"/>
+        </Button>
+    </DockPanel>
+</Window>
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
 	\section{Геометрия}
 
 	\begin{frame}
@@ -543,7 +961,7 @@ public class Button : ButtonBase
 		\begin{center}
 			\includegraphics[width=0.5\textwidth]{controlGeometry.png}
 		\end{center}
-		\begin{center}{\footnotesize(Из книги Adam Nathan, WPF 4.5 Unleashed.)}\end{center}
+		\attribution{Из книги Adam Nathan, WPF 4.5 Unleashed.}
 	\end{frame}
 
 	\begin{frame}
