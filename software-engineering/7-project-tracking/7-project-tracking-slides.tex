@@ -1,0 +1,129 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,urlcolor=links}
+\hypersetup{linkcolor=}
+
+\tabulinesep=1.2mm
+
+\title{Занятие 7: Отслеживание прогресса}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{25.10.2017}
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\; #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Задание на пару}
+
+	\begin{frame}
+		\frametitle{Задание на пару}
+		\begin{itemize}
+			\item Считаем, что команды отработали полтора месяца, столкнулись с первыми сложностями и получили первый feedback. Надо:
+			\begin{itemize}
+				\item Отметить выполненные задачи на Pivotal Tracker
+				\item Обновить план (диаграмму Гантта) с учётом прогресса
+				\item Рассчитать текущие показатели проекта:
+				\begin{itemize}
+					\item Budgeted cost of work performed
+					\item Actual cost of work performed
+					\item Cost variance
+					\item Cost performance index
+					\item Estimate budget at completion
+				\end{itemize}
+				\item Формально описать change request-ы от заказчика, утвердить change request и привести план в соответствие
+			\end{itemize}
+			\item Доделать дома
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Платформа для карточных настольных игр}
+		\begin{itemize}
+			\item Работа над архитектурой задержалась, потому что потребовалось выбирать технологии, каждая из которых, как выяснилось, навязывает собственную архитектуру
+			\begin{itemize}
+				\item Дополнительные две недели линейного времени ушли на то, чтобы сделать два concept-proof-прототипа
+			\end{itemize}
+			\item Остальные работы шли по плану
+			\item Инвестор считает, что важно делать не ``сферическую платформу в вакууме'', а начать с реального примера игры, вокруг которого будет выстраиваться функциональность всей платформы
+			\begin{itemize}
+				\item Условием для продолжения финансирования является реализация игры ``Блекджек'' первым приоритетом
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Lego Digital Designer}
+		\begin{itemize}
+			\item Не удалось найти тестировщика, нашёлся всего один программист --- на собеседования приходят желающие ``войти в IT'' студенты инженерных вузов, имеющие трудности с написанием fizz-buzz
+			\item Программист подходит по скиллам и честно приступил к работе, но задания выполняет с отставанием от графика (около 20\%)
+			\item Инвестор считает, что в перспективе необходима поддержка конструкторов Lego Technic и Lego Mindstorms, поскольку видит существенный рост рынка образовательной робототехники
+			\begin{itemize}
+				\item Однако понимает сложность задачи и необходимость фиксировать scope проекта, поэтому готов подождать выхода первой версии с поддержкой ``обычных'' кубиков
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{VR --- технология будущего}
+		\begin{itemize}
+			\item Планирование потребовало больше времени, чем ожидалось (x2) из-за недооценки затрат на планирование руководителями проекта
+			\item Общение с потенциальными пользователями осложнено тем, что реальных художников по 3d-моделям сложно найти и у них нет времени на стартап, которому пока нечего показать, удалось встретиться только с двумя
+			\item Художники хотят возможности редактирования модели прямо в виртуальной реальности, в духе \url{https://www.tiltbrush.com/}
+			\item Инвестор обеспокоен темпами развития проекта, поэтому хочет видеть первую демо-версию в течение двух месяцев
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Мобильная игра Blackout}
+		\begin{itemize}
+			\item Рассмотрение фреймворков заняло меньше времени, чем ожидалось, потому что выяснилось, что все пишут подобные приложения на Unity, а по ней куча документации и учебных материалов
+			\item Разработка дизайна приложения выявила проблему, что никто толком не умеет рисовать
+			\item Результаты опроса фокус-группы выявили, что почти все играли в \href{http://store.steampowered.com/app/42910/Magicka/}{Magicka} и хотят взаимодействия заклинаний не только между собой, но и с окружением
+			\begin{itemize}
+				\item Огонь, плавящий лёд
+				\item Молнии, наносящие x3 урона по мокрым целям
+				\item ...
+			\end{itemize}
+			\item У инвестора сложилась неудачная финансовая ситуация и он хочет сократить бюджет проекта в полтора раза, не меняя линейных сроков
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Sphere}
+		\begin{itemize}
+			\item Поиск инвестора затянулся, пришлось приступить к разработке силами начальной команды ``на энтузиазме''
+			\begin{itemize}
+				\item Как и в любом приложении сферы развлечений, высокие финансовые риски, умноженные на неизвестность команды и специфику модели монетизации (``всё или ничего'')
+				\item Раздутый бюджет проекта
+			\end{itemize}
+			\item Тем не менее, задачи выполняются, но вдвое медленнее, чем планировалось
+			\item Команда осознала необходимость создать concept-proof-прототип, пока энтузиазм не кончился и не началась зимняя сессия, когда будет не до стартапов
+			\item Также после общения с потенциальными инвесторами стало ясно, что надо сделать проект более привлекательным финансово
+		\end{itemize}
+	\end{frame}
+
+\end{document}
