@@ -1,0 +1,388 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title[Шаблоны]{Лекция 7: Структурные и порождающие шаблоны}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{02.11.2017г}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\newcommand{\DownArrow} {
+	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
+}
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Паттерн ``Фасад''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Фасад''}
+		\framesubtitle{Facade}
+		\begin{itemize}
+			\item Простой интерфейс к сложной системе
+			\item Отделение подсистем от клиента и друг от друга
+			\item Многоуровневая архитектура
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Фасад'' (Facade), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Абстрактный Facade
+					\begin{itemize}
+						\item Существенно снижает связность клиента с подсистемой
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{facade.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\begin{itemize}
+			\item Открытые и закрытые классы подсистемы
+			\begin{itemize}
+				\item Пространства имён и пакеты помогают, но требуют дополнительных соглашений
+				\begin{itemize}
+					\item Пространство имён details
+				\end{itemize}
+				\item Инкапсуляция целой подсистемы --- это хорошо
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Мост''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Мост'' (Bridge)}
+		Отделяет абстракцию от реализации
+
+		Пример:
+		\begin{itemize}
+			\item Есть система, интерпретирующая программы для роботов
+			\item Есть класс \textit{Sensor}, от которого наследуются \textit{SonarSensor}, \textit{LightSensor}, ...
+			\item Связь с роботом может выполняться по USB или Bluetooth, а может быть, программа и вовсе исполняется на симуляторе
+			\item Интерпретатор хочет работать с сенсорами, не заморачиваясь реализацией механизма связи
+			\item Рабоче-крестьянская реализация --- \textit{USBLightSensor}, \textit{BluetoothLightSensor}, \textit{USBSonarSensor}, \textit{BluetoothSonarSensor}, ...
+			\item Число классов --- произведение количества сенсоров и типов связи
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Мост'', пример}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{noBridge.png}
+			\Huge{$$\downarrow$$}
+			\includegraphics[width=0.7\textwidth]{bridge.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Мост'', общая схема}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{bridgeGeneral.png}
+		\end{center}
+		\begin{itemize}
+			\item \textit{Abstraction} --- определяет интерфейс абстракции, хранит ссылку на реализацию
+			\item \textit{RefinedAbstraction} --- расширяет интерфейс абстракции, делает полезную работу, используя реализацию
+			\item \textit{Implementor} --- определяет интерфейс реализации, в котором абстракции предоставляются низкоуровневые операции
+			\item \textit{ConcreteImplementor} --- предоставляет конкретную реализацию Implementor
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Когда применять}
+		\begin{itemize}
+			\item Когда хочется разделить абстракцию и реализацию, например, когда реализацию можно выбирать во время компиляции или во время выполнения
+			\begin{itemize}
+				\item ``Стратегия'', ``Прокси''
+			\end{itemize}
+			\item Когда абстракция и реализация должны расширяться новыми подклассами
+			\item Когда хочется разделить одну реализацию между несколькими объектами
+			\begin{itemize}
+				\item Как copy-on-write в строках
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Тонкости реализации}
+		Создание правильного Implementor-а
+		\begin{itemize}
+			\item Самой абстракцией в конструкторе, в зависимости от переданных параметров
+			\begin{itemize}
+				\item Как вариант --- выбор реализации по умолчанию и замена её по ходу работы
+			\end{itemize}
+			\item Принимать реализацию извне (как параметр конструктора, или, реже, как значение в сеттер)
+			\item Фабрика/фабричный метод
+			\begin{itemize}
+				\item Позволяет спрятать платформозависимые реализации, чтобы не зависеть от них всех при сборке
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Pointer To Implementation (PImpl)}
+		Вырожденный мост для C++, когда ``абстракция'' имеет ровно одну реализацию, часто полностью дублирующую её интерфейс
+
+		Зачем: чтобы клиенты класса не зависели при сборке от его реализации
+
+		\begin{itemize}
+			\item Позитивно сказывается на времени компиляции программ на C++
+			\item Позволяет менять реализацию независимо
+			\begin{itemize}
+				\item Сохраняя бинарную совместимость
+			\end{itemize}
+		\end{itemize}
+
+		Как: предварительное объявление класса-реализации, полное определение --- в .cpp-файле вместе с методами абстракции
+
+		Часто используется в реализации библиотек (например, Qt)
+	\end{frame}
+
+	\section{Паттерн ``Приспособленец''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Приспособленец'' (Flyweight)}
+		Предназначается для эффективной поддержки множества мелких объектов
+
+		Пример:
+
+		\begin{itemize}
+			\item Есть текстовый редактор
+			\item Хочется работать с каждым символом как с объектом
+			\begin{itemize}
+				\item Единообразие алгоритмов форматирования и внутренней структуры документа
+				\item Более красивая и ООПшная реализация
+				\begin{itemize}
+					\item Паттерн ``Компоновщик'', структура ``Символ'' $\rightarrow$ ``Строка'' $\rightarrow$ ``Страница''
+				\end{itemize}
+			\end{itemize}
+			\item Наивная реализация привела бы к чрезмерной расточительности по времени работы и по памяти, потому что документы с миллионами символов не редкость
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', пример}
+		\begin{center}
+			\includegraphics[width=0.38\textwidth]{noFlyweight.png}
+			\raisebox{0.1\textheight}{\quad\Huge{$\rightarrow$}\quad}
+			\includegraphics[width=0.38\textwidth]{flyweightExample.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', общая схема}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{flyweight.png}
+		\end{center}
+		\begin{footnotesize}
+			\begin{itemize}
+				\item \textit{Flyweight} --- определяет интерфейс, через который приспособленцы могут получать внешнее состояние
+				\item \textit{ConcreteFlyweight} --- реализует интерфейс Flyweight и может иметь внутреннее состояние, не зависит от контекста
+				\item \textit{UnsharedConcreteFlyweight} --- неразделяемый ``приспособленец'', хранящий всё состояние в себе, бывает нужен, чтобы собирать иерархические структуры из Flyweight-ов (``Компоновщик'')
+				\item \textit{FlyweightFactory} --- содержит пул приспособленцев, создаёт их и управляет их жизнью
+			\end{itemize}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', диаграмма объектов}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{flyweightObjects.png}
+		\end{center}
+		\begin{itemize}
+			\item Клиенты могут быть разных типов
+			\item Клиенты могут разделять приспособленцев
+			\begin{itemize}
+				\item Один клиент может иметь несколько ссылок на одного приспособленца
+			\end{itemize}
+			\item Во время выполнения клиенты имеют право не знать про фабрику
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Когда применять}
+		\begin{itemize}
+			\item Когда в приложении используется много мелких объектов
+			\item Они допускают разделение состояния на внутреннее и внешнее
+			\begin{itemize}
+				\item Желательно, чтобы внешнее состояние было вычислимо
+			\end{itemize}
+			\item Идентичность объектов не важна
+			\begin{itemize}
+				\item Используется семантика Value Type
+			\end{itemize}
+			\item Главное, когда от такого разделения можно получить ощутимый выигрыш
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Тонкости реализации}
+		\begin{itemize}
+			\item Внешнее состояние --- по сути, отдельный объект, поэтому если различных внешних состояний столько же, сколько приспособленцев, смысла нет
+			\begin{itemize}
+				\item Один объект-состояние покрывает сразу несколько приспособленцев
+				\begin{itemize}
+					\item Например, объект ``Range'' может хранить параметры форматирования для всех букв внутри фрагмента
+				\end{itemize}
+			\end{itemize}
+			\item Клиенты не должны инстанцировать приспособленцев сами, иначе трудно обеспечить разделение
+			\begin{itemize}
+				\item Имеет смысл иметь механизм для удаления неиспользуемых приспособленцев
+				\begin{itemize}
+					\item Если их может быть много
+				\end{itemize}
+			\end{itemize}
+			\item Приспособленцы немутабельны и Value Objects (с правильно переопределённой операцией сравнения)
+			\begin{itemize}
+				\item Про hashCode() тоже надо не забыть
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Фабричный метод''}
+
+	\begin{frame}
+		\frametitle{``Фабричный метод'' (Factory Method), детали реализации}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{factoryMethod.png}
+		\end{center}
+		\begin{itemize}
+			\item Абстрактный Creator или реализация по умолчанию
+			\begin{itemize}
+				\item Второй вариант может быть полезен для расширяемости
+			\end{itemize}
+			\item Параметризованные фабричные методы
+			\item Если язык поддерживает инстанциацию по прототипу (JavaScript, Smalltalk), можно хранить порождаемый объект
+			\item Creator не может вызывать фабричный метод в конструкторе
+			\item Можно сделать шаблонный Creator
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Абстрактная фабрика''}
+
+	\begin{frame}
+		\frametitle{``Абстрактная фабрика'' (Abstract Factory), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Хорошо комбинируются с паттерном ``Одиночка''
+					\item Если семейств продуктов много, то фабрика может инициализироваться \textit{прототипами}, тогда не надо создавать сотню подклассов
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{abstractFactory.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\begin{itemize}
+			\item Прототип на самом деле может быть классом (например, Class в Java)
+			\item Если виды объектов часто меняются, может помочь параметризация метода создания
+			\begin{itemize}
+				\item Может пострадать типобезопасность
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Прототип''}
+	
+	\begin{frame}
+		\frametitle{``Прототип'' (Prototype), детали реализации}
+		\begin{columns}
+			\begin{column}{0.45\textwidth}
+				\begin{itemize}
+					\item Паттерн интересен только для языков, где мало runtime-информации о типе (C++)
+					\item Реестр прототипов, обычно ассоциативное хранилище
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.55\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{prototype.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\begin{itemize}
+			\item Операция Clone
+			\begin{itemize}
+				\item Глубокое и мелкое копирование
+				\item В случае, если могут быть круговые ссылки
+				\item Сериализовать/десериализовать объект (но помнить про идентичность)
+			\end{itemize}
+			\item Инициализация клона
+			\begin{itemize}
+				\item Передавать параметры в Clone --- плохая идея
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Строитель''}
+	
+	\begin{frame}
+		\frametitle{``Строитель'' (Builder), детали реализации}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{builder.png}
+		\end{center}
+		\begin{itemize}
+			\item Абстрактные и конкретные строители
+			\begin{itemize}
+				\item Достаточно общий интерфейс
+			\end{itemize}
+			\item Общий интерфейс для продуктов не требуется
+			\begin{itemize}
+				\item Клиент конфигурирует распорядителя конкретным строителем, он же и забирает результат
+			\end{itemize}
+			\item Пустые методы по умолчанию
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Строитель'', примеры}
+		\begin{itemize}
+			\item StringBuilder
+			\item Guava, подсистема работы с графами
+			\begin{minted}{java}
+MutableNetwork<Webpage, Link> webSnapshot = 
+        NetworkBuilder.directed()
+    .allowsParallelEdges(true)
+    .nodeOrder(ElementOrder.natural())
+    .expectedNodeCount(100000)
+    .expectedEdgeCount(1000000)
+    .build();
+			\end{minted}
+		\end{itemize}
+\end{frame}
+
+\end{document}
