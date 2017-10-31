@@ -275,7 +275,105 @@
 	\section{Паттерн ``Фабричный метод''}
 
 	\begin{frame}
-		\frametitle{``Фабричный метод'' (Factory Method), детали реализации}
+		\frametitle{``Фабричный метод'' мотивация}
+		\framesubtitle{Игра-стратегия}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Воины
+					\begin{itemize}
+						\item Мечники
+						\item Конница
+						\item Лучники
+					\end{itemize}
+					\item Общее поведение
+					\item Общие характеристики
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{warriors.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Виртуальный конструктор}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{footnotesize}
+					\begin{minted}{c++}
+enum WarriorId { SwordsmanId, ArcherId, HorsemanId };
+
+class Warrior
+{
+public:  
+    Warrior(WarriorId id)
+    {
+        if (id == SwordsmanId) p = new Swordsman;
+        else if (id == ArcherId) p = new Archer;
+        else if (id == HorsemanId) p = new Horseman;
+        else assert( false);
+    }
+    virtual void info() { p->info(); }
+    virtual ~Warrior() { delete p;  p = 0; }
+private:
+    Warrior* p;
+};
+					\end{minted}
+				\end{footnotesize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{warriorVirtualCtor.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Фабричный метод}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Базовый класс знает про остальные
+					\item switch в createWarrior()
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{warriorFactoryMethod.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Factory Method''}
+		\framesubtitle{Factory Method}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{factoryMethod.png}
+		\end{center}
+		\begin{itemize}
+			\item Применимость:
+			\begin{itemize}
+				\item классу заранее неизвестно, объекты каких классов ему нужно создавать
+				\item объекты, которые создает класс, специфицируются подклассами
+				\item класс делегирует свои обязанности одному из нескольких вспомогательных подклассов
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример, текстовый редактор}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{factoryMethodForTextEditor.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Фабричный метод'', детали реализации}
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{factoryMethod.png}
 		\end{center}
@@ -294,7 +392,71 @@
 	\section{Паттерн ``Абстрактная фабрика''}
 
 	\begin{frame}
-		\frametitle{``Абстрактная фабрика'' (Abstract Factory), детали реализации}
+		\frametitle{``Абстрактная фабрика'', мотивация}
+		\begin{itemize}
+			\item Хотим поддержать разные стили UI
+			\begin{itemize}
+				\item Гибкая поддержка в архитектуре
+				\item Удобное добавление новых стилей
+			\end{itemize}
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{widgets.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Создание виджетов}
+		\mintinline{c++}|ScrollBar* bar = new RoundedScrollBar;|
+		
+		\vspace{2mm}
+		
+		vs
+		
+		\vspace{2mm}
+		
+		\mintinline{c++}|ScrollBar* bar = guiFactory->createScrollBar();|
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Фабрика виджетов}
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{widgetFactory.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Абстрактная фабрика''}
+		\framesubtitle{Abstract Factory}
+		\begin{columns}
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}
+					\item Изолирует конкретные классы
+					\item Упрощает замену семейств продуктов
+					\item Гарантирует сочетаемость продуктов
+					\item Поддержать новый вид продуктов непросто
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{abstractFactory.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Абстрактная фабрика'', применимость}
+		\begin{itemize}
+			\item Система не должна зависеть от того, как создаются, компонуются и представляются входящие в нее объекты
+			\item Система должна конфигурироваться одним из семейств составляющих ее объектов
+			\item Взаимосвязанные объекты должны использоваться вместе
+			\item Хотите предоставить библиотеку объектов, раскрывая только их интерфейсы, но не реализацию
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Абстрактная фабрика'', детали реализации}
 		\begin{columns}
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
@@ -317,24 +479,136 @@
 		\end{itemize}
 	\end{frame}
 
-	\section{Паттерн ``Прототип''}
-	
+	\section{Паттерн ``Одиночка''}
+
 	\begin{frame}
-		\frametitle{``Прототип'' (Prototype), детали реализации}
+		\frametitle{Паттерн ``Одиночка''}
+		\framesubtitle{Singleton}
 		\begin{columns}
-			\begin{column}{0.45\textwidth}
+			\begin{column}{0.6\textwidth}
 				\begin{itemize}
-					\item Паттерн интересен только для языков, где мало runtime-информации о типе (C++)
-					\item Реестр прототипов, обычно ассоциативное хранилище
+					\item Гарантирует, что у класса есть только один экземпляр
+					\item Предоставляет глобальный доступ к этому экземпляру
+					\item Позволяет использовать подклассы без модификации клиентского кода
 				\end{itemize}
 			\end{column}
-			\begin{column}{0.55\textwidth}
+			\begin{column}{0.4\textwidth}
 				\begin{center}
-					\includegraphics[width=\textwidth]{prototype.png}
+					\includegraphics[width=0.6\textwidth]{singleton.png}
 				\end{center}
 			\end{column}
 		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Одиночка'', наивная реализация}
+		\begin{minted}{java}
+public class Singleton {
+    private static Singleton instance;
+
+    private Singleton () {}
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Одиночка'', простая многопоточная реализация}
+		\begin{minted}{java}
+public class Singleton {
+    private static Singleton instance = new Singleton();
+
+    private Singleton () {}
+
+    public static Singleton getInstance() {
+        return instance;
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Одиночка'', плохая многопоточная реализация}
+		\begin{minted}{java}
+public class Singleton {
+    private static Singleton instance;
+
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Double-checked locking}
+		\framesubtitle{Не делайте так}
+		\begin{small}
+			\begin{minted}{java}
+public class Singleton {
+    private static volatile Singleton instance;
+
+    public static Singleton getInstance() {
+        Singleton localInstance = instance;
+        if (localInstance == null) {
+            synchronized (Singleton.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new Singleton();
+                }
+            }
+        }
+        return localInstance;
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Одиночка'', критика}
 		\begin{itemize}
+			\item Добавляет неочевидные зависимости по данным
+			\begin{itemize}
+				\item По сути, хитрая глобальная переменная
+			\end{itemize}
+			\item Усложняет тестирование
+			\item Нарушает принцип единственности ответственности
+			\item Сложно рефакторить, если потребуется несколько экземпляров
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Прототип''}
+
+	\begin{frame}
+		\frametitle{``Прототип'', мотивация}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{musicalEditor.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Патерн ``Прототип''}
+		\framesubtitle{Prototype}
+		\begin{center}
+			\includegraphics[width=0.85\textwidth]{prototype.png}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{``Прототип'', детали реализации}
+		\begin{itemize}
+			\item Паттерн интересен только для языков, где мало runtime-информации о типе (C++)
+			\item Реестр прототипов, обычно ассоциативное хранилище
 			\item Операция Clone
 			\begin{itemize}
 				\item Глубокое и мелкое копирование
@@ -349,6 +623,22 @@
 	\end{frame}
 
 	\section{Паттерн ``Строитель''}
+
+	\begin{frame}
+		\frametitle{``Строитель'', мотивация}
+		\framesubtitle{Конвертер текста}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{textConverter.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Патерн ``Строитель''}
+		\framesubtitle{Builder}
+		\begin{center}
+			\includegraphics[width=0.85\textwidth]{builder.png}
+		\end{center}
+	\end{frame}
 	
 	\begin{frame}
 		\frametitle{``Строитель'' (Builder), детали реализации}
