@@ -1,0 +1,416 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Архитектурные стили}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{16.11.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\section{Введение}
+
+	\begin{frame}
+		\frametitle{Архитектурные шаблоны и стили}
+		Архитектурный стиль --- набор решений, которые
+		\begin{enumerate}
+			\item применимы в выбранном контексте разработки,
+			\item задают ограничения на принимаемые архитектурные решения, специфичные для определённых систем в этом контексте,
+			\item приводят к желаемым положительным качествам получаемой системы.
+		\end{enumerate}
+		Архитектурный шаблон --- именованный набор ключевых проектных решений по эффективной организации подсистем, применимых для повторяемых технических задач проектирования в различных контекстах и предметных областях
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектурные шаблоны и стили, классификация}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{architecturalStylesHighlighted.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Примеры архитектурных шаблонов}
+
+	\begin{frame}
+		\frametitle{Пример: трёхзвенная архитектура}
+		\framesubtitle{State-Logic-Display}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				Примеры применения
+				\begin{itemize}
+					\item Бинес-приложения
+					\item Многопользовательские игры
+					\item Веб-приложения
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.7\textwidth]{threeTieredArchitecture.png}
+					\attribution{N. Medvidovic}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример: Model-View-Controller}
+		\begin{center}
+			\includegraphics[width=0.65\textwidth]{mvc.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+		\begin{itemize}
+			\item Разделяет данные, представление и взаимодействие с пользователем
+			\item Если в модели что-то меняется, она оповещает представление (представления)
+			\item Через контроллер проходит всё взаимодействие с пользователем
+			\begin{itemize}
+				\item Естественное место для паттерна ``Команда'' и Undo/Redo
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример: Sense-Compute-Control}
+		\begin{center}
+			\includegraphics[width=0.65\textwidth]{senseComputeControl.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+		\begin{itemize}
+			\item Применяется во встроенных системах и робототехнике
+		\end{itemize}
+	\end{frame}
+
+	\section{Архитектурные стили}
+
+	\begin{frame}
+		\frametitle{Архитектурные стили}
+		\begin{itemize}
+			\item Именованная коллекция архитектурных решений
+			\item Менее узкоспециализированные, чем архитектурные паттерны
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{buildingStyles.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектурные стили}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Одна система может включать в себя несколько архитектурных стилей
+					\item Понятие стиля применимо и к подсистемам
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.7\textwidth]{roofStyles.png}
+					\attribution{N. Medvidovic}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Преимущества использования стилей}
+		\begin{itemize}
+			\item Переиспользование архитектуры
+			\begin{itemize}
+				\item Для новых задач можно применять хорошо известные и изученные решения
+			\end{itemize}
+			\item Переиспользование кода
+			\begin{itemize}
+				\item Часто у стилей бывают неизменяемые части, которые можно один раз реализовать
+			\end{itemize}
+			\item Упрощение общения и понимания системы
+			\item Упрощение интеграции приложений
+			\item Специфичные для стиля методы анализа
+			\begin{itemize}
+				\item Возможны благодаря ограничениям на структуру системы
+			\end{itemize}
+			\item Специфичные для стиля методы визуализации
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Основные характеристики стилей}
+		\begin{itemize}
+			\item Набор используемых элементов архитектуры
+			\begin{itemize}
+				\item Типы компонентов и соединителей, элементы данных
+				\begin{itemize}
+					\item Например, объекты, фильтры, сервера и т.д.
+				\end{itemize}
+			\end{itemize}
+			\item Набор правил конфигурирования
+			\begin{itemize}
+				\item ``Топологические'' ограничения на соединение элементов
+				\begin{itemize}
+					\item Например, компонент может быть соединён с максимум двумя компонентами
+				\end{itemize}
+			\end{itemize}
+			\item Семантика, стоящая за элементами
+		\end{itemize}
+	\end{frame}
+
+	\section{Lunar lander}
+
+	\begin{frame}
+		\frametitle{Игра ``Посадка на луну''}
+		\framesubtitle{Lunar Lander}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Игрок управляет двигателем спускаемого аппарата
+					\item Топливо ограничено
+					\item Заданы начальная высота и скорость
+					\item Победа засчитывается, если скорость при касании грунта меньше заданной
+					\item Продвинутая версия позволяет управлять горизонтальным движением
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{lunarLander.png}
+					\attribution{N. Medvidovic}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Sense-Compute-Control-реализация}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{senseComputeControlLunarLander.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Архитектурные стили}
+
+	\begin{frame}
+		\frametitle{Некоторые известные стили}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item ``Традиционные'', связанные с языком
+					\begin{itemize}
+						\item Главная программа/подпрограммы
+						\item Объектно-ориентированный
+					\end{itemize}
+					\item Уровневый стиль
+					\begin{itemize}
+						\item Виртуальные машины
+						\item Клиент-сервер
+					\end{itemize}
+					\item Стили, ориентированные на поток данных
+					\begin{itemize}
+						\item Пакетное исполнение
+						\item Каналы и фильтры
+					\end{itemize}
+					\item Peer-to-peer
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Общая память
+					\begin{itemize}
+						\item Blackboard
+						\item Ориентированные на правила
+					\end{itemize}
+					\item Интерпретаторы
+					\begin{itemize}
+						\item Интерпретатор
+						\item Мобильный код
+					\end{itemize}
+					\item Неявный вызов
+					\begin{itemize}
+						\item Событийно-ориентированный
+						\item Издатель-подписчик
+					\end{itemize}
+					\item ``Производные'' стили
+					\begin{itemize}
+						\item Распределённые объекты
+						\item REST
+						\item C2
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\section{Главная программа и подпрограммы}
+
+	\begin{frame}
+		\frametitle{Главная программа/подпрограммы}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{mainProgramAndSubroutinesLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Объектно-ориентированный стиль}
+
+	\begin{frame}
+		\frametitle{Объектно-ориентированный стиль}
+		\begin{itemize}
+			\item Компоненты --- объекты
+			\item Соединители --- сообщения и вызовы методов
+			\item Инварианты:
+			\begin{itemize}
+				\item Объекты отвечают за своё внутреннее состояние
+				\item Реализация скрыта от других объектов
+			\end{itemize}
+			\item Преимущества:
+			\begin{itemize}
+				\item Декомпозиция системы в набор взаимодействующих агентов
+				\item Внутреннее представление объектов можно менять независимо
+				\item Близко к предметной области
+			\end{itemize}
+			\item Недостатки:
+			\begin{itemize}
+				\item Побочные эффекты при вызове методов
+				\item Объекты вынуждены знать обо всех, от кого зависят
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Объектно-ориентированный стиль, Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{objectOrientedLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Или то же на UML}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{objectOrientedLLUML.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Слоистый стиль}
+
+	\begin{frame}
+		\frametitle{Слоистый стиль}
+		\framesubtitle{Layered style}
+		\begin{columns}
+			\begin{column}{0.85\textwidth}
+				\begin{itemize}
+					\item Иерархическая организация системы
+					\begin{itemize}
+						\item ``Многоуровневый клиент-сервер''
+						\item Каждый слой предоставляет интерфейс для использования слоями выше
+					\end{itemize}
+					\item Каждый слой работает как:
+					\begin{itemize}
+						\item Сервер --- предоставляет функциональность слоям выше
+						\item Клиент --- использует функциональность слоёв ниже
+					\end{itemize}
+					\item Соединители --- протоколы взаимодействия слоёв
+					\item Пример --- операционные системы, сетевые стеки протоколов
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.19\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{layeredLL.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Слоистый стиль, подробности}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Преимущества:
+					\begin{itemize}
+						\item Повышение уровня абстракции
+						\item Лёгкость в расширении
+						\item Изменения в каждом уровне затрагивают максимум два соседних
+						\item Возможны разные реализации уровня, если они удовлетворяют интерфейсу
+					\end{itemize}
+					\item Недостатки:
+					\begin{itemize}
+						\item Не всегда применим
+						\item Проблемы с производительностью
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{layered.png}
+					\attribution{N. Medvidovic}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\section{Клиент-сервер}
+
+	\begin{frame}
+		\frametitle{``Клиент-сервер''}
+		\begin{itemize}
+			\item Компоненты --- клиенты и серверы
+			\item Серверы не знают ничего о клиентах, даже их количество
+			\item Клиенты знают только про сервера и не могут общаться друг с другом
+			\item Соединители --- сетевые протоколы
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Клиент-сервер'', Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{clientServerLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Пакетная обработка}
+
+	\begin{frame}
+		\frametitle{Пакетная обработка}
+		\begin{itemize}
+			\item Система строится как набор отдельных программ, выполняющихся последовательно
+			\item Данные стандартным для ОС способом передаются от программы к программе
+			\begin{itemize}
+				\item Pipes, named pipes, файлы
+			\end{itemize}
+			\item Данные --- в явном виде всё, необходимое для работы
+		\end{itemize}
+		Типичен для финансовых систем глубокой древности (``Прадедушка стилей'')
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{batch.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пакетная обработка, Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{batchLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+		Play-by-email?
+	\end{frame}
+
+\end{document}
