@@ -413,4 +413,276 @@
 		Play-by-email?
 	\end{frame}
 
+	\section{Каналы и фильтры}
+
+	\begin{frame}
+		\frametitle{Каналы и фильтры}
+		\framesubtitle{Pipes and filters}
+		\begin{itemize}
+			\item Компоненты --- это фильтры, преобразующие данные из входных каналов в данные в выходных каналах
+			\item Соединители --- каналы
+			\item Инварианты:
+			\begin{itemize}
+				\item Фильтры независимы (не имеют разделяемого состояния)
+				\item Фильтры не знают о фильтрах до или после них
+			\end{itemize}
+			\item Вариации:
+			\begin{itemize}
+				\item Конвейеры --- линейные последовательности фильтров
+				\item Ограниченные каналы --- где канал это очередь с ограниченным количеством элементов
+				\item Типизированные каналы --- где каналы отличаются по типу передаваемых данных
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Каналы и фильтры, подробности}
+		\begin{itemize}
+			\item Преимущества:
+			\begin{itemize}
+				\item Поведение системы --- это просто последовательное применение поведений компонентов
+				\item Легко добавлять, заменять и переиспользовать фильтры
+				\begin{itemize}
+					\item Любые два фильтра можно использовать вместе
+				\end{itemize}
+				\item Широкие возможности для анализа
+				\begin{itemize}
+					\item Пропускная способность, задержки, deadlock-и
+				\end{itemize}
+				\item Широкие возможности для параллелизма
+			\end{itemize}
+			\item Недостатки:
+			\begin{itemize}
+				\item Последовательное исполнение
+				\item Проблемы с интерактивными приложениями
+				\item Пропускная способность определяется самым ``узким'' элементом
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Каналы и фильтры, Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.85\textwidth]{pipesAndFiltersLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Blackboard}
+
+	\begin{frame}
+		\frametitle{Blackboard}
+		\begin{itemize}
+			\item Два типа компонентов:
+			\begin{itemize}
+				\item Центральная структура данных --- та самая ``Blackboard''
+				\item Компоненты, работающие с blackboard
+			\end{itemize}
+			\item Инварианты:
+			\begin{itemize}
+				\item Управление системой осуществляется только через состояние доски
+				\item Компоненты не знают друг о друге и не имеют своего состояния
+			\end{itemize}
+			\item Часто применяется в системах искусственного интеллекта
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Blackboard, Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{blackboardLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Стили с неявным вызовом}
+
+	\begin{frame}
+		\frametitle{Стили с неявным вызовом}
+		\begin{itemize}
+			\item Оповещение о событии вместо явного вызова метода
+			\begin{itemize}
+				\item ``Слушатели'' могут подписаться на событие
+				\item Система при наступлении события сама вызывает все зарегистрированные методы слушателей
+			\end{itemize}
+			\item Компоненты имеют два вида интерфейсов --- методы и события
+			\item Два типа соединителей:
+			\begin{itemize}
+				\item Явный вызов метода
+				\item Неявный вызов по наступлению события
+			\end{itemize}
+			\item Инварианты:
+			\begin{itemize}
+				\item Те, кто производит события, не знают, кто и как на них отреагирует
+				\item Не делается никаких предположений о том, как событие будет обработано и будет ли вообще
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Стили с неявным вызовом, преимущества и недостатки}
+		\begin{itemize}
+			\item Преимущества:
+			\begin{itemize}
+				\item Переиспользование компонентов
+				\begin{itemize}
+					\item Очень низкая связность между компонентами
+				\end{itemize}
+				\item Лёгкость в конфигурировании системы
+				\begin{itemize}
+					\item Как во время компиляции, так и во время выполнения
+				\end{itemize}
+			\end{itemize}
+			\item Недостатки:
+			\begin{itemize}
+				\item Зачастую неинтуитивная структура системы
+				\item Компоненты не управляют последовательностью вычислений
+				\item Непонятно, кто отреагирует на запрос и в каком порядке придут ответы
+				\item Тяжело отлаживаться
+				\item Гонки даже в однопоточном приложении
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Publish-subscribe}
+
+	\begin{frame}
+		\frametitle{Издатель-подписчик}
+		\framesubtitle{Publish-subscribe}
+		\begin{itemize}
+			\item Подписчики регистрируются, чтобы получать нужные им сообщения или данные. Издатели публикуют сообщения, синхронно или асинхронно.
+			\item Компоненты: издатели, подписчики, ``маршрутизаторы''
+			\item Соединители: как правило, сетевые протоколы, часто механизм наподобие паттерна ``Наблюдатель''
+			\item Данные: подписки, нотификации, публикуемая информация
+			\item Топология: подписчики подключаются к издателям напрямую, либо через посредников
+			\item Преимущества: очень низкая связность между компонентами, при этом высокая эффективность распределения информации
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Издатель-подписчик, Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{pubSubLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Событийно-ориентированный стиль}
+
+	\begin{frame}
+		\frametitle{Событийно-ориентированный стиль}
+		\begin{itemize}
+			\item Независимые компоненты посылают и принимают события, передаваемые по шинам
+			\item Компоненты: независимые генераторы или потребители событий
+			\item Соединители: шины событий (хотя бы одна)
+			\item Данные: события и связаные с ними данные, посылаемые по шине
+			\item Топология: компоненты общаются только с шинами событий, не друг с другом
+			\item Варианты: push- и pull-режимы работы с шиной
+			\item Преимущества: лёгкость масштабирования и добавления новой функциональности, эффективно для распределённых приложений
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Событийно-ориентированный Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.45\textwidth]{eventBasedLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Peer-to-peer}
+
+	\begin{frame}
+		\frametitle{Peer-to-peer}
+		\begin{itemize}
+			\item Состояние и поведение распределены между компонентами, которые могут выступать как клиенты и как серверы
+			\item Компоненты: имеют своё состояние и свой поток управления
+			\item Соединители: как правило, сетевые протоколы
+			\item Элементы данных: сетевые сообщения
+			\item Топология: сеть (возможно, с избыточными связями между компонентами), может динамически меняться
+			\item Преимущества:
+			\begin{itemize}
+				\item Хорош для распределённых вычислений
+				\item Устойчив к отказам
+				\item Если протокол взаимодействия позволяет, легко масштабируется
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Peer-to-peer Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{peerToPeerLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{Гетерогенные стили}
+
+	\begin{frame}
+		\frametitle{Гетерогенные стили}
+		\begin{itemize}
+			\item Более сложные стили, полученные соединением простых стилей
+			\begin{itemize}
+				\item REST
+				\item C2
+				\item Распределённые объекты
+				\begin{itemize}
+					\item ОО + клиент-сервер
+					\item CORBA
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{C2}
+
+	\begin{frame}
+		\frametitle{C2}
+		\begin{itemize}
+			\item Стиль с неявным вызовом, где компоненты общаются только через коннекторы, маршрутизирующие сообщения
+			\item Компоненты: незавсимые, потенциально параллельные производители или потребители
+			\item Соединители: маршрутизаторы сообщений, которые могут фильтровать, преобразовывать и рассылать сообщения двух видов: нотификации и запросы
+			\item Элементы данных: сообщения, содержащие данные
+			\begin{itemize}
+				\item Нотификации анонсируют изменения в состоянии
+				\item Запросы --- запрашивают выполнение действия
+			\end{itemize}
+			\item Топология: слои компонентов и соединителей с определённым ``верхом'' и ``низом'', где нотификации шлются ``вниз'', а запросы --- ``вверх''
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{С2 Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{c2LL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
+	\section{CORBA}
+
+	\begin{frame}
+		\frametitle{CORBA}
+		\begin{itemize}
+			\item ``Объекты'' работают на гетерогенных хостах, реализованные на разных языках программирования 
+			\item Объекты предоставляют сервисы через чётко определённые интерфейсы и вызывают методы через RPC-протоколы
+			\item Топология: граф объектов в самом общем смысле
+			\item Дополнительные ограничения:
+			\begin{itemize}
+				\item Передаваемые при вызове метода данные должны быть сериализуемы
+				\item Вызывающие должны обрабатывать ошибки, связанные с работой сети
+			\end{itemize}
+			\item Преимущества: независимость от платформы, языка и местоположения сервиса
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{С2 Lunar Lander}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{corbaLL.png}
+			\attribution{N. Medvidovic}
+		\end{center}
+	\end{frame}
+
 \end{document}
