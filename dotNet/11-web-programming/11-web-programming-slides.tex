@@ -123,4 +123,76 @@
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Работа с БД}
+		\begin{itemize}
+			\item Entity Framework
+			\begin{itemize}
+				\item Object-Relational Mapping-технология, представляет таблицы реляционной БД как объекты C\#
+				\item Если вы пишете SQL руками в коде, вы делаете что-то не так
+			\end{itemize}
+			\item MS SQL Server LocalDB
+			\begin{itemize}
+				\item Реляционная СУБД, урезанная версия SQL Server, предназначенная прежде всего для разработчиков
+				\item Не требует конфигурации, после установки экземпляр создаётся автоматически и к нему можно просто подключаться
+			\end{itemize}
+			\item На самом деле, подобных технологий только популярных десятки
+			\begin{itemize}
+				\item Например, MongoDB или SQLite неплохи
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Entity Framework, подробности}
+		\begin{itemize}
+			\item Работа с базой делается через классы \textit{модели}
+			\begin{itemize}
+				\item Code first
+				\item Database first
+				\item Model first
+			\end{itemize}
+			\item \textit{DbContext} --- базовый класс, представляющий сессию при работе с базой
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Немного примеров}
+		\framesubtitle{Из \url{https://docs.microsoft.com/en-us/ef/core/}}
+		\begin{tiny}
+			Конфигурирование:
+			\begin{minted}{csharp}
+public class BloggingContext : DbContext
+    {
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Post> Posts { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=MyDatabase;Trusted_Connection=True;");
+        }
+    }
+			\end{minted}
+			Чтение:
+			\begin{minted}{csharp}
+using (var db = new BloggingContext())
+{
+    var blogs = db.Blogs
+        .Where(b => b.Rating > 3)
+        .OrderBy(b => b.Url)
+        .ToList();
+}
+			\end{minted}
+			Запись:
+			\begin{minted}{csharp}
+using (var db = new BloggingContext())
+{
+    var blog = new Blog { Url = "http://sample.com" };
+    db.Blogs.Add(blog);
+    db.SaveChanges();
+}
+			\end{minted}
+		\end{tiny}
+	\end{frame}
+
 \end{document}

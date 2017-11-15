@@ -692,4 +692,119 @@ public IActionResult Register(Participant participant)
 
 Оформление страницы с подтверждением регистрации оставляется как упражнение.
 
+\section{Добавим персистентность}
+
+Сейчас перезапуск приложения приводит к полной потере данных, что, наверное, не очень, особенно с учётом того, что когда именно приложение решит закрыться --- решать не вам (сервер может решить, что давно не было к нему обращений и прекратить работать). Поэтому воспользуемся
+Entity Framework + LocalDB.
+
+Для начала модифицируем наш репозиторий, унаследовав его от DbContext (базового класса из библиотеки Entity Framework, представляющего абстракцию сессии работы с базой):
+
+\begin{scriptsize}
+	\begin{minted}{csharp}
+public class Repository : DbContext
+{
+    public DbSet<Participant> Participants { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=ConferenceRegistration;Trusted_Connection=True;");
+    }
+}
+	\end{minted}
+\end{scriptsize}
+
+Тут мы захардкодили Connection String, которая содержит информацию о том, как программе связаться с базой. В любом нормальном приложении connection string выносится в конфиг, но для демонстрации сгодится и так. Собственно, 
+\begin{verbatim}
+	"Server=(localdb)\\\\MSSQLLocalDB;"
+\end{verbatim} 
+--- это имя драйвера базы данных плюс имя экземпляра сервера, дальше имя базы, которая будет создана на сервере, когда мы начнём работать, дальше настройки подключения. Для каждой СУБД connection string своя, так что надо гуглить, как подключаться к вашей любимой базе.
+
+Дальше модифицируем контроллер, чтобы он работал с новым репозиторием:
+
+\begin{minted}{csharp}
+public class HomeController : Controller
+{
+    public IActionResult Index()
+    {
+        ViewBag.Time = DateTime.Now;
+        return View("MyView");
+    }
+
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Register(Participant participant)
+    {
+        if (ModelState.IsValid)
+        {
+            using (var repository = new Repository())
+            {
+                repository.Participants.Add(participant);
+                repository.SaveChanges();
+            }
+            return View("Thanks", participant);
+        }
+
+        return View();
+    }
+
+    public IActionResult ListParticipants()
+    {
+        using (var repository = new Repository())
+        {
+            return View(repository.Participants.ToList());
+        }
+    }
+}
+\end{minted}
+
+Теперь надо модифицировать модель, добавив атрибут Key свойству, которое мы хотели бы использовать как primary key в базе данных:
+
+\begin{minted}{csharp}
+public class Participant
+{
+    [Required(ErrorMessage = "Please enter your name")]
+    public string Name { get; set; }
+
+    [Required(ErrorMessage = "Please enter your email")]
+    [RegularExpression(".+\\@.+\\..+", ErrorMessage = "Please enter a valid email address")]
+    [Key]
+    public string Email { get; set; }
+
+    [Required(ErrorMessage = "Please specify whether you'll be a speaker or just attending")]
+    public bool? Speaker { get; set; }
+}
+\end{minted}
+
+А дальше нам надо поднять экземпляр сервера, создать на нём базу данных, создать в ней таблицу, но... Entity Framework всё сделает за нас с использованием механизма, который называется Migrations. Надо открыть NuGet Manager Console (меню Tools -> NuGet Package Manager -> Package Manager Console) и
+написать там Add-Migration Initial. Оно немного подумает и сгенерит папку Migrations в проекте, где будет написано, что надо сделать с базой. А теперь применим миграцию командой Update-Database. Оно ещё немного подумает и напишет, что всё ок, даже ни разу не спросив нас Connection String 
+или что-нибудь ещё.
+
+Проверим, что реально что-то произошло. Идём во вкладку Server Explorer, жмём Connect to Database:
+
+\begin{center}
+	\includegraphics[width=0.45\textwidth]{serverExplorer.png}
+\end{center}
+
+В появившемся окне указываем имя сервера и базы, как было в Connection String, так:
+
+\begin{center}
+	\includegraphics[width=0.65\textwidth]{addConnection.png}
+\end{center}
+
+Жмём на Test Connection, если всё ок, жмём на Ок. Теперь содержимое базы можно просмотреть прямо в самой Visual Studio через Server Explorer, как-то так:
+
+\begin{center}
+	\includegraphics[width=\textwidth]{databaseView.png}
+\end{center}
+
+Видим, что там действительно то, что нужно.
+
+Теперь можно запустить приложение, попробовать зарегистрироваться в базе, выключить приложение, выключить сервер (с помощью иконки в трее), заново запустить приложение, и открыв ссылку localhost:<номер порта>/Home/ListParticipants убедиться, что оно реально работает.
+Ну а потом грохнуть базу через Server Explorer, если она больше не нужна.
+
 \end{document}
