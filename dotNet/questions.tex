@@ -1,0 +1,92 @@
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[font=scriptsize]{caption}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+\usepackage{textcomp}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\newlength\Colsep
+\setlength\Colsep{10pt}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+
+\newcommand{\todo}[1] {
+\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Вопросы к экзамену "Программирование на .NET}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+
+\begin{document}
+
+\thispagestyle{empty}
+
+\section*{Вопросы к экзамену ``Программирование на .NET''}
+
+\begin{flushright}\begin{small}Юрий Литвинов\\\small{yurii.litvinov@gmail.com}\end{small}\end{flushright}
+
+\begin{enumerate}
+	\item Язык C\#, CLI, основы синтаксиса языка, ссылочные типы и типы-значения, преобразования типов, представление объектов в памяти
+	\item Методы: способы передачи параметров, абстрактные, виртуальные и статические методы, модификаторы видимости.
+	\item Платформа .NET: общее описание, CLR, IL, CTS
+	\item Сборки: понятие сборки, сильные и слабые имена, загрузка сборки, GAC, Binding redirect, MsBuild
+	\item NuGet, JIT, Ngen, понятие Managed Heap, AppDomain. Понятие целевой платформы, реализации: .NET Framework, Mono, .NET Core
+	\item Исключения: бросание, перебрасывание и обработка, библиотечные исключения, свойства исключений, хорошие практики
+	\item Рефлексия: загрузка сборки, создание экземпляра объекта, работа с полями и методами, dynamic
+	\item Модульное тестирование: популярные библиотеки, хорошие практики, mock-объекты
+	\item Контейнеры и генерики в .NET, энумераторы, открытые и закрытые типы, особенности статических полей в генериках, генерики и вложенные классы
+	\item Генерики и наследование, ограничения на параметры-типы, ковариантность и контравариантность
+	\item LINQ: основные методы, синтаксис, основные реализации, свои провайдеры
+	\item Делегаты, их внутреннее устройство, delegate chaining, Invoke, шаблонные типы делегатов из стандартной библиотеки
+	\item События, анонимные методы, лямбда-выражения, замыкания, каноничное объявление события, ручное управление подпиской
+	\item Rx.NET, интерфейсы IObservable и IObserver, холодные и горячие последовательности, Rx.NET и LINQ, Subject
+	\item WinForms: назначение, класс Control, обработка и валидация ввода, Data Binding, хорошие практики
+	\item WPF: назначение и родственные технологии. XAML: атрибуты, конвертеры типов, расширения, коллекции. Структура классов WPF, логическое и визуальное дерево.
+	\item WPF: зависимые свойства, routed events, команды. Data binding: конвертеры, направления привязки, валидация.
+	\item WPF: стили, триггеры, шаблоны, ресурсы. Геометрия контрола, задание положения контрола и преобразования системы координат
+	\item Потоки в .NET: классы Thread и ThreadPool, примитивы синхронизации уровня ядра: ключевое слово lock, мониторы, семафоры, WaitHandle, ManualResetEvent/AutoResetEvent, гибридные конструкции (*Slim)
+	\item Lock-free-программирование: основные понятия, атомарные чтения/записи, volatile, Interlocked, Compare-And-Swap
+	\item Класс Task, исполнение и отмена асинхронных операций. Async/await.
+	\item Сборка мусора, mark and sweep, поколения, Large Object Heap, когда происходит сборка мусора
+	\item Режимы сборки мусора: Workstation/Server, многопоточная сборка. Динамическая настройка GC, ручное управление, мониторинг
+	\item Финализаторы, IDisposable, using, реализация финализации, ручное управление жизнью объекта, fixed, WeakReference
+	\item Веб-сервисы, веб-приложения, архитектура ASP.NET MVC. Работа с БД: понятие ORM, библиотека Entity Framework
+	\item Язык F\#: основные особенности, let-определения, кортежи, лямбды, списки, Option, взаимная рекурсия, pipe, композиция
+	\item Каррирование, match, виды шаблонов, последовательности, записи, размеченные объединения
+	\item Хвостовая рекурсия, паттерн ``Аккумулятор'', Continuation Passing Style
+	\item Генерики в F\#, автоматическое обобщение, словари операций, касты, гибкие ограничения
+	\item Методы отладки проблем типизации, value restriction, point-free, особенности арифметических операторов
+	\item ООП в F\#: методы, каррирование и кортежи при передаче параметров, конструкторы, свойства, мутабельность
+	\item Модификаторы видимости, наследование, абстрактные классы и интерфейсы, реализация по умолчанию, объектные выражения, модули и пространства имён
+\end{enumerate}
+
+\end{document}
