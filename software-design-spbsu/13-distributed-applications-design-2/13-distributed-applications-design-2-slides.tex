@@ -1,0 +1,47 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\tabulinesep=0.7mm
+
+\title{Проектирование распределённых приложений}
+\subtitle{Часть вторая: высокоуровневые вещи}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{14.12.2017}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\section{RabbitMQ}
+
+	\begin{frame}
+		\frametitle{RabbitMQ}
+		\begin{itemize}
+			\item Сервер и клиенты системы надёжной передачи сообщений
+			\begin{itemize}
+				\item Сообщение посылается на сервер и хранится там, пока его не заберут
+				\item Продвинутые возможности по маршрутизации сообщений
+			\end{itemize}
+			\item Реализует протокол AMQP (Advanced Message Queuing Protocol), но может использовать и другие протоколы
+			\item Сервер написан на Erlang, клиентские библиотеки доступны для практически чего угодно
+		\end{itemize}
+		\begin{textblock}{3}(8,0)
+			\includegraphics[width=\textwidth]{rabbitmqLogo.png}
+		\end{textblock}
+	\end{frame}
+
+\end{document}
