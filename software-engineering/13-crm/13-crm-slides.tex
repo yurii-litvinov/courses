@@ -1,0 +1,136 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Занятие 13: Customer Relation Management}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{13.12.2017}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\newcommand{\DownArrow} {
+	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
+}
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\; #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{CRM}
+
+	\begin{frame}
+		\frametitle{CRM-системы}
+		\textit{CRM-система} --- средство автоматизации взаимодействия с клиентами (и потенциальными клиентами)
+		\begin{itemize}
+			\item Централизованное хранилище контактов
+			\item Отслеживание истории взаимодействия с клиентами
+			\item Статистический анализ контактов с клиентами
+			\item Анализ эффективности механизмов продвижения
+			\item Планирование и управление работой службы продаж
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Основные понятия}
+		\begin{itemize}
+			\item \textit{Интерес} --- анонимный потенциальный клиент, выразивший интерес к продукту, без контактных данных
+			\item \textit{Lead} --- потенциальный клиент с контактными данными
+			\item \textit{Клиент} --- тот, кто уже пользуется услугами компании
+			\begin{itemize}
+				\item Сохранение клиентов --- одна из главных целей использования CRM
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что можно хотеть от CRM-системы}
+		\begin{itemize}
+			\item Облачная или устанавливаемая CRM
+			\item Интеграция с телефонией
+			\item Интеграция с электронной почтой, рассылки
+			\item Интеграция с social media
+			\item Поддержка контрагентов
+			\item Импорт данных
+			\begin{itemize}
+				\item Критично для стоимости внедрения
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{На паре}
+
+	\begin{frame}
+		\frametitle{Пример: Битрикс24}
+		\begin{itemize}
+			\item \url{https://www.bitrix24.ru}
+			\item CRM-система от 1С-Битрикс
+			\item Облачная, бесплатна для компаний до 12 сотрудников
+			\begin{itemize}
+				\item Поэтому идеально подходит для пары
+				\item Вообще же CRM-систем десятки, и каждая большая компания хочет свою
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Задание на пару}
+		\begin{itemize}
+			\item Завести для своего проекта аккаунт в CRM-системе
+			\item Занести всех сокомандников как сотрудников, указать воображаемую структуру организации
+			\item Завести карточки воображаемых компаний-партнёров и/или конкурентов
+			\item Завести карточки воображаемых lead-ов и покупателей
+			\item Воображаемо заключить контракт минимум с тремя покупателями
+		\end{itemize}
+	\end{frame}
+
+	\section{Домашка}
+
+	\begin{frame}
+		\frametitle{Домашнее задание}
+		Подготовить презентацию своего проекта для потенциальных инвесторов
+		\begin{itemize}
+			\item Оценка рынка и перспектив его развития
+			\item Видение и основные фичи проекта
+			\begin{itemize}
+				\item Позиционирование относительно конкурентов
+				\item Категории потребителей
+			\end{itemize}
+			\item План реализации, календарные сроки, бюджет
+			\item План монетизации
+			\item План продвижения
+			\item Команда
+			\item Финансовый план
+			\begin{itemize}
+				\item Требуемые инвестиции
+				\item Return-of-investment
+				\item Выход на самоокупаемость
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+\end{document}
