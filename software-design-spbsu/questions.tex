@@ -1,0 +1,108 @@
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[font=scriptsize]{caption}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+\usepackage{textcomp}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\newlength\Colsep
+\setlength\Colsep{10pt}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+
+\newcommand{\todo}[1] {
+\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Вопросы к экзамену ``Проектирование ПО''}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+
+\begin{document}
+
+\thispagestyle{empty}
+
+\section*{Вопросы к экзамену ``Проектирование ПО''}
+
+\begin{flushright}\begin{small}Юрий Литвинов\\\small{yurii.litvinov@gmail.com}\end{small}\end{flushright}
+
+\begin{enumerate}
+	\item Понятие архитектуры, профессия ``Архитектор''
+	\item Архитектурные виды 
+	\item Роль архитектуры в жизненном цикле ПО
+	\item Понятие декомпозиции. Модульность, связность, сопряжение, сложность.
+	\item Понятия класса и объекта, абстракция, инкапсуляция, наследование. Принципы выделения абстракций предметной области.
+	\item Принципы SOLID.
+	\item Закон Деметры. Принципы хорошего объектно-ориентированного кода.
+	\item Моделирование, визуальные модели, виды моделей, метафора визуализации.
+	\item Язык UML. Проектирование структуры системы, диаграммы классов, объектов, пакетов, компонентов и размещения UML.
+	\item Анализ и моделирование требований, случаи использования, диаграмма случаев использования UML.
+	\item Диаграммы IDEF0, характеристик, Feature tree, моделирование требований в SysML.
+	\item Диаграмма активностей UML, BPMN.
+	\item Концептуальное моделирование и моделирование данных: диаграммы ``Сущность-связь'', ORM.
+	\item Понятие и примеры CASE-систем.
+	\item Моделирование поведения, диаграммы конечных автоматов UML.
+	\item Диаграммы последовательностей UML, диаграммы коммуникации UML.
+	\item Диаграммы составных структур, коопераций, временные диаграммы, диаграммы обзора взаимодействия, диаграммы потоков данных.
+	\item Паттерны ``Компоновщик'', ``Декторатор'', ``Стратегия''.
+	\item Паттерны ``Адаптер'', ``Прокси'', ``Фасад''.
+	\item Паттерны ``Мост'', ``Приспособленец'', ``Спецификация''.
+	\item Паттерны ``Фабричный метод'', ``Шаблонный метод'', ``Абстрактная фабрика''.
+	\item Паттерны ``Одиночка'', ``Прототип'', ``Строитель''.
+	\item Паттерны ``Посредник'', ``Команда'', ``Цепочка ответственности''.
+	\item Паттерны ``Наблюдатель'', ``Состояние'', ``Посетитель'', ``Хранитель''.
+	\item Антипаттерны ``Круговая зависимость'', ``Последовательная связность'', ``Вызов предка'', ``Проблема Йо-Йо'', ``Активное ожидание'', ``Сокрытие ошибки'', ``Магические числа'', ``Магические строки''.
+	\item Антипаттерны ``Божественный объект'', ``Поток лавы'', ``Функциональная декомпозиция'', ``Полтергейст'', ``Золотой молоток''.
+	\item Design smells.
+	\item Антипаттерны ``Остров автоматизации'', ``Stovepipe system'', ``Привязка к поставщику'', ``Подразумеваемая архитектура'', ``Проектирование комитетом''
+	\item Понятие архитектурного стиля, трёхзвенная архитектура, Model-View-Controller, Sense-Compute-Control.
+	\item Структурный и объектно-ориентированный стили, слоистые архитектурные стили.
+	\item Пакетная обработка, каналы и фильтры, Blackboard.
+	\item Publish-Subscribe, Event-based-стили.
+	\item Peer-to-peer, C2, CORBA.
+	\item Domain-Driven Design, основные структурные жлементы модели предметной области.
+	\item Паттерны ``Агрегат'', ``Фабрика'', ``Репозиторий''.
+	\item Говорящие интерфейсы, функции без побочных эффектов, assertions, замкнутые операции.
+	\item Ограниченный контекст, непрерывная интеграция, карта контекстов.
+	\item Подходы к интеграции контекстов.
+	\item Смысловое ядро, приёмы дистилляции, абстрактное ядро.
+	\item Крупномасштабная структура, метафора системы, разбиение по уровням, типичные уровни в производственных и финансовых системах, уровень знаний, подключаемые компоненты.
+	\item Архитектура распределённых систем: понятие распределённой системы, виды сущностей и взаимодействий, типичные архитектурные стили.
+	\item Межпроцессное сетевое взаимодействие, модель OSI, стек протоколов TCP/IP, сокеты, протоколы ``запрос-ответ'', протокол HTTP.
+	\item Удалённые вызовы процедур (RPC). Protobuf, gRPC.
+	\item Удалённые вызовы методов (RMI).
+	\item Веб-сервисы, SOAP. WCF.
+	\item Очереди сообщений, RabbitMQ. Enterprise Service Bus.
+	\item REST.
+	\item Микросервисы, peer-to-peer.
+\end{enumerate}
+
+\end{document}
