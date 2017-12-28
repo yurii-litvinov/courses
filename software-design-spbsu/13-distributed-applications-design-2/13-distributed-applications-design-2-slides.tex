@@ -155,6 +155,28 @@ networks:
 		\end{small}
 	\end{frame}
 
+	\begin{frame}[fragile]
+		\frametitle{WSDL-описание}
+		\begin{small}
+			\begin{minted}{xml}
+<message name="getTermRequest">
+    <part name="term" type="xs:string"/>
+</message>
+
+<message name="getTermResponse">
+    <part name="value" type="xs:string"/>
+</message>
+
+<portType name="glossaryTerms">
+    <operation name="getTerm">
+        <input message="getTermRequest"/>
+        <output message="getTermResponse"/>
+    </operation>
+</portType>
+			\end{minted}
+		\end{small}
+	\end{frame}
+
 	\begin{frame}
 		\frametitle{Достоинства SOAP-based сервисов}
 		\begin{itemize}
