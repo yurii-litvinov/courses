@@ -1,0 +1,71 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\title{Практика 1: Введение, потоки, продвинутый JUnit}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{16.02.2018г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Правила игры}
+		\begin{itemize}
+			\item Пара один раз в две недели
+			\begin{itemize}
+				\item $=>$ вдвое больше домашки за один раз
+			\end{itemize}
+			\item Как обычно, куча домашек, две контрольные (и переписывание в конце), баллы и дедлайны, HwProj
+			\begin{itemize}
+				\item Задач будет немного меньше, но они немного объёмнее
+			\end{itemize}
+			\item За практику будет выставляться оценка, которая потом будет учитываться при сдаче экзамена
+			\begin{itemize}
+				\item по какой-то хитрой формуле, учитывающей баллы за домашку и контрольные
+				\item \textcolor{gray}{Максимальный итоговый балл: 1.5, складывается из балла за контрольные (макс. 0.75) и балла за домашки (макс. 0.75). Максимум за к/р --- 16 баллов, максимум за д/з пока не известен}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Напоминание про штрафы}
+		\begin{scriptsize}
+			\begin{tabu} {| X[1 l p] | X[0.3 l p] |}
+				\tabucline-
+				\everyrow{\tabucline-}
+				Пропущенный дедлайн                                                                   & баллы делятся на два \\
+				Задача на момент дедлайна не реализует все требования условия                         & пропорционально объёму невыполненных требований \\
+				Неумение пользоваться гитом                                                           & -2 \\
+				Проблемы со сборкой (в том числе, забытый org.jetbrains.annotations)                  & -2 \\
+				Отсутствие JavaDoc-ов для всех классов, интерфейсов и паблик-методов                  & -2 \\
+				Отсутствие описания метода в целом                                                    & -1 \\
+				Слишком широкие области видимости для полей                                           & -2 \\
+				if (...) return true; else return false;                                              & -2 \\
+				Именование классов-полей-методов-... и прочие code convertions                        & -1 \\
+				Неиспользование try-with-resources там, где это было бы уместно                       & -1 \\
+				Комментарии для параметров с заглавной буквы                                          & -0.5 \\
+			\end{tabu}
+		\end{scriptsize}
+		\begin{center}
+			\scriptsize{Список может расширяться!}
+		\end{center}
+	\end{frame}
+
+
+\end{document}
