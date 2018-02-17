@@ -3,6 +3,7 @@
 \setdefaultlanguage[babelshorthands=true]{russian}
 \usepackage{minted}
 \usepackage{tabu}
+\usepackage{moresize}
 
 \useoutertheme{infolines}
 
@@ -10,9 +11,10 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
 \setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
 
 \setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
 \setbeamercolor*{block body alerted}{fg=black,bg=red!10}
@@ -21,7 +23,7 @@
 
 \title{Введение в F\#}
 \author{Юрий Литвинов}
-\date{03.03.2017г}
+\date{20.02.2018г}
 
 \begin{document}
 	
@@ -51,20 +53,17 @@
 				\item Mono + MonoDevelop + F\# Language Binding, из репозиториев
 				\item .NET Core + Visual Studio Code
 			\end{itemize}
-			\item Прямо в браузере: http://www.tryfsharp.org/Learn
+			\item Прямо в браузере: \url{http://www.tryfsharp.org/Learn}
 		\end{itemize}
 	\end{frame}
 	
 	\begin{frame}[fragile]
 		\frametitle{Пример программы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 printfn "%s" "Hello, world"
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		Сравните с
-		\begin{exampleblock}{C\#}
-			\begin{minted}{csharp}
+		\begin{minted}{csharp}
 namespace HelloWorld
 {
     class Program
@@ -75,50 +74,40 @@ namespace HelloWorld
         }
     }
 }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
-		
+		\end{minted}
+	\end{frame}
+
 	\begin{frame}[fragile]
 		\frametitle{Ещё пример}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let rec factorial x =
     if x = 1 then 1 else x * factorial (x - 1)
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 	
 	\section{Let-определения}
 
 	\begin{frame}[fragile]
 		\frametitle{let-определение}
-		\framesubtitle{Как жить без переменных}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let x = 1
 let x = 2
 printfn "%d" x
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		можно читать как
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let x = 1 in let x = 2 in printfn "%d" x
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		и понимать как подстановку $\lambda$-терма
-\end{frame}
+	\end{frame}
 		
 	\begin{frame}[fragile]
 		\frametitle{let-определение, функции}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let powerOfFour x = 
     let xSquared = x * x
     xSquared * xSquared
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		\begin{itemize}
 			\item Позиционный синтаксис
 			\begin{itemize}
@@ -129,12 +118,11 @@ let powerOfFour x =
 			\item Не надо писать типы
 			\item Не надо писать \textit{return}
 		\end{itemize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Вложенные let-определения}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let powerOfFourPlusTwoTimesSix n =
     let n3 =
         let n1 = n * n
@@ -142,29 +130,26 @@ let powerOfFourPlusTwoTimesSix n =
         n2 + 2
     let n4 = n3 * 6
     n4
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		\begin{itemize}
 			\item \textit{n3} --- не функция!
 			\item Компилятор отличает значения и функции по наличию аргументов
 			\item Значение вычисляется, когда до \textit{let} <<доходит управление>>, 
 					функция --- когда её вызовут. Хотя, конечно, функция --- тоже значение.
 		\end{itemize}
-\end{frame}
+	\end{frame}
 			
 	\section{Типы}
 			
 	\begin{frame}[fragile]
 		\frametitle{Типы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let rec f x =
     if x = 1 then 
         1 
     else 
         x * f (x - 1)
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 
 		\begin{alertblock}{F\# Interactive}
 			\begin{minted}{fsharp}
@@ -173,7 +158,7 @@ val f : x:int -> int
 		\end{alertblock}
 		Каждое значение имеет тип, известный во время компиляции
 \end{frame}
-			
+
 	\begin{frame}
 		\frametitle{Элементарные типы}
 		\begin{itemize}
@@ -187,9 +172,8 @@ val f : x:int -> int
 	\end{frame}
 	
 	\begin{frame}[fragile]
-		\frametitle{Таплы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\frametitle{Кортежи (tuples)}
+		\begin{minted}{fsharp}
 let site1 = ("scholar.google.com", 10)
 let site2 = ("citeseerx.ist.psu.edu", 5)
 let site3 = ("scopus.com", 4)
@@ -197,31 +181,40 @@ let sites = (site1, site2, site3)
 
 let url, relevance = site1
 let site1, site2, site3 = sites
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Value Tuples}
+		\begin{minted}{fsharp}
+let origin = struct (0,0)
+
+let displace 
+        ((x, y): struct (int * int))
+        ((dx, dy): struct (int * int)) 
+    =
+    struct (x + dx, y + dy)
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Лямбды}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let primes = [2; 3; 5; 7]
 let primeCubes = List.map (fun n -> n * n * n) primes
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		\begin{alertblock}{F\# Interactive}
 			\begin{minted}{fsharp}
 > primeCubes;;
 val it : int list = [8; 27; 125; 343]
 			\end{minted}
 		\end{alertblock}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let f = fun x -> x * x
 let n = f 4
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
+
 
 	\begin{frame}
 		\frametitle{Списки}
@@ -243,41 +236,35 @@ let n = f 4
 
 	\begin{frame}[fragile]
 		\frametitle{Примеры работы со списками}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let oddPrimes = [3; 5; 7; 11]
 let morePrimes = [13; 17]
 let primes = 2 :: (oddPrimes @ morePrimes)
-			\end{minted}
-		\end{exampleblock}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\end{minted}
+		\begin{minted}{fsharp}
 let printFirst primes =
     match primes with
     | h :: t -> printfn "First prime in the list is %d" h
-    | [] -> printfn "No primes found in the list"			
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+    | [] -> printfn "No primes found in the list"
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Устройство списков}
 		\begin{center}
 			\includegraphics[width=0.4\textwidth]{lists.png}
 		\end{center}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let list3 = [3; 4]
 let list1 = 2 :: list3
 let list2 = 1 :: list3
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		\begin{itemize}
 			\item Списки немутабельны
 			\item Cons-ячейки, указывающие друг на друга
 			\item cons за константное время, @ --- за линейное
 		\end{itemize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Операции над списками}
@@ -285,18 +272,18 @@ let list2 = 1 :: list3
 		\begin{small}
 			\begin{tabu} {| X[0.5 l p] | X[1 l p] | X[1 l p] | X[0.5 l p] |}
 				\tabucline-
-				Функция                & Описание                            & Пример                                              & Результат                        \\
+				Функция                & Описание                            & Пример                                              & Результат            \\
 				\tabucline-
 				\everyrow{\tabucline-}
-				List.length            & Длина списка                        & $List.length\ [1;2;3]$                              & $3$          \\
-				List.nth               & n-ый элемент списка                 & $List.nth\ [1; 2; 3]\ 1$                            & $2$          \\
+				List.length            & Длина списка                        & $List.length\ [1;2;3]$                              & $3$                  \\
+				List.nth               & n-ый элемент списка                 & $List.nth\ [1; 2; 3]\ 1$                            & $2$                  \\
 				List.init              & Генерирует список                   & $List.init\ 3 (fun\ i\ \rightarrow\ i * i)$         & $[0; 1; 4]$          \\
-				List.head              & Голова списка                       & $List.head\ [1; 2; 3]$                              & $1$          \\
-				List.tail              & Хвост списка                        & $List.tail\ [1; 2; 3]$                              & $[2; 3]$          \\
+				List.head              & Голова списка                       & $List.head\ [1; 2; 3]$                              & $1$                  \\
+				List.tail              & Хвост списка                        & $List.tail\ [1; 2; 3]$                              & $[2; 3]$             \\
 				List.map               & Применяет функцию ко всем элементам & $List.map\ (fun\ i\ \rightarrow\ i * i)\ [1; 2; 3]$ & $[1; 4; 9]$          \\
-				List.filter            & Отбирает нужные элементы            & $List.filter\ (fun\ x\ \rightarrow\ x\ \%\ 2 <> 0)\ [1; 2; 3]$ & $[1; 3]$          \\
-				List.fold              & "Свёртка"  & $List.fold\ (fun\ x\ acc\ \rightarrow\ acc * x)\ 1\ [1; 2; 3]$               & $6$          \\
-				List.zip               & Делает из двух списков список пар   & $List.zip\ [1; 2]\ [3; 4]$                          & $[(1, 3); (2, 4)]$          \\
+				List.filter            & Отбирает нужные элементы            & $List.filter\ (fun\ x\ \rightarrow\ x\ \%\ 2 <> 0)\ [1; 2; 3]$ & $[1; 3]$  \\
+				List.fold              & "Свёртка"  & $List.fold\ (fun\ x\ acc\ \rightarrow\ acc * x)\ 1\ [1; 2; 3]$               & $6$                  \\
+				List.zip               & Делает из двух списков список пар   & $List.zip\ [1; 2]\ [3; 4]$                          & $[(1, 3); (2, 4)]$   \\
 			\end{tabu}
 		\end{small}
 	\end{frame}
@@ -304,30 +291,25 @@ let list2 = 1 :: list3
 	\begin{frame}[fragile]
 		\frametitle{Тип Option}
 		Либо \textit{Some что-то}, либо \textit{None}, представляет возможное отсутствие значения.
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let people = [ ("Adam", None); ("Eve" , None);
     ("Cain", Some("Adam","Eve"));
     ("Abel", Some("Adam","Eve")) ]
-			\end{minted}
-		\end{exampleblock}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\end{minted}
+		\begin{minted}{fsharp}
 let showParents (name, parents) =
     match parents with
     | Some(dad, mum) -> 
         printfn "%s, father %s, mother %s" name dad mum
     | None -> printfn "%s has no parents!" name
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\section{Функции}
 
 	\begin{frame}[fragile]
 		\frametitle{Рекурсия}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let rec length l =
     match l with
     | [] -> 0
@@ -335,90 +317,72 @@ let rec length l =
 
 let rec even n = (n = 0u) || odd(n - 1u)
 and odd n = (n <> 0u) && even(n - 1u)
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 \end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Оператор $|>$}
 		\framesubtitle{Pipe forward}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let (|>) x f = f x
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let sumFirst3 ls = ls |> Seq.take 3 |> Seq.fold (+) 0
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		вместо
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let sumFirst3 ls= Seq.fold (+) 0 (Seq.take 3 ls)
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Оператор $>>$}
 		\framesubtitle{Композиция}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let (>>) f g x = g (f x)
-			\end{minted}
-		\end{exampleblock}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\end{minted}
+		\begin{minted}{fsharp}
 let sumFirst3 = Seq.take 3 >> Seq.fold (+) 0
 let result = sumFirst3 [1; 2; 3; 4; 5]
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Операторы $<|$ и $<<$}
 		\framesubtitle{Pipe-backward и обратная композиция}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let (<|) f x = f x
 let (<<) f g x = f (g x)
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		Зачем? Чтобы не ставить скобки:
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 printfn "Result = " <| factorial 5
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Каррирование, частичное применение}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let shift (dx, dy) (px, py) = (px + dx, py + dy)
 let shiftRight = shift (1, 0)
 let shiftUp = shift (0, 1)
 let shiftLeft = shift (-1, 0)
 let shiftDown = shift (0, -1)
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		\begin{alertblock}{F\# Interactive}
 			\begin{minted}{fsharp}
 > shiftDown (1, 1);;
 val it : int * int = (1, 0)
 			\end{minted}
 		\end{alertblock}
-\end{frame}
+	\end{frame}
 
 	\section{.NET}
 
 	\begin{frame}[fragile]
 		\frametitle{Использование библиотек .NET}
-		\begin{tiny}
-		\begin{exampleblock}{F\#}
+		\begin{scriptsize}
 			\begin{minted}{fsharp}
 open System.Windows.Forms
 
@@ -443,57 +407,48 @@ textB.Text <- http("http://www.google.com")
 
 form.ShowDialog () |> ignore
 			\end{minted}
-		\end{exampleblock}
-		\end{tiny}
-\end{frame}
+		\end{scriptsize}
+	\end{frame}
 
 	\section{Сопоставление шаблонов}
 	
 	\begin{frame}[fragile]
 		\frametitle{Сопоставление шаблонов}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let urlFilter url agent =
     match (url, agent) with
     | "http://www.google.com", 99 -> true
     | "http://www.yandex.ru" , _ -> false
     | _, 86 -> true
     | _ -> false
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let sign x =
     match x with
     | _ when x < 0 -> -1
     | _ when x > 0 -> 1
     | _ -> 0
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{F\# --- не Prolog}
 		Не получится писать так:
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let isSame pair =
     match pair with
     | (a, a) -> true
     | _ -> false
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		Нужно так:
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let isSame pair =
     match pair with
     | (a, b) when a = b -> true
     | _ -> false
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Какие шаблоны бывают}
@@ -524,8 +479,10 @@ let isSame pair =
 		Нельзя пользоваться:
 		\begin{itemize}
 			\item мутабельными переменными
+			\item ref-ячейками
 			\item массивами
 			\item циклами
+			\item мутабельными классами из .NET
 			\item другими императивными возможностями языка
 		\end{itemize}
 	\end{frame}

@@ -268,18 +268,18 @@ let list2 = 1 :: list3
 		\begin{scriptsize}
 			\begin{tabu} {| X[0.5 l p] | X[1 l p] | X[1 l p] | X[0.5 l p] |}
 				\tabucline-
-				Функция                & Описание                            & Пример                                              & Результат                        \\
+				Функция                & Описание                            & Пример                                              & Результат            \\
 				\tabucline-
 				\everyrow{\tabucline-}
-				List.length            & Длина списка                        & $List.length\ [1;2;3]$                              & $3$          \\
-				List.nth               & n-ый элемент списка                 & $List.nth\ [1; 2; 3]\ 1$                            & $2$          \\
+				List.length            & Длина списка                        & $List.length\ [1;2;3]$                              & $3$                  \\
+				List.nth               & n-ый элемент списка                 & $List.nth\ [1; 2; 3]\ 1$                            & $2$                  \\
 				List.init              & Генерирует список                   & $List.init\ 3 (fun\ i\ \rightarrow\ i * i)$         & $[0; 1; 4]$          \\
-				List.head              & Голова списка                       & $List.head\ [1; 2; 3]$                              & $1$          \\
-				List.tail              & Хвост списка                        & $List.tail\ [1; 2; 3]$                              & $[2; 3]$          \\
+				List.head              & Голова списка                       & $List.head\ [1; 2; 3]$                              & $1$                  \\
+				List.tail              & Хвост списка                        & $List.tail\ [1; 2; 3]$                              & $[2; 3]$             \\
 				List.map               & Применяет функцию ко всем элементам & $List.map\ (fun\ i\ \rightarrow\ i * i)\ [1; 2; 3]$ & $[1; 4; 9]$          \\
-				List.filter            & Отбирает нужные элементы            & $List.filter\ (fun\ x\ \rightarrow\ x\ \%\ 2 <> 0)\ [1; 2; 3]$ & $[1; 3]$          \\
-				List.fold              & "Свёртка"  & $List.fold\ (fun\ x\ acc\ \rightarrow\ acc * x)\ 1\ [1; 2; 3]$               & $6$          \\
-				List.zip               & Делает из двух списков список пар   & $List.zip\ [1; 2]\ [3; 4]$                          & $[(1, 3); (2, 4)]$          \\
+				List.filter            & Отбирает нужные элементы            & $List.filter\ (fun\ x\ \rightarrow\ x\ \%\ 2 <> 0)\ [1; 2; 3]$ & $[1; 3]$  \\
+				List.fold              & "Свёртка"  & $List.fold\ (fun\ x\ acc\ \rightarrow\ acc * x)\ 1\ [1; 2; 3]$               & $6$                  \\
+				List.zip               & Делает из двух списков список пар   & $List.zip\ [1; 2]\ [3; 4]$                          & $[(1, 3); (2, 4)]$   \\
 			\end{tabu}
 		\end{scriptsize}
 	\end{frame}
