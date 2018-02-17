@@ -1,0 +1,57 @@
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[font=scriptsize]{caption}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+\usepackage{textcomp}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\newlength\Colsep
+\setlength\Colsep{10pt}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+
+\newcommand{\todo}[1] {
+\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Объектно-ориентированное программирование}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+
+\date{20.02.2018г}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+
+\end{document}
