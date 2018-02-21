@@ -1,0 +1,101 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=0.7mm
+
+\title{Продолжение про CLI, grep}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{01.03.2017г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Комментарии по домашке}
+		\begin{itemize}
+			\item Основная проблема с ней в том, что её почти никто не сдавал
+			\item Комментарии:
+			\begin{itemize}
+				\item К самим классам
+				\item К интерфейсам
+				\item Ко всем public-методам
+				\begin{itemize}
+					\item принцип единственности ответственности и объектно-ориентированная декомпозиция вообще
+				\end{itemize}
+			\end{itemize}
+			\item Стайлгайд (в основном какая-то беда с пробелами)
+			\begin{itemize}
+				\item \url{http://checkstyle.sourceforge.net/}
+				\item \url{https://www.codacy.com/}
+				\item \url{https://github.com/StyleCop}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Grep}
+		\framesubtitle{Следующая задача}
+		Реализовать команду grep, 
+		\begin{itemize}
+			\item поддерживающую ключи
+			\begin{itemize}
+				\item \textit{-i} (нечувствительность к регистру)
+				\item \textit{-w} (поиск только слов целиком)
+				\item \textit{-A n} (распечатать n строк после строки с совпадением)
+			\end{itemize}
+			\item поддерживающую регулярные выражения в строке поиска
+			\item использующую одну из библиотек для разбора аргументов командной строки
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Примеры}
+		\begin{minted}{bash}
+> grep plugin build.gradle
+    apply plugin: 'java'
+    apply plugin: 'idea'
+> cat build.gradle | grep plugin
+    apply plugin: 'java'
+    apply plugin: 'idea'
+> grep -A 2 plugin build.gradle
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    group = 'ru.example'
+    version = '1.0'
+		\end{minted}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Замечания}
+		\begin{itemize}
+			\item Ожидается обоснование выбора библиотеки для работы с аргументами
+			\begin{itemize}
+				\item Какие библиотеки были рассмотрены
+				\item Почему выбрана именно та, что выбрана
+				\begin{itemize}
+					\item кратко описать текстом
+				\end{itemize}
+			\end{itemize}
+			\item Сдавать как новый пуллреквест из новой ветки на базе предыдущей
+		\end{itemize}
+	\end{frame}
+
+\end{document}
