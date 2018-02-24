@@ -10,10 +10,6 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
-
 \setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
 \setbeamercolor*{block body alerted}{fg=black,bg=red!10}
 
@@ -21,26 +17,46 @@
 
 \title{Продолжение про F\#}
 \author{Юрий Литвинов}
-\date{17.03.2017г}
+\date{27.02.2018г}
 
 \begin{document}
 	
 	\frame{\titlepage}
+
+	\section{Комментарии по домашке}
+
+	\begin{frame}[fragile]
+		\frametitle{Комментарии по домашке}
+		\begin{itemize}
+			\item Обработка ошибочного пользовательского ввода
+			\item Обработка всех возможных входных данных
+			\item Если элемента в списке не нашлось, надо возвращать не -1, а None
+			\begin{itemize}
+				\item Некорректное состояние должно быть невыразимо
+			\end{itemize}
+			\item Стараться не делать лишних вычислений, язык не ленивый
+			\item Как порезать список на два:
+				\begin{minted}{fsharp}
+let rec split ls left right =
+    match ls with
+    | [] -> (left, right)
+    | [a] -> (a::left, right)
+    | a::b::tail -> split tail (a::left) (b::right)
+				\end{minted}
+		\end{itemize}
+	\end{frame}
 
 	\section{Последовательности}
 	
 	\begin{frame}[fragile]
 		\frametitle{Последовательности}
 		\framesubtitle{Ленивый тип данных}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 seq {0 .. 2}
 seq {1I .. 1000000000000I}
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System.IO
 let rec allFiles dir =
     Seq.append
@@ -48,9 +64,8 @@ let rec allFiles dir =
     (dir |> Directory.GetDirectories 
          |> Seq.map allFiles 
          |> Seq.concat)
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Типичные операции с последовательностями}
@@ -74,38 +89,31 @@ let rec allFiles dir =
 
 	\begin{frame}[fragile]
 		\frametitle{Задание последовательностей}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let squares = seq { for i in 0 .. 10 -> (i, i * i) }
 seq { for (i, isquared) in squares -> 
          (i, isquared, i * isquared) }
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let checkerboardCoordinates n =
     seq { for row in 1 .. n do
         for col in 1 .. n do
             if (row + col) % 2 = 0 then
                 yield (row, col) }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Ленивое чтение из файла}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let rec allFiles dir =
     seq { for file in Directory.GetFiles(dir) -> file
         for subdir in Directory.GetDirectories dir ->> 
             (allFiles subdir) }
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let reader =
     seq { 
         use reader = new StreamReader(
@@ -113,64 +121,54 @@ let reader =
             )
         while not reader.EndOfStream do
             yield reader.ReadLine() }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\section{Записи}
 	
 	\begin{frame}[fragile]
 		\frametitle{Записи}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type Person =
     { Name: string;
       DateOfBirth: System.DateTime; }
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 { Name = "Bill"; 
   DateOfBirth = new System.DateTime(1962, 09, 02) }
 
 { new Person
   with Name = "Anna"
   and DateOfBirth = new System.DateTime(1968, 07, 23) }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Клонирование записей}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type Car =
     {
         Make : string
         Model : string
         Year : int
     }
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let thisYear's = { Make = "SomeCar"; 
                    Model = "Luxury Sedan"; 
                    Year = 2010 }
 let nextYear's = { thisYear's with Year = 2011 }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\section{Размеченные объединения}
 	
 	\begin{frame}[fragile]
 		\frametitle{Размеченные объединения}
 		\framesubtitle{Discriminated unions}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type Route = int
 type Make = string
 type Model = string
@@ -179,41 +177,33 @@ type Transport =
     | Car of Make * Model
     | Bicycle
     | Bus of Route
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Известные примеры}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type 'a option =
     | None
     | Some of 'a
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type 'a list =
     | ([])
     | (::) of 'a * 'a list
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Использование размеченных объединений}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type IntOrBool = I of int | B of bool
 let i = I 99
 let b = B true
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type C = Circle of int | Rectangle of int * int
 
 [1..10]
@@ -222,14 +212,12 @@ type C = Circle of int | Rectangle of int * int
 [1..10]
 |> List.zip [21..30]
 |> List.map Rectangle
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Использование в match}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type Tree<'a> =
     | Tree of 'a * Tree<'a> * Tree<'a>
     | Tip of 'a
@@ -238,15 +226,13 @@ let rec size tree =
     match tree with
     | Tree(_, l, r) -> 1 + size l + size r
     | Tip _ -> 1
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример}
 		\framesubtitle{Дерево разбора логического выражения}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type Proposition =
     | True
     | And of Proposition * Proposition
@@ -261,31 +247,27 @@ let rec eval (p: Proposition) =
     | Not(p1) -> not (eval p1)
 
 printfn "%A" <| eval (Or(True, And(True, Not True)))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Взаимосвязанные типы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type node =
     { Name : string;
       Links : link list }
 and link =
     | Dangling
     | Link of node
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\section{Паттерны ФП}
 
 	\begin{frame}[fragile]
 		\frametitle{Замена цикла рекурсией}
 		\framesubtitle{Императивное разложение на множители}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let factorizeImperative n =
     let mutable primefactor1 = 1
     let mutable primefactor2 = n
@@ -299,30 +281,26 @@ let factorizeImperative n =
         i <- i + 1
     if (primefactor1 = 1) then None
     else Some (primefactor1, primefactor2)
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Замена цикла рекурсией}
 		\framesubtitle{Рекурсивное разложение на множители}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let factorizeRecursive n =
     let rec find i =
         if i >= n then None
         elif (n % i = 0) then Some(i, n / i)
         else find (i + 1)
     find 2
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Хвостовая рекурсия, проблема}
 		\framesubtitle{Императивный вариант}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System.Collections.Generic
 
 let createMutableList() =
@@ -330,15 +308,13 @@ let createMutableList() =
     for i = 0 to 100000 do
         l.Add(i)
     l
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Хвостовая рекурсия, проблема}
 		\framesubtitle{Рекурсивный вариант, казалось бы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let createImmutableList() =
     let rec createList i max =
         if i = max then
@@ -346,23 +322,19 @@ let createImmutableList() =
         else
             i :: createList (i + 1) max
     createList 0 100000
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Факториал без хвостовой рекурсии}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let rec factorial x =
     if x <= 1
     then 1 
     else x * factorial (x - 1)
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let rec factorial x =
     if x <= 1
     then
@@ -371,14 +343,12 @@ let rec factorial x =
         let resultOfRecusion = factorial (x - 1)
         let result = x * resultOfRecusion
         result
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Факториал с хвостовой рекурсией}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let factorial x =
     let rec tailRecursiveFactorial x acc =
         if x <= 1 then
@@ -386,9 +356,8 @@ let factorial x =
         else
             tailRecursiveFactorial (x - 1) (acc * x)
     tailRecursiveFactorial x 1
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 	
 	\begin{frame}[fragile]
 		\frametitle{После декомпиляции в C\#}
@@ -408,12 +377,11 @@ public static int tailRecursiveFactorial(int x, int acc)
 }
 			\end{minted}
 		\end{alertblock}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Паттерн ``Аккумулятор''}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let rec map f list =
     match list with
     | [] -> []
@@ -425,15 +393,13 @@ let map f list =
         | [] -> acc
         | hd :: tl -> mapTR f tl (f hd :: acc)
     mapTR f (List.rev list) []
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Continuation Passing Style}
 		\framesubtitle{Аккумулятор --- функция}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let printListRev list =
     let rec printListRevTR list cont =
         match list with
@@ -442,15 +408,13 @@ let printListRev list =
             printListRevTR tl (fun () -> 
                 printf "%d " hd; cont () )
     printListRevTR list (fun () -> printfn "Done!")
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Обход дерева}
 		\frametitle{Когда всё не так просто}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type ContinuationStep<'a> =
     | Finished
     | Step of 'a * (unit -> ContinuationStep<'a>)
@@ -461,15 +425,13 @@ let rec linearize binTree cont =
     | Node(x, l, r) ->
         Step(x, (fun () -> linearize l (fun () -> 
                            linearize r cont)))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Обход дерева}
 		\frametitle{Собственно, обход}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let iter f binTree =
     let steps = linearize binTree (fun () -> Finished)
 
@@ -480,9 +442,8 @@ let iter f binTree =
             processSteps (getNext())
     
     processSteps steps
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\section{Юнит-тестирование}
 
@@ -515,7 +476,7 @@ module ``Project Euler - Problem 1`` =
     let ``Sum of multiples of 3 and 5 to 10 should return 23`` () =
         GetSumOfMultiplesOf3And5(10) |> should equal 23
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FsUnit, матчеры}
@@ -535,7 +496,7 @@ anArray |> should haveLength 4
 
 shouldFail (fun () -> 5/0 |> ignore)
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FsUnit, ещё матчеры}
@@ -553,7 +514,7 @@ anObj |> should not' (be sameAs otherObj)
 0.0 |> should be ofExactType<float>
 1 |> should not' (be ofExactType<obj>)
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FsUnit, и ещё матчеры}
@@ -572,7 +533,7 @@ Choice<int, string>.Choice1Of2(42) |> should be (choice 1)
 [3;2;1] |> should be descending
 [3;1;2] |> should not' (be descending)
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FsCheck}
@@ -593,7 +554,7 @@ Check.Quick revIsOrig
 // Shrunk:
 // [1; 0]
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Unquote}
@@ -608,7 +569,7 @@ let ``Unquote demo`` () =
 // [4; 3; 2; 1] = []
 // false
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Foq}
@@ -622,6 +583,6 @@ let ``Foq demo`` () =
 
     mock.Contains 1 |> Assert.True
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 \end{document}
