@@ -187,13 +187,12 @@ let site1, site2, site3 = sites
 	\begin{frame}[fragile]
 		\frametitle{Value Tuples}
 		\begin{minted}{fsharp}
-let origin = struct (0,0)
+let origin = struct (0, 0)
 
-let displace 
-        ((x, y): struct (int * int))
-        ((dx, dy): struct (int * int)) 
-    =
-    struct (x + dx, y + dy)
+let displace struct (x, y) struct (dx, dy)
+    = struct (x + dx, y + dy)
+
+displace origin struct (1, 1)
 		\end{minted}
 	\end{frame}
 
@@ -318,7 +317,39 @@ let rec length l =
 let rec even n = (n = 0u) || odd(n - 1u)
 and odd n = (n <> 0u) && even(n - 1u)
 		\end{minted}
-\end{frame}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Каррирование, частичное применение}
+		\begin{minted}{fsharp}
+let shift (dx, dy) (px, py) = (px + dx, py + dy)
+let shiftRight = shift (1, 0)
+let shiftUp = shift (0, 1)
+let shiftLeft = shift (-1, 0)
+let shiftDown = shift (0, -1)
+		\end{minted}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> shiftDown (1, 1);;
+val it : int * int = (1, 0)
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Зачем --- функции высших порядков}
+		\begin{minted}{fsharp}
+let lists = [[1; 2]; [1]; [1; 2; 3]; [1; 2]; [1]]
+let lengths = List.map List.length lists
+		\end{minted}
+		или
+		\begin{minted}{fsharp}
+let lists = [[1; 2]; [1]; [1; 2; 3]; [1; 2]; [1]]
+let squares = List.map (List.map (fun x -> x * x)) lists
+		\end{minted}
+		\vspace{3mm}
+		Функции стандартной библиотеки стараются принимать список последним, для каррирования
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Оператор $|>$}
@@ -357,25 +388,8 @@ let (<<) f g x = f (g x)
 		\end{minted}
 		Зачем? Чтобы не ставить скобки:
 		\begin{minted}{fsharp}
-printfn "Result = " <| factorial 5
+printfn "Result = %d" <| factorial 5
 		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Каррирование, частичное применение}
-		\begin{minted}{fsharp}
-let shift (dx, dy) (px, py) = (px + dx, py + dy)
-let shiftRight = shift (1, 0)
-let shiftUp = shift (0, 1)
-let shiftLeft = shift (-1, 0)
-let shiftDown = shift (0, -1)
-		\end{minted}
-		\begin{alertblock}{F\# Interactive}
-			\begin{minted}{fsharp}
-> shiftDown (1, 1);;
-val it : int * int = (1, 0)
-			\end{minted}
-		\end{alertblock}
 	\end{frame}
 
 	\section{.NET}

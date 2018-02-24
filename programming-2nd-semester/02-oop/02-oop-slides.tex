@@ -409,7 +409,7 @@ class Shape
     public virtual void Draw()
     {
         Console.WriteLine(
-                "Drawing Shape with coords ({0}, {1})", x, y);
+                $"Drawing Shape with coords ({x}, {y})");
     }
 
     protected int x;
@@ -432,7 +432,7 @@ class Circle : Shape
 
     public override void Draw()
     {
-        Console.WriteLine("Drawing Circle with radius {0}", r);
+        Console.WriteLine($"Drawing Circle with radius {r}");
     }
 
     private int r;
@@ -457,7 +457,7 @@ class Rectangle : Shape
     {
         base.Draw();
         Console.WriteLine(
-            "Drawing Rectangle with width={0} and height={1}", width, height);
+            $"Drawing Rectangle with width={width} and height={height}");
     }
     protected int width;
     protected int height;
@@ -505,7 +505,7 @@ class Shape
     public virtual void Draw()
     {
         Console.WriteLine(
-                "Drawing Shape with coords ({0}, {1})", x, y);
+                $"Drawing Shape with coords ({x}, {y})");
     }
 
     protected int x;
@@ -529,7 +529,7 @@ class Circle : Shape
 
     public new void Draw()
     {
-        Console.WriteLine("Drawing Circle with radius {0}", r);
+        Console.WriteLine($"Drawing Circle with radius {r}");
     }
 
     private int r;
