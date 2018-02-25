@@ -1,0 +1,249 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{forest}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\usetikzlibrary{arrows}
+
+\useoutertheme{infolines}
+
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=1.2mm
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Модульное тестирование}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+\date{27.02.2018г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\section{Введение}
+
+	\begin{frame}
+		\frametitle{Модульное тестирование: зачем?}
+		\begin{enumerate}
+			\item Любая программа содержит ошибки
+			\item Если программа не содержит ошибок, их содержит алгоритм, который реализует эта программа
+			\item Если ни программа, ни алгоритм ошибок не содержат, такая программа даром никому не нужна
+		\end{enumerate}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Виды тестов}
+		\begin{itemize}
+			\item Модульные
+			\item Интеграционные
+			\item Системные
+		\end{itemize}
+		\vspace{3mm}
+		\begin{itemize}
+			\item Регрессионные
+			\item Приёмочные
+			\item Дымовые (smoke-test)
+		\end{itemize}
+	\end{frame}
+
+		\section{Пример}
+
+	\begin{frame}
+		\frametitle{Пример}
+		Консольный калькулятор, складывающий два двузначных числа
+		\begin{itemize}
+			\item Называется adder
+			\item Ввод числа заканчивается нажатием на \textit{Enter}
+			\item Программа должна вывести сумму после ввода второго числа
+		\end{itemize}
+		\begin{textblock}{5}(7,2)
+			\attribution{C. Kaner, Testing Computer Software}
+		\end{textblock}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Смоук-тест}
+		\begin{center}
+			\begin{tabu} {| X[0.6 l p] | X[1 l p] |}
+				\tabucline-
+				\everyrow{\tabucline-}
+				\textbf{Что делаем}                             & \textbf{Что происходит}                                                            \\
+				Вводим \textit{adder} и жмём на \textit{Enter}  & Экран мигает, внизу появляется знак вопроса                                        \\
+				Нажимаем 2                                      & За знаком вопроса появляется цифра 2                                               \\
+				Нажимаем \textit{Enter}                         & В следующей строке появляется знак вопроса                                         \\
+				Нажимаем 3                                      & За вторым знаком вопроса появляется цифра 3                                        \\
+				Нажимаем \textit{Enter}                         & В третьей строке появляется 5, несколькими строками ниже --- ещё один знак вопроса
+			\end{tabu}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Выявленные проблемы}
+		\begin{itemize}
+			\item Нет названия программы на экране, может, мы запустили не то
+			\item Нет никаких инструкций, пользователь без идей, что делать
+			\item Непонятно, как выйти
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{План дальнейших тестов}
+		\begin{scriptsize}
+			\begin{center}
+				\begin{tabu} {| X[2 l p] | X[2 l p] | X[7 l p] |}
+					\tabucline-
+					\everyrow{\tabucline-}
+					\textbf{Ввод}  & \textbf{Ожидаемый результат}  & \textbf{Замечания}                                                      \\
+					99 + 99        & 198                           & Пара наибольших допустимых чисел                                        \\
+					-99 + -99      & -198                          & Отрицательные числа, почему нет?                                        \\
+					99 + -14       & 85                            & Большое первое число может влиять на интерпретацию второго              \\
+					-38 + 99       & 61                            & Отрицательное плюс положительное                                        \\
+					56 + 99        & 155                           & Большое второе число может повлиять на интерпретацию первого            \\
+					9 + 9          & 18                            & Два наибольших числа из одной цифры                                     \\
+					0 + 0          & 0                             & Программы часто не работают на нулях                                    \\
+					0 + 23         & 23                            & 0 --- подозрительная штука, его надо проверить и как первое слагаемое,  \\
+					-78 + 0        & -78                           & и как второе
+				\end{tabu}
+			\end{center}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{План дальнейших тестов (2)}
+		\begin{scriptsize}
+			\begin{center}
+				\begin{tabu} {| X[2 l p] | X[7 l p] |}
+					\tabucline-
+					\everyrow{\tabucline-}
+					\textbf{Ввод}                   & \textbf{Замечания}                                                 \\
+					100 + 100                       & Поведение сразу за диапазоном допустимых значений                  \\
+					\textit{Enter} + \textit{Enter} & Что будет, если данные не вводить вообще                           \\
+					123456 + 0                      & Введём побольше цифр                                               \\
+					1.2 + 5                         & Вещественные числа, пользователь может решить, что так можно       \\
+					A + b                           & Недопустимые символы, что будет?                                   \\
+					Ctrl-A, Ctrl-D, F1, Esc         & Управляющие клавиши часто источник проблем в консольных программах \\
+				\end{tabu}
+			\end{center}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё больше тестов!}
+		\begin{itemize}
+			\item Внутреннее хранение данных --- двузначные числа могут хранить в \textbf{byte}
+			\begin{itemize}
+				\item 99 + 99, этот случай покрыли
+			\end{itemize}
+			\item Кодовая страница ввода: символы '/', '0', '9' и ':'
+			\begin{itemize}
+				\item Программист может напутать со строгостью неравенства при проверке
+				\item Не надо вводить A + b, достаточно граничные символы
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Информация к размышлению}
+		\begin{itemize}
+			\item Программа из сотни строк может иметь $10^{18}$ путей исполнения
+			\begin{itemize}
+				\item Времени жизни вселенной не хватило бы, чтобы их покрыть
+			\end{itemize}
+			\item После передачи на тестирование в программах в среднем от 1 до 3 ошибок на 100 строк кода
+			\item В процессе разработки --- 1.5 ошибок на 1 строку кода (!)
+			\item Если для исправления ошибки надо изменить не более 10 операторов, с первого раза это делают правильно в 50\% случаев
+			\item Если для исправления ошибки надо изменить не более 50 операторов, с первого раза это делают правильно в 20\% случаев
+		\end{itemize}
+	\end{frame}
+
+	\section{Модульные тесты}
+
+	\begin{frame}
+		\frametitle{Модульные тесты}
+		\begin{itemize}
+			\item Тестирование отдельного класса
+			\item Проверяют внешнее поведение класса
+			\item Полностью автоматические
+			\item Направлены на поиск ошибок в конкретном методе
+			\item Не влияют на функциональность системы и не поставляются пользователю
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Почему модульные тесты полезны}
+		\begin{itemize}
+			\item Помогают искать ошибки
+			\begin{itemize}
+				\item Особо эффективны, если налажен процесс Continuous Integration
+			\end{itemize}
+			\item Облегчают изменение программы
+			\begin{itemize}
+				\item Помогают при рефакторинге
+			\end{itemize}
+			\item Тесты --- документация к коду
+			\item Помогают улучшить архитектуру
+			\item НЕ доказывают отсутствие ошибок в программе
+		\end{itemize}
+	\end{frame}
+
+	\section{Юнит-тесты в C\#}
+
+	\begin{frame}
+		\frametitle{Юнит-тесты в C\#}
+		\begin{itemize}
+			\item NUnit
+			\begin{itemize}
+				\item Отдельный пакет
+				\item Интегрируется в IDE расширениями
+			\end{itemize}
+			\item Microsoft Unit Test Framework
+			\begin{itemize}
+				\item Работает прямо из коробки под Visual Studio, но доступна и как отдельный пакет
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Демонстрация}
+		\begin{itemize}
+			\item Для тех, кто всё пропустил: \url{https://msdn.microsoft.com/en-us/library/hh694602.aspx\#BKMK\_Quick\_starts}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Best practices}
+		\begin{itemize}
+			\item Независимость тестов
+			\begin{itemize}
+				\item Желательно, чтобы поломка одного куска функциональности ломала один тест
+			\end{itemize}
+			\item Тесты должны работать быстро
+			\begin{itemize}
+				\item И запускаться после каждой сборки
+				\begin{itemize}
+					\item Continuous Integration!
+				\end{itemize}
+			\end{itemize}
+			\item Тестов должно быть много
+			\begin{itemize}
+				\item Следить за Code coverage
+			\end{itemize}
+			\item Каждый тест должен проверять конкретный тестовый сценарий
+			\item Test-driven development
+		\end{itemize}
+	\end{frame}
+
+\end{document}
