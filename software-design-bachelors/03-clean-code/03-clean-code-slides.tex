@@ -10,9 +10,8 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
 \setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
 \setbeamercolor*{block body alerted}{fg=black,bg=red!10}
@@ -352,12 +351,127 @@ class Plus extends Operation {
 				\item После конструктора должны выполняться все инварианты
 			\end{itemize}
 			\item НЕ вызывайте виртуальные методы из конструктора
-			\item private-конструкторы для объектов, которые не должны быть созданы (или одиночек)
+			\item private-конструкторы для объектов, которые не должны быть созданы (или одиночек), protected-конструкторы для абстрактных классов
+			\item Одиночек надо использовать с большой осторожностью
 			\item Deep copy предпочтительнее Shallow copy
 			\begin{itemize}
 				\item Хотя второе может быть эффективнее
 			\end{itemize}
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Отделение инициализации от использования}
+		\begin{itemize}
+			\item Паттерн ``Builder'':
+				\begin{center}
+					\includegraphics[width=0.4\textwidth]{builder.png}
+				\end{center}
+			\item Паттерн ``Factory'':
+				\begin{center}
+					\includegraphics[width=0.4\textwidth]{factory.png}
+					\attribution{Р. Мартин, Чистый код}
+				\end{center}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Dependency Injection}
+		\begin{itemize}
+			\item Объект не должен создавать другие объекты, если только он не предназначен специально для этого
+			\item Инициализация системы --- ответственность main или специального \textit{контейнера}
+			\item Бюджетный способ --- реестр объектов
+
+				\mintinline{java}|MyService myService = | \\
+				\mintinline{java}|    (MyService)(jndiContext.lookup("NameOfMyService"));|
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример IoC-контейнера: Spring}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{springIoC.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{Стековый калькулятор}
+		\begin{small}
+			\begin{minted}{java}
+package ru.spbau.mit.ioc;
+
+public class Calculator {
+
+    private Stack stack;
+
+    public Calculator(Stack stack) {
+        this.stack = stack;
+    }
+
+    public double calculate(String expression) {
+        ...
+        return stack.pop();
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{Стек}
+		\begin{minted}{java}
+public interface Stack {
+    void push(double value);
+    double pop();
+    boolean isEmpty();
+}
+
+public class LinkedStack implements Stack {
+    ...
+    ...
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{Конфигурация контейнера}
+		\begin{minted}{xml}
+<?xml version="1.0" encoding="UTF-8"?>
+<beans ....>
+
+    <bean id="stack"
+          class="ru.spbau.mit.ioc.LinkedStack"
+          />
+
+    <bean id="calculator"
+          class="ru.spbau.mit.ioc.Calculator">
+        <constructor-arg ref="stack"/>
+    </bean>
+
+</beans>
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{main}
+		\begin{minted}{java}
+public class Main {
+    public static void main(String[] args) {
+        ApplicationContext context = 
+            new FileSystemXmlApplicationContext("config.xml");
+
+        Calculator calculator = 
+            context.getBean("calculator", Calculator.class);
+
+        double result = calculator.calculate("1 2 + 3 *");
+        System.out.println(result);
+    }
+}
+		\end{minted}
 	\end{frame}
 
 	\begin{frame}
@@ -438,6 +552,36 @@ class Plus extends Operation {
 				\attribution{https://xkcd.com}
 			\end{column}
 		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Книжки}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.5\textwidth]{codeCompleteCover.png}
+				\end{center}
+				\vspace{3mm}
+				Steve McConnell, Code Complete
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.5\textwidth]{cleanCodeCover.png}
+				\end{center}
+				\vspace{3mm}
+				Роберт Мартин, Чистый Код
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Задача на дом}
+		\begin{itemize}
+			\item Проанализировать запрос \url{https://goo.gl/MiyH8c}
+			\item Нарисовать IDEF0- и BPMN-диаграммы бизнес-процесса завода
+			\item Нарисовать диаграмму случаев использования создаваемого приложения
+			\item Без дедлайна
+		\end{itemize}
 	\end{frame}
 
 \end{document}
