@@ -49,10 +49,14 @@
 		\frametitle{Сортировка пузырьком (bubble sort)}
 		\begin{columns}
 			\begin{column}{0.25\textwidth}
+				\includegraphics[width=\textwidth]{bubbleSort.png}
 			\end{column}
 			\begin{column}{0.75\textwidth}
 				\begin{itemize}
-					\item
+					\item $O(n^2)$
+					\item Устойчива
+					\item Естественная (на отсортированном массиве за линейное время)
+					\item \url{https://cathyatseneca.github.io/DSAnim/web/bubble.html}
 				\end{itemize}
 			\end{column}
 		\end{columns}
@@ -70,7 +74,24 @@
 					\item Обычно неустойчива ($[2_a, 2_b, 1_a] -> [1_a, 2_b, 2_a]$)
 					\item Отсортированность массива ничего не даёт
 					\item Меньше всего операций обмена (меньше операций записи, что иногда позитивно)
-					\item \url{https://www.ee.ryerson.ca/~courses/coe428/sorting/selectionsort.html}
+					\item \url{https://cathyatseneca.github.io/DSAnim/web/selection.html}
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Глупая сортировка (Bogosort)}
+		\begin{columns}
+			\begin{column}{0.25\textwidth}
+				\includegraphics[width=\textwidth]{bogosort.png}
+			\end{column}
+			\begin{column}{0.75\textwidth}
+				\begin{itemize}
+					\item $O(n*n!)$
+					\item Неустойчива
+					\item Неестественная (на отсортированном массиве за линейное время, но на частично отсортированном массиве за n*n!)
+					\item \url{http://www.algostructure.com/sorting/bogosort.php}
 				\end{itemize}
 			\end{column}
 		\end{columns}
@@ -89,7 +110,7 @@
 					\item Естественная ($O(n)$ на отсортированном массиве)
 					\item Данные могут приходить постепенно
 					\item Позволяет выбрать наибольшие (или наименьшие) k чисел из входного потока
-					\item \url{https://www.ee.ryerson.ca/~courses/coe428/sorting/insertionsort.html}
+					\item \url{https://cathyatseneca.github.io/DSAnim/web/insertion.html}
 				\end{itemize}
 			\end{column}
 		\end{columns}
@@ -114,19 +135,25 @@
 					\begin{itemize}
 						\item Не вырождается до квадратичной
 					\end{itemize}
+					\item \url{http://www.programming-algorithms.net/article/41653/Shell-sort}
 				\end{itemize}
 			\end{column}
 		\end{columns}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Сортировка подсчётм (counting sort)}
+		\frametitle{Сортировка подсчётом (counting sort)}
 		\begin{columns}
-			\begin{column}{0.25\textwidth}
+			\begin{column}{0.2\textwidth}
+				\includegraphics[width=\textwidth]{countSort.png}
 			\end{column}
-			\begin{column}{0.75\textwidth}
+			\begin{column}{0.8\textwidth}
 				\begin{itemize}
-					\item
+					\item $O(n)$
+					\item Сортирует только числа, так что устойчивость неприменима
+					\item Отсортированность массива ничего не даёт
+					\item Требует заранее знать диапазон чисел в массиве
+					\item \url{https://www.cs.usfca.edu/~galles/JavascriptVisual/CountingSort.html}
 				\end{itemize}
 			\end{column}
 		\end{columns}
@@ -145,6 +172,7 @@
 					\item Требует $O(n * log(n))$ дополнительной памяти
 					\item Самый быстрый на практике алгоритм сортировки, используется в стандартных библиотеках
 					\item Легко пишется (но тяжело отлаживается)
+					\item \url{https://cathyatseneca.github.io/DSAnim/web/quick.html}
 				\end{itemize}
 			\end{column}
 		\end{columns}
@@ -184,17 +212,32 @@ algorithm partition(A, lo, hi) is
 	\begin{frame}
 		\frametitle{Сортировка кучей (пирамидальная, heapsort)}
 		\begin{columns}
-			\begin{column}{0.5\textwidth}
-				\includegraphics[width=\textwidth]{heapsort.png}
+			\begin{column}{0.4\textwidth}
+				\includegraphics[width=\textwidth]{heapsortHeapConstruction.png}
 			\end{column}
-			\begin{column}{0.5\textwidth}
+			\begin{column}{0.6\textwidth}
 				\begin{itemize}
 					\item $O(n * log(n))$, не вырождается
 					\item Не требует дополнительной памяти
 					\item Неустойчива
 					\item Требует произвольного доступа к памяти
 					\item Относительно сложна в реализации
-					\item url{https://www.ee.ryerson.ca/~courses/coe428/sorting/heapsort.html}
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Сортировка кучей, сама сортировка}
+		\begin{columns}
+			\begin{column}{0.4\textwidth}
+				\includegraphics[width=\textwidth]{heapSort.png}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}
+					\item Меняем первый элемент (корень кучи) с последним
+					\item Проталкиваем новый корень вглубь кучи, восстанавливая её структуру
+					\item \url{https://www.ee.ryerson.ca/~courses/coe428/sorting/heapsort.html}
 				\end{itemize}
 			\end{column}
 		\end{columns}
@@ -211,7 +254,7 @@ algorithm partition(A, lo, hi) is
 					\item $O(n * log(n))$, не вырождается
 					\item Устойчива
 					\item Внешняя (подходит для больших данных, не помещающихся в память)
-					\item \url{http://www.ee.ryerson.ca/~courses/coe428/sorting/mergesort.html}
+					\item \url{https://cathyatseneca.github.io/DSAnim/web/merge.html}
 				\end{itemize}
 			\end{column}
 		\end{columns}
