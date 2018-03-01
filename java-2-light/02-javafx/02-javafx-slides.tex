@@ -66,7 +66,7 @@ public class MyFxApp extends Application {
     }
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Кнопки}
@@ -92,16 +92,16 @@ public class ButtonExperiments extends Application  {
 
 	\begin{frame}
 		\frametitle{Лейауты}
-			\begin{tabu} {| X[1 l m] | X[1 c m] |}
-				\tabucline-
-				\everyrow{\tabucline-}
-				BorderPane               & \includegraphics[height=0.2\textheight]{borderLayout.png}           \\
-				HBox                     & \includegraphics[height=0.04\textheight]{hbox.png}                  \\
-				VBox                     &                                                                     \\
-				GridPane                 & \includegraphics[height=0.1\textheight]{grid.png}                   \\
-				AnchorPane               & \includegraphics[height=0.2\textheight]{anchor.png}                 \\
-				...                      & \includegraphics[height=0.1\textheight]{anchor_in_border_small.png} \\
-			\end{tabu}
+		\begin{tabu} {| X[1 l m] | X[1 c m] |}
+			\tabucline-
+			\everyrow{\tabucline-}
+			BorderPane               & \includegraphics[height=0.2\textheight]{borderLayout.png}           \\
+			HBox                     & \includegraphics[height=0.04\textheight]{hbox.png}                  \\
+			VBox                     &                                                                     \\
+			GridPane                 & \includegraphics[height=0.1\textheight]{grid.png}                   \\
+			AnchorPane               & \includegraphics[height=0.2\textheight]{anchor.png}                 \\
+			...                      & \includegraphics[height=0.1\textheight]{anchor_in_border_small.png} \\
+		\end{tabu}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -184,7 +184,7 @@ scene.getStylesheets().add("path/stylesheet.css");
     -fx-background-color: #CCFF99;
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FXML}
@@ -201,7 +201,7 @@ scene.getStylesheets().add("path/stylesheet.css");
             GridPane.rowIndex="1" GridPane.halignment="CENTER"/>
 </GridPane>
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FXML, в коде}
@@ -222,7 +222,7 @@ public class FXMLExample extends Application {
     }
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\section{Задания}
 
@@ -237,6 +237,20 @@ public class FXMLExample extends Application {
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Задача на дом}
+		Реализовать игру крестики-нолики:
+		\begin{itemize}
+			\item с полем 3 на 3
+			\item с двумя игроками в режиме hot seat или с компьютером 
+			\item при игре с компьютером должно быть можно выбрать один из двух уровней сложности
+			\item должна отображаться статистика побед/поражений/ничьих
+			\item должно быть можно в любой момент начать новую партию
+			\item обязательны юнит-тесты на логику
+			\item дедлайн \textbf{16.03.2018, 10:00}
+		\end{itemize}
+	\end{frame}
+
 	\section{Заключение}
 
 	\begin{frame}
@@ -245,7 +259,6 @@ public class FXMLExample extends Application {
 			\item \url{http://tutorials.jenkov.com/javafx/index.html}
 			\item \url{http://docs.oracle.com/javase/8/javase-clienttechnologies.htm}
 			\item \url{http://docs.oracle.com/javafx/2/get_started/fxml_tutorial.htm}
-			\item \url{https://docs.oracle.com/javase/8/javafx/graphics-tutorial/canvas.htm}
 		\end{itemize}
 	\end{frame}
 
