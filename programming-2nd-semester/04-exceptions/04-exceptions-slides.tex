@@ -1,0 +1,461 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{forest}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\usetikzlibrary{arrows}
+
+\useoutertheme{infolines}
+
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=1.2mm
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Исключения и обработка ошибок}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+\date{06.03.2018г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}[fragile]
+		\frametitle{Бросание исключений}
+		\begin{minted}{csharp}
+if (t == null)
+{
+    throw new NullReferenceException();
+}
+
+throw new NullReferenceException("Hello!");
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Обработка исключений}
+		\begin{minted}{csharp}
+try {
+    // Код, который может бросать исключения
+} catch (Type1 id1) {
+    // Обработка исключений типа Type1
+} catch (Type2 id2) {
+    // Обработка исключений типа Type2
+} catch {
+    // Обработка всех оставшихся исключений
+} finally {
+    // Код, выполняющийся в любом случае
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что делается}
+		\begin{itemize}
+			\item На куче создаётся объект-исключение
+			\item Исполнение метода прерывается
+			\item Если в вызывающем методе есть обработчик этого исключения, вызывается он, иначе исполнение вызывающего тоже прерывается
+			\item И т.д., пока не найдём обработчик или прервём Main
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{minted}{csharp}
+private void ReadData(String pathname) 
+{
+    FileStream fs = null;
+    try {
+        fs = new FileStream(pathname, FileMode.Open);
+        // Делать что-то полезное
+    }
+    catch (IOException) {
+        // Код восстановления после ошибки
+    }
+    finally {
+        // Закрыть файл надо в любом случае
+        if (fs != null) fs.Close();
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Фильтры исключений}
+		\begin{small}
+			\begin{minted}{csharp}
+public static string MakeRequest()
+{
+    try
+    {
+        var request = WebRequest.Create("http://se.math.spbu.ru");
+        var response = request.GetResponse();
+        var stream = response.GetResponseStream();
+        var reader = new StreamReader(stream);
+        var data = reader.ReadToEnd();
+        return data;
+    }
+    catch (WebException e) 
+        when (e.Status == WebExceptionStatus.ConnectFailure)
+    {
+        return "Connection failed";
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Иерархия классов-исключений}
+		\begin{tiny}
+			\begin{forest}
+				for tree={rectangle,draw,l sep=1cm,s sep=3mm,edge=open triangle 60-}
+				[Object
+					[Exception
+						[SystemException
+							[IndexOutOfRangeException]
+							[NullReferenceException]
+							[StackOverflowException]
+							[ArgumentException
+								[ArgumentNullException]
+								[ArgumentOutOfRangeException]
+								[\dots]
+							]
+						]
+						[ApplicationException]
+					]
+				]
+			\end{forest}
+		\end{tiny}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Свойства класса Exception}
+		\begin{itemize}
+			\item Data
+			\item HelpLink
+			\item InnerException
+			\item Message
+			\item Source
+			\item StackTrace
+			\item HResult
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример (плохой)}
+		\begin{minted}{csharp}
+try
+{
+    throw new Exception("Something is very wrong");
+}
+catch (Exception e)
+{
+    Console.WriteLine("Caught Exception");
+    Console.WriteLine("e.Message: " + e.Message);
+    Console.WriteLine("e.ToString(): " + e.ToString());
+    Console.WriteLine("e.StackTrace:\n" + e.StackTrace);
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Что выведется}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+Caught Exception
+e.Message: Something is very wrong
+e.ToString(): System.Exception: Something is very wrong
+   в CSharpConsoleApplication.Program.Main(String[] args) в 
+       c:\Projects\CSharpConsoleApplication\CSharpConsoleApplication\Program.cs: строка 15
+e.StackTrace:
+   в CSharpConsoleApplication.Program.Main(String[] args) в 
+       c:\Projects\CSharpConsoleApplication\CSharpConsoleApplication\Program.cs:строка 15
+Для продолжения нажмите любую клавишу . . .
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Перебрасывание исключений}
+		\begin{minted}{csharp}
+try
+{
+    throw new Exception("Something is wrong");
+}
+catch (Exception e)
+{
+    Console.WriteLine("Caught Exception");
+    throw;  // "throw e;" тоже работает, но сбросит stack trace
+}
+		\end{minted}
+
+		Или
+		\begin{minted}{csharp}
+throw new Exception("Outer exception", e);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Свои классы-исключения}
+		\begin{minted}{csharp}
+public class MyException : Exception
+{
+    public MyException() 
+    {
+    }
+
+    public MyException(string message)
+        : base(message)
+    {
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Идеологически правильное объявление исключения}
+		\begin{minted}{csharp}
+[Serializable]
+public class MyException : Exception
+{
+    public MyException() { }
+    public MyException(string message) : base(message) { }
+    public MyException(string message, Exception inner) 
+        : base(message, inner) { }
+    protected MyException(
+        System.Runtime.Serialization.SerializationInfo info,
+        System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Интересные'' классы-исключения}
+		\begin{itemize}
+			\item Corrupted state exceptions (CSE) --- не ловятся catch-ем
+			\begin{itemize}
+				\item StackOverflowException
+				\item AccessViolationException
+				\item System.Runtime.InteropServices.SEHException
+			\end{itemize}
+			\item FileLoadException, BadImageFormatException, InvalidProgramException, ...
+			\item ThreadAbortException
+			\item TypeInitializationException
+			\item TargetInvocationException
+			\item OutOfMemoryException
+			\item Можно кидать null. При этом рантайм сам кидает NullReferenceException.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Environment.FailFast}
+		\begin{minted}{csharp}
+try 
+{
+     // Делать что-то полезное
+}
+catch (OutOfMemoryException e) 
+{
+    Console.WriteLine("Закончилась память :(");
+    Environment.FailFast(
+        String.Format($"Out of Memory: {e.Message}"));
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Исключения и тесты}
+		\begin{minted}{csharp}
+[TestMethod]
+[ExpectedException(typeof(System.DivideByZeroException))]
+public void DivideTest()
+{
+    DivisionClass target = new DivisionClass();
+    int numerator = 4;
+    int denominator = 0;
+    int actual = target.Divide(numerator, denominator);
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Исключения, best practices}
+		\begin{itemize}
+			\item Не бросать исключения без нужды
+			\begin{itemize}
+				\item В нормальном режиме работы исключения бросаться не должны вообще
+			\end{itemize}
+			\item Свои исключения наследовать от System.Exception
+			\item Документировать все свои исключения, бросаемые методом
+			\item Не ловить Exception, SystemException
+			\begin{itemize}
+				\item Исключения, указывающие на ошибку в коде (например, NullReferenceException) уж точно не ловить
+			\end{itemize}
+			\item По возможности кидать библиотечные исключения или их наследников:
+			\begin{itemize}
+				\item InvalidOperationException
+				\item ArgumentException
+			\end{itemize}
+			\item Имя класса должно заканчиваться на ``Exception''
+			\item Код должен быть безопасным с точки зрения исключений
+			\begin{itemize}
+				\item Не забывать про finally 
+				\item Или using, lock, foreach, которые тоже генерят finally
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Особенности современного C\#}
+		\framesubtitle{Кортежи и деконструкция}
+		\begin{minted}{csharp}
+static (int prev, int cur) Fibonacci(int n)
+{
+    var (prevPrev, prev) = n <= 2 ? (0, 1) : Fibonacci(n - 1);
+    return (prev, prevPrev + prev);
+}
+
+private static void Main(string[] args)
+{
+    var (_, result) = Fibonacci(7);
+    Console.WriteLine(result);
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Именованные поля кортежей}
+		\begin{minted}{csharp}
+int count = 5;
+string label = "Colors used in the map";
+var pair = (count: count, label: label);
+
+int count = 5;
+string label = "Colors used in the map";
+var pair = (count, label); // element names are "count" and "label"
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Инициализация свойств}
+		\begin{minted}{csharp}
+public class Person
+{
+    public int Age { get; set; } = 0;
+    public string Name { get; set; } = "Anonymous";
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Null propagation}
+		\begin{minted}{csharp}
+var first = person?.FirstName;
+
+int? age = person?.Age;
+if (age.HasValue)
+{
+    int realAge = age.Value;
+}
+
+
+var otherFirst = person?.FirstName ?? "Unspecified";
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Локальные функции}
+		\begin{minted}{csharp}
+public int Fibonacci(int x)
+{
+    if (x < 0) 
+        throw new ArgumentException("Less negativity please!", nameof(x));
+    return Fib(x).current;
+
+    (int current, int previous) Fib(int i)
+    {
+        if (i == 0) return (1, 0);
+        var (p, pp) = Fib(i - 1);
+        return (p + pp, p);
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Индексеры}
+		\begin{minted}{csharp}
+class SampleCollection {
+    private int[] arr = new int[100];
+    public int this[int i]
+    {
+        get
+        {
+            return arr[i];
+        }
+        set
+        {
+            arr[i] = value;
+        }
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Индексовая инициализация}
+		\begin{minted}{csharp}
+private Dictionary<int, string> webErrors = new Dictionary<int, string>
+{
+    [404] = "Page not Found",
+    [302] = "Page moved, but left a forwarding address.",
+    [500] = "The web server can't come out to play today."
+};
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Именованные и необязательные аргументы}
+		\begin{minted}{csharp}
+PrintOrderDetails(productName: "Red Mug", 31, "Gift Shop");
+
+public void ExampleMethod(int required, 
+    string optionalstr = "default string",
+    int optionalint = 10)
+
+anExample.ExampleMethod(3, optionalint: 4);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{params}
+		\begin{minted}{csharp}
+public static void UseParams(params int[] list)
+{
+    for (int i = 0; i < list.Length; i++)
+    {
+        Console.Write(list[i] + " ");
+    }
+    Console.WriteLine();
+}
+...
+UseParams(1, 2, 3, 4);
+		\end{minted}
+	\end{frame}
+
+\end{document}
