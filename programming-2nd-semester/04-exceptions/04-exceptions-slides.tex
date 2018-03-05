@@ -321,6 +321,27 @@ public void DivideTest()
 	\end{frame}
 
 	\begin{frame}[fragile]
+		\frametitle{using, IDisposable}
+		\begin{small}
+			\begin{minted}{csharp}
+public static class Program {
+    public static void Main() {
+        // Create the bytes to write to the temporary file.
+        Byte[] bytesToWrite = new Byte[] { 1, 2, 3, 4, 5 };
+        // Create the temporary file.
+        using (FileStream fs = new FileStream("Temp.dat", FileMode.Create)) {
+            // Write the bytes to the temporary file.
+            fs.Write(bytesToWrite, 0, bytesToWrite.Length);
+        }
+        // Delete the temporary file.
+        File.Delete("Temp.dat");
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
 		\frametitle{Особенности современного C\#}
 		\framesubtitle{Кортежи и деконструкция}
 		\begin{minted}{csharp}
@@ -380,7 +401,8 @@ var otherFirst = person?.FirstName ?? "Unspecified";
 
 	\begin{frame}[fragile]
 		\frametitle{Локальные функции}
-		\begin{minted}{csharp}
+		\begin{small}
+			\begin{minted}{csharp}
 public int Fibonacci(int x)
 {
     if (x < 0) 
@@ -394,7 +416,8 @@ public int Fibonacci(int x)
         return (p + pp, p);
     }
 }
-		\end{minted}
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 	\begin{frame}[fragile]
