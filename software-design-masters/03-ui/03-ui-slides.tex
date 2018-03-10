@@ -22,39 +22,39 @@
 \title{Проектирование пользовательских интерфейсов}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{15.03.2017г}
+\date{16.03.2018г}
 
 \begin{document}
 	
 	\frame{\titlepage}
 
-	\section{Разбор CLI}
+	% \section{Разбор CLI}
 
-	\begin{frame}
-		\frametitle{Комментарии по домашней работе}
-		\begin{itemize}
-			\item Исправления надо тоже отмечать на HwProj (ссылкой на тот же пуллреквест)
-			\item ``Каноничное'' именование пакетов в Java --- ru.spbau.mit....
-			\begin{itemize}
-				\item Не в Java всё равно лучше завести корневой пакет/неймспейс для проекта
-			\end{itemize}
-			\item try/catch в тестах не по делу
-			\begin{itemize}
-				\item \mintinline{java}|@Test(expected=NullReferenceException.class)|
-			\end{itemize}
-			\item Говорящие имена тестов, например, ShouldNotCrashWhenNoArgsTest
-			\item Синглтоны следует применять с осторожностью
-			\item Принимать параметры и возвращать значения лучше как интерфейсы, а не как конкретные классы
-			\item Реализации команд --- методы одного класса или отдельные классы?
-		\end{itemize}
-	\end{frame}
+	% \begin{frame}
+	% 	\frametitle{Комментарии по домашней работе}
+	% 	\begin{itemize}
+	% 		\item Исправления надо тоже отмечать на HwProj (ссылкой на тот же пуллреквест)
+	% 		\item ``Каноничное'' именование пакетов в Java --- ru.spbau.mit....
+	% 		\begin{itemize}
+	% 			\item Не в Java всё равно лучше завести корневой пакет/неймспейс для проекта
+	% 		\end{itemize}
+	% 		\item try/catch в тестах не по делу
+	% 		\begin{itemize}
+	% 			\item \mintinline{java}|@Test(expected=NullReferenceException.class)|
+	% 		\end{itemize}
+	% 		\item Говорящие имена тестов, например, ShouldNotCrashWhenNoArgsTest
+	% 		\item Синглтоны следует применять с осторожностью
+	% 		\item Принимать параметры и возвращать значения лучше как интерфейсы, а не как конкретные классы
+	% 		\item Реализации команд --- методы одного класса или отдельные классы?
+	% 	\end{itemize}
+	% \end{frame}
 
-	\begin{frame}
-		\frametitle{Архитектура типового <<хорошего>> решения}
-		\begin{center}
-			\includegraphics[width=\textwidth]{cliArchitecture.png}
-		\end{center}
-	\end{frame}
+	% \begin{frame}
+	% 	\frametitle{Архитектура типового <<хорошего>> решения}
+	% 	\begin{center}
+	% 		\includegraphics[width=\textwidth]{cliArchitecture.png}
+	% 	\end{center}
+	% \end{frame}
 
 	\section{Проектирование пользовательских интерфейсов}
 
