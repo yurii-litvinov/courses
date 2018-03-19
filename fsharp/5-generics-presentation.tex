@@ -556,7 +556,7 @@ let fstGt0'2 : (int * int) list -> (int * int) list =
     List.filter (fun x -> fst x > 0)
 
 let fstGt0'3 : (int * int) list -> (int * int) list = 
-    List.filter (fun x -> ((<) 0 << fst) x)
+    List.filter (fun x -> ((<=) 0 << fst) x)
 
 let fstGt0'4 : (int * int) list -> (int * int) list = 
     List.filter ((<=) 0 << fst)
