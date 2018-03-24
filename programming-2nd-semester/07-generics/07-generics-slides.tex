@@ -412,55 +412,6 @@ void Main()
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Генерики и наследование}
-		Подстановка параметра-типа на наследование никак не влияет
-		\begin{footnotesize}
-			\begin{minted}{csharp}
-internal sealed class Node<T> {
-    public T data;
-    public Node<T> next;
-    public Node(T data) : this(data, null) {}
-    public Node(T data, Node<T> next) {
-        this.data = data; this.next = next;
-    }
-}
-
-private static void SameDataLinkedList() {
-    Node<Char> head = new Node<Char>('C');
-    head = new Node<Char>('B', head);
-    head = new Node<Char>('A', head);
-}
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Генерики и наследование, пример}
-		\begin{footnotesize}
-			\begin{minted}{csharp}
-internal class Node {
-    protected Node next;
-    public Node(Node next) => this.next = next;
-}
-
-internal sealed class TypedNode<T> : Node {
-    public T data;
-    public TypedNode(T data) : this(data, null) {}
-    public TypedNode(T data, Node next) : base(next) {
-        this.data = data;
-    }
-}
-
-private static void DifferentDataLinkedList() {
-    Node head = new TypedNode<Char>('.');
-    head = new TypedNode<DateTime>(DateTime.Now, head);
-    head = new TypedNode<String>("Today is ", head);
-}
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
-
-	\begin{frame}[fragile]
 		\frametitle{Идентичность типов-генериков}
 		Иногда вместо
 		\begin{footnotesize}
@@ -602,38 +553,6 @@ internal sealed class ConstructorConstraint<T> where T : new() {
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Ограничения и касты}
-		Так работать не будет:
-		\begin{footnotesize}
-			\begin{minted}{csharp}
-private static void CastingAGenericTypeVariable1<T>(T obj) {
-    int x = (int) obj; 
-    string s = (string) obj;
-}
-			\end{minted}
-		\end{footnotesize}
-		\vspace{5mm}
-		А так будет:
-		\begin{footnotesize}
-			\begin{minted}{csharp}
-private static void CastingAGenericTypeVariable2<T>(T obj) {
-    int x = (int) (object) obj;
-    string s = (string) (object) obj; 
-}
-			\end{minted}
-		\end{footnotesize}
-		\vspace{5mm}
-		И так:
-		\begin{footnotesize}
-			\begin{minted}{csharp}
-private static void CastingAGenericTypeVariable3<T>(T obj) {
-    string s = obj as string;
-}
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
-
-	\begin{frame}[fragile]
 		\frametitle{Генерики и сравнения}
 		Так работает:
 		\begin{footnotesize}
@@ -649,24 +568,6 @@ private static void ComparingAGenericTypeVariableWithNull<T>(T obj) {
 			\begin{minted}{csharp}
 private static void ComparingTwoGenericTypeVariables<T>(T o1, T o2) {
     if (o1 == o2) { }
-}
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Генерики и операторы}
-		И так не работает:
-		\begin{footnotesize}
-			\begin{minted}{csharp}
-private static T Sum<T>(T num) where T : struct {
-    T sum = default(T) ;
-    for (T n = default(T) ; n < num ; n++)
-    {
-        sum += n;
-    }
-
-    return sum;
 }
 			\end{minted}
 		\end{footnotesize}
