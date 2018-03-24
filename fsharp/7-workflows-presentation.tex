@@ -9,9 +9,10 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
 \setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
 
 \setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
 \setbeamercolor*{block body alerted}{fg=black,bg=red!10}
@@ -21,7 +22,7 @@
 \title{Вычислительные выражения в F\#}
 \subtitle{Computation Expressions, Workflows}
 \author{Юрий Литвинов}
-\date{07.04.2017г}
+\date{27.03.2018г}
 
 \begin{document}
 	
@@ -29,7 +30,6 @@
 	
 	\begin{frame}
 		\frametitle{Что это и зачем нужно}
-		\framesubtitle{<<a monad is a monoid in the category of endofunctors, what's the problem?>>}
 		\begin{itemize}
 			\item Механизм управления процессом вычислений
 			\item В функциональных языках --- единственный способ определить порядок вычислений
@@ -38,7 +38,7 @@
 			\item В теории ФП они называются монадами
 			\item На самом деле, синтаксический сахар
 		\end{itemize}
-	\end{frame}	
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Пример}
@@ -50,26 +50,23 @@
 			\item Бросать исключение --- плохо
 			\item Использовать option --- много работы, но попробуем
 		\end{itemize}
-	\end{frame}	
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Реализация вручную}
 		\framesubtitle{divide}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let divide x y =
     match y with
     | 0.0 -> None
     | _ -> Some (x / y)
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Реализация вручную}
 		\framesubtitle{Само вычисление}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let resistance r1 r2 r3 =
     let r1' = divide 1.0 r1
     match r1' with
@@ -82,14 +79,12 @@ let resistance r1 r2 r3 =
             | None -> None
             | Some z -> let r = divide 1.0 (x + y + z)
                         r
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{То же самое, через Workflow Builder}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type MaybeBuilder() =
     member this.Bind(x, f) = 
         match x with
@@ -99,14 +94,12 @@ type MaybeBuilder() =
         Some x
    
 let maybe = new MaybeBuilder()
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Само вычисление}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let resistance r1 r2 r3 = 
     maybe {
         let! r1' = divide 1.0 r1
@@ -115,15 +108,13 @@ let resistance r1 r2 r3 =
         let! r = divide 1.0 (r1' + r2' + r3')
         return r
     }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Некоторые синтаксические "похожести"}
 		\framesubtitle{seq --- это тоже Computation Expression}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let daysOfTheYear =
     seq {
         let months =
@@ -138,14 +129,12 @@ let daysOfTheYear =
             for day = 1 to daysInMonth month do
                 yield (month, day)
     }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Ещё один пример}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let debug x = printfn "value is %A" x
 
 let withDebug = 
@@ -156,14 +145,12 @@ let withDebug =
     let c = a + b
     debug c
     c
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{То же самое с Workflow}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type DebugBuilder() =
     member this.Bind(x, f) = 
         debug x 
@@ -178,9 +165,8 @@ let withDebug = debugFlow {
         let! c = a + b
         return c
     }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Что происходит}
@@ -195,8 +181,7 @@ let withDebug = debugFlow {
 	\begin{frame}[fragile]
 		\frametitle{Отступление про CPS}
 		\framesubtitle{C\#, код без CPS}
-		\begin{exampleblock}{C\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 public int Divide(int a, int b)
 {
     if (b == 0)
@@ -208,14 +193,12 @@ public int Divide(int a, int b)
         return a / b;
     }
 }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{C\#, то же с CPS}
-		\begin{exampleblock}{C\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 public T Divide<T>(int a, int b, Func<T> ifZero
         , Func<int, T> ifSuccess)
 {
@@ -228,37 +211,31 @@ public T Divide<T>(int a, int b, Func<T> ifZero
         return ifSuccess(a / b);
     }
 }
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		Вызывающий решает, что делать, а не вызываемый.
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{То же на F\#}
 		Без CPS:
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let divide a b =
     if (b = 0) 
     then invalidOp "div by 0"
     else (a / b)
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		С CPS:
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let divide ifZero ifSuccess a b = 
     if (b = 0) 
     then ifZero()
     else ifSuccess (a / b)
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Примеры}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let ifZero1 () = printfn "bad"
 let ifSuccess1 x = printfn "good %i" x
 let divide1  = divide ifZero1 ifSuccess1
@@ -270,117 +247,91 @@ let divide2  = divide ifZero2 ifSuccess2
 let ifZero3() = failwith "div by 0"
 let ifSuccess3 x = x
 let divide3  = divide ifZero3 ifSuccess3
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{let, <<многословный>> синтаксис}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let x = something
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		равносильно
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let x = something in [ выражение c x ]
-			\end{minted}
-		\end{exampleblock}
+		\end{minted}
 		например,
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
-let x = 1 in   
-  let y = 2 in 
-    let z = x + y in
-       z
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{let и лямбды}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
-fun x -> [ выражение c x ]
-			\end{minted}
-		\end{exampleblock}
-		или
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
-something |> (fun x -> [ выражение c x ])
-			\end{minted}
-		\end{exampleblock}
-		и обращаем внимание, что:
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
-let x = someExpression in [ выражение c x ]
-someExpression |> (fun x -> [ выражение c x ])
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{let и CPS}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let x = 1 in
   let y = 2 in
     let z = x + y in
        z
-			\end{minted}
-		\end{exampleblock}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{let и лямбды}
+		\begin{minted}{fsharp}
+fun x -> [ выражение c x ]
+		\end{minted}
+		или
+		\begin{minted}{fsharp}
+something |> (fun x -> [ выражение c x ])
+		\end{minted}
+		и обращаем внимание, что:
+		\begin{minted}{fsharp}
+let x = someExpression in [ выражение c x ]
+someExpression |> (fun x -> [ выражение c x ])
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{let и CPS}
+		\begin{minted}{fsharp}
+let x = 1 in
+  let y = 2 in
+    let z = x + y in
+       z
+		\end{minted}
+		\begin{minted}{fsharp}
 1 |> (fun x ->
   2 |> (fun y -> 
      x + y |> (fun z -> 
        z)))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Теперь вспомним про Workflow-ы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let pipeInto expr f
   expr |> f
-			\end{minted}
-		\end{exampleblock}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\end{minted}
+		\begin{minted}{fsharp}
 pipeInto (1, fun x ->
   pipeInto (2, fun y -> 
     pipeInto (x + y, fun z -> 
        z)))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Зачем}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let pipeInto (expr, f) =
    printfn "expression is %A" expr 
    expr |> f 
-			\end{minted}
-		\end{exampleblock}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\end{minted}
+		\begin{minted}{fsharp}
 pipeInto (1, fun x ->
   pipeInto (2, fun y -> 
     pipeInto (x + y, fun z -> 
        z)))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{То же самое с Workflow}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type DebugBuilder() =
     member this.Bind(x, f) = 
         debug x 
@@ -395,30 +346,26 @@ let withDebug = debugFlow {
         let! c = a + b
         return c
     }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Более сложный пример, с делением}
 		\framesubtitle{pipeInto, которая потом будет Bind}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let pipeInto (expr, f) =
    match expr with
    | None -> 
        None
    | Some x -> 
        x |> f
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Более сложный пример, с делением}
 		\framesubtitle{Сам процесс}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let resistance r1 r2 r3 = 
     let a = divide 1.0 r1
     pipeInto (a, fun a' ->
@@ -430,14 +377,12 @@ let resistance r1 r2 r3 =
                 pipeInto (r, fun r' ->
                     Some r
                 ))))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Уберём временные let-ы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let resistance r1 r2 r3 = 
     pipeInto (divide 1.0 r1, fun a ->
         pipeInto (divide 1.0 r2, fun b ->
@@ -445,14 +390,12 @@ let resistance r1 r2 r3 =
                 pipeInto (divide 1.0 (a + b + c), fun r ->
                     Some r
                 )))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{И отформатируем}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let resistance r1 r2 r3 = 
     pipeInto (divide 1.0 r1, fun a ->
     pipeInto (divide 1.0 r2, fun b ->
@@ -460,14 +403,12 @@ let resistance r1 r2 r3 =
     pipeInto (divide 1.0 (a + b + c) , fun r ->
     Some r
     ))))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Сравним с оригиналом}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let resistance r1 r2 r3 = 
     maybe {
         let! r1' = divide 1.0 r1
@@ -476,9 +417,8 @@ let resistance r1 r2 r3 =
         let! r = divide 1.0 (r1' + r2' + r3')
         return r
     }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Подробнее про Bind}
@@ -486,34 +426,27 @@ let resistance r1 r2 r3 =
 			\item Bind : M<'T> * ('T -> M<'U>) -> M<'U>
 			\item Return : 'T -> M<'T>
 		\end{itemize}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let! x = 1 in x * 2
-			\end{minted}
-		\end{exampleblock}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\end{minted}
+		\begin{minted}{fsharp}
 builder.Bind(1, (fun x -> x * 2))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Инфиксное определение Bind}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let (>>=) m f = pipeInto(m, f)
 
 let workflow = 
     1 >>= (+) 2 >>= (*) 42 >>= id
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Option.bind и maybe}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 module Option = 
     let bind f m =
        match m with
@@ -525,15 +458,13 @@ module Option =
 type MaybeBuilder() =
     member this.Bind(m, f) = Option.bind f m
     member this.Return(x) = Some x
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Содержимое типа-обёртки может иметь разный тип}
 		\framesubtitle{Пример, серия запросов к БД}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type DbResult<'a> = 
     | Success of 'a
     | Error of string
@@ -541,14 +472,12 @@ type DbResult<'a> =
 type CustomerId =  CustomerId of string
 type OrderId =  OrderId of int
 type ProductId =  ProductId of string
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример, запросы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let getCustomerId name =
     if (name = "") 
     then Error "getCustomerId failed"
@@ -563,14 +492,12 @@ let getLastProductForOrder (OrderId orderId) =
     if (orderId  = 0) 
     then Error "getLastProductForOrder failed"
     else Success (ProductId "Product456")
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Общение с БД вручную}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let product = 
     let r1 = getCustomerId "Alice"
     match r1 with 
@@ -586,14 +513,12 @@ let product =
             | Success productId ->
                 printfn "Product is %A" productId
                 r3
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Builder}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type DbResultBuilder() =
 
     member this.Bind(m, f) = 
@@ -607,14 +532,12 @@ type DbResultBuilder() =
         Success x
 
 let dbresult = new DbResultBuilder()
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Workflow}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let product = 
     dbresult {
         let! custId = getCustomerId "Alice"
@@ -624,14 +547,12 @@ let product =
         return productId
     }
 printfn "%A" product
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Композиция Workflow-ов}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let subworkflow1 = myworkflow { return 42 }
 let subworkflow2 = myworkflow { return 43 }
 
@@ -641,14 +562,12 @@ let aWrappedValue =
         let! unwrappedValue2 = subworkflow2
         return unwrappedValue1 + unwrappedValue2
         }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Вложенные Workflow-ы}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let aWrappedValue = 
     myworkflow {
         let! unwrappedValue1 = myworkflow {
@@ -661,14 +580,12 @@ let aWrappedValue =
             }
         return unwrappedValue1 + unwrappedValue2
         }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{ReturnFrom}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type MaybeBuilder() =
     member this.Bind(m, f) = Option.bind f m
     member this.Return(x) = 
@@ -679,25 +596,21 @@ type MaybeBuilder() =
         m
 
 let maybe = new MaybeBuilder()
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 maybe { return 1  }
 
 maybe { return! (Some 2)  }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Зачем это}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 maybe {
     let! x = divide 24 3
     let! y = divide x 2
@@ -708,9 +621,8 @@ maybe {
     let! x = divide 24 3
     return! divide x 2  
 }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Первый закон монад}
@@ -718,8 +630,7 @@ maybe {
 			\item Bind и Return должны быть взаимно обратны
 		\end{itemize}
 		\begin{footnotesize}
-			\begin{exampleblock}{F\#}
-				\begin{minted}{fsharp}
+			\begin{minted}{fsharp}
 myworkflow {
     let originalUnwrapped = something
     let wrapped = myworkflow { return originalUnwrapped }
@@ -734,18 +645,16 @@ myworkflow {
     }
     assertEqual newWrapped originalWrapped
 }
-				\end{minted}
-			\end{exampleblock}
+			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Второй закон монад}
 		\begin{itemize}
 			\item Композиция должна быть консистентной
 		\end{itemize}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let result1 = myworkflow { 
     let! x = originalWrapped
     let! y = f x 
@@ -759,9 +668,8 @@ let result2 = myworkflow {
     return! g y
 }
 assertEqual result1 result2
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Какие ещё методы есть у WorkflowBuilder}
@@ -800,8 +708,7 @@ assertEqual result1 result2
 
 	\begin{frame}[fragile]
 		\frametitle{Пример}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type OrderLine = {Quantity : int; Total : float}
 
 let orderLines = [
@@ -814,9 +721,8 @@ let addLine line1 line2 =
      Total = line1.Total + line2.Total}
      
 orderLines |> List.reduce addLine
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Эндоморфизмы}
@@ -828,8 +734,7 @@ orderLines |> List.reduce addLine
 
 	\begin{frame}[fragile]
 		\frametitle{Пример}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let plus1 x = x + 1
 let times2 x = x * 2
 let subtract42 x = x - 42
@@ -842,17 +747,15 @@ let functions = [
 let newFunction = functions |> List.reduce (>>)
 
 printfn "%d" <| newFunction 20
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Bind}
 		Option.bind : ('T $\to$ 'U option) $\to$ 'T option $\to$ 'U option
 
 		--- частично применённый Bind --- эндоморфизм (если 'T и 'U совпадают)
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let bindFns = [
     Option.bind (fun x -> if x > 1 then 
                               Some (x * 2) 
@@ -864,14 +767,12 @@ let bindAll =
     bindFns |> List.reduce (>>)
 
 Some 4 |> bindAll
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Не только эндоморфизмы могут образовать моноид}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type Predicate<'A> = 'A -> bool
 
 let predAnd p1 p2 x = 
@@ -883,9 +784,8 @@ let predicates = [isMoreThan10Chars; isMixedCase;
                   isNotDictionaryWord]
 
 let combinePredicates = predicates |> List.reduce predAnd
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Монады}
