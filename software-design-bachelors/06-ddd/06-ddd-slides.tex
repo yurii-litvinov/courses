@@ -158,94 +158,95 @@
 		\end{itemize}
 	\end{frame}
 
-% 	\begin{frame}
-% 		\frametitle{Основные структурные элементы модели}
-% 		\begin{itemize}
-% 			\item \textbf{Сущность (Entity)} --- объект, обладающий собственной идентичностью
-% 			\begin{itemize}
-% 				\item Нужна операция идентификации
-% 				\item Нужен способ поддержания идентичности
-% 			\end{itemize}
-% 			\item \textbf{Объект-значение (Value object)} --- объект, полностью определяемый своими атрибутами
-% 			\begin{itemize}
-% 				\item ``Лучше'', чем сущность
-% 				\item Как правило, немутабельны
-% 				\item Могут быть разделяемыми
-% 			\end{itemize}
-% 			\item \textbf{Служба (Service)} --- объект, представляющий операцию
-% 			\begin{itemize}
-% 				\item Как правило, не имеет собственного состояния
-% 				\item Операции нет естественного места в других классах модели
-% 			\end{itemize}
-% 			\item \textbf{Модуль (Module)} --- смысловые части модели
-% 		\end{itemize}
-% 	\end{frame}
+	\begin{frame}
+		\frametitle{Основные структурные элементы модели}
+		\begin{itemize}
+			\item \textbf{Ассоциации} --- чем проще, тем лучше
+			\item \textbf{Сущность (Entity)} --- объект, обладающий собственной идентичностью
+			\begin{itemize}
+				\item Нужна операция идентификации
+				\item Нужен способ поддержания идентичности
+			\end{itemize}
+			\item \textbf{Объект-значение (Value object)} --- объект, полностью определяемый своими атрибутами
+			\begin{itemize}
+				\item ``Лучше'', чем сущность
+				\item Как правило, немутабельны
+				\item Могут быть разделяемыми
+			\end{itemize}
+			\item \textbf{Служба (Service)} --- объект, представляющий операцию
+			\begin{itemize}
+				\item Как правило, не имеет собственного состояния
+				\item Операции нет естественного места в других классах модели
+			\end{itemize}
+			\item \textbf{Модуль (Module)} --- смысловые части модели
+		\end{itemize}
+	\end{frame}
 
-% 	\begin{frame}
-% 		\frametitle{Жизненный цикл объекта}
-% 		\begin{center}
-% 			\includegraphics[height=0.7\textheight]{objectLifeCycle.png}
-% 		\end{center}
-% 	\end{frame}
+	\begin{frame}
+		\frametitle{Жизненный цикл объекта}
+		\begin{center}
+			\includegraphics[height=0.7\textheight]{objectLifeCycle.png}
+		\end{center}
+	\end{frame}
 
-% 	\begin{frame}
-% 		\frametitle{Агрегаты}
-% 		\begin{itemize}
-% 			\item \textbf{Агрегат} --- изолированный кусок модели, имеющий \textbf{корень} и \textbf{границу}
-% 			\item Корень --- глобально идентичный объект-сущность
-% 			\item Остальные объекты в агрегате идентичны локально
-% 			\item Извне агрегата можно хранить ссылку только на корень
-% 			\begin{itemize}
-% 				\item Отдавать временную ссылку можно
-% 			\end{itemize}
-% 			\item Корень отвечает за поддержание инвариантов всего агрегата
-% 		\end{itemize}
-% 	\end{frame}
+	\begin{frame}
+		\frametitle{Агрегаты}
+		\begin{itemize}
+			\item \textbf{Агрегат} --- изолированный кусок модели, имеющий \textbf{корень} и \textbf{границу}
+			\item Корень --- глобально идентичный объект-сущность
+			\item Остальные объекты в агрегате идентичны локально
+			\item Извне агрегата можно хранить ссылку только на корень
+			\begin{itemize}
+				\item Отдавать временную ссылку можно
+			\end{itemize}
+			\item Корень отвечает за поддержание инвариантов всего агрегата
+		\end{itemize}
+	\end{frame}
 
-% 	\begin{frame}
-% 		\frametitle{Агрегат, пример}
-% 		\begin{center}
-% 			\includegraphics[width=0.9\textwidth]{aggregate.png}
-% 		\end{center}
-% 	\end{frame}
+	\begin{frame}
+		\frametitle{Агрегат, пример}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{aggregate.png}
+		\end{center}
+	\end{frame}
 
-% 	\begin{frame}
-% 		\frametitle{Фабрика}
-% 		\begin{center}
-% 			\includegraphics[width=0.7\textwidth]{factory.png}
-% 		\end{center}
-% 		\textbf{Фабрика} служит для создания объектов или агрегатов
-% 		\begin{itemize}
-% 			\item Скрывает внутреннее устройство конструируемого объекта
-% 			\begin{itemize}
-% 				\item Операция создания ``атомарна'' и обеспечивает инварианты
-% 			\end{itemize}
-% 			\item Изолирует сложную операцию создания
-% 			\item Как правило, не имеет бизнес-смысла, но является частью модели
-% 			\item Реализуется аж несколькими разными паттернами
-% 		\end{itemize}
-% 	\end{frame}
+	\begin{frame}
+		\frametitle{Фабрика}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{factory.png}
+		\end{center}
+		\textbf{Фабрика} служит для создания объектов или агрегатов
+		\begin{itemize}
+			\item Скрывает внутреннее устройство конструируемого объекта
+			\begin{itemize}
+				\item Операция создания ``атомарна'' и обеспечивает инварианты
+			\end{itemize}
+			\item Изолирует сложную операцию создания
+			\item Как правило, не имеет бизнес-смысла, но является частью модели
+			\item Реализуется аж несколькими разными паттернами
+		\end{itemize}
+	\end{frame}
 
-% 	\begin{frame}
-% 		\frametitle{Пример}
-% 		\framesubtitle{Фабрика, использующаяся для восстановления объекта}
-% 		\begin{center}
-% 			\includegraphics[width=0.8\textwidth]{xmlFactory.png}
-% 		\end{center}
-% 	\end{frame}
+	\begin{frame}
+		\frametitle{Пример}
+		\framesubtitle{Фабрика, использующаяся для восстановления объекта}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{xmlFactory.png}
+		\end{center}
+	\end{frame}
 
-% 	\begin{frame}
-% 		\frametitle{Хранилище (Repository)}
-% 		\begin{center}
-% 			\includegraphics[width=0.8\textwidth]{repository.png}
-% 		\end{center}
-% 		\textbf{Репозиторий} хранит объекты и предоставляет к ним доступ
-% 		\begin{itemize}
-% 			\item Может инкапсулировать запросы к БД
-% 			\item Может использовать фабрики
-% 			\item Может обладать развитым интерфейсом запросов
-% 		\end{itemize}
-% 	\end{frame}
+	\begin{frame}
+		\frametitle{Хранилище (Repository)}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{repository.png}
+		\end{center}
+		\textbf{Репозиторий} хранит объекты и предоставляет к ним доступ
+		\begin{itemize}
+			\item Может инкапсулировать запросы к БД
+			\item Может использовать фабрики
+			\item Может обладать развитым интерфейсом запросов
+		\end{itemize}
+	\end{frame}
 
 % 	\section{Пример: система грузоперевозок}
 
