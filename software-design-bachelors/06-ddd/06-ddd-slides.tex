@@ -377,7 +377,7 @@ class Bucket {
     }
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Код, после}
@@ -397,7 +397,7 @@ class Bucket {
     }
 } 
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Паттерн ``Спецификация''}
@@ -409,6 +409,13 @@ class Bucket {
 			\item Предикат
 			\item Может быть использована для выборки или конструирования объектов
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Композитные спецификации}
+		\begin{center}
+			\includegraphics[height=0.7\textheight]{compositeSpecifications.png}
+		\end{center}
 	\end{frame}
 
 	\begin{frame}
@@ -433,7 +440,7 @@ public class ContainerSpecification {
     }
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Код, контейнер}
@@ -448,21 +455,9 @@ boolean isSafelyPacked() {
     return true;
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\section{Гибкая архитектура}
-
-	\begin{frame}
-		\frametitle{Приёмы обеспечения гибкости архитектуры}
-		\begin{itemize}
-			\item Говорящие интерфейсы
-			\item Функции без побочных эффектов
-			\item Assertions
-			\item Концептуальные контуры
-			\item Изолированные классы
-			\item Замкнутые операции
-		\end{itemize}
-	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример рефакторинга, смешивание красок}
@@ -472,7 +467,7 @@ boolean isSafelyPacked() {
 		\end{center}
 		\begin{footnotesize}
 			\begin{minted}{java}
-public void paint (Paint paint } {
+public void paint (Paint paint) {
     v = v + paint.getV();  // После смешивания объем суммируется
 // Опущено много строк сложного расчета смешивания цветов,
 // который заканчивается присваиванием новых значений
@@ -580,14 +575,6 @@ public class Paint {
 		\end{center}
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{Замкнутость операций}
-		\framesubtitle{Спецификации}
-		\begin{center}
-			\includegraphics[height=0.7\textheight]{compositeSpecifications.png}
-		\end{center}
-	\end{frame}
-
 	\section{Задача: Roguelike}
 
 	\begin{frame}
@@ -635,7 +622,7 @@ public class Paint {
 			\begin{itemize}
 				\item Достаточно подробная, чтобы её можно было отдать на реализацию неопытному программисту
 			\end{itemize}
-			\item Дедлайн: \textbf{12.04.2017г.}
+			\item Дедлайн: \textbf{12.04.2018г.}
 		\end{itemize}
 	\end{frame}
 
@@ -652,7 +639,7 @@ public class Paint {
 					\item Юнит-тесты
 					\item Не увлекаться!
 				\end{itemize}
-				Дедлайн: \textbf{03.05.2017г.}
+				Дедлайн: \textbf{03.05.2018г.}
 			\end{column}
 			\begin{column}{0.5\textwidth}
 				\begin{center}
