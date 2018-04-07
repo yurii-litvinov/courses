@@ -11,8 +11,6 @@
 \newfontfamily{\russianfonttt}{FreeSans}
 
 \setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
 
 \setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
 \setbeamercolor*{block body alerted}{fg=black,bg=red!10}
@@ -21,7 +19,7 @@
 
 \title{Async и многопоточное программирование}
 \author{Юрий Литвинов}
-\date{21.04.2017г}
+\date{10.04.2018г}
 
 \begin{document}
 	
@@ -52,8 +50,7 @@
 	\begin{frame}[fragile]
 		\frametitle{Простой способ: Async workflow}
 		\begin{footnotesize}
-			\begin{exampleblock}{F\#}
-				\begin{minted}{fsharp}
+			\begin{minted}{fsharp}
 open System.Net
 open System.IO
 let sites = ["http://se.math.spbu.ru"; "http://spisok.math.spbu.ru"]
@@ -71,10 +68,9 @@ let fetchAsync url =
     }
 
 sites |> List.map (fun site -> site |> fetchAsync |> Async.Start) |> ignore
-				\end{minted}
-			\end{exampleblock}
+			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Что получится}
@@ -95,22 +91,20 @@ Reading response for http://se.math.spbu.ru...
 Read 217 characters for http://se.math.spbu.ru...
 			\end{minted}
 		\end{alertblock}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Переключение между потоками}
 		Распечатаем Id потоков, в которых вызываются методы printfn:
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System.Threading
 
 let tprintfn fmt =
     printf "[.NET Thread %d]"   
         Thread.CurrentThread.ManagedThreadId;
     printfn fmt
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Что получилось теперь}
@@ -137,14 +131,13 @@ Read 4475 characters for http://spisok.math.spbu.ru...
 				\end{minted}
 			\end{alertblock}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пул потоков}
 		\framesubtitle{Почему такие результаты}
 		Пул потоков --- набор заранее созданных потоков, управляемых рантаймом .NET автоматически.
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System.Threading
 
 fun _ -> printfn "Hello from %d!" 
@@ -152,9 +145,8 @@ fun _ -> printfn "Hello from %d!"
 |> List.replicate 10
 |> List.map ThreadPool.QueueUserWorkItem 
 |> ignore
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Что получится}
@@ -174,13 +166,12 @@ Hello from Hello from 76!
 > Hello from 75! 
 			\end{minted}
 		\end{alertblock}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Подробнее про Async}
 		\framesubtitle{Async --- это Workflow}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 type Async<'a> = Async of ('a -> unit) * (exn -> unit) 
         -> unit
 
@@ -192,16 +183,14 @@ type AsyncBuilder with
     member Let: 'a * ('a -> Async<'b>) -> Async<'b>
     member Bind: Async<'a> * ('a -> Async<'b>) 
             -> Async<'b>
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Во что Async раскрывает компилятор}
 		\framesubtitle{Если кто не помнит про Workflow-ы}
 		\begin{footnotesize}
-			\begin{exampleblock}{F\#}
-				\begin{minted}{fsharp}
+			\begin{minted}{fsharp}
 async { 
     let request = WebRequest.Create(url)
     let! response = request.AsyncGetResponse()
@@ -218,10 +207,9 @@ async.Delay(fun () ->
                 new StreamReader(stream) |> fun reader ->
                     reader.ReadToEnd() |> fun html ->
                         async.Return(html)))))
-				\end{minted}
-			\end{exampleblock}
+			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Какие конструкции поддерживает Async}
@@ -262,8 +250,7 @@ async.Delay(fun () ->
 
 	\begin{frame}[fragile]
 		\frametitle{Пример}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let writeFile fileName bufferData =
     async {
       use outputFile = System.IO.File.Create(fileName)
@@ -276,14 +263,12 @@ Seq.init 1000 (fun num -> createSomeData num)
 |> Async.Parallel
 |> Async.RunSynchronously
 |> ignore
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Подробнее про Async.Catch}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 asyncTaskX
     |> Async.Catch
     |> Async.RunSynchronously
@@ -293,14 +278,12 @@ asyncTaskX
            printfn "Async operation completed: %A" result
         | Choice2Of2 (ex : exn) -> 
            printfn "Exception thrown: %s" ex.Message
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 	
 	\begin{frame}[fragile]
 		\frametitle{Обработка исключений прямо внутри Async}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 async {
     try
         // ...
@@ -310,15 +293,13 @@ async {
     | :? ArgumentException as ae ->
         printfn "ArgumentException: %s" ae.Message
 }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Отмена операции}
 		\framesubtitle{Задача, которую можно отменить}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System
 open System.Threading
 
@@ -330,15 +311,13 @@ let cancelableTask =
             do! Async.Sleep(1000)
         printfn "Finished!"
     }
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Отмена операции}
 		\framesubtitle{Код, который её отменяет}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let cancelHandler (ex : OperationCanceledException) =
     printfn "The task has been canceled."
 
@@ -348,14 +327,12 @@ Async.TryCancelled(cancelableTask, cancelHandler)
 // ...
 
 Async.CancelDefaultToken()
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{CancellationToken}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System.Threading
 
 let computation = Async.TryCancelled(cancelableTask, 
@@ -367,14 +344,12 @@ Async.Start(computation, cancellationSource.Token)
 // ...
 
 cancellationSource.Cancel()
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Async.StartWithContinuations}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 Async.StartWithContinuations(
     someAsyncTask,
     (fun result -> printfn "Task completed with result %A" result),
@@ -385,14 +360,12 @@ Async.StartWithContinuations(
                 Message: %s" oce.Message)
 )
 		\end{minted}
-		\end{exampleblock}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Async.FromContinuations}
 		\begin{scriptsize}
-			\begin{exampleblock}{F\#}
-				\begin{minted}{fsharp}
+			\begin{minted}{fsharp}
 open System
 
 let trylet f x = (try Choice1Of2 (f x) with exn -> Choice2Of2(exn))
@@ -413,16 +386,14 @@ type System.IO.Stream with
                  callback = 
                      AsyncCallback(protect cont econt stream.EndRead))
             |> ignore)
-				\end{minted}
-			\end{exampleblock}
+			\end{minted}
 		\end{scriptsize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример}
 		\framesubtitle{Реализация Async.Parallel}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System.Threading
 
 let Parallel(taskSeq) =
@@ -436,15 +407,13 @@ let Parallel(taskSeq) =
                          do results.[i] <- res;
                          let n = Interlocked.Decrement(count)
                          do if n = 0 then cont results })))
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Async.AwaitEvent}
 		\framesubtitle{Для более простых случаев}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System
 
 let timer = new Timers.Timer(2000.0)
@@ -458,15 +427,13 @@ printfn "Doing something useful while waiting for event"
 Async.RunSynchronously timerEvent
 
 printfn "Timer ticked at %O" DateTime.Now.TimeOfDay
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Большой пример: обработка ``изображений''}
 		\framesubtitle{Шаг 1: подготовка тестовых данных}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 open System.IO
 
 let numImages = 200
@@ -479,15 +446,13 @@ let MakeImageFiles() =
     for i = 1 to numImages do
         File.WriteAllBytes(sprintf "Image%d.tmp" i, pixels)
     printfn "done."
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Большой пример: обработка ``изображений''}
 		\framesubtitle{Шаг 2: вычислительно сложная функция над ``изображением''}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let processImageRepeats = 20
 
 let TransformImage(pixels, imageNum) =
@@ -497,15 +462,13 @@ let TransformImage(pixels, imageNum) =
     for i in 1..processImageRepeats do 
         newPixels <- Array.map (fun b -> b + 1uy)) pixels
     newPixels
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Большой пример: обработка ``изображений''}
 		\framesubtitle{Шаг 3: синхронная обработка}
-		\begin{exampleblock}{F\#}
-			\begin{minted}{fsharp}
+		\begin{minted}{fsharp}
 let ProcessImageSync(i) =
     use inStream = File.OpenRead(sprintf "Image%d.tmp" i)
     let pixels = Array.zeroCreate numPixels
@@ -519,16 +482,14 @@ let ProcessImagesSync() =
     printfn "ProcessImagesSync...";
     for i in 1 .. numImages do
         ProcessImageSync(i)
-			\end{minted}
-		\end{exampleblock}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Большой пример: обработка ``изображений''}
 		\framesubtitle{Шаг 4: асинхронная обработка}
 		\begin{footnotesize}
-			\begin{exampleblock}{F\#}
-				\begin{minted}{fsharp}
+			\begin{minted}{fsharp}
 open Microsoft.FSharp.Control
 open Microsoft.FSharp.Control.CommonExtensions
 
@@ -544,9 +505,8 @@ let ProcessImagesAsync() =
     let tasks = [ for i in 1 .. numImages -> ProcessImageAsync(i) ]
     Async.Parallel tasks |> Async.RunSynchronously |> ignore
     printfn "ProcessImagesAsync finished!"
-				\end{minted}
-			\end{exampleblock}
+			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 \end{document}
