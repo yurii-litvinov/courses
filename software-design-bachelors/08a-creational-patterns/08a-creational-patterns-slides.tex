@@ -1,0 +1,824 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title[Шаблоны]{Лекция 8: Порождающие шаблоны}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{12.04.2018г}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\newcommand{\DownArrow} {
+	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
+}
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Паттерн ``Мост''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Мост'' (Bridge)}
+		Отделяет абстракцию от реализации
+
+		Пример:
+		\begin{itemize}
+			\item Есть система, интерпретирующая программы для роботов
+			\item Есть класс \textit{Sensor}, от которого наследуются \textit{SonarSensor}, \textit{LightSensor}, ...
+			\item Связь с роботом может выполняться по USB или Bluetooth, а может быть, программа и вовсе исполняется на симуляторе
+			\item Интерпретатор хочет работать с сенсорами, не заморачиваясь реализацией механизма связи
+			\item Рабоче-крестьянская реализация --- \textit{USBLightSensor}, \textit{BluetoothLightSensor}, \textit{USBSonarSensor}, \textit{BluetoothSonarSensor}, ...
+			\item Число классов --- произведение количества сенсоров и типов связи
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Мост'', пример}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{noBridge.png}
+			\Huge{$$\downarrow$$}
+			\includegraphics[width=0.7\textwidth]{bridge.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Мост'', общая схема}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{bridgeGeneral.png}
+		\end{center}
+		\begin{itemize}
+			\item \textit{Abstraction} --- определяет интерфейс абстракции, хранит ссылку на реализацию
+			\item \textit{RefinedAbstraction} --- расширяет интерфейс абстракции, делает полезную работу, используя реализацию
+			\item \textit{Implementor} --- определяет интерфейс реализации, в котором абстракции предоставляются низкоуровневые операции
+			\item \textit{ConcreteImplementor} --- предоставляет конкретную реализацию Implementor
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Когда применять}
+		\begin{itemize}
+			\item Когда хочется разделить абстракцию и реализацию, например, когда реализацию можно выбирать во время компиляции или во время выполнения
+			\begin{itemize}
+				\item ``Стратегия'', ``Прокси''
+			\end{itemize}
+			\item Когда абстракция и реализация должны расширяться новыми подклассами
+			\item Когда хочется разделить одну реализацию между несколькими объектами
+			\begin{itemize}
+				\item Как copy-on-write в строках
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Тонкости реализации}
+		Создание правильного Implementor-а
+		\begin{itemize}
+			\item Самой абстракцией в конструкторе, в зависимости от переданных параметров
+			\begin{itemize}
+				\item Как вариант --- выбор реализации по умолчанию и замена её по ходу работы
+			\end{itemize}
+			\item Принимать реализацию извне (как параметр конструктора, или, реже, как значение в сеттер)
+			\item Фабрика/фабричный метод
+			\begin{itemize}
+				\item Позволяет спрятать платформозависимые реализации, чтобы не зависеть от них всех при сборке
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Pointer To Implementation (PImpl)}
+		Вырожденный мост для C++, когда ``абстракция'' имеет ровно одну реализацию, часто полностью дублирующую её интерфейс
+
+		Зачем: чтобы клиенты класса не зависели при сборке от его реализации
+
+		\begin{itemize}
+			\item Позитивно сказывается на времени компиляции программ на C++
+			\item Позволяет менять реализацию независимо
+			\begin{itemize}
+				\item Сохраняя бинарную совместимость
+			\end{itemize}
+		\end{itemize}
+
+		Как: предварительное объявление класса-реализации, полное определение --- в .cpp-файле вместе с методами абстракции
+
+		Часто используется в реализации библиотек (например, Qt)
+	\end{frame}
+
+	\section{Паттерн ``Приспособленец''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Приспособленец'' (Flyweight)}
+		Предназначается для эффективной поддержки множества мелких объектов
+
+		Пример:
+
+		\begin{itemize}
+			\item Есть текстовый редактор
+			\item Хочется работать с каждым символом как с объектом
+			\begin{itemize}
+				\item Единообразие алгоритмов форматирования и внутренней структуры документа
+				\item Более красивая и ООПшная реализация
+				\begin{itemize}
+					\item Паттерн ``Компоновщик'', структура ``Символ'' $\rightarrow$ ``Строка'' $\rightarrow$ ``Страница''
+				\end{itemize}
+			\end{itemize}
+			\item Наивная реализация привела бы к чрезмерной расточительности по времени работы и по памяти, потому что документы с миллионами символов не редкость
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', пример}
+		\begin{center}
+			\includegraphics[width=0.38\textwidth]{noFlyweight.png}
+			\raisebox{0.1\textheight}{\quad\Huge{$\rightarrow$}\quad}
+			\includegraphics[width=0.38\textwidth]{flyweightExample.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', общая схема}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{flyweight.png}
+		\end{center}
+		\begin{footnotesize}
+			\begin{itemize}
+				\item \textit{Flyweight} --- определяет интерфейс, через который приспособленцы могут получать внешнее состояние
+				\item \textit{ConcreteFlyweight} --- реализует интерфейс Flyweight и может иметь внутреннее состояние, не зависит от контекста
+				\item \textit{UnsharedConcreteFlyweight} --- неразделяемый ``приспособленец'', хранящий всё состояние в себе, бывает нужен, чтобы собирать иерархические структуры из Flyweight-ов (``Компоновщик'')
+				\item \textit{FlyweightFactory} --- содержит пул приспособленцев, создаёт их и управляет их жизнью
+			\end{itemize}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', диаграмма объектов}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{flyweightObjects.png}
+		\end{center}
+		\begin{itemize}
+			\item Клиенты могут быть разных типов
+			\item Клиенты могут разделять приспособленцев
+			\begin{itemize}
+				\item Один клиент может иметь несколько ссылок на одного приспособленца
+			\end{itemize}
+			\item Во время выполнения клиенты имеют право не знать про фабрику
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Когда применять}
+		\begin{itemize}
+			\item Когда в приложении используется много мелких объектов
+			\item Они допускают разделение состояния на внутреннее и внешнее
+			\begin{itemize}
+				\item Желательно, чтобы внешнее состояние было вычислимо
+			\end{itemize}
+			\item Идентичность объектов не важна
+			\begin{itemize}
+				\item Используется семантика Value Type
+			\end{itemize}
+			\item Главное, когда от такого разделения можно получить ощутимый выигрыш
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Тонкости реализации}
+		\begin{itemize}
+			\item Внешнее состояние --- по сути, отдельный объект, поэтому если различных внешних состояний столько же, сколько приспособленцев, смысла нет
+			\begin{itemize}
+				\item Один объект-состояние покрывает сразу несколько приспособленцев
+				\begin{itemize}
+					\item Например, объект ``Range'' может хранить параметры форматирования для всех букв внутри фрагмента
+				\end{itemize}
+			\end{itemize}
+			\item Клиенты не должны инстанцировать приспособленцев сами, иначе трудно обеспечить разделение
+			\begin{itemize}
+				\item Имеет смысл иметь механизм для удаления неиспользуемых приспособленцев
+				\begin{itemize}
+					\item Если их может быть много
+				\end{itemize}
+			\end{itemize}
+			\item Приспособленцы немутабельны и Value Objects (с правильно переопределённой операцией сравнения)
+			\begin{itemize}
+				\item Про hashCode() тоже надо не забыть
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Фабричный метод''}
+
+	\begin{frame}
+		\frametitle{``Фабричный метод'' мотивация}
+		\framesubtitle{Игра-стратегия}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Воины
+					\begin{itemize}
+						\item Мечники
+						\item Конница
+						\item Лучники
+					\end{itemize}
+					\item Общее поведение
+					\item Общие характеристики
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{warriors.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Виртуальный конструктор}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{footnotesize}
+					\begin{minted}{c++}
+enum WarriorId { SwordsmanId, ArcherId, HorsemanId };
+
+class Warrior
+{
+public:  
+    Warrior(WarriorId id)
+    {
+        if (id == SwordsmanId) p = new Swordsman;
+        else if (id == ArcherId) p = new Archer;
+        else if (id == HorsemanId) p = new Horseman;
+        else assert( false);
+    }
+    virtual void info() { p->info(); }
+    virtual ~Warrior() { delete p;  p = 0; }
+private:
+    Warrior* p;
+};
+					\end{minted}
+				\end{footnotesize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{warriorVirtualCtor.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Фабричный метод}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Базовый класс знает про остальные
+					\item switch в createWarrior()
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{warriorFactoryMethod.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Factory Method''}
+		\framesubtitle{Factory Method}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{factoryMethod.png}
+		\end{center}
+		\begin{itemize}
+			\item Применимость:
+			\begin{itemize}
+				\item классу заранее неизвестно, объекты каких классов ему нужно создавать
+				\item объекты, которые создает класс, специфицируются подклассами
+				\item класс делегирует свои обязанности одному из нескольких вспомогательных подклассов
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример, текстовый редактор}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{factoryMethodForTextEditor.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Фабричный метод'', детали реализации}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{factoryMethod.png}
+		\end{center}
+		\begin{itemize}
+			\item Абстрактный Creator или реализация по умолчанию
+			\begin{itemize}
+				\item Второй вариант может быть полезен для расширяемости
+			\end{itemize}
+			\item Параметризованные фабричные методы
+			\item Если язык поддерживает инстанциацию по прототипу (JavaScript, Smalltalk), можно хранить порождаемый объект
+			\item Creator не может вызывать фабричный метод в конструкторе
+			\item Можно сделать шаблонный Creator
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Шаблонный метод''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Шаблонный метод''}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{templateMethodExample.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Реализация OpenDocument}
+		\begin{minted}{c++}
+void Application::OpenDocument(const char* name) {
+    if (!CanOpenDocument(name)) {
+        return;
+    }
+
+    Document* doc = DoCreateDocument();
+
+    if (doc) {
+        _docs->AddDocument(doc);
+        AboutToOpenDocument(doc);
+        doc->Open();
+        doc->DoRead();
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Шаблонный метод'': применимость}
+		\begin{itemize}
+			\item Задание инварианта алгоритма, поведение в потомках
+			\item Вынесение общего кода в базовый класс
+			\item Управление точками расширения класса
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{templateMethod.png}
+		\end{center}
+	\end{frame}
+
+	\section{Паттерн ``Абстрактная фабрика''}
+
+	\begin{frame}
+		\frametitle{``Абстрактная фабрика'', мотивация}
+		\begin{itemize}
+			\item Хотим поддержать разные стили UI
+			\begin{itemize}
+				\item Гибкая поддержка в архитектуре
+				\item Удобное добавление новых стилей
+			\end{itemize}
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{widgets.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Создание виджетов}
+		\mintinline{c++}|ScrollBar* bar = new RoundedScrollBar;|
+		
+		\vspace{2mm}
+		
+		vs
+		
+		\vspace{2mm}
+		
+		\mintinline{c++}|ScrollBar* bar = guiFactory->createScrollBar();|
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Фабрика виджетов}
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{widgetFactory.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Абстрактная фабрика''}
+		\framesubtitle{Abstract Factory}
+		\begin{columns}
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}
+					\item Изолирует конкретные классы
+					\item Упрощает замену семейств продуктов
+					\item Гарантирует сочетаемость продуктов
+					\item Поддержать новый вид продуктов непросто
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{abstractFactory.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Абстрактная фабрика'', применимость}
+		\begin{itemize}
+			\item Система не должна зависеть от того, как создаются, компонуются и представляются входящие в нее объекты
+			\item Система должна конфигурироваться одним из семейств составляющих ее объектов
+			\item Взаимосвязанные объекты должны использоваться вместе
+			\item Хотите предоставить библиотеку объектов, раскрывая только их интерфейсы, но не реализацию
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Абстрактная фабрика'', детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Хорошо комбинируются с паттерном ``Одиночка''
+					\item Если семейств продуктов много, то фабрика может инициализироваться \textit{прототипами}, тогда не надо создавать сотню подклассов
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{abstractFactory.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\begin{itemize}
+			\item Прототип на самом деле может быть классом (например, Class в Java)
+			\item Если виды объектов часто меняются, может помочь параметризация метода создания
+			\begin{itemize}
+				\item Может пострадать типобезопасность
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Одиночка''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Одиночка''}
+		\framesubtitle{Singleton}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}
+					\item Гарантирует, что у класса есть только один экземпляр
+					\item Предоставляет глобальный доступ к этому экземпляру
+					\item Позволяет использовать подклассы без модификации клиентского кода
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\begin{center}
+					\includegraphics[width=0.6\textwidth]{singleton.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Одиночка'', наивная реализация}
+		\begin{minted}{java}
+public class Singleton {
+    private static Singleton instance;
+
+    private Singleton () {}
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Одиночка'', простая многопоточная реализация}
+		\begin{minted}{java}
+public class Singleton {
+    private static Singleton instance = new Singleton();
+
+    private Singleton () {}
+
+    public static Singleton getInstance() {
+        return instance;
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Одиночка'', ещё более простая многопоточная реализация}
+		\framesubtitle{Но только для Java}
+		\begin{minted}{java}
+public enum Singleton {
+    INSTANCE;
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Одиночка'', плохая многопоточная реализация}
+		\begin{minted}{java}
+public class Singleton {
+    private static Singleton instance;
+
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Double-checked locking}
+		\begin{small}
+			\begin{minted}{java}
+public class Singleton {
+    private static volatile Singleton instance;
+
+    public static Singleton getInstance() {
+        Singleton localInstance = instance;
+        if (localInstance == null) {
+            synchronized (Singleton.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new Singleton();
+                }
+            }
+        }
+        return localInstance;
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Одиночка'', критика}
+		\begin{itemize}
+			\item Добавляет неочевидные зависимости по данным
+			\begin{itemize}
+				\item По сути, хитрая глобальная переменная
+			\end{itemize}
+			\item Усложняет тестирование
+			\item Нарушает принцип единственности ответственности
+			\item Сложно рефакторить, если потребуется несколько экземпляров
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Прототип''}
+
+	\begin{frame}
+		\frametitle{``Прототип'', мотивация}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{musicalEditor.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Патерн ``Прототип''}
+		\framesubtitle{Prototype}
+		\begin{center}
+			\includegraphics[width=0.85\textwidth]{prototype.png}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{``Прототип'', детали реализации}
+		\begin{itemize}
+			\item Паттерн интересен для языков, где мало runtime-информации о типе (C++)
+			\item Реестр прототипов, обычно ассоциативное хранилище
+			\item Операция Clone
+			\begin{itemize}
+				\item Глубокое и мелкое копирование
+				\item В случае, если могут быть круговые ссылки
+				\item Сериализовать/десериализовать объект (но помнить про идентичность)
+			\end{itemize}
+			\item Инициализация клона
+			\begin{itemize}
+				\item Передавать параметры в Clone --- плохая идея
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Строитель''}
+
+	\begin{frame}
+		\frametitle{``Строитель'', мотивация}
+		\framesubtitle{Конвертер текста}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{textConverter.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Патерн ``Строитель''}
+		\framesubtitle{Builder}
+		\begin{center}
+			\includegraphics[width=0.85\textwidth]{builder.png}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Телескопические конструкторы}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{ssmall}
+					\begin{minted}{java}
+public class NutritionFacts {
+   private final int servingSize; // (ml_) required
+   private final int servings: // (per container) required
+   private final int calories; // optional
+   private final int fat; // (g) optional
+   private final int sodium; // (mg) optional
+   private final int carbohydrate; // (g) optional
+   
+   public NutritionFacts(int servingSize, int servings) {
+       this(servingSize, servings, 0);
+   }
+   
+   public NutritionFacts(int servingSize, int servings,
+                         int calories) {
+       this(servingSize, servings, calories, 0);
+   }
+   
+   public NutritionFacts(int servingSize, int servings,
+                         int calories, int fat) {
+       this(servingSize, servings, calories, fat, 0);
+   }
+					\end{minted}
+				\end{ssmall}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{ssmall}
+					\begin{minted}{java}
+   public NutritionFacts(int servingSize, int servings,
+                         int calories, int fat, int sodium) {
+       this(servingSize, servings, calories, fat, sodium, 0
+   }
+   
+   public NutritionFacts(int servingSize, int servings,
+                         int calories, int fat, int sodium,
+   int carbohydrate) {
+       this.servingSize = servingSize;
+       this.servings = servings;
+       this.calories = calories;
+       this.fat = fat;
+       this.sodium = sodium;
+       this.carbohydrate = carbohydrate;
+   }
+}
+					\end{minted}
+				\end{ssmall}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Вариант решения 1: куча сеттеров}
+		\begin{minted}{java}
+var cocaCola = new NutritionFacts();
+cocaCola.setServingSize(240);
+cocaCola.setServings(8);
+cocaCola.setCalories(100);
+cocaCola.setSodium(35);
+cocaCola.setCarbohydrate(27);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Вариант решения 2: Builder}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{ssmall}
+					\begin{minted}{java}
+public class NutritionFacts {
+    private final int servingSize;
+    private final int servings;
+    private final int calories;
+    private final int fat;
+    private final int sodium;
+    private final int carbohydrate;
+
+    public static class Builder {
+        // Required parameters
+        private final int servingSize;
+        private final int servings;
+        // Optional parameters 
+        private int calories = 0;
+        private int fat = 0;
+        private int carbohydrate = 0;
+        private int sodium = 0;
+        public Builder(int servingSize, int servings) {
+            this.servingSize = servingSize;
+            this.servings = servings;
+        }
+					\end{minted}
+				\end{ssmall}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{ssmall}
+					\begin{minted}{java}
+        public Builder calories(int val)
+        { calories = val; return this; }
+        public Builder fat(int val)
+        { fat = val; return this; }
+        public Builder carbohydrate(int val)
+        { carbohydrate = val; return this; }
+        public Builder sodium(int val)
+        { sodium = val; return this; }
+        public NutritionFacts build() {
+            return new NutritionFacts(this);
+        }
+    }
+
+    private NutritionFacts(Builder builder) {
+        servingSize = builder.servingSize;
+        servings = builder.servings;
+        calories = builder.calories;
+        fat = builder.fat;
+        sodium = builder.sodium;
+        carbohydrate = builder.carbohydrate;
+    }
+}
+					\end{minted}
+				\end{ssmall}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Магия Builder-а}
+		\begin{minted}{java}
+var cocaCola = new NutritionFacts.Builder(240, 8)
+        .calories(100).sodium(35).carbohydrate(27).build();
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Строитель'' (Builder), детали реализации}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{builder.png}
+		\end{center}
+		\begin{itemize}
+			\item Абстрактные и конкретные строители
+			\begin{itemize}
+				\item Достаточно общий интерфейс
+			\end{itemize}
+			\item Общий интерфейс для продуктов не требуется
+			\begin{itemize}
+				\item Клиент конфигурирует распорядителя конкретным строителем, он же и забирает результат
+			\end{itemize}
+			\item Пустые методы по умолчанию
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Строитель'', примеры}
+		\begin{itemize}
+			\item StringBuilder
+			\item Guava, подсистема работы с графами
+			\begin{minted}{java}
+MutableNetwork<Webpage, Link> webSnapshot = 
+        NetworkBuilder.directed()
+    .allowsParallelEdges(true)
+    .nodeOrder(ElementOrder.natural())
+    .expectedNodeCount(100000)
+    .expectedEdgeCount(1000000)
+    .build();
+			\end{minted}
+		\end{itemize}
+\end{frame}
+
+\end{document}
