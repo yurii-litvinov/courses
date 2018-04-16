@@ -10,10 +10,10 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
+\setbeamertemplate{blocks}[rounded][shadow=false]
 \setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
 \setbeamercolor*{block body alerted}{fg=black,bg=red!10}
 
@@ -21,100 +21,11 @@
 
 \title{Низкоуровневые потоки, события}
 \author{Юрий Литвинов}
-\date{28.04.2017г}
+\date{17.04.2018г}
 
 \begin{document}
 
 	\frame{\titlepage}
-
-	\section{Про курсовые}
-
-	\begin{frame}
-		\frametitle{Про тексты курсовых}
-		\framesubtitle{Структура отчёта}
-		\begin{itemize}
-			\item Титульный лист (http://math.spbu.ru/rus/study/alumni\_info.html)
-			\item Оглавление
-			\item Введение в предметную область, постановка задачи
-			\item Обзор литературы и существующих решений
-			\item Описание предлагаемого решения, сравнение с существующими
-			\item Заключение
-			\item Список источников (ГОСТ Р 7.0.5--2008)
-			\item Приложения (если есть)
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Введение}
-		\begin{columns}
-			\begin{column}{0.6\textwidth}
-				\begin{itemize}
-					\item Известная информация, ``Background''
-					\item Неизвестная информация, ``Gap''
-					\begin{itemize}
-						\item Актуальность темы
-						\item Практическая значимость
-					\end{itemize}
-					\item Цель работы, ``Гипотеза'' 
-					\item Задачи, необходимые для достижения цели, ``Подход''
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.4\textwidth}
-				\begin{center}
-					\includegraphics[width=\textwidth]{introductionCone.png}
-				\end{center}
-			\end{column}
-		\end{columns}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Обзор}
-		\begin{itemize}
-			\item Обзор существующих решений
-			\begin{itemize}
-				\item Цель и фокус обзора
-				\item Критерии сравнения
-				\item Выводы
-			\end{itemize}
-			\item Обзор используемых чужих результатов
-			\begin{itemize}
-				\item  Всё, написанное и придуманное не вами --- в обзор
-			\end{itemize}
-			\item Должен соотноситься с темой и с фокусом работы
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Описание решения}
-		\begin{itemize}
-			\item Желательно, чтобы разделы отвечали решению задачи из списка задач во введении
-			\item Аргументированное обоснование принятых решений и отказа от альтернатив
-			\item Описание программной реализации, архитектура
-			\item Эксперименты и апробация
-			\item Выводы и обсуждение
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Заключение}
-		\begin{itemize}
-			\item Перечисление результатов, выносимых на защиту
-			\item Должно быть согласовано с постановкой задачи (вплоть до полного её повторения)
-			\item Должно быть согласовано с текстом
-			\item Никаких результатов из ниоткуда
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Общие замечания}
-		\begin{itemize}
-			\item Каждый рисунок --- пронумерован и подписан, есть ссылка из текста
-			\item На каждый элемент списка литературы ссылка из текста
-			\item Никакого плагиата!
-			\item Полезно сначала написать план
-			\item \url{https://papeeria.com/}
-		\end{itemize}
-	\end{frame}
 
 	\section{Доклады}
 
@@ -123,7 +34,7 @@
 		\framesubtitle{Минус одна домашка}
 		\begin{itemize}
 			\item Дополнительные возможности F\# (единицы измерения, lazy, active patterns)
-			\item Code Quotations, библиотека ``unquote''
+			\item F\# и анализ данных
 			\item WebSharper (обзор и небольшая демонстрация)
 			\item Type Providers, F\# Data
 			\item FAKE, Scaffold
@@ -141,6 +52,28 @@
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Поток в Windows}
+		\begin{itemize}
+			\item Thread Kernel Object (~1240 байт)
+			\item Thread environment block (TEB) (4 Кб)
+			\item User-mode stack (1 Мб)
+			\item Kernel-mode stack (24 Кб)
+		\end{itemize}
+
+		Ещё для каждой dll-ки, загруженной для процесса при старте или остановке потока вызывается DllMain с параметрами DLL\_THREAD\_ATTACH и DLL\_THREAD\_DETACH
+
+		\vspace{3mm}
+		Квант времени --- ~20-30 мс, после чего происходит \textit{переключение контекстов}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как делать не надо}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{threadsEverywhere.png}
+		\end{center}
+	\end{frame}
+
 	\begin{frame}[fragile]
 		\frametitle{Класс System.Threading.Thread}
 		\begin{minted}{fsharp}
@@ -156,7 +89,7 @@ printfn "Thread %d: Waiting!"
 t.Join()
 printfn "Done!"
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Планировщик}
@@ -198,7 +131,7 @@ t.IsBackground <- true
 t.Start()
 printfn "Exiting Main"
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Потенциальные проблемы с потоками}
@@ -234,7 +167,23 @@ Async.Start (async { while true do p.Update(20, 20) })
 
 Async.RunSynchronously (async { while true do printfn "%A" p.Value })
 		\end{minted}
-\end{frame}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Примитивы синхронизации}
+		\begin{itemize}
+			\item Лучше необходимости синхронизации вообще избегать
+			\item Бывают:
+			\begin{itemize}
+				\item User-mode --- атомарные операции, реализующиеся на процессоре и не требующие участия планировщика
+				\item Kernel-mode --- примитивы, управляющие тем, как поток обрабатывается планировщиком
+				\begin{itemize}
+					\item Более тяжеловесные и медленные (до 1000 раз по сравнению с ``без синхронизации вообще'')
+					\item Позволяют синхронизировать даже разные процессы
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример примитива синхронизации: монитор}
@@ -252,7 +201,7 @@ Async.Start (async {
 Async.Start (async { 
     while true do lock p (fun () -> p.Update(20, 20)) })
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Примитивы синхронизации}
@@ -271,6 +220,23 @@ Async.Start (async {
 				Interlocked       & Атомарные арифметические операции                                                     \\
 			\end{tabu}
 		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Управление планировщиком}
+		\begin{small}
+			\begin{itemize}
+				\item \mintinline{fsharp}|Thread.Sleep(0)| --- ничего не делает, если остальные готовые потоки меньше приоритетом
+				\item \mintinline{fsharp}|Thread.Sleep(1)| --- отдаёт управление потоку, даже если его приоритет меньше
+				\item \mintinline{fsharp}|Thread.Yield()| --- нечто среднее (не вызовет переключения потоков, если желающих нет, в отличие от \mintinline{fsharp}|Thread.Sleep(1)|, но отдаст ядро потоку с меньшим приоритетом)
+				\item \mintinline{fsharp}|Thread.SpinWait| --- просьба процессору с гипертредингом отдать ядро
+				\item Очередной способ прострелить себе ногу --- инверсия приоритетов
+				\begin{itemize}
+					\item Поток с низким приоритетом захватил ресурс, нужный потоку с высоким приоритетом
+					\item Поток с высоким приоритетом крутится в ожидании, никогда не отдавая управление потоку, который мог бы отдать ресурс (livelock)
+				\end{itemize}
+			\end{itemize}
+		\end{small}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -302,7 +268,7 @@ worker.RunWorkerCompleted.Add(fun args ->
 
 worker.RunWorkerAsync()
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\section{События}
 
@@ -333,7 +299,7 @@ Form.MouseMove
     |> Event.add (fun args -> printfn "Mouse, 
                   (X,Y) = (%A,%A)" args.X args.Y)
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Что ещё с ними можно делать}
@@ -390,7 +356,7 @@ member x.Stop() = timer.Stop()
 interface IDisposable with
     member x.Dispose() = timer.Dispose()
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример использования}
@@ -412,7 +378,7 @@ val it : unit = ()
 val it : unit = ()
 			\end{minted}
 		\end{alertblock}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Свой worker, с событиями}
@@ -452,7 +418,7 @@ let rec iterate state i =
 
 iterate initialState 0)
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Свой worker (3)}
@@ -473,7 +439,7 @@ member x.ProgressChanged = progress.Publish
 member x.RunWorkerAsync() = worker.RunWorkerAsync()
 member x.CancelAsync() = worker.CancelAsync()
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Тип того, что получилось}
@@ -492,7 +458,7 @@ type IterativeBackgroundWorker<'a> =
     member WorkerError : Event<exn>
   end
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример использования}
@@ -511,7 +477,7 @@ worker.ProgressChanged.Add(fun (percentage, state) ->
 
 worker.RunWorkerAsync()
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Своё новое событие}
@@ -537,7 +503,7 @@ type IterativeBackgroundWorker<'a>(...) =
     member x.Started = started.Publish
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\section{Lock-free}
 
@@ -572,7 +538,7 @@ let thread2 () =
     then
         printfn "%d" value;
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Синхронизация ядер, метафора}
@@ -631,6 +597,6 @@ let maximum target value =
     desiredVal
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 \end{document}
