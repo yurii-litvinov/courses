@@ -229,7 +229,7 @@ Async.Start (async {
 				\item \mintinline{fsharp}|Thread.Sleep(0)| --- ничего не делает, если остальные готовые потоки меньше приоритетом
 				\item \mintinline{fsharp}|Thread.Sleep(1)| --- отдаёт управление потоку, даже если его приоритет меньше
 				\item \mintinline{fsharp}|Thread.Yield()| --- нечто среднее (не вызовет переключения потоков, если желающих нет, в отличие от \mintinline{fsharp}|Thread.Sleep(1)|, но отдаст ядро потоку с меньшим приоритетом)
-				\item \mintinline{fsharp}|Thread.SpinWait| --- просьба процессору с гипертредингом отдать ядро
+				\item \mintinline{fsharp}|Thread.SpinWait()| --- подождать в цикле, не переключая контексты
 				\item Очередной способ прострелить себе ногу --- инверсия приоритетов
 				\begin{itemize}
 					\item Поток с низким приоритетом захватил ресурс, нужный потоку с высоким приоритетом
