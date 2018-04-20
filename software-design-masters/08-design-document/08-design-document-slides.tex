@@ -10,6 +10,9 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
 \tabulinesep=0.7mm
 
 \title{Архитектурная документация}
@@ -66,7 +69,7 @@
 			\begin{itemize}
 				\item Альтернативы
 				\begin{itemize}
-					\item Чётко формулировать, что в итоге решили (иначе антипаттерн ``Cover Your Assets'')
+					\item Чётко формулировать, что в итоге решили
 				\end{itemize}
 				\item Преимущества принятого решения
 				\item Риски
@@ -237,9 +240,9 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{IDEF1x, пример диаграммы}
+		\frametitle{ER, пример диаграммы}
 		\begin{center}
-			\includegraphics[width=0.6\textwidth]{idef1x.png}
+			\includegraphics[width=0.9\textwidth]{er.png}
 		\end{center}
 	\end{frame}
 
@@ -247,6 +250,13 @@
 		\frametitle{ORM, пример диаграммы}
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{orm.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{IDEF1x, пример диаграммы}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{idef1x.png}
 		\end{center}
 	\end{frame}
 
@@ -269,6 +279,21 @@
 			\item Соображения --- договорённости о конкретных схемах взаимодействия компонентов, позволяющие разрабатывать и тестировать их независимо
 			\item Типичные языки --- IDL, диаграммы компонентов UML, макеты пользовательского интерфейса, неформальные описания сценариев использования
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, Apache Thrift}
+		\begin{minted}{text}
+service Calculator extends shared.SharedService {
+
+   void ping(),
+
+   i32 add(1:i32 num1, 2:i32 num2),
+
+   i32 calculate(1:i32 logid, 2:Work w) throws (1:InvalidOperation ouch),
+
+   oneway void zip()
+		\end{minted}
 	\end{frame}
 
 	\begin{frame}
@@ -302,6 +327,9 @@
 		\frametitle{Сети Петри, пример}
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{petriNet.png}
+
+			\vspace{1cm}
+			\includegraphics[width=0.6\textwidth]{petriEquation.png}
 		\end{center}
 	\end{frame}
 
