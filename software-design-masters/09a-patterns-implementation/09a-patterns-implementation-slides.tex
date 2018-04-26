@@ -708,6 +708,61 @@ void MyCheckBox::mousePressEvent(QMouseEvent *event)
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}[fragile]
+		\frametitle{``Наблюдатель'', пример (1)}
+		\begin{itemize}
+			\item События в C\#:
+			\begin{minted}{csharp}
+internal class NewMessageEventArgs : EventArgs {
+    private readonly string message;
+    public MessageEventArgs(string message) 
+        => this.message = message;
+    public string Message => message;
+}
+			\end{minted}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Наблюдатель'', пример (2)}
+		\begin{small}
+			\begin{minted}{csharp}
+internal class Messenger {
+    public event EventHandler<NewMessageEventArgs> NewMessage;
+    protected virtual void OnMessage(NewMessageEventArgs e) {
+        EventHandler<NewMessageEventArgs> temp 
+                = Volatile.Read(ref NewMessage);
+        if (temp != null) 
+            temp(this, e);
+    }
+    public void SimulateMessage(String message) {
+        NewMessageEventArgs e = new NewMessageEventArgs(message);
+        OnMessage(e);
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{``Наблюдатель'', пример (3)}
+		\begin{itemize}
+			\begin{minted}{csharp}
+internal sealed class Fax {
+    public Fax(Messenger mm) => mm.NewMessage += FaxMsg;
+
+    private void FaxMsg(object sender, NewMessageEventArgs e) {
+        Console.WriteLine("Faxing message:");
+        Console.WriteLine($"Message={e.Message}");
+    }
+
+    public void Unregister(Messenger mm) 
+            => mm.NewMessage -= FaxMsg;
+}
+			\end{minted}
+		\end{itemize}
+	\end{frame}
+
 	\begin{frame}
 		\frametitle{``Состояние'' (State), детали реализации}
 		\begin{columns}
