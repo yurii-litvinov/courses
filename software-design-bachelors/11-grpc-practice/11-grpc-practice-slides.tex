@@ -10,12 +10,15 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
 \tabulinesep=0.7mm
 
-\title{gRPC}
+\title{Распределённые приложения, gRPC}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{17.05.2017г}
+\date{03.05.2018г}
 
 \begin{document}
 	
@@ -31,11 +34,12 @@
 			\item Компактное бинарное представление
 			\item Декларативное описание формата данных, генерация кода для языка программирования
 			\begin{itemize}
-				\item Поддерживается Java, Python, Objective-C, C++, Go, JavaNano, Ruby, C\#
+				\item Поддерживается Java, C\#, Python, C++, Objective-C, Go, Ruby, ...
 			\end{itemize}
 			\item Бывает v2 и v3, с некоторыми синтаксическими отличиями
 			\item Хитрый протокол передачи, \url{https://developers.google.com/protocol-buffers/docs/encoding}
 			\begin{itemize}
+				\item Base 128 varint-ы
 				\item До 10 раз компактнее XML 
 			\end{itemize}
 		\end{itemize}
@@ -52,7 +56,7 @@ message Person {
 }
 		\end{minted}
 		Файл .java:
-\begin{minted}{java}
+		\begin{minted}{java}
 Person john = Person.newBuilder()
     .setId(1234)
     .setName("John Doe")
@@ -60,8 +64,8 @@ Person john = Person.newBuilder()
     .build();
 output = new FileOutputStream(args[0]);
 john.writeTo(output);
-\end{minted}
-\end{frame}
+		\end{minted}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Технические подробности}
@@ -84,10 +88,10 @@ john.writeTo(output);
 		\begin{columns}
 			\begin{column}{0.6\textwidth}
 				\begin{itemize}
-					\item средство для удалённого вызова (RPC)
+					\item Средство для удалённого вызова (RPC)
 					\item Работает поверх protobuf
 					\item Разрабатывается Google
-					\item Поддерживает C++, Java, Objective-C, Python, Ruby, Go, C\#, Node.js
+					\item Поддерживает Java, C\#, C++, Python,  Objective-C, Go, Ruby, ...
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.4\textwidth}
@@ -115,7 +119,7 @@ service RouteGuide {
 		\begin{itemize}
 			\item Сборка --- плагином grpc к protoc
 		\end{itemize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Реализация сервиса на Java}
@@ -143,7 +147,7 @@ private static class RouteGuideService extends RouteGuideGrpc.RouteGuideImplBase
     }
 			\end{minted}
 		\end{scriptsize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Реализация сервиса на Java (2)}
@@ -173,7 +177,70 @@ private static class RouteGuideService extends RouteGuideGrpc.RouteGuideImplBase
     }
 			\end{minted}
 		\end{scriptsize}
-\end{frame}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Что написать в build.gradle}
+		\begin{small}
+			\begin{minted}{groovy}
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.5.1-1"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.13.0-SNAPSHOT'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+                outputSubDir = 'java'
+            }
+        }
+    }
+    generatedFilesBaseDir = "$projectDir/src"
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Запуск сервиса}
+		\begin{footnotesize}
+			\begin{minted}{java}
+private void start() throws IOException {
+    int port = 50051;
+    server = ServerBuilder.forPort(port)
+        .addService(new GreeterImpl())
+        .build()
+        .start();
+    logger.info("Server started, listening on " + port);
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
+        public void run() {
+            System.err.println("*** shutting down gRPC server since JVM is shutting down");
+            HelloWorldServer.this.stop();
+            System.err.println("*** server shut down");
+      }
+    });
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Инициализация клиента}
+		\begin{minted}{java}
+public HelloWorldClient(String host, int port) {
+    this(ManagedChannelBuilder.forAddress(host, port)
+        .usePlaintext()
+        .build());
+}
+		\end{minted}
+		\vspace{5mm}
+		\url{https://github.com/grpc/grpc-java/blob/master/examples/src/main/java/io/grpc/examples/helloworld/HelloWorldClient.java}
+	\end{frame}
 
 	\section{Задача}
 
@@ -188,7 +255,6 @@ private static class RouteGuideService extends RouteGuideGrpc.RouteGuideImplBase
 			\end{itemize}
 			\item Адрес peer-а и порт --- параметры
 			\item Указание своего имени --- параметром или в конфигурационном файле
-			\item Логирование
 		\end{itemize}
 	\end{frame}
 
