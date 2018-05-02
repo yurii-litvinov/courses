@@ -1,0 +1,135 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage[11pt]{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\title{Распределённые приложения, RabbitMQ}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{10.05.2018г}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{RabbitMQ}
+
+	\begin{frame}
+		\frametitle{RabbitMQ}
+		\begin{itemize}
+			\item Сервер и клиенты системы надёжной передачи сообщений
+			\begin{itemize}
+				\item Сообщение посылается на сервер и хранится там, пока его не заберут
+				\item Продвинутые возможности по маршрутизации сообщений
+			\end{itemize}
+			\item Реализует протокол AMQP (Advanced Message Queuing Protocol), но может использовать и другие протоколы
+			\item Сервер написан на Erlang, клиентские библиотеки доступны для практически чего угодно
+		\end{itemize}
+		\begin{textblock}{3}(8,0)
+			\includegraphics[width=\textwidth]{rabbitmqLogo.png}
+		\end{textblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, отправитель}
+		\begin{ssmall}
+			\begin{minted}{csharp}
+using System;
+using RabbitMQ.Client;
+using System.Text;
+
+class Send
+{
+    public static void Main()
+    {
+        var factory = new ConnectionFactory() { HostName = "localhost" };
+        using (var connection = factory.CreateConnection())
+        {
+            using (var channel = connection.CreateModel())
+            {
+                channel.QueueDeclare(queue: "hello", durable: false, exclusive: false,
+                                     autoDelete: false, arguments: null);
+
+                string message = "Hello World!";
+                var body = Encoding.UTF8.GetBytes(message);
+
+                channel.BasicPublish(exchange: "", routingKey: "hello",
+                                     basicProperties: null, body: body);
+            }
+        }
+    }
+}
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, получатель}
+		\begin{ssmall}
+			\begin{minted}{csharp}
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System;
+using System.Text;
+
+class Receive
+{
+    public static void Main()
+    {
+        var factory = new ConnectionFactory() { HostName = "localhost" };
+        using (var connection = factory.CreateConnection())
+        using (var channel = connection.CreateModel())
+        {
+            channel.QueueDeclare(queue: "hello", durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+            var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += (model, ea) =>
+            {
+                var body = ea.Body;
+                var message = Encoding.UTF8.GetString(body);
+                Console.WriteLine(" [x] Received {0}", message);
+            };
+            channel.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
+        }
+    }
+}
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\section{Задача}
+
+	\begin{frame}
+		\frametitle{Задача на пару}
+		Переделать сетевой чат на RabbitMQ
+		\begin{itemize}
+			\item Сервер для обмена сообщениями, о котором договариваются клиенты
+			\begin{itemize}
+				\item Центральный сервер, задаваемый в настройках клиента
+			\end{itemize}
+			\item Нет списка контактов, есть именованные каналы, на которые можно подписываться и постить туда
+			\item (Если успеем) должна быть нотификация о печати
+			\begin{itemize}
+				\item Если один клиент печатает, остальные подписчики канала должны видеть у себя в клиенте, кто сейчас печатает
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+\end{document}
