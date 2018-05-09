@@ -50,30 +50,23 @@
 	\begin{frame}[fragile]
 		\frametitle{Пример, отправитель}
 		\begin{ssmall}
-			\begin{minted}{csharp}
-using System;
-using RabbitMQ.Client;
-using System.Text;
+			\begin{minted}{java}
+public class Sender {
+    private static final String QUEUE_NAME = "MyQueue";
 
-class Send
-{
-    public static void Main()
-    {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
-        using (var connection = factory.CreateConnection())
-        {
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "hello", durable: false, exclusive: false,
-                                     autoDelete: false, arguments: null);
+    public static void main(String[] args) throws IOException, TimeoutException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
 
-                string message = "Hello World!";
-                var body = Encoding.UTF8.GetBytes(message);
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        String message = "Hello World!";
+        channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+        System.out.println(" [x] Sent '" + message + "'");
 
-                channel.BasicPublish(exchange: "", routingKey: "hello",
-                                     basicProperties: null, body: body);
-            }
-        }
+        channel.close();
+        connection.close();
     }
 }
 			\end{minted}
@@ -83,35 +76,52 @@ class Send
 	\begin{frame}[fragile]
 		\frametitle{Пример, получатель}
 		\begin{ssmall}
-			\begin{minted}{csharp}
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System;
-using System.Text;
+			\begin{minted}{java}
+public class Receiver {
+    private static final String QUEUE_NAME = "MyQueue";
 
-class Receive
-{
-    public static void Main()
-    {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
-        using (var connection = factory.CreateConnection())
-        using (var channel = connection.CreateModel())
-        {
-            channel.QueueDeclare(queue: "hello", durable: false, exclusive: false, autoDelete: false, arguments: null);
+    public static void main(String[] args) throws IOException, TimeoutException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
 
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
-            {
-                var body = ea.Body;
-                var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine(" [x] Received {0}", message);
-            };
-            channel.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
-        }
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+        Consumer consumer = new DefaultConsumer(channel) {
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope,
+                                       AMQP.BasicProperties properties, byte[] body)
+                    throws IOException {
+                String message = new String(body, "UTF-8");
+                System.out.println(" [x] Received '" + message + "'");
+            }
+        };
+        channel.basicConsume(QUEUE_NAME, true, consumer);
     }
 }
 			\end{minted}
 		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как всё собрать и запустить}
+		\begin{itemize}
+			\item Поставить рантайм Erlang
+			\item Поставить сервер RabbitMQ
+			\begin{itemize}
+				\item \url{https://www.rabbitmq.com/download.html}
+			\end{itemize}
+			\item Добавить зависимость от клиента RabbitMQ в проект
+			\begin{itemize}
+				\item \mintinline{groovy}|compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.2.0'|
+			\end{itemize}
+			\item Пролистать Getting Started 
+			\begin{itemize}
+				\item \url{https://www.rabbitmq.com/tutorials/tutorial-one-java.html}
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\section{Задача}
@@ -122,12 +132,16 @@ class Receive
 		\begin{itemize}
 			\item Сервер для обмена сообщениями, о котором договариваются клиенты
 			\begin{itemize}
-				\item Центральный сервер, задаваемый в настройках клиента
+				\item Центральный сервер, задаваемый в настройках клиента (хардкод или параметром командной строки)
 			\end{itemize}
 			\item Нет списка контактов, есть именованные каналы, на которые можно подписываться и постить туда
-			\item (Если успеем) должна быть нотификация о печати
 			\begin{itemize}
-				\item Если один клиент печатает, остальные подписчики канала должны видеть у себя в клиенте, кто сейчас печатает
+				\item Должны поддерживаться консольные команды subscribe <имя канала> и post <имя канала> <сообщение>
+				\item subscribe или post для не существующего канала должен его создавать
+			\end{itemize}
+			\item Нет истории, получать только те сообщения, что были опубликованы с момента подключения
+			\begin{itemize}
+				\item Может помочь \url{https://www.rabbitmq.com/tutorials/tutorial-three-java.html}
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
