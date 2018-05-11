@@ -16,7 +16,7 @@
 \subtitle{То, как делать не надо}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{10.05.2017г}
+\date{11.05.2018г}
 
 \begin{document}
 	
@@ -81,6 +81,9 @@
 					\item Well, it certainly is complicated! I’m sure our clients will be very, very impressed.
 				\end{itemize}
 				\item Неведение --- нежелание понимать
+				\begin{itemize}
+					\item I don't really have time to read this, could you put together one-page Executive Summary?
+				\end{itemize}
 				\item Гордость --- нежелание переиспользовать готовые решения
 				\begin{itemize}
 					\item Not-invented-here syndrome.
@@ -327,22 +330,6 @@
 				\item Состояние имеет свойство заводиться само по мере рефакторинга
 			\end{itemize}
 			\item Сделать из основного метода God Object, а дальше понятно, что делать
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Poltergeists}
-		``I’m not exactly sure what this class does, but it sure is important!''
-		\begin{itemize}
-			\item Классы, которые не нужны архитектуре системы и существуют лишь чтобы выполнить какие-то действия с другими классами
-			\begin{itemize}
-				\item ...Controller, ...Manager и т.д., нужные только для инициализации или вызова других классов
-				\item Время жизни их объектов ограничено (отсюда название)
-				\item Тенденция использовать побочные эффекты
-				\begin{itemize}
-					\item Вся идиома RAII в C++
-				\end{itemize}
-			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
