@@ -102,7 +102,7 @@
 		\begin{itemize}
 			\item Соединение двух устройств через сеть
 			\item Вопросы надёжности доставки, разделения-сборки сообщения, правильного порядка сообщений, подтверждения и повторной отправки
-			\item Протоколы TCP, UDP
+			\item Протоколы TCP (Transmission Control Protocol), UDP (User Datagram Protocol)
 			\begin{itemize}
 				\item TCP --- протокол, гарантирующий доставку данных в правильном порядке, без потерь и порчи, если это вообще возможно
 				\begin{itemize}
@@ -144,6 +144,57 @@
 		\end{itemize}
 	\end{frame}
 
+	\section{Технические детали}
+
+	\begin{frame}
+		\frametitle{IP-адреса}
+		\begin{itemize}
+			\item IPv4: 192.168.0.1
+			\begin{itemize}
+				\item Уникален в рамках подсети (не глобально уникальный)
+				\item 192.168.x.x, 10.x.x.x --- адреса, зарезервированные для подсетей
+				\item 127.0.0.1 --- loopback (локальный адрес самого компа), часто используется для отладки
+				\item Маска подсети --- битовая маска, определяющая кусок IP-адреса
+			\end{itemize}
+			\item IPv6: fe80::488f:1f6:9030:46c7\%10
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{DNS, NAT}
+		\begin{itemize}
+			\item DNS --- сопоставление непонятным IP-адресам читаемых доменных имён
+			\begin{itemize}
+				\item Более-менее глобальный сервис
+				\item DNS-запрос по доменному имени (google.com) возвращает IP-адрес (64.233.164.113), только после этого возможен ``настоящий'' запрос
+				\item Есть локальные DNS-сервера, есть общеизвестные (например, 8.8.8.8, Google Public DNS)
+				\item localhost --- всегда (более-менее) раскрывается в 127.0.0.1
+			\end{itemize}
+			\item NAT --- Network Address Translation, механизм, позволяющий компьютерам с локальными IP получать ответы из Интернет (только если они их инициировали)
+			\item Ports forwarding --- механизм, позволяющий компьютерам за NAT принимать входящие запросы
+			\item Прокси --- программа, которая пересылает запросы (и может делать с ними что-нибудь)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Полезные консольные команды}
+		\begin{itemize}
+			\item ping --- проверка соединения с указанным IP или доменным именем, показывает время отклика узла
+			\begin{itemize}
+				\item Удалённый компьютер имеет право не отвечать
+			\end{itemize}
+			\item tracert --- ``продвинутый'' ping, показывает все узлы, через которые шёл запрос со временами их отклика (если они хотят откликнуться)
+			\begin{itemize}
+				\item Хороший способ диагностировать проблемы с интернетом
+			\end{itemize}
+			\item ipconfig под Windows, ifconfig под Linux --- узнать всё про локальный сетевой интерфейс (IP-адреса, MAC-адреса, используемые DNS и т.д.)
+			\item netcat, nc --- позволяет опросить указанный порт или наоборот, прикинуться сервером, работающим по данному порту, очень полезна при отладке сетевых приложений
+			\begin{itemize}
+				\item Под Windows не входит в стандартную поставку, надо ставить отдельно
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
 	\begin{frame}
 		\frametitle{Порты и сокеты}
 		\begin{itemize}
@@ -157,10 +208,220 @@
 				\item 80 --- HTTP
 				\item 443 --- HTTPS
 				\item 666 --- Doom
+				\item Первые 1024 порта зарезервированы
 			\end{itemize}
+			\item Ненужные порты обычно закрыты на уровне ОС (файерволл), чтобы было труднее взломать компьютер --- поэтому ваше первое сетевое приложение, скорее всего, не заработает
 			\item Сокет --- программный интерфейс к порту
 			\item Сетевой стек --- важная часть операционной системы, сокеты --- способ для прикладного программиста с ним работать
 		\end{itemize}
+	\end{frame}
+
+	\section{Работа с сетью в .NET}
+
+	\begin{frame}
+		\frametitle{Работа с сетью в .NET}
+		\begin{itemize}
+			\item Пространство имён System.Net
+			\item Классы TcpListener, TcpClient, UdpClient --- управляют стеком протоколов, предоставляют сокеты или потоки байтов
+			\item Класс Socket --- абстракция сетевого соединения (сокета)
+			\item Чаще всего в реальной жизни обработка запросов на сервере асинхронна --- каждый клиент обслуживается своей задачей в пуле потоков
+			\item Dns --- класс, отвечающий за работу с DNS-службой
+			\item IPEndPoint --- абстракция адреса (IP-адрес + порт)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Минимальный пример, сервер}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+static void Main(string[] args)
+{
+    const int port = 8888;
+    var listener = new TcpListener(IPAddress.Any, port);
+    listener.Start();
+    Console.WriteLine($"Listening on port {port}...");
+    using (var socket = listener.AcceptSocket())
+    {
+        var stream = new NetworkStream(socket);
+        var streamReader = new StreamReader(stream);
+        var data = streamReader.ReadToEnd();
+        Console.WriteLine($"Received: {data}");
+    }
+    listener.Stop();
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Минимальный пример, клиент}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+static void Main(string[] args)
+{
+    const int port = 8888;
+    using (var client = new TcpClient("localhost", port))
+    {
+        Console.WriteLine($"Sending to port {port}...");
+        var stream = client.GetStream();
+        var writer = new StreamWriter(stream);
+        writer.Write("Hello, world!");
+        writer.Flush();
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Канал работает в обе стороны}
+		\framesubtitle{Сервер}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+static void Main(string[] args)
+{
+    const int port = 8888;
+    var listener = new TcpListener(IPAddress.Any, port);
+    listener.Start();
+    Console.WriteLine($"Listening on port {port}...");
+    using (var socket = listener.AcceptSocket())
+    {
+        var stream = new NetworkStream(socket);
+        var reader = new StreamReader(stream);
+        var data = reader.ReadLine();
+        Console.WriteLine($"Received: {data}");
+
+        Console.WriteLine($"Sending \"Hi!\"");
+        var writer = new StreamWriter(stream);
+        writer.Write("Hi!");
+        writer.Flush();
+    }
+    listener.Stop();
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Канал работает в обе стороны}
+		\framesubtitle{Клиент}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+static void Main(string[] args)
+{
+    const int port = 8888;
+    using (var client = new TcpClient("localhost", port))
+    {
+        Console.WriteLine($"Sending \"Hello!\" to port {port}...");
+        var stream = client.GetStream();
+        var writer = new StreamWriter(stream);
+        writer.WriteLine("Hello!");
+        writer.Flush();
+
+        var reader = new StreamReader(stream);
+        var data = reader.ReadToEnd();
+        Console.WriteLine($"Received: {data}");
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Немного асинхронности}
+		\framesubtitle{Сервер}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+static async Task Main(string[] args)
+{
+    const int port = 8888;
+    var listener = new TcpListener(IPAddress.Any, port);
+    listener.Start();
+    Console.WriteLine($"Listening on port {port}...");
+    using (var socket = await listener.AcceptSocketAsync())
+    {
+        var stream = new NetworkStream(socket);
+        var reader = new StreamReader(stream);
+        var data = await reader.ReadLineAsync();
+        Console.WriteLine($"Received: {data}");
+
+        Console.WriteLine($"Sending \"Hi!\"");
+        var writer = new StreamWriter(stream);
+        writer.AutoFlush = true;
+        await writer.WriteAsync("Hi!");
+    }
+    listener.Stop();
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Или, более типично}
+		\framesubtitle{Сервер}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+static async Task Main(string[] args) {
+    const int port = 8888;
+    var listener = new TcpListener(IPAddress.Any, port);
+    listener.Start();
+    Console.WriteLine($"Listening on port {port}...");
+    while (true) {
+        var socket = await listener.AcceptSocketAsync();
+        Task.Run(async () => {
+            var stream = new NetworkStream(socket);
+            var reader = new StreamReader(stream);
+            var data = await reader.ReadLineAsync();
+            Console.WriteLine($"Received: {data}");
+
+            Console.WriteLine($"Sending \"Hi!\"");
+            var writer = new StreamWriter(stream);
+            await writer.WriteAsync("Hi!");
+            await writer.FlushAsync();
+
+            socket.Close();
+        });
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{UdpClient}
+		\framesubtitle{Сервер}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+static async Task Main(string[] args)
+{
+    const int port = 8888;
+    var udpClient = new UdpClient(port);
+    Console.WriteLine($"Listening on port {port}...");
+    var received = await udpClient.ReceiveAsync();
+    var data = Encoding.UTF8.GetString(received.Buffer);
+    Console.WriteLine($"Received: {data}");
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{UdpClient}
+		\framesubtitle{Клиент}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+static async Task Main(string[] args)
+{
+    const int port = 8888;
+    var udpClient = new UdpClient();
+
+    Console.WriteLine($"Sending \"Hello!\" to port {port}...");
+    var data = Encoding.UTF8.GetBytes("Hello!");
+    await udpClient.SendAsync(data, data.Length, "localhost", port);
+}
+			\end{minted}
+		\end{footnotesize}
+		Не следует посылать UDP-датаграммы более 508 байт размером
 	\end{frame}
 
 \end{document}
