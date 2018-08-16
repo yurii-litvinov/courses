@@ -33,6 +33,8 @@
 
 	\frame{\titlepage}
 
+	\section{Введение}
+
 	\begin{frame}
 		\frametitle{СУБД}
 		\begin{itemize}
@@ -68,6 +70,199 @@
 				\item Часто не умеют того, что для реляционных СУБД естественно (например, транзакций)
 			\end{itemize}
 		\end{itemize}
+	\end{frame}
+
+	\section{Реляционная модель данных}
+
+	\begin{frame}
+		\frametitle{Реляционная модель данных}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{relationalModel.png}
+			\attribution{Wikipedia}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример таблицы}
+		\begin{center}
+			\begin{tabu} {| X[0.9 l p] | X[1 l p] | X[1 l p] | X[1 l p] |}
+				\tabucline-
+				CustomerID       & TaxID        & Name       & Address           \\
+				\tabucline-
+				\everyrow{\tabucline-}
+				1234567890       & 555-5512222  & Munmun     & 323 Broadway      \\
+				2223344556       & 555-5523232  & Wile E.    & 1200 Main Street  \\
+				3334445563       & 555-5533323  & Ekta       & 871 1st Street    \\
+				423242432        & 555-5325523  & E.F. Codd  & 123 It Way        \\
+			\end{tabu}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ключи}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Первичные (primary)
+				\begin{itemize}
+					\item Естественные
+					\begin{itemize}
+						\item Составные
+					\end{itemize}
+					\item Суррогатные
+				\end{itemize}
+				\item Внешние (foreign)
+			\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{scriptsize}
+					CITY
+					\begin{tabu} {| X[0.2 l p] | X[1 l p] |}
+						\tabucline-
+						ID      & Name \\
+						\tabucline-
+						\everyrow{\tabucline-}
+						1       & Москва \\
+						2       & Санкт-Петербург \\
+						3       & Владивосток \\
+					\end{tabu}
+					\vspace{3mm}
+					STREET
+					\begin{tabu} {| X[0.2 l p] | X[1 l p] | X[0.7 l p] |}
+						\tabucline-
+						ID       & Name             & ID\_CITY \\
+						\tabucline-
+						\everyrow{\tabucline-}
+						181      & Малая Бронная    & 1 \\
+						182      & Тверской Бульвар & 1 \\
+						183      & Невский проспект & 2 \\
+						184      & Пушкинская       & 2 \\
+						185      & Светланская      & 3 \\
+						186      & Пушкинская       & 3 \\
+					\end{tabu}
+				\end{scriptsize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ограничения}
+		\begin{itemize}
+			\item PRIMARY KEY
+			\item FOREIGN KEY
+			\item NOT NULL
+			\item UNIQUE
+			\item ...
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{SQL SELECT}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{select.png}
+			\attribution{Wikipedia}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{SELECT, вложенные запросы}
+		\begin{minted}{sql}
+SELECT isbn,
+       title,
+       price
+FROM Book
+WHERE price < (SELECT AVG(price) FROM Book)
+ORDER BY title;
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{INNER JOIN}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{innerJoin.png}
+			\attribution{Wikipedia}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{OUTER JOIN}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{outerJoin.png}
+			\attribution{Wikipedia}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{CROSS JOIN}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{crossJoin.png}
+			\attribution{Wikipedia}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{INSERT, UPDATE, DELETE}
+		\begin{small}
+			INSERT:
+			\begin{minted}{sql}
+INSERT INTO phone_books VALUES ('Peter Doe', '555-2323');
+			\end{minted}
+
+			\vspace{3mm}
+			UPDATE:
+			\begin{minted}{sql}
+UPDATE persons SET
+        street = 'Nissestien 67',
+        city = 'Sandnes',
+    WHERE lastname = 'Tjessem' AND firstname = 'Jakob';
+			\end{minted}
+
+			\vspace{3mm}
+			DELETE:
+			\begin{minted}{sql}
+DELETE ab, b
+    FROM Authors AS a, AuthorArticle AS ab, Articles AS b
+    WHERE a.AuthID = ab.AuthID AND ab.ArticleID = b.ArticleID
+        AND AuthorLastName = 'Henry';
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Работа с метаинформацией}
+		\begin{small}
+			CREATE TABLE:
+			\begin{minted}{sql}
+CREATE TABLE Students (
+    Code INTEGER NOT NULL,
+    Name NCHAR(30) NOT NULL,
+    Address NVARCHAR(50),
+    Mark DECIMAL);
+			\end{minted}
+
+			\vspace{3mm}
+			DROP TABLE:
+			\begin{minted}{sql}
+DROP TABLE Students;
+			\end{minted}
+		\end{small}
+
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{bobbyTables.png}
+			\attribution{XKCD}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Работа с метаинформацией}
+		ALTER TABLE:
+		\begin{minted}{sql}
+ALTER TABLE Students ADD email VARCHAR(MAX);
+ALTER TABLE Students DROP COLUMN email;
+
+ALTER TABLE Students ADD PRIMARY KEY (Code);
+
+		\end{minted}
 	\end{frame}
 
 \end{document}
