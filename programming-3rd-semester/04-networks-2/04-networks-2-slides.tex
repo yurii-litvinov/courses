@@ -34,4 +34,69 @@
 
 	\frame{\titlepage}
 
+	\section{Теоретическое введение}
+
+	\begin{frame}
+		\frametitle{Протоколы прикладного уровня}
+	\end{frame}
+
+	\section{Как это работает в .NET}
+
+	\begin{frame}[fragile]
+		\frametitle{Как это работает в .NET}
+		\framesubtitle{HttpClient}
+		\begin{minted}{csharp}
+class Program
+{
+    private static async Task Main(string[] args)
+    {
+        var httpClient = new HttpClient();
+
+        var response = await httpClient.GetAsync("http://hwproj.me/");
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(content);
+        }
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Exponential backoff}
+		\begin{small}
+			\begin{minted}{csharp}
+static async Task<string> DownloadStringWithRetries(string uri)
+{
+    using (var client = new HttpClient())
+    {
+        var delay = TimeSpan.FromSeconds(1);
+        for (int i = 0; i != 3; ++i)
+        {
+            try
+            {
+                return await client.GetStringAsync(uri);
+            }
+            catch
+            {
+            }
+            await Task.Delay(delay);
+            delay *= 2;
+        }
+        // Попробуем последний раз, дав ошибке распространиться
+        return await client.GetStringAsync(uri);
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\section{REST}
+
+	\begin{frame}
+		\frametitle{Representational State Transfer}
+		\framesubtitle{REST}
+	\end{frame}
+
 \end{document}

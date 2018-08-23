@@ -152,15 +152,23 @@
 	\begin{frame}
 		\frametitle{IP-адреса}
 		\begin{itemize}
-			\item IPv4: 192.168.0.1
+			\item IPv4: 192.168.0.1 (4 байта)
 			\begin{itemize}
 				\item Уникален в рамках подсети (не глобально уникальный)
-				\item 192.168.x.x, 10.x.x.x --- адреса, зарезервированные для подсетей
-				\item 127.0.0.1 --- loopback (локальный адрес самого компа), часто используется для отладки
+				\item 192.168.x.x, 172.16-31.x.x, 10.x.x.x --- адреса, зарезервированные для локальных подсетей
+				\item 127.0.0.1 (точнее, 127.x.x.x) --- loopback (локальный адрес самого компа), часто используется для отладки
 				\item Маска подсети --- битовая маска, определяющая кусок IP-адреса
 			\end{itemize}
-			\item IPv6: fe80::488f:1f6:9030:46c7\%10
+			\item IPv6: fe80::488f:1f6:9030:46c7\%10 (16 байт)
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Формат пакета IPv4}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{ipv4.png}
+			\attribution{Э. Таненбаум}
+		\end{center}
 	\end{frame}
 
 	\begin{frame}
@@ -177,6 +185,15 @@
 			\item Ports forwarding --- механизм, позволяющий компьютерам за NAT принимать входящие запросы
 			\item Прокси --- программа, которая пересылает запросы (и может делать с ними что-нибудь)
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как работает NAT}
+		\framesubtitle{Или ещё одна причина, почему ваше первое сетевое приложение не заработает}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{nat.png}
+			\attribution{Э. Таненбаум}
+		\end{center}
 	\end{frame}
 
 	\begin{frame}

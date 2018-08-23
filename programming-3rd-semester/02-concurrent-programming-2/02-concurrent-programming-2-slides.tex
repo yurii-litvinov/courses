@@ -27,7 +27,7 @@
 \date{14.09.2018г}
 
 \newcommand{\attribution}[1] {
-\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+\vspace{-2mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
 }
 
 \newcommand{\DownArrow} {
@@ -42,7 +42,7 @@
 
 	\begin{frame}
 		\frametitle{Правда про многопоточность}
-		\textbf{Если в вашей программе есть \mintinline{csharp}|new Thread();|, ваша программа уже устарела}
+		\textbf{Если в вашей программе есть \mintinline{csharp}|new Thread()|, ваша программа уже устарела}
 		\begin{itemize}
 			\item Проектируйте не в терминах потоков, а в терминах задач, которые могут исполняться параллельно
 			\item Доверяйте управление потоками библиотекам
@@ -102,7 +102,7 @@ Console.WriteLine("Returning from Main");
 		\frametitle{Пример}
 		\begin{minted}{csharp}
 public static void Main() {
-    Console.WriteLine("Главный поток: ставим в очередь асинхронную операцию");
+    Console.WriteLine("Главный поток: ставим задачу в очередь");
     ThreadPool.QueueUserWorkItem(ComputeBoundOp, 5);
     Console.WriteLine("Главный поток: занимаемся своими делами...");
     Thread.Sleep(10000);  // Симуляция работы в главном потоке
@@ -301,7 +301,7 @@ t.ContinueWith(task => Text = "Result: " + task.Result,
 	\begin{frame}
 		\frametitle{async/await (3)}
 		\begin{columns}
-			\begin{column}{0.5\textwidth}
+			\begin{column}{0.4\textwidth}
 				\begin{itemize}
 					\item Новая модель: async/await
 					\item Требуется поддержка компилятора
@@ -313,7 +313,7 @@ t.ContinueWith(task => Text = "Result: " + task.Result,
 					\end{itemize}
 				\end{itemize}
 			\end{column}
-			\begin{column}{0.5\textwidth}
+			\begin{column}{0.6\textwidth}
 				\begin{center}
 					\includegraphics[width=0.9\textwidth]{asyncAwait.png}
 
@@ -364,6 +364,29 @@ private static async Task<string> MyMethodAsync(int argument) {
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}[fragile]
+		\frametitle{async и исключения}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+static async Task ThrowExceptionAsync() {
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    throw new InvalidOperationException("Всё плохо");
+}
+
+static async Task TestAsync() {
+    // Исключение не бросается, а сохраняется в Task-е
+    Task task = ThrowExceptionAsync();
+    try {
+        // Исключение бросается при выполнении await (или обращении к Result)
+        await task;
+    } catch (InvalidOperationException) {
+        // Исключение ловится здесь как обычно
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
 	\begin{frame}
 		\frametitle{Async-методы в стандартной библиотеке}
 		\begin{itemize}
@@ -399,10 +422,63 @@ private sealed class MyWpfWindow : Window {
 		\end{footnotesize}
 	\end{frame}
 
-	\section{Более высокоуровневые вещи}
+	\begin{frame}[fragile]
+		\frametitle{async и Task, полезные вещи}
+		\begin{itemize}
+			\item Подождать сколько-то миллисекунд:
+			\begin{minted}{csharp}
+await Task.Delay(delay);
+			\end{minted}
+
+			\item Сразу же вернуть результат:
+			\begin{minted}{csharp}
+// Возвращает Task, который исполняется синхронно
+Task.FromResult(13);
+			\end{minted}
+
+			\item Подождать несколько Task-ов:
+			\begin{minted}{csharp}
+int[] results = await Task.WhenAll(task1, task2, task3);
+			\end{minted}
+		\end{itemize}
+	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Более высокоуровневые вещи}
+		\frametitle{Task.WhenAny}
+		Простой способ организовать таймаут:
+		\begin{small}
+			\begin{minted}{csharp}
+static async Task<string> DownloadStringWithTimeout(string uri)
+{
+    using (var client = new HttpClient())
+    {
+        var downloadTask = client.GetStringAsync(uri);
+        var timeoutTask = Task.Delay(3000);
+        var completedTask = await Task.WhenAny(downloadTask, timeoutTask);
+        if (completedTask == timeoutTask)
+            return null;
+        return await downloadTask;
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\section{TPL}
+
+	\begin{frame}
+		\frametitle{Task Parallel Library}
+		\begin{itemize}
+			\item Набор классов для выполнения вычислительно сложных параллельных операций (в отличие от async/await, ориентированных на ввод-вывод)
+			\begin{itemize}
+				\item В стандартной поставке начиная с .NET 4.0
+			\end{itemize}
+			\item ``Распараллеливание в одну строчку'', берёт на себя управление потоками и ядрами
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
 		\begin{minted}{csharp}
 for (int i = 0; i < 1000; i++) DoWork(i);
 		\end{minted}
@@ -411,7 +487,7 @@ for (int i = 0; i < 1000; i++) DoWork(i);
 Parallel.For(0, 1000, i => DoWork(i));
 		\end{minted}
 
-		Есть ещё:
+		Или:
 		\begin{itemize}
 			\item \mintinline{csharp}|Parallel.ForEach(collection, item => DoWork(item));|
 			\item 
@@ -421,8 +497,255 @@ Parallel.Invoke(
     () => Method2(),
     () => Method3());
 				\end{minted}
-			\item \mintinline{csharp}|ParallelQuery<T>| и LINQ
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Прерывание операции}
+		\begin{itemize}
+			\item Изнутри:
+			\begin{footnotesize}
+				\begin{minted}{csharp}
+void InvertMatrices(IEnumerable<Matrix> matrices)
+{
+    Parallel.ForEach(matrices, (matrix, state) => {
+        if (!matrix.IsInvertible)
+            state.Stop();
+        else
+            matrix.Invert();
+    });
+}
+				\end{minted}
+			\end{footnotesize}
+
+			\item Извне:
+			\begin{footnotesize}
+				\begin{minted}{csharp}
+void RotateMatrices(IEnumerable<Matrix> matrices, float degrees,
+    CancellationToken token)
+{
+    Parallel.ForEach(matrices,
+            new ParallelOptions { CancellationToken = token },
+            matrix => matrix.Rotate(degrees));
+}
+				\end{minted}
+			\end{footnotesize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Синхронизация нужна}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+int InvertMatrices(IEnumerable<Matrix> matrices)
+{
+    object mutex = new object();
+    int nonInvertibleCount = 0;
+    Parallel.ForEach(matrices, matrix =>
+    {
+        if (matrix.IsInvertible) {
+            matrix.Invert();
+        } else {
+            // Не лучший способ увеличить счётчик, но как умею :(
+            lock (mutex) {
+                ++nonInvertibleCount;
+            }
+        }
+    });
+    return nonInvertibleCount;
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\section{PLINQ}
+
+	\begin{frame}[fragile]
+		\frametitle{PLINQ}
+		\begin{small}
+			\begin{minted}{csharp}
+static IEnumerable<int> MultiplyBy2(IEnumerable<int> values)
+    => values.AsParallel().Select(item => item * 2);
+
+static IEnumerable<int> MultiplyBy2(IEnumerable<int> values)
+    => values.AsParallel().AsOrdered().Select(item => item * 2);
+
+static IEnumerable<int> MultiplyBy2(IEnumerable<int> values)
+    => from item in values.AsParallel().AsOrdered() select item * 2;
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{PLINQ, подробности}
+		\begin{itemize}
+			\item Реализация LINQ для параллельного исполнения
+			\item Работает над любой реализацией IEnumerable и IEnumerable<T>
+			\item ``Ленивая'' --- не выполняет операцию, пока её результат не запрошен
+			\item Более агрессивно использует ядра, чем TPL
+			\item ParallelEnumerable --- класс, предоставляющий почти всю функциональность PLINQ
+			\begin{itemize}
+				\item Метод-расширение AsParallel() с предыдущего слайда
+			\end{itemize}
+			\item Может отказаться распараллелить вычисление
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как оно работает}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{parallelEnumerable.png}
+			\attribution{Joseph Albahari, \url{http://www.albahari.com}}
+		\end{center}
+	\end{frame}
+
+	\section{Потокобезопасные коллекции}
+
+	\begin{frame}
+		\frametitle{Потокобезопасные коллекции}
+		\begin{itemize}
+			\item Одновременная модификация данных из разных потоков (включая потоки пула, которые используются TPL, PLINQ и т.д.) может привести к гонке
+			\item Потокобезопасность --- свойство кода не иметь гонок при обращении из нескольких потоков
+			\begin{itemize}
+				\item Thread-safe --- возможность вызывать код из нескольких потоков
+				\item Reentrant --- возможность вызывать из нескольких потоков, если каждый вызов использует свои данные
+				\item Весь thread-safe код reentrant, но не наоборот
+			\end{itemize}
+			\item Все стандартные коллекции (List<T>, Dictionary<K, V> и т.д.) \textbf{не потокобезопасны}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Немутабельные коллекции}
+		Нет изменяемого состояния --- нет гонок
+		\begin{itemize}
+			\item ImmutableStack<T>
+			\item ImmutableQueue<T>
+			\item ImmutableList<T>
+			\item ImmutableHashSet<T>
+			\item ImmutableSortedSet<T>
+			\item ImmutableDictionary<K, V>
+			\item ImmutableSortedDictionary<K, V>
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Но как?}
+		\begin{minted}{csharp}
+var list = ImmutableList<int>.Empty;
+list = list.Insert(0, 13);
+list = list.Insert(0, 7);
+
+// Пишет "7", затем "13".
+foreach (var item in list)
+    Console.WriteLine(item);
+
+list = list.RemoveAt(1);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{А что со скоростью и памятью?}
+		\begin{footnotesize}
+			\begin{tabu} {| X[0.9 l p] | X[1 l p] | X[1 l p] |}
+				\tabucline-
+				Операция     & List<T>                & ImmutableList<T>  \\
+				\tabucline-
+				\everyrow{\tabucline-}
+				Add          & амортизированная O(1)  & O(log N)          \\
+				Insert       & O(N)                   & O(log N)          \\
+				RemoveAt     & O(N)                   & O(log N)          \\
+				Item[index]  & O(1)                   & O(log N)          \\
+			\end{tabu}
+		\end{footnotesize}
+		\vspace{5mm}
+		Используются сбалансированные двоичные деревья, разделяемые между коллекциями
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Как это работает}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{footnotesize}
+					\begin{minted}{csharp}
+var l1 = ImmutableList.Create<int>();
+var l2 = l1.Add(1);
+var l3 = l2.Add(2);
+var l4 = l3.Add(3);
+var l5 = l4.Replace(2, 4);
+					\end{minted}
+				\end{footnotesize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\includegraphics[width=0.9\textwidth]{lists.png}
+				\attribution{MSDN}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Потокобезопасные структуры данных}
+		Мутабельны, используют примитивы синхронизации для избегания гонок
+		\begin{itemize}
+			\item Медленны, заметно медленнее немутабельных и ``обычных'' коллекций
+			\item Позволяют общаться разным потокам
+		\end{itemize}
+		Что есть в стандартной библиотеке:
+		\begin{itemize}
+			\item ConcurrentDictionary<K, V>
+			\item BlockingCollection<T>
+			\item ConcurrentBag<T>
+			\item ConcurrentQueue<T>
+			\item ConcurrentStack<T>
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+var cq = new ConcurrentQueue<int>();
+
+for (int i = 0; i < 10000; i++) 
+    cq.Enqueue(i);
+
+if (!cq.TryPeek(out int result))
+    Console.WriteLine("С TryPeek тут всё должно было быть ок");
+else if (result != 0)
+    Console.WriteLine($"Ожидалось 0, получили {result}");
+
+int outerSum = 0;
+Action action = () => {
+    int localSum = 0;
+    while (cq.TryDequeue(out int localValue)) 
+        localSum += localValue;
+    // Более правильный способ прибавлять, о котором потом
+    Interlocked.Add(ref outerSum, localSum);
+};
+
+Parallel.Invoke(action, action, action, action);
+
+Console.WriteLine($"outerSum = {outerSum}, should be 49995000");
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\section{Заключение}
+
+	\begin{frame}
+		\frametitle{Литература}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				Stephen Cleary, Concurrency in C\# Cookbook, O'Reilly Media, 2014. 207PP.
+
+				\textcolor{gray}{Многие примеры взяты оттуда}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\begin{center}
+					\includegraphics[width=0.6\textwidth]{concurrencyCookbookCover.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 \end{document}
