@@ -181,7 +181,7 @@
 				\item Есть локальные DNS-сервера, есть общеизвестные (например, 8.8.8.8, Google Public DNS)
 				\item localhost --- всегда (более-менее) раскрывается в 127.0.0.1
 			\end{itemize}
-			\item NAT --- Network Address Translation, механизм, позволяющий компьютерам с локальными IP получать ответы из Интернет (только если они их инициировали)
+			\item NAT --- Network Address Translation, механизм, позволяющий компьютерам с локальными IP получать ответы из Интернет (только если они инициировали запросы)
 			\item Ports forwarding --- механизм, позволяющий компьютерам за NAT принимать входящие запросы
 			\item Прокси --- программа, которая пересылает запросы (и может делать с ними что-нибудь)
 		\end{itemize}
@@ -203,7 +203,7 @@
 			\begin{itemize}
 				\item Удалённый компьютер имеет право не отвечать
 			\end{itemize}
-			\item tracert --- ``продвинутый'' ping, показывает все узлы, через которые шёл запрос со временами их отклика (если они хотят откликнуться)
+			\item tracert (traceroute) --- показывает все узлы, через которые шёл запрос со временами их отклика (если они хотят откликнуться)
 			\begin{itemize}
 				\item Хороший способ диагностировать проблемы с интернетом
 			\end{itemize}
@@ -405,6 +405,56 @@ static async Task Main(string[] args) {
 }
 			\end{minted}
 		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Теперь можно писать и читать одновременно}
+		\framesubtitle{Полнодуплексное соединение, на примере сервера}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+private static async Task Main(string[] args) {
+    ...
+    while (true) {
+        var client = await listener.AcceptTcpClientAsync();
+        Writer(client.GetStream());
+        Reader(client.GetStream());
+    }
+}
+
+private static void Writer(NetworkStream stream) {
+    Task.Run(async () => {
+        ...
+    });
+}
+
+private static void Reader(NetworkStream stream) {
+    Task.Run(async () => {
+        ...
+    });
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Например}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+private static void Writer(NetworkStream stream)
+{
+    Task.Run(async () =>
+    {
+        var writer = new StreamWriter(stream) { AutoFlush = true };
+        while (true)
+        {
+            Console.WriteLine(">");
+            var data = Console.ReadLine();
+            await writer.WriteAsync(data + "\n");
+        }
+    });
+}
+			\end{minted}
+		\end{footnotesize}
 	\end{frame}
 
 	\begin{frame}[fragile]
