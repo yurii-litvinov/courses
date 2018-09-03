@@ -1,0 +1,157 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Практика по Java}
+\subtitle{Введение}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{??.09.2018г}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Введение}
+
+	\begin{frame}
+		\frametitle{Формальности}
+		\begin{itemize}
+			\item Чтобы получить зачёт, надо:
+			\begin{itemize}
+				\item Сдать некоторый (большой!) процент домашних работ
+				\item Успешно написать две контрольные
+				\item По каждой домашке дедлайн порядка двух недель
+			\end{itemize}
+			\item Условия, материалы и сдача домашек через \url{http://hwproj.me/}
+			\item Среда программирования --- какая угодно
+			\begin{itemize}
+				\item Рекомендуется IntelliJ IDEA
+			\end{itemize}
+			\item Между ``сделать'' и ``сдать'' большая разница
+		\end{itemize}
+	\end{frame}
+
+	\section{Java}
+
+	\begin{frame}
+		\frametitle{Язык Java}
+		\begin{itemize}
+			\item Появился в 1995 году, актуальная версия --- Java 10
+			\item Объектно-ориентированный язык с сильной типизацией
+			\item Прежде всего --- для разработки прикладного ПО (в отличие от С++)
+			\item Использует виртуальную машину (compile once --- run everywhere, опять же в отличие от C++)
+			\item Just-in-time-компиляция
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{javaCompiling.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Особенности}
+		\begin{itemize}
+			\item Сборка мусора
+			\begin{itemize}
+				\item Это не значит, что за памятью можно не следить!
+			\end{itemize}
+			\item Практически всё --- объект
+			\item Стандартизация элементарных типов (в отличие от С++)
+			\item Пакеты и библиотеки
+			\item Рефлексия
+			\item Некоторая поддержка функционального стиля
+			\item Несколько странная реализация шаблонов (генерики)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что скачать и поставить}
+		\begin{itemize}
+			\item JDK 10 (\url{http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html})
+			\begin{itemize}
+				\item Обратите внимание, JRE --- среда времени выполнения, JDK --- среда времени выполнения + инструменты разработки (включая компилятор)
+			\end{itemize}
+			\item IntelliJ IDEA (\url{https://www.jetbrains.com/student/})
+		\end{itemize}
+		Что сдавать:
+		\begin{itemize}
+			\item Файлы .java
+			\item Папку .idea
+			\begin{itemize}
+				\item Кроме workspace.xml, usage.statistics.xml, tasks.xml
+			\end{itemize}
+			\item Файлы .iml (если есть)
+			\item Ничего больше
+		\end{itemize}
+		Решения надо выкладывать на GitHub, ссылку в HwProj
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как собирать из консоли}
+		\begin{itemize}
+			\item javac
+			\begin{itemize}
+				\item javac MyClass.java YetAnotherClass.java
+				\item javac -d classes MyClass.java
+				\item javac -classpath classes;library.jar -d classes MyClass.java
+			\end{itemize}
+			\item CLASSPATH
+			\begin{itemize}
+				\item Набор путей, по которым компилятор и Java-машина ищут классы
+				\item Всегда содержит классы из стандартной библиотеки
+				\item По умолчанию --- текущая директория (``.'')
+				\item Задаётся как список директорий или JAR-файлов, через ``;'' в Windows и через ``:'' во всём остальном
+				\begin{itemize}
+					\item JAR-файл --- просто заархивированная папка с классами, по сути --- библиотека
+				\end{itemize}
+			\end{itemize}
+			\item Системы сборки --- Gradle, Maven, ...
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как запускать из консоли}
+		\begin{itemize}
+			\item Нет никакого .exe-шника, виртуальной машине передаётся на исполнение файл с байт-кодом класса
+			\item Оный класс должен иметь метод \mintinline{java}|public static void main(String [] args)|
+			\item java (javaw)
+			\begin{itemize}
+				\item java MyClass
+				\item java -classpath classes\_dir;library.jar MyClass
+				\item java -jar library\_with\_main\_class.jar
+				\begin{itemize}
+					\item не всё так просто, jar-нику нужен манифест
+				\end{itemize}
+				\item Имя запускаемого класса должно быть \textbf{полностью квалифицированным}
+				\begin{itemize}
+					\item например, \textit{java ru.spbau.mit.MyClass}
+				\end{itemize}
+				\item Нелишне посмотреть документацию, есть много полезных ключей командной строки
+			\end{itemize}
+			\item Системы сборки несколько облегчают эту боль
+		\end{itemize}
+	\end{frame}
+
+\end{document}
