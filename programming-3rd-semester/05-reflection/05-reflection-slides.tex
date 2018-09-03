@@ -25,7 +25,7 @@
 
 \title{Рефлексия}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{12.10.2018г}
+\date{05.10.2018г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -34,6 +34,8 @@
 \begin{document}
 
 	\frame{\titlepage}
+
+	\section{Рефлексия}
 
 	\begin{frame}
 		\frametitle{Рефлексия}
@@ -47,6 +49,8 @@
 				\item Плагины
 				\item Анализаторы кода
 				\item Тестовые системы
+				\item Библиотеки сериализации
+				\item Библиотеки для работы с базами данных
 				\item ...
 			\end{itemize}
 			\item Проблемы:
@@ -54,6 +58,32 @@
 				\item Медленно
 				\item Нет помощи от системы типов
 			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Сборки}
+
+	\begin{frame}
+		\frametitle{Рефлексия в .NET}
+		\begin{itemize}
+			\item Пространство имён System.Reflection
+			\item Байт-код хранит всю информацию о типах 
+			\begin{itemize}
+				\item И даже параметрах-типах у генериков, в отличие от Java
+			\end{itemize}
+			\item Самая крупная штука, которой оперирует рефлексия --- \textbf{сборка}
+			\begin{itemize}
+				\item .dll или .exe, единица развёртывания программы
+				\begin{itemize}
+					\item На самом деле это неправда, детали см. в CLR via C\#
+				\end{itemize}
+			\end{itemize}
+			\item Сборка хранит метаинформацию:
+			\begin{itemize}
+				\item Таблицы модулей, типов, методов, полей, параметров, свойств и событий
+			\end{itemize}
+			\item На всё это можно посмотреть в ILDasm
+			\item AppDomain --- логическая группа сборок во время выполнения
 		\end{itemize}
 	\end{frame}
 
@@ -74,8 +104,45 @@ public class Assembly {
 			\begin{minted}{csharp}
 var a = Assembly.LoadFrom(@"http://example.com/ExampleAssembly.dll");
 			\end{minted}
-			Выгружать сборки нельзя
+			Такая сборка должна быть ещё не загружена. Выгружать сборки нельзя.
 		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сильные и слабые имена сборок (1)}
+		\begin{itemize}
+			\item Сильные сборки подписаны асимметричным шифром
+			\begin{itemize}
+				\item Публичная часть ключа внедряется в саму сборку
+				\item От сборки считается SHA-1-хеш, шифруется приватным ключом и внедряется в сборку
+				\item CLR при загрузке сборки считает от неё SHA-1-хеш и проверяет, что он совпал с подписанным
+				\item Позволяет проверить, что сборка именно такая, какой её собирал автор, но не позволяет проверить идентичность автора
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сильные и слабые имена сборок (2)}
+		\begin{itemize}
+			\item Пример сильного имени:
+			\begin{scriptsize}
+				\begin{minted}{csharp}
+"MyTypes, Version=1.0.8123.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+				\end{minted}
+			\end{scriptsize}
+			\begin{itemize}
+				\item Однозначно идентифицирует сборку
+				\item PublicKeyToken --- короткий хеш публичного ключа
+				\begin{itemize}
+					\item Естественно, не криптостоек, поэтому CLR проверяет настоящий ключ при загрузке сборки
+				\end{itemize}
+			\end{itemize}
+			\item Сборка с сильным именем может ссылаться только на сборки с сильными именами
+			\item Сборка с сильным именем может быть установлена в GAC
+			\begin{itemize}
+				\item GACUtil --- утилита для манипуляции GAC, в стандартной поставке
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -104,7 +171,9 @@ public static class Program {
 		\end{footnotesize}
 	\end{frame}
 
-	\begin{frame}
+	\section{Типы}
+
+	\begin{frame}[fragile]
 		\frametitle{Создание экземпляра объекта}
 		\begin{itemize}
 			\item System.Activator.CreateInstance --- можно передавать тип или строку с именем типа
@@ -114,7 +183,16 @@ public static class Program {
 			\item System.Activator.CreateInstanceFrom --- вызывает LoadFrom для сборки
 			\item System.Reflection.ConstructorInfo.Invoke --- просто вызов конструктора (несколько дольше писать, чем предыдущие варианты)
 			\item Рефлексия ничего не знает о синонимах
+			\begin{itemize}
+				\item То есть int везде называется System.Int32
+			\end{itemize}
 		\end{itemize}
+		Пример:
+		\begin{small}
+			\begin{minted}{csharp}
+var zero = Activator.CreateInstance("mscorlib.dll", "System.Int32").Unwrap();
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -208,6 +286,8 @@ public static class Program
 		\end{scriptsize}
 	\end{frame}
 
+	\section{Поля, методы и т.д.}
+
 	\begin{frame}
 		\frametitle{Информация о типах}
 		\begin{center}
@@ -249,7 +329,7 @@ public static class Program {
                     var typeName = string.Empty;
                     if (mi is FieldInfo) typeName = "FieldInfo";
                     if (mi is MethodInfo) typeName = "MethodInfo";
-                    if (mi is ConstructorInfo) typeName = "ConstructoInfo";
+                    if (mi is ConstructorInfo) typeName = "ConstructorInfo";
                     Console.WriteLine($"    {typeName}: {mi}");
                 }
             }
@@ -312,6 +392,8 @@ public static class Program {
 		\end{scriptsize}
 	\end{frame}
 
+	\section{dynamic}
+
 	\begin{frame}[fragile]
 		\frametitle{Ключевое слово dynamic}
 		\begin{scriptsize}
@@ -337,6 +419,8 @@ internal static class DynamicDemo
 			\end{minted}
 		\end{scriptsize}
 	\end{frame}
+
+	\section{ILGenerator}
 
 	\begin{frame}[fragile]
 		\frametitle{Генерация кода ``на лету''}
@@ -369,5 +453,7 @@ public static void Main() {
 			\end{minted}
 		\end{scriptsize}
 	\end{frame}
+
+	\section{Сериализация}
 
 \end{document}
