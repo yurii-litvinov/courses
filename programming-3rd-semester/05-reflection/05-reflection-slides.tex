@@ -392,6 +392,322 @@ public static class Program {
 		\end{scriptsize}
 	\end{frame}
 
+	\section{Атрибуты}
+
+	\begin{frame}
+		\frametitle{Атрибуты}
+		\begin{itemize}
+			\item Способ добавить произвольную информацию к коду во время компиляции
+			\item Эта информация может быть использована потом во время компиляции или во время выполнения
+			\begin{itemize}
+				\item Типичный пример --- атрибуты юнит-тестов (Test, ExpectedException, ...)
+			\end{itemize}
+			\item Могут быть применены к сборке, типу, полю, методу, параметру метода, возвращаемому значению, свойству, событию, параметру-типу
+			\item Могут иметь параметры
+			\item На самом деле, экземпляры классов-наследников System.Attribute
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Объявление своего атрибута}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public enum Animal
+{
+    Dog = 1,
+    Cat,
+    Bird,
+}
+
+public class AnimalTypeAttribute : Attribute
+{
+    public AnimalTypeAttribute(Animal pet)
+    {
+        this.Pet = pet;
+    }
+
+    public Animal Pet { get; set; }
+}
+			\end{minted}
+		\end{footnotesize}
+		\attribution{MSDN}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Использование атрибута}
+		\begin{minted}{csharp}
+class AnimalTypeTestClass
+{
+    [AnimalType(Animal.Dog)]
+    public void DogMethod() { }
+
+    [AnimalType(Animal.Cat)]
+    public void CatMethod() { }
+
+    [AnimalType(Animal.Bird)]
+    public void BirdMethod() { }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Получение атрибута рефлексией}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+static void Main(string[] args)
+{
+    var testClass = new AnimalTypeTestClass();
+    Type type = testClass.GetType();
+
+    foreach (MethodInfo mInfo in type.GetMethods())
+    {
+        foreach (Attribute attr in Attribute.GetCustomAttributes(mInfo))
+        {
+            // Check for the AnimalType attribute.
+            if (attr.GetType() == typeof(AnimalTypeAttribute))
+                Console.WriteLine(
+                    "Method {0} has a pet {1} attribute.",
+                    mInfo.Name, ((AnimalTypeAttribute)attr).Pet);
+        }
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ограничение области применения атрибута}
+		\begin{minted}{csharp}
+namespace System {
+    [AttributeUsage(AttributeTargets.Enum, Inherited = false)]
+    public class FlagsAttribute : System.Attribute {
+        public FlagsAttribute() {
+        }
+    }
+}
+		\end{minted}
+		Атрибуты у атрибутов!
+	\end{frame}
+
+	\section{Сериализация}
+
+	\begin{frame}
+		\frametitle{Библиотеки сериализации}
+		\begin{itemize}
+			\item Нужны для передачи объектов по сети или сохранения объектов
+			\item Часто используемые форматы
+			\begin{itemize}
+				\item XML
+				\item JSON
+				\item Protobuf
+			\end{itemize}
+			\item Активно используют рефлексию
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, сериализация в XML, System.Xml.Serialization}
+		\framesubtitle{Данные}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public class Point
+{
+    public Point() { }
+    public Point(int x, int y) { this.X = x; this.Y = y; }
+    public int X { get; set; }
+    public int Y { get; set; }
+}
+
+public class SomeData
+{
+    public int Radius { get; set; }
+    public Point Center { get; set; }
+    public List<Point> Points { get; } = new List<Point>();
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сама сериализация}
+		\begin{small}
+			\begin{minted}{csharp}
+var data = new SomeData { Radius = 10, Center = new Point(5, 5)};
+data.Points.Add(new Point(1, 1));
+data.Points.Add(new Point(2, 2));
+
+var serializer = new XmlSerializer(typeof(SomeData));
+using (var textWriter = new StringWriter())
+{
+    serializer.Serialize(textWriter, data);
+    Console.WriteLine(textWriter.ToString());
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Результат}
+		\begin{small}
+			\begin{minted}{xml}
+<?xml version="1.0" encoding="utf-16"?>
+<SomeData xmlns:xsi="..." xmlns:xsd="...">
+    <Radius>10</Radius>
+    <Center>
+        <X>5</X>
+        <Y>5</Y>
+    </Center>
+    <Points>
+        <Point>
+            <X>1</X>
+            <Y>1</Y>
+        </Point>
+        <Point>
+            <X>2</X>
+            <Y>2</Y>
+        </Point>
+    </Points>
+</SomeData>
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{То же с Newtonsoft.Json}
+		\begin{small}
+			\begin{minted}{csharp}
+var data = new SomeData { Radius = 10, Center = new Point(5, 5)};
+data.Points.Add(new Point(1, 1));
+data.Points.Add(new Point(2, 2));
+
+var jsonSerializer = new JsonSerializer() { Formatting = Formatting.Indented };
+using (var textWriter = new StringWriter())
+{
+    jsonSerializer.Serialize(textWriter, data);
+    Console.WriteLine(textWriter.ToString());
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Результат}
+		\begin{small}
+			\begin{minted}{json}
+{
+  "Radius": 10,
+  "Center": {
+    "X": 5,
+    "Y": 5
+  },
+  "Points": [
+    {
+      "X": 1,
+      "Y": 1
+    },
+    {
+      "X": 2,
+      "Y": 2
+    }
+  ]
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сериализация графа объектов}
+		\framesubtitle{Дьявол в деталях}
+		\begin{small}
+			\begin{minted}{csharp}
+var center = new Point(5, 5);
+var data = new SomeData { Radius = 10, Center = center };
+data.Points.Add(new Point(1, 1));
+data.Points.Add(center);
+
+var jsonSerializer = new JsonSerializer() {
+    Formatting = Formatting.Indented,
+    PreserveReferencesHandling = PreserveReferencesHandling.All
+};
+using (var textWriter = new StringWriter())
+{
+    jsonSerializer.Serialize(textWriter, data);
+    Console.WriteLine(textWriter.ToString());
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Результат}
+		\begin{footnotesize}
+			\begin{minted}{json}
+{
+  "$id": "1",
+  "Radius": 10,
+  "Center": {
+    "$id": "2",
+    "X": 5,
+    "Y": 5
+  },
+  "Points": [
+    {
+      "$id": "3",
+      "X": 1,
+      "Y": 1
+    },
+    {
+      "$ref": "2"
+    }
+  ]
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Десериализация}
+		\begin{minted}{csharp}
+var deserializedData = 
+    JsonConvert.DeserializeObject<SomeData>(serializedData);
+Console.WriteLine(deserializedData.Radius);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Управление именами полей}
+		\begin{minted}{csharp}
+public class Videogame
+{
+    [JsonProperty("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("release_date")]
+    public DateTime ReleaseDate { get; set; }
+}
+		\end{minted}
+		\attribution{https://www.newtonsoft.com}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Управление тем, что надо сериализовать, а что нет}
+		\begin{minted}{csharp}
+[JsonObject(MemberSerialization.OptIn)]
+public class File
+{
+    // Это поле не сериализуется,
+    // потому что у него нет JsonPropertyAttribute
+    public Guid Id { get; set; }
+
+    [JsonProperty]
+    public string Name { get; set; }
+
+    [JsonProperty]
+    public int Size { get; set; }
+}
+		\end{minted}
+	\end{frame}
+
 	\section{dynamic}
 
 	\begin{frame}[fragile]
@@ -453,7 +769,5 @@ public static void Main() {
 			\end{minted}
 		\end{scriptsize}
 	\end{frame}
-
-	\section{Сериализация}
 
 \end{document}
