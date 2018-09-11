@@ -1,0 +1,79 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\title{Введение, разбор задач}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{14.09.2018}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Формальные вопросы}
+		\begin{itemize}
+			\item Занятия по пятницам две пары подряд в ауд. 4337
+			\item Берите с собой ноуты
+			\item Чтобы получить зачёт, надо:
+			\begin{itemize}
+				\item Сдать \textbf{все} домашки
+				\item Написать две контрольные
+				\item Написать зачёт, который по сути большая контрольная
+			\end{itemize}
+			\item Условия домашек, материалы с пар и текущий статус: \url{http://hwproj.me/courses/34}
+			\begin{itemize}
+				\item Там надо зарегистрироваться и добавиться на курс
+				\item Там же сдача домашек
+			\end{itemize}
+			\item Мои контакты:
+			\begin{itemize}
+				\item Почта: yurii.litvinov@gmail.com
+				\item Telegram: yurii\_litvinov
+				\item Пишите по любому вопросу!
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Условия задач с теста}
+		\begin{enumerate}
+			\item Какое наименьшее количество операции умножения достаточно для вычисления значения формулы $x^4 + x^3 + x^2 + x + 1$?
+			\item Укажите условия, при которых формулы ``$a + a - a$'' и ``$a + (a - a)$'' не эквивалентны.
+			\item Поменять значения двух целочисленных переменных местами (без привлечения третьей переменной и файлов).
+			\item Написать алгоритм нахождения неполного частного от деления $a$ на $b$ (целые числа), используя только операции сложения, вычитания и умножения.
+			\item Дан массив целых чисел $x[1]...x[m+n]$, рассматриваемый как соединение двух его отрезков: начала $x[1]...x[m]$ длины $m$ и конца $x[m+1]...x[m+n]$ длины $n$. Не используя дополнительных массивов, переставить местами начало и конец.
+		\end{enumerate}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Условия задач с теста}
+		\begin{enumerate}
+			\setcounter{enumi}{5}
+			\item Подсчитать число <<счастливых билетов>> (билет считается <<счастливым>>, если сумма первых трёх цифр его номера равна сумме трёх последних).
+			\item Написать алгоритм проверки баланса скобок в исходной строке (т.е. число открывающих скобок равно числу закрывающих и выполняется правило вложенности скобок).
+			\item Заданы две строки: $S$ и $S_1$. Найдите количество вхождений $S_1$ в $S$ как подстроки.
+			\item Напишите программу, печатающую все простые числа, не превосходящие заданного числа.
+			\item Напишите программу, считающую количество нулевых элементов в массиве.
+		\end{enumerate}
+	\end{frame}
+
+\end{document}
+
