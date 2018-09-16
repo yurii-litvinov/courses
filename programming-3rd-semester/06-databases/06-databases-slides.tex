@@ -265,4 +265,63 @@ ALTER TABLE Students ADD PRIMARY KEY (Code);
 		\end{minted}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Низкий уровень работы с данными, ADO.NET}
+		\begin{itemize}
+			\item Возможность исполнять SQL-запросы для разных источников данных
+			\item Data Provider обеспечивает общение с конкретной СУБД
+			\item Connection String описывает, как подключиться к СУБД
+			\item Command представляет абстракцию команды в СУБД
+			\item DataSet обеспечивает более-менее высокоуровневое представление данных
+			\item Может работать даже с XML или таблицами Excel
+			\item Пространство имён System.Data
+			\item Лучше не использовать в современном коде
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, чтение из базы}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public static void Main()
+{
+    using (var connection = new MySqlConnection(
+        "database=cities;server=localhost;user id=root;" + 
+        "Password=my-secr3t-p4ssw0rd;SslMode=none"))
+    {
+        var command = new MySqlCommand("SELECT Id, Name FROM City", connection);
+        connection.Open();
+        var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            Console.WriteLine($"Id: {reader.GetInt32(0)}\tName:{reader.GetString(1)}");
+        }
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, добавление в базу}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public static async Task Main()
+{
+    using (var connection = new MySqlConnection(
+        "database=cities;server=localhost;user id=root;" +
+        "Password=my-secr3t-p4ssw0rd;SslMode=none"))
+    {
+        var command = new MySqlCommand(
+            "INSERT INTO City (name) VALUES (@name)", connection);
+        command.Parameters.AddWithValue("@name", "Peterhof");
+        connection.Open();
+        await command.ExecuteNonQueryAsync();
+        Console.WriteLine($"Done, inserted row id = {command.LastInsertedId}");
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
 \end{document}
