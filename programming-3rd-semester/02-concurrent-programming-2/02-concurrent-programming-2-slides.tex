@@ -153,22 +153,6 @@ private static void Count(CancellationToken token, int countTo) {
 		\end{small}
 	\end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Полезные вещи CancellationToken}
-		\begin{itemize}
-			\item \mintinline{csharp}|CancellationToken.None|
-			\item \mintinline{csharp}|CancellationToken.Register|:
-				\begin{minted}{csharp}
-var cts = new CancellationTokenSource();
-cts.Token.Register(() => Console.WriteLine("Canceled 1"));
-cts.Token.Register(() => Console.WriteLine("Canceled 2"));
-				\end{minted}
-				\begin{itemize}
-					\item Возвращает \mintinline{csharp}|CancellationTokenRegistration|, реализующий \mintinline{csharp}|IDisposable|
-				\end{itemize}
-		\end{itemize}
-	\end{frame}
-
 	\section{Task}
 
 	\begin{frame}[fragile]
@@ -558,47 +542,6 @@ int InvertMatrices(IEnumerable<Matrix> matrices)
 		\end{footnotesize}
 	\end{frame}
 
-	\section{PLINQ}
-
-	\begin{frame}[fragile]
-		\frametitle{PLINQ}
-		\begin{small}
-			\begin{minted}{csharp}
-static IEnumerable<int> MultiplyBy2(IEnumerable<int> values)
-    => values.AsParallel().Select(item => item * 2);
-
-static IEnumerable<int> MultiplyBy2(IEnumerable<int> values)
-    => values.AsParallel().AsOrdered().Select(item => item * 2);
-
-static IEnumerable<int> MultiplyBy2(IEnumerable<int> values)
-    => from item in values.AsParallel().AsOrdered() select item * 2;
-			\end{minted}
-		\end{small}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{PLINQ, подробности}
-		\begin{itemize}
-			\item Реализация LINQ для параллельного исполнения
-			\item Работает над любой реализацией IEnumerable и IEnumerable<T>
-			\item ``Ленивая'' --- не выполняет операцию, пока её результат не запрошен
-			\item Более агрессивно использует ядра, чем TPL
-			\item ParallelEnumerable --- класс, предоставляющий почти всю функциональность PLINQ
-			\begin{itemize}
-				\item Метод-расширение AsParallel() с предыдущего слайда
-			\end{itemize}
-			\item Может отказаться распараллелить вычисление
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Как оно работает}
-		\begin{center}
-			\includegraphics[width=0.9\textwidth]{parallelEnumerable.png}
-			\attribution{Joseph Albahari, \url{http://www.albahari.com}}
-		\end{center}
-	\end{frame}
-
 	\section{Потокобезопасные коллекции}
 
 	\begin{frame}
@@ -660,27 +603,6 @@ list = list.RemoveAt(1);
 		\end{footnotesize}
 		\vspace{5mm}
 		Используются сбалансированные двоичные деревья, разделяемые между коллекциями
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Как это работает}
-		\begin{columns}
-			\begin{column}{0.6\textwidth}
-				\begin{footnotesize}
-					\begin{minted}{csharp}
-var l1 = ImmutableList.Create<int>();
-var l2 = l1.Add(1);
-var l3 = l2.Add(2);
-var l4 = l3.Add(3);
-var l5 = l4.Replace(2, 4);
-					\end{minted}
-				\end{footnotesize}
-			\end{column}
-			\begin{column}{0.4\textwidth}
-				\includegraphics[width=0.9\textwidth]{lists.png}
-				\attribution{MSDN}
-			\end{column}
-		\end{columns}
 	\end{frame}
 
 	\begin{frame}
