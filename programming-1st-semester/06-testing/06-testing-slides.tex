@@ -1,0 +1,112 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=0.7mm
+
+\title{Тестирование и отладка}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{21.09.2018}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Тестирование}
+		\begin{itemize}
+			\item Любая программа содержит ошибки                                                    
+			\item Если программа не содержит ошибок, их содержит алгоритм, который реализует эта программа
+			\item Если ни программа, ни алгоритм ошибок не содержат, такая программа даром никому не нужна
+		\end{itemize}
+		\vspace{1cm}
+		Тестирование не позволяет доказать отсутствие ошибок, оно позволяет лишь найти ошибки, которые в программе присутствуют
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Виды тестирования}
+		\begin{itemize}
+			\item По уровню тестируемых компонент
+			\begin{itemize}
+				\item Модульное
+				\item Интеграционное
+				\item Системное
+			\end{itemize}
+			\item По целям
+			\begin{itemize}
+				\item Функциональное
+				\item Нагрузочное
+				\item Удобства использования
+				\item Смоук-тестирование
+				\item Регрессионное
+				\item Приёмочное тестирование
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+                
+	\begin{frame}
+		\frametitle{Тестирование, выполняемое программистами}
+		\begin{itemize}
+			\item Тестирование типичного сценария работы
+			\item Тестирование граничных случаев
+			\item Тестирование некорректных входных данных
+			\begin{itemize}
+				\item Программа должна адекватно себя вести и сообщать об ошибках ввода
+			\end{itemize}
+			\item Тестирование должно быть по возможности автоматическим
+			\begin{itemize}
+				\item На самом деле, используются модульные тесты
+				\item Можно писать модульные тесты вручную, как функции, возвращающие true/false
+			\end{itemize}	
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Отладка}
+		\begin{itemize}
+			\item Устойчивое воспроизведение ошибки
+			\begin{itemize}
+				\item Вместо srand(time(nullptr)) – srand(<какое-то фиксированное значение>)
+				\item Ошибка должна воспроизводиться быстро
+			\end{itemize}
+			\item Локализация ошибки
+			\begin{itemize}
+				\item Аналитически
+				\item Отладка
+			\end{itemize}
+			\item Отладочная гипотеза
+			\begin{itemize}
+				\item Похоже на научный подход --- гипотеза, эксперимент, уточнение, эксперимент и т.д.
+				\item Тестовый прогон с отладочной печатью
+				\item Тестовый прогон под отладчиком
+			\end{itemize}	
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Откладка}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{Bricks.jpg}
+		\end{center}
+	\end{frame}
+\end{document}
+
