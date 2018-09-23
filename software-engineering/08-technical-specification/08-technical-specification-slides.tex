@@ -1,0 +1,141 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Занятие 8: Техническое задание}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{27.09.2018}
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\; #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Введение}
+
+	\begin{frame}
+		\frametitle{Без хорошего ТЗ получается...}
+		\begin{itemize}
+			\item Техническое задание --- пожалуй, самая важная часть договора о разработке ПО
+			\item Фиксирует (в юридически значимом документе) цель создания, требования к продукту, условия функционирования, сроки и этапы разработки, регламент приёмки
+			\item Необходим и исполнителю, и заказчику
+			\item Разрабатывается, как правило, исполнителем
+			\item Стандарты:
+			\begin{itemize}
+				\item ГОСТ 19.201-78 Техническое задание. Требования к содержанию и оформлению.
+				\item ГОСТ 34.602-89 Техническое задание на создание автоматизированной системы.
+				\item IEEE 29148-2011
+			\end{itemize}
+			\item ``We value \textbf{working software} over comprehensive documentation''
+			\begin{itemize}
+				\item ``there is value in the items on the right''
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{ЕСПД}
+
+	\begin{frame}
+		\frametitle{ГОСТ 19: ЕСПД}
+		\framesubtitle{Единая Система Программной Документации}
+		Виды документов:
+		\begin{itemize}
+			\item Спецификация
+			\item Ведомость держателей подлинников
+			\item Текст программы
+			\item Описание программы
+			\item Программа и методика испытаний
+			\item Техническое задание
+			\item Пояснительная записка
+			\item Эксплуатационные документы
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{ЕСПД, эксплуатационные документы}
+		\begin{itemize}
+			\item Ведомость эксплуатационных документов
+			\item Формуляр
+			\item Описание применения
+			\item Руководство системного программиста
+			\item Руководство программиста
+			\item Руководство оператора
+			\item Описание языка
+			\item Руководство по техническому обслуживанию
+		\end{itemize}
+	\end{frame}
+
+	\section{ТЗ}
+
+	\begin{frame}
+		\frametitle{Техническое задание}
+		\framesubtitle{ГОСТ 19.201-78}
+		Разделы:
+		\begin{itemize}
+			\item введение
+			\item основания для разработки
+			\item назначение разработки
+			\item требования к программе или программному изделию
+			\item требования к программной документации
+			\item технико-экономические показатели
+			\item стадии и этапы разработки
+			\item порядок контроля и приемки
+			\item приложения (если есть)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Требования, по ГОСТ}
+		Разделы:
+		\begin{itemize}
+			\item требования к функциональным характеристикам
+			\item требования к надежности
+			\item условия эксплуатации
+			\item требования к составу и параметрам технических средств
+			\item требования к информационной и программной совместимости
+			\item требования к маркировке и упаковке
+			\item требования к транспортированию и хранению
+			\item специальные требования
+		\end{itemize}
+	\end{frame}
+
+	\section{Задание на пару}
+
+	\begin{frame}
+		\frametitle{Задание на пару}
+		\begin{itemize}
+			\item Оформить имеющиеся требования и сведения из устава проекта как ТЗ по ГОСТ 19.201-78
+			\begin{itemize}
+				\item За исключением нерелевантных разделов
+			\end{itemize}
+			\item Отдать на рассмотрение соседней команде, задача которой --- играть роль недобросовестного исполнителя
+			\begin{itemize}
+				\item Составить список ``лазеек'', которые позволят удовлетворить формальным требованиям в ТЗ, делая минимум работы
+			\end{itemize}
+			\item Исправить выявленные проблемы, доделать дома и выложить на вики проекта
+		\end{itemize}
+	\end{frame}
+
+\end{document}
