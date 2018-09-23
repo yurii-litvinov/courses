@@ -10,22 +10,18 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
 \usepackage{forest}
 \usetikzlibrary{arrows}
-
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
 
 \tabulinesep=0.7mm
 
 \title{Сортировки}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{21.09.2018}
+\date{28.09.2018}
 
 \begin{document}
 	
@@ -34,7 +30,7 @@
 	\begin{frame}
 		\frametitle{Свойства сортировок}
 		\begin{itemize}
-			\item Работают над любыми контейнерами данных                                        
+			\item Работают над любыми контейнерами данных
 			\item Есть понятие ``ключ''
 			\item Устойчивость --- сохраняется ли взаимное расположение элементов с одинаковым ключом
 			\item Естественность --- учёт степени отсортированности исходных данных
@@ -131,7 +127,6 @@ algorithm quicksort(A, lo, hi) is
         p := partition(A, lo, hi)
         quicksort(A, lo, p – 1)
         quicksort(A, p + 1, hi)
-
 					\end{minted}
 				\end{footnotesize}
 			\end{column}
@@ -149,11 +144,11 @@ algorithm partition(A, lo, hi) is
     return i
 					\end{minted}
 				\end{footnotesize}
-			\end{column}                                                                                
+			\end{column}
 		\end{columns}
 		\vspace{1cm}
 		Нерекурсивная реализация --- через стек, в котором хранятся границы сортируемых кусков массива
-	\end{frame}   
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Сортировка кучей (пирамидальная, heapsort)}
