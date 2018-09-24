@@ -1,0 +1,158 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{pgfplots}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=0.7mm
+
+\title{Внутреннее представление данных}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{05.10.2018}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Побитовые операции}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}
+					\item \& --- побитовое ``И''
+					\item | --- побитовое ``ИЛИ''
+					\item $\sim$ --- побитовое ``НЕ''
+					\item 1 \& 2 == false, но 1 \&\& 2 == true
+					\item $<<$, $>>$ --- битовый сдвиг
+					\begin{itemize}
+						\item int x = 1 $<<$ 3
+					\end{itemize}
+					\item sizeof --- размер типа в байтах
+					\begin{itemize}
+						\item int s = sizeof(int) * 8
+					\end{itemize}
+					\item Обратите внимание, что ВСЁ хранится как набор бит
+					\begin{itemize}
+						\item ``3'' --- литерал, лишь удобная форма записи 00...0011 в коде
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				Маски
+				
+				\&:
+				\vspace{0.1cm}
+				
+				\begin{tabu} {| X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] |}
+					\tabucline-
+					\everyrow{\tabucline-}
+					1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+					0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+					0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+				\end{tabu}
+				\vspace{0.5cm}
+
+				\&:
+				\vspace{0.1cm}
+
+				\begin{tabu} {| X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] |}
+					\tabucline-
+					\everyrow{\tabucline-}
+					1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+					0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+					0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+				\end{tabu}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Работа с масками}
+		\begin{footnotesize}
+			\begin{minted}{cpp}
+char x = 5;
+
+int bit = 0b10000000;
+for (int j = 0; j < 8; ++j)
+{
+    printf((x & bit) ? "1" : "0");
+    bit = bit >> 1;
+}
+			\end{minted}
+		\end{footnotesize}
+
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{OLOLO}
+		\begin{center}
+			\begin{tikzpicture}
+				\begin{axis}[
+						axis lines = left,
+						xlabel = $n$,
+						ylabel = {$f(n)$},
+						ymin = 0,
+						every axis plot/.append style={ultra thick}
+					]
+					\addplot [
+							domain=0:3, 
+							samples=100, 
+							color=red,
+						]
+					{1.2*exp(x) + 2};
+					\addplot [
+							domain=0:3, 
+							samples=100, 
+							color=green,
+						]
+					{2*x + 10};
+					\addplot [
+							domain=0:3, 
+							samples=100, 
+							color=blue,
+						]
+					{1.7*x^2 + 7};
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{TROLOLO}
+		\begin{tabu} {| X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] |}
+			\tabucline-
+			\everyrow{\tabucline-}
+			1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+			0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+			0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		\end{tabu}
+		\vspace{2cm}
+		\begin{tabu} {| X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] |}
+			\tabucline-
+			\everyrow{\tabucline-}
+			1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+			0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+			0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+		\end{tabu}
+	\end{frame}
+
+\end{document}
+
