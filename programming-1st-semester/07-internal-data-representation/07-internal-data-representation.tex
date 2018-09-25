@@ -98,7 +98,36 @@ for (int j = 0; j < 8; ++j)
 }
 			\end{minted}
 		\end{footnotesize}
+	\end{frame}
 
+	\begin{frame}
+		\frametitle{Целые числа}
+		\begin{itemize}
+			\item Прямой код
+			\begin{itemize}
+				\item 5 --- 00000101, -5 --- 10000101
+			\end{itemize}
+			\item Обратный код
+			\begin{itemize}
+				\item 5 --- 00000101, -5 --- 11111010
+			\end{itemize}
+			\item Дополнительный код
+			\begin{itemize}
+				\item 5 --- 00000101, -5 --- 11111011
+				\item $-x$ представляется как $2^n - x$, поэтому и дополнительный
+				\begin{itemize}
+					\item $n$ --- разрядность регистра
+				\end{itemize} 
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Арифметические действия}
+		\begin{itemize}
+			\item В обратном коде единица переноса в старшем разряде прибавляется к младшему разряду
+			\item В дополнительном коде единица переноса в старшем разряде отбрасывается
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
