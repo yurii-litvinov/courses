@@ -158,7 +158,8 @@ $ git checkout testing
 		\frametitle{Новый коммит}
 		\begin{minted}{text}
 <Что-то поделали с файлами в рабочей копии>
-$ git commit -a -m 'made a change'
+$ git add <изменения, которые хотим коммитить>
+$ git commit -m 'made a change'
 		\end{minted}
 		\begin{center}
 			\includegraphics[width=0.8\textwidth]{newCommit.png}
@@ -181,7 +182,8 @@ $ git checkout master
 		\frametitle{Сделаем новый коммит там}
 		\begin{minted}{text}
 <Что-то поделали с файлами в рабочей копии>
-$ git commit -a -m 'made other changes'
+$ git add <изменения, которые хотим коммитить>
+$ git commit -m 'made other changes'
 		\end{minted}
 		\begin{center}
 			\includegraphics[width=0.8\textwidth]{newCommitToMaster.png}
@@ -276,7 +278,7 @@ index.html |    1 +
 				\item git checkout master
 				\item git branch my-cool-hometask-3.1
 			\end{itemize}
-			\item Создаёте прямо там проект, делаете задачу
+			\item Создаёте \textbf{прямо там} проект, делаете задачу
 			\item Коммитите, сколько хотите
 			\begin{itemize}
 				\item После каждого значимого продвижения
@@ -400,6 +402,26 @@ index.html |    1 +
 		\begin{center}
 			\includegraphics[width=0.4\textwidth]{inCaseOfFire.png}
 		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё полезные команды}
+		\begin{itemize}
+			\item \verb|git add -p| --- интерактивное добавление изменений к коммиту, позволяет коммитить только часть файла
+			\item \verb|git commit --amend| --- исправить последний коммит
+			\begin{itemize}
+				\item \verb|git commit --amend -m "an updated commit message"|
+				\item Применять \textbf{только до} git push
+			\end{itemize}
+			\item \verb|git reset --hard| --- откатить все изменения в рабочей копии до последнего коммита
+			\begin{itemize}
+				\item Обязательно проверить git status, что не откатите лишнего
+			\end{itemize}
+			\item \verb|git reset --hard <хеш коммита>| --- откатить все изменения в текущей ветке до указанного коммита, забыть все коммиты, что были после
+			\begin{itemize}
+				\item И случайно грохнуть всю домашку перед зачётом
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 	
 	\begin{frame}
