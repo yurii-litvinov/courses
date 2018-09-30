@@ -1,0 +1,100 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{pgfplots}
+\usepackage{textpos}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
+\setbeamercolor*{block body example}{fg=black,bg=green!10}
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=0.7mm
+
+\title{Структуры, указатели, модули, файлы}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{05.10.2018}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Структуры}
+		\begin{itemize}
+			\item Способ группировки родственных по смыслу значений
+			\item Структура --- это тип
+			\begin{itemize}
+				\item В памяти представляется как поля, лежащие друг за другом, возможно, с ``дырками'' (padding)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Указатели и ссылки}
+		\begin{itemize}
+			\item Указатель --- адрес ячейки в памяти
+			\item Ссылка --- ``синоним'', просто другое название для ячейки в памяти
+			\begin{itemize}
+				\item Можно считать, что ссылка --- это указатель, который не надо разыменовывать (и нельзя менять)
+			\end{itemize}
+			\item Структуры и указатели настолько часто используются вместе, что есть оператор -> (разыменовать указатель на структуру и обратиться к её полю)
+			\begin{itemize}
+				\item 
+				\begin{footnotesize}
+					\begin{minted}{cpp}
+Point p = new Point { 10, 20 };
+cout << p->x << p->y;
+					\end{minted}
+				\end{footnotesize}
+				\item То же самое, что \mintinline{cpp}|(*p).x| и \mintinline{cpp}|(*p).y|
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Файлы}
+		\begin{itemize}
+			\item Последовательность байтов на диске
+			\begin{itemize}
+				\item Бывают ``сырые'' и ``текстовые''
+				\begin{itemize}
+					\item Самому файлу всё равно, это лишь способы интерпретации его содержимого
+				\end{itemize}
+				\item Режимы доступа: r, w, a, r+, w+, a+
+				\item Курсор
+				\item EOF
+			\end{itemize}
+			\item Сишные функции
+			\begin{itemize}
+				\item fopen, fclose, fprintf, fscanf, fseek, ftell, fgets
+			\end{itemize}
+			\item C++-ные классы
+			\begin{itemize}
+				\item ifstream
+				\begin{itemize}
+					\item is\char`_open
+					\item $>>$
+					\item getline
+				\end{itemize}
+			\end{itemize}
+			\item Файлы надо не забывать закрывать
+		\end{itemize}
+	\end{frame}
+
+\end{document}
+
