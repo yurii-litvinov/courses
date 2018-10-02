@@ -15,13 +15,6 @@
 \usepackage{forest}
 \usetikzlibrary{arrows}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
 \tabulinesep=0.7mm
 
 \title{Структуры, указатели, модули, файлы}
@@ -57,8 +50,13 @@
 				\item 
 				\begin{footnotesize}
 					\begin{minted}{cpp}
-Point p = new Point { 10, 20 };
-cout << p->x << p->y;
+Point *p = new Point { 10, 20 };
+printf("(%d, %d)", p->x, p->y);
+					\end{minted}
+					Или
+					\begin{minted}{cpp}
+auto p = new Point { 10, 20 };
+printf("(%d, %d)", p->x, p->y);
 					\end{minted}
 				\end{footnotesize}
 				\item То же самое, что \mintinline{cpp}|(*p).x| и \mintinline{cpp}|(*p).y|
@@ -83,17 +81,64 @@ cout << p->x << p->y;
 			\begin{itemize}
 				\item fopen, fclose, fprintf, fscanf, fseek, ftell, fgets
 			\end{itemize}
-			\item C++-ные классы
-			\begin{itemize}
-				\item ifstream
-				\begin{itemize}
-					\item is\char`_open
-					\item $>>$
-					\item getline
-				\end{itemize}
-			\end{itemize}
 			\item Файлы надо не забывать закрывать
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Модули}
+		\begin{itemize}
+			\item Способ группировки кода в логически обособленные группы
+			\item В C++ это реализуется с помощью заголовочных файлов и файлов с реализацией
+			\begin{itemize}
+				\item .h и .cpp
+			\end{itemize}
+			\item В отдельный модуль выносятся объявления типов данных и функции, которые делают одно дело
+			\begin{itemize}
+				\item Например, разные функции сортировки
+				\item Или всё для работы с матрицами
+			\end{itemize}
+			\item В интерфейсную часть модуля выносится только то, что может использовать другой код
+			\begin{itemize}
+				\item Меньше знаешь --- крепче спишь
+			\end{itemize}
+			\item Функции, используемые только для реализации, пишутся только в .cpp-файле
+			\begin{itemize}
+				\item Например, функция разделения массива для быстрой сортировки или swap
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Модули}
+		\begin{scriptsize}
+			Заголовочный файл:
+			\begin{minted}{cpp}
+#pragma once
+
+// Комментарий к функции 1
+int function1(int x, int y);
+
+// Комментарий к функции 2
+void function2();
+			\end{minted}
+			.cpp-файл:
+			\begin{minted}{cpp}
+#include <имя заголовочного файла.h>
+
+#include <все остальные библиотеки>
+
+int function1(int x, int y)
+{
+    ...
+}
+
+void function2()
+{
+    ...
+}
+			\end{minted}
+		\end{scriptsize}
 	\end{frame}
 
 \end{document}
