@@ -4,6 +4,7 @@
 \usepackage{minted}
 \usepackage{tabu}
 \usepackage{moresize}
+\usepackage{textpos}
 
 \useoutertheme{infolines}
 
@@ -14,17 +15,12 @@
 \definecolor{links}{HTML}{2A1B81}
 \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
 \tabulinesep=1.2mm
 
 \title{Работа с сетью}
 \subtitle{Высокий уровень}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{28.09.2018г}
+\date{05.10.2018г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -445,6 +441,9 @@ class Program
 			\item Алгоритм шифрования считается известным, секретен только ключ
 			\item Усложнение алгоритма шифрования не всегда повышает криптостойкость
 		\end{itemize}
+		\begin{textblock}{2.5}(0,-10)
+			\includegraphics[width=\textwidth]{youAreBeingWatched.png}
+		\end{textblock}
 	\end{frame}
 
 	\begin{frame}
@@ -513,7 +512,7 @@ class Program
 			\attribution{Э. Таненбаум}
 		\end{center}
 		\begin{itemize}
-			\item Сертификат --- сообщение, полдтверждающее идентичность ключа, подписанное Certificate Authority (стандарт X.509)
+			\item Сертификат --- сообщение, подтверждающее идентичность ключа, подписанное Certificate Authority (стандарт X.509)
 			\item Цепочка сертификатов --- CA верхнего уровня подписывает сертификаты CA уровнем ниже, чтобы они могли подписывать сертификаты пользователей
 			\item Корневые сертификаты --- сертификаты, которым принято доверять
 			\item Самоподписанные сертификаты --- не доверенные, используются для отладки
