@@ -23,7 +23,7 @@
 
 \title[Моделирование поведения]{Лекция 5: Моделирование поведения}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{19.10.2017г}
+\date{05.10.2018г}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -489,6 +489,110 @@ public void handleEvent(PanelEvent anEvent) {
 			\attribution{https://habrahabr.ru/post/322832/}
 		\end{center}
 	\end{frame}
+
+	\section{Сети Петри}
+
+	\begin{frame}
+		\frametitle{Сети Петри}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}
+					\item Тройка $(P, T, \phi)$
+					\begin{itemize}
+						\item Множество мест
+						\item Множество переходов
+						\item Функция потока $\phi : (P \times T) \cup (T \times P) \rightarrow N$
+					\end{itemize}
+					\item Маркировка: $\mu : P \rightarrow N$
+					\item Срабатывание (firing):
+					$\mu \xrightarrow{t} \mu’ : \mu’(p) = \mu(p) - \phi(p, t) + \phi(t, p), \forall p \in P$
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{petri.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Зачем это}
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{petriNetExamples.png}
+			\attribution{Murata Tadao. Petri nets: Properties, analysis and applications}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Свойства, которые можно проверить}
+		\begin{itemize}
+			\item Поведенческие свойства:
+			\begin{itemize}
+				\item Достижимость
+				\item Ограниченность (безопасность)
+				\item Живость (L0 - L4)
+				\item ``Реверсабельность'' и ``домашнее состояние''
+				\item ...
+			\end{itemize}
+			\item Структурные свойства
+			\begin{itemize}
+				\item Структурная живость
+				\item Полная контролируемость
+				\item Структурная ограниченность
+				\item ...
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Способы анализа}
+		\begin{itemize}
+			\item Алгебраический
+
+			\includegraphics[width=0.4\textwidth]{petriAlgebraicAnalysis.png}
+			\item Структурный
+			\item Редукцией
+			\item Пространства состояний
+			\begin{textblock}{7}(5.2,-2.75)
+				\includegraphics[width=\textwidth]{petriStateSpaceAnalysis.png}
+			\end{textblock}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример использования (1)}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Сеть Петри как форма представления знаний, генерится автоматически по демонстрации
+					\item Поиск по дереву достижимости для определения пути решения задачи или подзадачи
+					\begin{itemize}
+						\item ``как программисту вскипятить чайник, если в нём уже есть вода?''
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{petriUsageExample1.png}
+					\attribution{Robot Task Learning from Demonstration Using Petri Nets}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример использования (2)}
+		\begin{itemize}
+			\item Сеть Петри как план работы, состоящий из элементарных действий гетерогенных агентов
+			\item Автоматическое распределение работ
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{petriUsageExample2.png}
+		\end{center}
+	\end{frame}
+
+	\section{Заключение}
 
 	\begin{frame}
 		\frametitle{Книжка}
