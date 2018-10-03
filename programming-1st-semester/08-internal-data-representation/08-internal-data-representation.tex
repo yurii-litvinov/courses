@@ -11,15 +11,15 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
 \usepackage{forest}
 \usetikzlibrary{arrows}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
 \tabulinesep=0.7mm
 
@@ -57,10 +57,10 @@
 			\end{column}
 			\begin{column}{0.4\textwidth}
 				Маски
-				
-				\&:
-				\vspace{0.1cm}
-				
+				\vspace{3mm}
+				\begin{textblock}{1}(-0.35,0.4)
+					\&
+				\end{textblock}
 				\begin{tabu} {| X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] |}
 					\tabucline-
 					\everyrow{\tabucline-}
@@ -70,9 +70,9 @@
 				\end{tabu}
 				\vspace{0.5cm}
 
-				\&:
-				\vspace{0.1cm}
-
+				\begin{textblock}{1}(-0.35,0.4)
+					\&
+				\end{textblock}
 				\begin{tabu} {| X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] | X[1 l p] |}
 					\tabucline-
 					\everyrow{\tabucline-}
@@ -105,15 +105,15 @@ for (int j = 0; j < 8; ++j)
 		\begin{itemize}
 			\item Прямой код
 			\begin{itemize}
-				\item 5 --- 00000101, -5 --- 10000101
+				\item $5$ --- $00000101$, $-5$ --- $10000101$
 			\end{itemize}
 			\item Обратный код
 			\begin{itemize}
-				\item 5 --- 00000101, -5 --- 11111010
+				\item $5$ --- $00000101$, $-5$ --- $11111010$
 			\end{itemize}
 			\item Дополнительный код
 			\begin{itemize}
-				\item 5 --- 00000101, -5 --- 11111011
+				\item $5$ --- $00000101$, $-5$ --- $11111011$
 				\item $-x$ представляется как $2^n - x$, поэтому и дополнительный
 				\begin{itemize}
 					\item $n$ --- разрядность регистра
@@ -137,7 +137,7 @@ for (int j = 0; j < 8; ++j)
 			\begin{itemize}
 				\item \mintinline{cpp}|int hexadecimal = 0x35FF;|
 				\item \mintinline{cpp}|int octal = 03567;|
-				\item \mintinline{cpp}|int binary = 0b00100111;| (С++14, может не работать) 
+				\item \mintinline{cpp}|int binary = 0b00100111;| (С++14) 
 				\item \mintinline{cpp}|0xFF == 255|
 			\end{itemize}
 			\item 
@@ -225,7 +225,7 @@ printf("0x%02X%02X%02X%02X\n", b[0], b[1], b[2], b[3]);
 					\begin{minted}{cpp}
 double y = 0.0;
 double x = 239.0 / y;
-std::cout << x;
+printf("%f", x);
 					\end{minted}
 				\end{footnotesize}
 			\end{column}
