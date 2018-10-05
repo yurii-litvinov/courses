@@ -26,14 +26,23 @@
 	
 	\frame{\titlepage}
 	
-	\begin{frame}
+	\begin{frame}[fragile]
 		\frametitle{Структуры}
 		\begin{itemize}
 			\item Способ группировки родственных по смыслу значений
 			\item Структура --- это тип
 			\begin{itemize}
 				\item В памяти представляется как поля, лежащие друг за другом, возможно, с ``дырками'' (padding)
+				\item Объявляется, гм, вне функции
 			\end{itemize}
+			\item Объявление структуры:
+			\begin{minted}{cpp}
+struct Point 
+{
+    int x;
+    int y;
+};
+			\end{minted}
 		\end{itemize}
 	\end{frame}
 
@@ -82,6 +91,59 @@ printf("(%d, %d)", p->x, p->y);
 				\item fopen, fclose, fprintf, fscanf, fseek, ftell, fgets
 			\end{itemize}
 			\item Файлы надо не забывать закрывать
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, как писать в файл}
+		\begin{minted}{cpp}
+FILE * out = fopen("ololo.txt", "w");
+fwrite("Ololo", sizeof(char), 6, out);
+fclose(out);
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, как читать из файла}
+		\begin{scriptsize}
+			\begin{minted}{cpp}
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("test.txt", "r");
+    if (!file) {
+        printf("file not found!");
+        return 1;
+    }
+    char *data[100] = {};
+    int linesRead = 0;
+    while (!feof(file)) {
+        char *buffer = new char[100];
+        const int readBytes = fscanf(file, "%s", buffer);
+        if (readBytes < 0) {
+            break;
+        }
+        data[linesRead] = buffer;
+        ++linesRead;
+    }
+    fclose(file);
+    ...
+}
+
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Тонкости}
+		\begin{itemize}
+			\item Чтение строки целиком: \mintinline{cpp}|fscanf(file, "|\%\mintinline{cpp}|[^\n]", buffer);|
+			\item Или: \mintinline{cpp}|fgets(buffer, sizeof(buffer), file);|
+			\item Working directory
+			\begin{itemize}
+				\item Свойства проекта -> Отладка -> Рабочая папка
+				\item По умолчанию \$(ProjectDir), папка с .vcxproj
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
