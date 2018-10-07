@@ -14,12 +14,9 @@
 \usepackage{forest}
 \usetikzlibrary{arrows}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
 
 \tabulinesep=0.7mm
 
@@ -171,7 +168,6 @@
 			\item Моделирование
 			\item Тестирование (модульное и регрессионное)
 			\item Версионный контроль
-			\item Автоматическая сборка
 			\item Непрерывная интеграция
 			\item Code review
 		\end{itemize}
@@ -180,7 +176,8 @@
 	\begin{frame}
 		\frametitle{Версионный контроль}
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{version-control.png}
+			\includegraphics[width=0.42\textwidth]{git-flow.png}
+			\attribution{https://nvie.com/posts/a-successful-git-branching-model/}
 		\end{center}
 	\end{frame}
 
