@@ -1,0 +1,74 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Практика по рисованию диаграмм}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{12.10.2018г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задача 1}
+		Нарисовать диаграмму активностей, моделирующую бизнес-процесс проведения ``промежуточной аттестации'' в учебном отделе.
+		\begin{itemize}
+			\item Зачёты и зачётная неделя
+			\item Сессия
+			\item Результаты --- отчисление, перевод в следующий семестр, назначение стипендии (разных видов)
+			\item Использовать разделы для представления разных заинтересованных сторон
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Задача 2}
+		\begin{itemize}
+			\item Проанализировать запрос \url{https://goo.gl/MiyH8c}
+			\item Нарисовать BPMN-диаграмму бизнес-процесса завода
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Задача 3}
+		Нарисовать диаграмму развёртывания для приложения, описанного в RFP про автомобильный завод
+		\begin{itemize}
+			\item \url{https://goo.gl/MiyH8c}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Задача 4}
+		Нарисовать диаграмму случаев использования создаваемого приложения из RFP
+		\begin{itemize}
+			\item \url{https://goo.gl/MiyH8c}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Задача 5}
+		Нарисовать временную диаграмму одного из сценариев работы микроволновки
+		\begin{itemize}
+			\item В VP это может быть не совсем тривиально: \url{https://www.visual-paradigm.com/support/documents/vpuserguide/94/2586/6715_drawingtimin.html}
+		\end{itemize}
+	\end{frame}
+
+\end{document}
