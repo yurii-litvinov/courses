@@ -14,116 +14,22 @@
 \setlength{\TPHorizModule}{1cm}
 \setlength{\TPVertModule}{1cm}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
 \tabulinesep=1.2mm
 
-\title{Занятие 12: Continuous Delivery}
-\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{29.11.2017}
-
-\newcommand{\todo}[1] {
-	\begin{center}\textcolor{red}{TODO: #1}\end{center}
-}
-
-\newcommand{\DownArrow} {
-	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
-}
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
 \newcommand{\attribution}[1] {
 	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\; #1}\end{scriptsize}\end{flushright}
 }
 
+\title{Занятие 13: Continuous Delivery}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{16.10.2018}
+
 \begin{document}
 
 	\frame{\titlepage}
-
-	\begin{frame}
-		\frametitle{Docker}
-		\begin{center}
-			\includegraphics[width=\textwidth]{docker.png}
-			\attribution{\url{https://www.docker.com}}
-		\end{center}
-	\end{frame}
-	
-	\begin{frame}[fragile]
-		\frametitle{Dockerfile}
-		\begin{scriptsize}
-			\begin{minted}{sh}
-# Use an official Python runtime as a parent image
-FROM python:2.7-slim
-
-# Set the working directory to /app
-WORKDIR /app
-
-# Copy the current directory contents into the container at /app
-ADD . /app
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
-
-# Make port 80 available to the world outside this container
-EXPOSE 80
-
-# Define environment variable
-ENV NAME World
-
-# Run app.py when the container launches
-CMD ["python", "app.py"]
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Балансировка нагрузки}
-		\framesubtitle{docker-compose.yml}
-		\begin{scriptsize}
-			\begin{minted}{yaml}
-version: "3"
-services:
-    web:
-        # replace username/repo:tag with your name and image details
-        image: username/repo:tag
-        deploy:
-            replicas: 5
-            resources:
-                limits:
-                    cpus: "0.1"
-                    memory: 50M
-            restart_policy:
-                condition: on-failure
-        ports:
-            - "80:80"
-        networks:
-            - webnet
-networks:
-    webnet:
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Swarm-ы}
-		\begin{center}
-			\includegraphics[width=\textwidth]{swarmLoadBalancing.png}
-			\attribution{\url{https://www.docker.com}}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Сборка в Docker}
-		\begin{itemize}
-			\item Приложение: \url{https://github.com/trikset/trikRuntime}
-			\begin{itemize}
-				\item Прошивка для робота, C++ с Qt
-			\end{itemize}
-			\item Dockerfile: \url{https://github.com/trikset/trikRuntime/blob/master/docker/Dockerfile}
-			\item .travis.yml: \url{https://github.com/trikset/trikRuntime/blob/master/.travis.yml}
-		\end{itemize}
-	\end{frame}
 
 	\begin{frame}
 		\frametitle{Jenkins}

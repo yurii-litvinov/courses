@@ -1,0 +1,177 @@
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[font=scriptsize]{caption}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Docker, демонстрация}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+
+\date{16.10.2018}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\section{Требования}
+
+Для начала надо поставить Docker, либо как написано здесь: \url{https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/}, либо, если у вас Windows, просто скачав и поставив Docker Community Edition.
+Правда, под Windows Docker включит Hyper V, после чего перестанут работать все остальные виртуальные машины типа VirtualBox, поэтому если VirtualBox нужен, лучше ставить Docker Toolbox, который то же самое, но
+использует VirtualBox для виртуализации. Hyper V, впрочем, можно потом отключить. При установке компьютер захочет перезагрузиться (возможно, пару раз).
+
+\section{Docker}
+
+Docker --- в общем-то, промышленный стандарт в области Continuous Delivery. Идея Docker заключается в том, чтобы вообще не заниматься установкой приложения
+и всех его зависимостей на целевой системе, а просто таскать всё с собой, включая все необходимые библиотеки, настройки и т.д. При этом приложение изолировано от всей остальной системы, так что конфликты версий библиотек или файлов конфигурации невозможны в принципе. Docker очень похож на виртуальные машины, но, в отличие от них, не эмулирует аппаратное обеспечение, а предоставляет абстракцию уровня ядра операционной системы. Так что несколько докер-контейнеров могут использовать одно ядро, нет нужды грузить ``гостевую'' ОС (потому что нет гостевой ОС, есть одна ОС и ``гостевые'' окружения), так что докер-контейнеры работают быстрее и весят меньше, чем виртуальные машины (зато не могут эмулировать несуществующее железо, как умеют многие виртуальные машины).
+
+Кстати, \textit{образ} (image) --- это само приложение плюс все библиотеки, переменные окружения и конфиги, которые нужны ему для работы, а \textit{контейнер} (container) --- это результат запуска образа  на выполнение (то есть экземпляр образа в рантайме).
+
+Чтобы попробовать, поставьте докер и наберите в командной строке \verb|docker run hello-world|. Докер не найдёт образ hello-world на локальной машине, полезет на Docker Hub и скачает образ оттуда, после чего запустит контейнер и выведет сообщение. Всё это практически мгновенно. На линуксе оно захочет sudo, но если добавить своего юзера в группу docker, то можно и без sudo.
+
+Повторим туториал с официального сайта (\url{https://docs.docker.com/get-started}), чтобы посмотреть на докер своими глазами. Там созаётся приложение на питоне, которое будет работать в контейнере. Причём, магия докера такова, что питон для этого ставить не надо.
+
+Создадим пустую папку, создадим в ней файл Dockerfile вот такого содержания:
+\begin{minted}{sh}
+# Use an official Python runtime as a parent image
+FROM python:2.7-slim
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+ADD . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
+CMD ["python", "app.py"]
+\end{minted}
+
+Создаём там же requirements.txt такого содержания:
+\begin{minted}{text}
+Flask
+Redis
+\end{minted}
+
+Ну и, собственно, приложение, app.py:
+\begin{minted}{python}
+from flask import Flask
+from redis import Redis, RedisError
+import os
+import socket
+
+# Connect to Redis
+redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
+
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    try:
+        visits = redis.incr("counter")
+    except RedisError:
+        visits = "<i>cannot connect to Redis, counter disabled</i>"
+
+    html = "<h3>Hello {name}!</h3>" \
+            "<b>Hostname:</b> {hostname}<br/>" \
+            "<b>Visits:</b> {visits}"
+    return html.format(name=os.getenv("NAME", "world"), 
+        hostname=socket.gethostname(), 
+        visits=visits)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=80)
+\end{minted}
+
+Теперь соберём образ:
+
+\begin{minted}{sh}
+docker build -t friendlyhello .
+\end{minted}
+
+Проверим, что оно собралось:
+\begin{minted}{sh}
+docker images
+\end{minted}
+
+Должен вывестить список всех докер-образов на машине, в том числе и свежесобранный.
+
+Ну и, наконец, запустим контейнер:
+
+\begin{minted}{sh}
+docker run -p 4000:80 friendlyhello
+\end{minted}
+
+Обратите внимание, что контейнер думает, что слушает порт 80, но мы замапили его на порт 4000 хостовой системы (-p --- ``publish'', опубликовать порт такой-то как такой-то). В докерфайле же прописано EXPOSE 80, что говорит контейнеру, что его (внутренний) порт 80 должен быть доступен извне.
+
+Чтобы остановить контейнер, надо нажать Ctrl-C, как оно просит, но если бы всё было так просто, я бы про это не рассказывал. Под виндой надо остановить контейнер явно, командами
+
+\begin{minted}{sh}
+docker container ls
+...
+docker container stop ...
+\end{minted}
+	
+Где ... --- либо CONTAINER ID, либо имя (автоматически сгенерированное) контейнера. На линуксе же, чтобы контейнер работал как демон, надо его запустить с ключём -d (detached).
+
+Теперь давайте выложим это барахло в публичный доступ с помощью команд, очень похожих на git push (и вообще, работа с образами в докере сильно напоминает гит, там есть даже тэги). Делаем мы это для того, чтобы использовать докер-образы где-нибудь ещё, например, на Travis. Для начала надо завести аккаунт на \url{https://cloud.docker.com/}, запомнить своё имя пользователя. Логинимся из консоли командой docker login, вводим свой логин и пароль.
+
+Дальше надо создать тэг для своего образа (не обязательно, на самом деле, но очень рекомендуется), например, так:
+
+\begin{minted}{sh}
+docker tag friendlyhello yuriilitvinov/get-started:part2
+\end{minted}
+
+В тэге сначала идёт имя пользователя, потом имя репозитория, потом тэг текущего образа в репозитории. Можно посмотреть на то, что получилось, командой docker image ls. Теперь запушим вновь созданный тэг в репозиторий:
+
+\begin{minted}{sh}
+docker push yuriilitvinov/get-started:part2
+\end{minted}
+
+Теперь можно пойти на \url{https://cloud.docker.com/} и посмотреть, что там появился новый репозиторий с нашим образом. Теперь на \textbf{любой} машине достаточно набрать
+\begin{minted}{sh}
+docker run -p 4000:80 yuriilitvinov/get-started:part2
+\end{minted}
+
+Правда, контейнеры с виндовыми приложениями так просто на линуксе не заработают, зато скорее всего линуксовые контейнеры будут нормально работать на винде.
+
+\end{document}
