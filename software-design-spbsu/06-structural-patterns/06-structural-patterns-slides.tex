@@ -507,4 +507,146 @@
 		\end{itemize}
 	\end{frame}
 
+	\section{Паттерн ``Фасад''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Фасад''}
+		\framesubtitle{Facade}
+		\begin{itemize}
+			\item Простой интерфейс к сложной системе
+			\item Отделение подсистем от клиента и друг от друга
+			\item Многоуровневая архитектура
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Фасад'' (Facade), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Абстрактный Facade
+					\begin{itemize}
+						\item Существенно снижает связность клиента с подсистемой
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{facade.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\begin{itemize}
+			\item Открытые и закрытые классы подсистемы
+			\begin{itemize}
+				\item Пространства имён и пакеты помогают, но требуют дополнительных соглашений
+				\begin{itemize}
+					\item Пространство имён details
+				\end{itemize}
+				\item Инкапсуляция целой подсистемы --- это хорошо
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Приспособленец''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Приспособленец'' (Flyweight)}
+		Предназначается для эффективной поддержки множества мелких объектов
+
+		Пример:
+
+		\begin{itemize}
+			\item Есть текстовый редактор
+			\item Хочется работать с каждым символом как с объектом
+			\begin{itemize}
+				\item Единообразие алгоритмов форматирования и внутренней структуры документа
+				\item Более красивая и ООПшная реализация
+				\begin{itemize}
+					\item Паттерн ``Компоновщик'', структура ``Символ'' $\rightarrow$ ``Строка'' $\rightarrow$ ``Страница''
+				\end{itemize}
+			\end{itemize}
+			\item Наивная реализация привела бы к чрезмерной расточительности по времени работы и по памяти, потому что документы с миллионами символов не редкость
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', пример}
+		\begin{center}
+			\includegraphics[width=0.38\textwidth]{noFlyweight.png}
+			\raisebox{0.1\textheight}{\quad\Huge{$\rightarrow$}\quad}
+			\includegraphics[width=0.38\textwidth]{flyweightExample.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', общая схема}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{flyweight.png}
+		\end{center}
+		\begin{footnotesize}
+			\begin{itemize}
+				\item \textit{Flyweight} --- определяет интерфейс, через который приспособленцы могут получать внешнее состояние
+				\item \textit{ConcreteFlyweight} --- реализует интерфейс Flyweight и может иметь внутреннее состояние, не зависит от контекста
+				\item \textit{UnsharedConcreteFlyweight} --- неразделяемый ``приспособленец'', хранящий всё состояние в себе, бывает нужен, чтобы собирать иерархические структуры из Flyweight-ов (``Компоновщик'')
+				\item \textit{FlyweightFactory} --- содержит пул приспособленцев, создаёт их и управляет их жизнью
+			\end{itemize}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{``Приспособленец'', диаграмма объектов}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{flyweightObjects.png}
+		\end{center}
+		\begin{itemize}
+			\item Клиенты могут быть разных типов
+			\item Клиенты могут разделять приспособленцев
+			\begin{itemize}
+				\item Один клиент может иметь несколько ссылок на одного приспособленца
+			\end{itemize}
+			\item Во время выполнения клиенты имеют право не знать про фабрику
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Когда применять}
+		\begin{itemize}
+			\item Когда в приложении используется много мелких объектов
+			\item Они допускают разделение состояния на внутреннее и внешнее
+			\begin{itemize}
+				\item Желательно, чтобы внешнее состояние было вычислимо
+			\end{itemize}
+			\item Идентичность объектов не важна
+			\begin{itemize}
+				\item Используется семантика Value Type
+			\end{itemize}
+			\item Главное, когда от такого разделения можно получить ощутимый выигрыш
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Тонкости реализации}
+		\begin{itemize}
+			\item Внешнее состояние --- по сути, отдельный объект, поэтому если различных внешних состояний столько же, сколько приспособленцев, смысла нет
+			\begin{itemize}
+				\item Один объект-состояние покрывает сразу несколько приспособленцев
+				\begin{itemize}
+					\item Например, объект ``Range'' может хранить параметры форматирования для всех букв внутри фрагмента
+				\end{itemize}
+			\end{itemize}
+			\item Клиенты не должны инстанцировать приспособленцев сами, иначе трудно обеспечить разделение
+			\begin{itemize}
+				\item Имеет смысл иметь механизм для удаления неиспользуемых приспособленцев
+				\begin{itemize}
+					\item Если их может быть много
+				\end{itemize}
+			\end{itemize}
+			\item Приспособленцы немутабельны и Value Objects (с правильно переопределённой операцией сравнения)
+			\begin{itemize}
+				\item Про hashCode() тоже надо не забыть
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
 \end{document}
