@@ -15,12 +15,12 @@
 \usepackage{forest}
 \usetikzlibrary{arrows}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
 
 \tabulinesep=0.7mm
 
@@ -150,6 +150,116 @@ struct ListElement {
 				\end{center}
 			\end{column}
 		\end{columns}
+	\end{frame}
+
+	\section{Немного С++}
+
+	\begin{frame}
+		\frametitle{Немного С++}
+		\begin{itemize}
+			\item \mintinline{cpp}|vector<int> array(10);|
+			\item \mintinline{cpp}|string str = "C++ roxx";|
+			\item stack, queue, priority\_queue, ...
+			\begin{itemize}
+				\item Обратите внимание, STL (Standard Template Library, это оттуда все эти классы) не следует правилам стайлгайда
+			\end{itemize}
+			\item cin/cout
+			\item Итераторы и умные указатели (только для тех, кто знает, что это)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, чтение из файла}
+		\begin{scriptsize}
+			\begin{minted}{cpp}
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    ifstream file("test.txt", ios::in);
+    if (!file.is_open()) 
+    {
+    cout << "File not found!" << endl;
+        return 1;
+    }
+
+    ...
+
+    return 0;
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Собственно, чтение}
+		\begin{scriptsize}
+			\begin{minted}{cpp}
+int main()
+{
+    ...
+    vector<string> data;
+
+    while (!file.eof()) {
+        string buffer;
+        file >> buffer;
+        data.push_back(buffer);
+    }
+
+    file.close();
+
+    for (string const &line : data) 
+    {
+        cout << line << endl;
+    }
+
+    return 0;
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{using namespace, what?}
+		Карго-культ, также религия самолётопоклонников или культ Даров небесных --- термин, которым называют группу религиозных движений в Меланезии. В культах карго верят, что западные товары созданы духами предков и предназначены для меланезийского народа. Считается, что белые люди нечестным путём получили контроль над этими предметами. В культах карго проводятся ритуалы, похожие на действия белых людей, чтобы этих предметов стало больше.
+		\attribution{Wikipedia}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пространства имён}
+		\begin{minted}{cpp}
+namespace namespace1 
+{
+    struct A 
+    {
+    }
+}
+
+namespace namespace2 
+{
+    struct A 
+    {
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{using namespace}
+		\begin{minted}{cpp}
+using namespace namespace2;
+
+int main()
+{
+    A a;
+    namespace1::A a1;
+}
+		\end{minted}
 	\end{frame}
 
 \end{document}
