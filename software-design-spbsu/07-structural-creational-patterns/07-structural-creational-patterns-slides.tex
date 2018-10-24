@@ -14,20 +14,11 @@
 \setlength{\TPHorizModule}{1cm}
 \setlength{\TPVertModule}{1cm}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
 \tabulinesep=1.2mm
 
 \title[Шаблоны]{Лекция 7: Структурные и порождающие шаблоны}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
 \date{26.10.2018г}
-
-\newcommand{\todo}[1] {
-	\begin{center}\textcolor{red}{TODO: #1}\end{center}
-}
 
 \newcommand{\DownArrow} {
 	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
@@ -409,7 +400,7 @@ public class Singleton {
 
 	\begin{frame}[fragile]
 		\frametitle{Double-checked locking}
-		\framesubtitle{Не делайте так}
+		\framesubtitle{Более-менее хорошая многопоточная реализация}
 		\begin{small}
 			\begin{minted}{java}
 public class Singleton {
@@ -433,6 +424,24 @@ public class Singleton {
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{``Multiton''}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}
+					\item Реестр одиночек, обеспечивает уникальность объекта по ключу
+					\begin{itemize}
+						\item Сам создаёт объекты
+						\item Не даёт возможности зарегистрировать объект извне
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\includegraphics[width=\textwidth]{multiton.png}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{``Одиночка'', критика}
 		\begin{itemize}
 			\item Добавляет неочевидные зависимости по данным
@@ -442,6 +451,76 @@ public class Singleton {
 			\item Усложняет тестирование
 			\item Нарушает принцип единственности ответственности
 			\item Сложно рефакторить, если потребуется несколько экземпляров
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Ленивая инициализация''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Ленивая инициализация''}
+		\begin{itemize}
+			\item Некоторое упрощение одиночки
+			\item Действие не выполняется до тех пор, пока не нужен его результат
+			\item Используется повсеместно, для ускорения запуска и экономии на редких вычислениях
+			\begin{itemize}
+				\item Just-In-Time-компиляция
+				\item Ленивые структуры данных (списки в Haskell, seq в F\#)
+				\item Ленивые вычисления (Haskell, Lazy<T> в .NET)
+				\item ...
+			\end{itemize}
+			\item Имеет те же проблемы с многопоточностью, что и одиночка
+		\end{itemize}
+	\end{frame}
+
+	\section{Паттерн ``Пул объектов''}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Пул объектов'', мотивация}
+		\framesubtitle{Потоки в .NET}
+		\begin{itemize}
+			\item Класс Thread, конструктор создаёт поток и запускает в нём переданную операцию
+			\item Поток уничтожается, когда операция завершилась
+			\item Создание и остановка потоков --- долгие операции
+			\item Каждый поток требует системных ресурсов
+			\item Нет смысла иметь больше потоков, чем ядер процессора
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Пул объектов''}
+		\framesubtitle{Решение: пул потоков в .NET}
+		\begin{itemize}
+			\item Класс ThreadPool, синглтон
+			\item Создаёт заранее N потоков, которые никогда не заканчиваются и ждут задач
+			\item QueueUserWorkItem принимает задачу на исполнение
+			\begin{itemize}
+				\item Например, 
+				\begin{footnotesize}
+					\mintinline{csharp}|ThreadPool.QueueUserWorkItem(() => Console.WriteLine("Goodbye, world!"))|
+				\end{footnotesize}
+			\end{itemize}
+			\item Если есть свободный поток, он начинает исполнять задачу
+			\item Если свободных потоков нет, а задач много, создаётся новый поток
+			\item Лишние потоки удаляются, если задач нет и число потоков больше N
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Пул объектов''}
+		\begin{itemize}
+			\item Применяется, когда объекты создавать сложно, но каждый объект нужен лишь ненадолго
+			\item Желательно, чтобы на поддержание объектов в пуле не требовалось много ресурсов, либо объектов в пуле было мало
+			\begin{itemize}
+				\item Например, создать 50000 сетевых соединений ``заранее'' может быть плохой идеей
+			\end{itemize}
+			\item Следует применять с осторожностью в языках со сборкой мусора --- пул держит ссылки на объекты
+			\begin{itemize}
+				\item К тому же, в таких языках new отрабатывает мгновенно
+			\end{itemize}
+			\item Следует помнить про многопоточность
+			\begin{itemize}
+				\item Как правило, методы пула требуют синхронизации
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
