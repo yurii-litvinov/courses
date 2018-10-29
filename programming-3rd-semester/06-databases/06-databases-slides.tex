@@ -23,7 +23,7 @@
 
 \title{Базы данных}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{12.10.2018г}
+\date{02.11.2018г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -324,6 +324,108 @@ public static async Task Main()
 }
 			\end{minted}
 		\end{footnotesize}
+	\end{frame}
+
+	\section{EF Core}
+
+	\begin{frame}
+		\frametitle{Высокий уровень работы с данными, Entity Framework}
+		\begin{itemize}
+			\item ORM (Object-Realtional Mapping) системы --- преобразуют реляционные данные в объекты
+			\item ORM-библиотека берёт на себя общение с базой
+			\begin{itemize}
+				\item И даже генерацию SQL-запросов
+				\item Типобезопасность
+			\end{itemize}
+			\item Entity Framework Core --- одна из реализаций для .NET (.NET Core)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как она работает}
+		\begin{center}
+			\includegraphics[width=0.85\textwidth]{efCoreDatabaseModeling.png}
+			\attribution{J. Smith, ``Entity Framework Core In Action''}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Как это примерно выглядит в коде}
+		\framesubtitle{Запрос к базе}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public static void ListAll()
+{
+    using (var db = new AppDbContext())
+    {
+        foreach (var book in db.Books.AsNoTracking().Include(a => a.Author))
+        {
+            var webUrl = book.Author.WebUrl == null 
+                ? "- no web URL given -" 
+                : book.Author.WebUrl;
+            Console.WriteLine($"{book.Title} by {book.Author.Name}");
+            Console.WriteLine("Published on " 
+                + $"{book.PublishedOn:dd-MMM-yyyy}" 
+                + $". {webUrl}");
+        }
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что в это время делает EF}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{efCoreQuery.png}
+			\attribution{J. Smith, ``Entity Framework Core In Action''}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сгенерированный SQL}
+		\begin{minted}{sql}
+SELECT b.BookId,
+    b.AuthorId,
+    b.Description,
+    b.PublishedOn,
+    b.Title,
+    a.AuthorId,
+    a.Name,
+    a.WebUrl
+FROM Books AS b
+INNER JOIN Author AS a ON
+    b.AuthorId = a.AuthorId
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Обновление данных}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public static void ChangeWebUrl()
+{
+    Console.Write("New Quantum Networking WebUrl > ");
+    var newWebUrl = Console.ReadLine();
+    using (var db = new AppDbContext())
+    {
+        var book = db.Books.Include(a => a.Author)
+                           .Single(b => b.Title == "Quantum Networking");
+        book.Author.WebUrl = newWebUrl;
+        db.SaveChanges();
+        Console.WriteLine("... SavedChanges called.");
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что в это время делает EF}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{efCoreUpdate.png}
+			\attribution{J. Smith, ``Entity Framework Core In Action''}
+		\end{center}
 	\end{frame}
 
 \end{document}
