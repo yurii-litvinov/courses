@@ -360,6 +360,9 @@
 				\end{center}
 			\end{column}
 		\end{columns}
+		\begin{itemize}
+			\item Рекурсивно --- сравниваем приоритеты вершин поддеревьев, если второе меньше, сливаем правое поддерево первого и второе, иначе наоборот
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
@@ -377,6 +380,9 @@
 				\end{center}
 			\end{column}
 		\end{columns}
+		\begin{itemize}
+			\item Тоже рекурсивно --- если ключ в корне меньше заданного, добавляем его и его левое поддерево в L, а правое поддерево --- результат split от его корня
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
@@ -384,6 +390,11 @@
 		\begin{center}
 			\includegraphics[width=0.9\textwidth]{treap-add.png}
 		\end{center}
+		\begin{itemize}
+			\item Делаем split по ключу добавляемого элемента
+			\item Делаем merge L и M
+			\item Делаем merge того, что получилось, и R
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
@@ -391,6 +402,11 @@
 		\begin{center}
 			\includegraphics[width=0.9\textwidth]{treap-remove.png}
 		\end{center}
+		\begin{itemize}
+			\item Делаем split по ключу удаляемого элемента
+			\item Выкидываем удаляемый элемент
+			\item Делаем merge остатков дерева
+		\end{itemize}
 	\end{frame}
 
 \end{document}
