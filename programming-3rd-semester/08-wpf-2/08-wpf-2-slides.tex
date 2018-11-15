@@ -304,14 +304,6 @@ public class JpgValidationRule : ValidationRule
 		\end{scriptsize}
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{Data Providers}
-		\begin{center}
-			\includegraphics[width=0.65\textwidth]{xmlDataProvider.png}
-		\end{center}
-		\attribution{Adam Nathan, WPF 4.5 Unleashed.}
-	\end{frame}
-
 	\section{Задача}
 
 	\begin{frame}
@@ -320,15 +312,34 @@ public class JpgValidationRule : ValidationRule
 		\begin{itemize}
 			\item Поле для ввода имени или id пользователя
 			\item Поля, куда выводится имя/фамилия пользователя, полученные из VK
-			\item Список, куда выводятся имена/фамилии из списка контактов пользователя
+			\item Бонусное задание: Список, куда выводятся имена/фамилии из списка контактов пользователя
 			\begin{itemize}
-				\item Бонусное задание: показывать статус (онлайн/оффлайн)
+				\item Супербонусное задание: показывать статус (онлайн/оффлайн)
 			\end{itemize}
 			\item Кнопка ``Получить'', которая запускает процесс общения с сервером
 			\begin{itemize}
 				\item Бонусное задание: показывать данные по мере получения
 			\end{itemize}
+			\item Использовать паттерн MVVM и Command
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Grid Layout}
+		\begin{minted}{xml}
+<Grid x:Name="mainGrid">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="300"/>
+        <ColumnDefinition Width="300"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="200"/>
+    </Grid.RowDefinitions>
+
+    <TextBox Grid.Row="0" Grid.Column="0" Margin="40, 5"/>
+    <Button Grid.Row="0" Grid.Column="1" />
+</Grid>
+		\end{minted}
 	\end{frame}
 
 \end{document}
