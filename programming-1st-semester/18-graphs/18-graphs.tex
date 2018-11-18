@@ -1,0 +1,441 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{pgfplots}
+\usepackage{textpos}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage[normalem]{ulem}
+\usepackage{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{float}
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\tabulinesep=0.7mm
+
+\title{Графы}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{23.11.2018}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Что это и зачем}
+		\begin{columns}
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}
+					\item Граф --- совокупность вершин и рёбер
+					\item Нужен для моделирования систем с нетривиальными связями между элементами
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{graph.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\begin{itemize}
+			\item Например:
+			\begin{itemize}
+				\item Граф дорог, соединяющих города
+				\item Граф компьютерной сети
+				\item Граф зависимостей модулей в процессе компиляции
+				\item Дерево --- подвид графа
+			\end{itemize}
+			\item Есть куча известных алгоритмов на графах, позволяющих узнать о них очень многое
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Определения}
+		\begin{itemize}
+			\item Ориентированный граф $G$ --- пара из множества вершин $V$ и множества дуг (или рёбер) $E$, где $E$ --- упорядоченная пара вершин $(v, w)$
+			\begin{itemize}
+				\item $E$ --- бинарное отношение над множеством вершин
+				\item $v$ называется началом, $w$ --- концом дуги
+				\item Дуги вида $(v, v)$ называются петлями
+			\end{itemize}
+			\item Путём в орграфе называется последовательность вершин, для которых существуют дуги из предыдущей в следующую
+			\begin{itemize}
+				\item Длина пути --- количество дуг, составляющих путь
+				\item Путь называется простым, если все вершины на нём, за исключением, быть может, первой и последней, различны
+				\item Цикл --- это простой путь длины не менее 1, который начинается и заканчивается в одной вершине
+				\item Граф без циклов называется ациклическим
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё определения}
+		\begin{itemize}
+			\item Неориентированный граф --- это ориентированный граф, у которого для каждого ребра $(v, w)$ существует противоположное ребро $(w, v)$
+			\begin{itemize}
+				\item то есть отношение $E$ симметрично
+			\end{itemize}
+			\item Если $e = (u,v) \in E$, то вершины $u$ и $v$ называются смежными в $G$, а ребро $e$ и эти вершины называются инцидентными
+			\item Степенью вершины в неориентированном графе называется число смежных с ней вершин
+			\begin{itemize}
+				\item Вершина степени 0 называется изолированной
+			\end{itemize}
+			\item Граф может быть помеченным (или взвешенным) – каждой вершине и/или дуге сопоставлена некоторая метка (число, строка и т.д.)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Матрица смежности}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Для графа из $n$ вершин матрица смежности --- матрица размера $n$ на $n$, где в строке $i$ и столбце $j$ стоит 1 (или true), если есть дуга из $i$ в $j$
+					\begin{itemize}
+						\item Для неориентированного графа матрица симметрична относительно главной диагонали
+						\item Для взвешенного графа вместо 1 стоит вес дуги
+					\end{itemize}
+					\item Занимает $O(n^2)$ памяти, проверка наличия дуги и определение веса --- за константное время
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{adjacency-matrix.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Матрица инцидентности}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Для графа из $n$ вершин и $m$ ребёр матрица инцидентности --- матрица размера $m$ на $n$, где строка соответствует вершине, а столбец ребру
+					\begin{itemize}
+						\item Для ориентированного графа в ячейке $(i, j)$ стоит 1, если ребро $i$ выходит из вершины $j$, и -1, если входит
+						\item Для неориентированного графа в ячейке $(i, j)$ стоит 1, если ребро $i$ инцидентно вершине $j$
+						\item Нужно специальное значение для петель
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{incidence-matrix.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Матрица инцидентности, свойства}
+		\begin{itemize}
+			\item В каждом столбце только два элемента ненулевые (1, если петля)
+			\item Для неориентированного графа сумма элементов в столбце равна 2, в строке --- степени вершины
+			\item Требует $O(m * n)$ памяти для хранения
+			\item Проверка наличия ребра между двумя вершинами --- за $O(m)$
+			\item Поиск инцидентных ребру вершин --- за $O(n)$, проверка на инцидентность --- за $О(1)$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Список смежности}
+		\begin{columns}
+			\begin{column}{0.65\textwidth}
+				\begin{itemize}
+					\item Для каждой вершины хранится список вершин, смежных с данной
+					\begin{itemize}
+						\item Как правило, списки лежат в массиве длины $n$
+						\item Вместе с номером смежной вершины в списке может лежать вес ребра
+					\end{itemize}
+					\item Требует $O(m + n)$ памяти для хранения
+					\item Проверка наличия ребра между двумя вершинами --- $O(m)$
+					\begin{itemize}
+						\item Если в графе мало рёбер, в среднем $O(1)$
+					\end{itemize}
+					\item Несколько сложнее в реализации
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.35\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{adjacency-list.png}
+				\end{center}
+				1: 2, 5 \linebreak
+				2: 1, 5, 4, 3 \linebreak
+				3: 2, 4 \linebreak
+				4: 5, 2, 3 \linebreak
+				5: 1, 2, 4
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Достижимость}
+		\begin{itemize}
+			\item Вершина $w$ называется достижимой из вершины $v$, если $v = w$ или в $G$ есть путь от $v$ в $w$
+			\begin{itemize}
+				\item Рефлексивное и транзитивное замыкание отношения $E$
+				\item Если $E$ симметрично, то достижимость --- отношение эквивалентности
+				\item Классы эквивалентности по отношению достижимости называются компонентами связности
+				\item Для ориентированных графов эквивалентность --- отношение взаимной достижимости
+			\end{itemize}
+			\item Проверка на достижимость --- обходы графа в глубину или ширину, алгоритм Уоршелла
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Обход в глубину}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Посещаем вершину
+					\item Рекурсивно обходим все смежные ей вершины, в которых мы ещё не были
+					\begin{itemize}
+						\item Нужно множество (или битовая шкала) посещённых вершин, проще всего передавать как параметр в рекурсивный вызов
+					\end{itemize}
+					\item Можно нерекурсивно, тогда нам потребуется стек рассматриваемых вершин
+					\begin{itemize}
+						\item И множество посещённых
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{dfs.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Обход в ширину}
+		\begin{columns}
+			\begin{column}{0.7\textwidth}
+				\begin{itemize}
+					\item То же, что и обход в глубину, но вместо стека рассматриваемых вершин --- очередь
+					\item На каждой итерации берём из очереди вершину, посещаем её и кладём в очередь все смежные вершины, в которых мы ещё не были
+					\begin{itemize}
+						\item Тоже требуется множество непосещённых вершин
+					\end{itemize}
+					\item Если знаем, что цель недалеко, обход в ширину эффективнее
+					\item Обход в глубину зато строит глубинное остовное дерево (на самом деле, глубинный остовный лес)
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{bfs.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Проверка графа на ацикличность}
+		\begin{columns}
+			\begin{column}{0.7\textwidth}
+				\begin{itemize}
+					\item Остовное дерево графа --- подграф, содержащий все вершины графа и являющийся деревом
+					\begin{itemize}
+						\item То есть не содержащий циклов, даже если рассматривать граф как неориентированный
+					\end{itemize}
+					\item Глубинное остовное дерево --- путь алгоритма поиска в глубину по графу
+					\item Обратная дуга --- дуга, не принадлежащая остовному дереву, ведущая от потомка к предку
+					\begin{itemize}
+						\item Если обратных дуг нет, в графе нет циклов
+					\end{itemize}
+					\item Посещая вершину, красим её в серый, выходя из её поддерева --- в чёрный
+					\item Если дуга ведёт в серую вершину, мы нашли цикл
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{check-for-acyclicity.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Задача поиска кратчайшего пути в графе}
+		\begin{columns}
+			\begin{column}{0.65\textwidth}
+				\begin{itemize}
+					\item Дан взвешенный ориентированный граф $G = (V, E)$ с неотрицательными весами дуг
+					\item Одна вершина $s \in V$ помечена как стартовая
+					\item Задача --- найти кратчайшие пути от стартовой вершины до всех остальных вершин
+					\begin{itemize}
+						\item Длина пути определяется как сумма весов дуг, составляющих путь
+					\end{itemize}
+					\item Парадокс изобретателя --- иногда проще решить более общую задачу и получить из неё решение частной задачи, чем решать частную
+					\begin{itemize}
+						\item Знание целевой вершины поиск кратчайшего пути не упрощает
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.35\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{shortest-path.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Алгоритм Дейкстры}
+		Поиск в ширину, где мы запоминаем длину кратчайшего пути в посещённой вершине, обновляя её, если нашли лучше
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{dijkstra1.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Алгоритм Дейкстры, пример, продолжение}
+		Когда все соседи вершины посещены, посчитанная для неё длина пути окончательна и минимальна, выкидываем её из рассмотрения
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{dijkstra2.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Алгоритм Дейкстры, пример, продолжение (2)}
+		Продолжаем, пока не посетили все вершины (правда, бывают несвязные графы)
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{dijkstra3.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Алгоритм Дейкстры, псевдокод}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{dijkstra-pseudocode.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Тонкости реализации}
+		\begin{itemize}
+			\item Иногда надо знать не длину пути, а сам путь
+			\begin{itemize}
+				\item Тогда помимо массива длин $d$ полезно иметь массив родителей $p$, такой что $p[v] = u$, если мы пришли кратчайшим путём в $v$ из $u$
+				\item Обновляем этот массив там же, где мы обновляем $d$
+			\end{itemize}
+			\item Множество used можно представлять битовой шкалой, или, если вершин много, множеством на двоичных деревьях или хеш-таблицах
+			\item Поиск ближайшей вершины из множества нерассмотренных можно хранить в очереди с приоритетами, тогда просматривать всё $V$ будет не надо (можно обойтись $O(log(n)$)
+			\begin{itemize}
+				\item Как --- кучей (вспомните heapsort)
+			\end{itemize}
+			\item Трудоёмкость наивной реализации --- $O(n^2 + m)$, с кучей --- $O(n * log(n) + m * log(n))$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Почему работает}
+		\begin{columns}
+			\begin{column}{0.65\textwidth}
+				\begin{itemize}
+					\item По индукции
+					\begin{itemize}
+						\item На первом шаге $d(s) = 0$, расстояние до неё кратчайшее
+						\item Для $n$ шагов всё ок, на $n + 1$-м выбрана для добавления вершина $v$. Покажем, что посчитанный для неё сейчас путь --- кратчайший.
+						\item Если это не так, существует непросмотренная вершина $u$ на кратчайшем пути, $d(v) >= d(u)$, потому что веса путей неотрицательны
+						\item Но тогда $u$ была бы добавлена раньше, поскольку на каждом шагу выбирается ближайшая к стартовой из непросмотренных вершин
+					\end{itemize}
+					\item Пример жадного алгоритма
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.35\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{why-works.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Алгоритм Флойда}
+		\begin{itemize}
+			\item Считает кратчайший путь из каждой вершины в каждую
+			\item Над матрицей смежности выполняется $n$ итераций, на $k$-й итерации $A[i,j]$ содержит значение наименьшей длины путей из вершины $i$ в вершину $j$, которые не проходят через вершины с номером, большим $k$:
+			\begin{footnotesize}
+				\begin{minted}{cpp}
+for k = 1 to n
+    for i = 1 to n
+        for j = 1 to n
+            W[i, j] = min(W[i, j], W[i, k] + W[k, j])
+				\end{minted}
+			\end{footnotesize}
+			\item Трудоёмкость --- $O(n^3)$
+			\begin{itemize}
+				\item Зато очень просто реализуется
+			\end{itemize}
+			\item Сам кратчайший путь --- заводим матрицу $P$, такую, что на каждой итерации $P[i, j] = k$, дальше рекурсивно восстанавливаем путь по $P[i, k]$ и $P[k, j]$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Алгоритм Уоршелла}
+		\begin{footnotesize}
+			\begin{minted}{cpp}
+for k = 1 to n
+    for i = 1 to n
+        for j = 1 to n
+            A[i, j] = A[i, j] or (A[i, k]  and A[k, j])
+			\end{minted}
+		\end{footnotesize}
+		\begin{itemize}
+			\item Чаще эти два алгоритма называют алгоритмом Флойда-Уоршелла, хотя они разработаны независимо (причём, за 3 года и до Флойда, и до Уоршелла, Бернардом Роем)
+			\item Строит транзитивное замыкание отношения $E$
+			\begin{itemize}
+				\item Легко искать компоненты связности неориентированного графа
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Графы и математика}
+		\begin{itemize}
+			\item Любой граф задаёт бинарное отношение над некоторым множеством
+			\begin{itemize}
+				\item Ну он и есть бинарное отношение $E$, да
+			\end{itemize}
+			\item Ациклический орграф задаёт отношение строгого частичного порядка:
+			\begin{itemize}
+				\item Антирефлексивность: $\forall x \neg xRx$
+				\item Транзитивность: $\forall x,y,z: xRy \cap yRz \rightarrow xRz$
+				\item Пример: отношения ``больше'' и ``меньше'' на множестве вещественных чисел, отношение строгого включения множеств
+			\end{itemize}
+			\item Топологическая сортировка множества $V$ относительно отношения частичного порядка $R$ --- построение последовательности $v_1$, $v_2$, …, $v_n$: 
+			$\forall i,j \in 1..n v_i, v_j \in V$ и $v_iRv_j$ или $(v_i, v_j) \not\in R$
+			\begin{itemize}
+				\item Например, сортировка графа зависимостей файлов при сборке
+				\item Делается поиском в глубину (глубинная остовная нумерация)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Доклады}
+		\begin{enumerate}
+			\item Алгоритмы Прима и Краскала
+			\item Алгоритм Кнута-Морриса-Пратта
+			\item Алгоритм Рабина-Карпа
+			\item Алгоритм Бойера-Мура
+		\end{enumerate}
+	\end{frame}
+
+\end{document}
