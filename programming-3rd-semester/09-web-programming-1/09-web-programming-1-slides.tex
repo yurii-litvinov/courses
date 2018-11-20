@@ -354,12 +354,552 @@ function loadDoc() {
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Обработка веб-запроса в ASP.NET}
+		\frametitle{Типичная структура проекта ASP.NET}
+		\begin{itemize}
+			\item На самом деле, два шаблона проекта:
+			\begin{itemize}
+				\item Web Application --- Razor Pages, ``облегчённая версия''
+				\item Web Application (Model-View-Controller) --- ``классическая'' версия
+			\end{itemize}
+			\item \textbf{wwwroot} --- статические ресурсы приложения (то, что можно включать в html-страницу), отправляются клиенту как есть
+			\begin{itemize}
+				\item favicon.ico --- картинка, показывающаяся в заголовке вкладки
+			\end{itemize}
+			\item \textbf{Pages} --- папка с Razor-разметкой, по которой будут генериться html-страницы
+			\item \textbf{appsettings.json} --- конфигурация приложения
+			\item \textbf{Program.cs} --- конфигурирует хост и запускает приложение
+			\item \textbf{Startup.cs} --- конфигурирует сервисы и конвейер обработки запроса
+		\end{itemize}
+	\end{frame}
+
+	\section{Razor}
+
+	\begin{frame}
+		\frametitle{Razor}
+		\begin{itemize}
+			\item Язык задания правил генерации
+			\begin{itemize}
+				\item Обычно используется для генерации веб-страниц, но может использоваться и независимо
+			\end{itemize}
+			\item Состоит из текста на целевом языке (в нашем случае html), кода на C\# и Razor-разметки, которая собирает всё это воедино
+			\item Сервер исполняет Razor-код, используя данные \textit{модели} для генерации итоговой html-ки, которую и отправляет клиенту
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Синтаксис Razor}
+		\begin{itemize}
+			\item HTML-разметка пишется как есть
+			\item Блоки кода заключаются в \mintinline{text}|@{ }|
+			\item Один оператор можно писать без скобок: \mintinline{text}|The time is @DateTime.Now|
+			\begin{itemize}
+				\item Обратите внимание, Razor-код выполняется на сервере!
+			\end{itemize}
+			\item Выражения можно заключать в круглые скобки: \mintinline{text}|@(someValue * 10)|
+			\item Всё, что выводится через \mintinline{text}|@|, кодируется вызовом HttpServerUtility.HtmlEncode
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{minted}{csharp}
+@page
+
+<h1>Cthulhu fhtagn!</h1>
+
+@for (int i = 0; i < 300; ++i)
+{
+    <p>Cthulhu fhtagn!</p>
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Синтаксис Razor (2)}
+		\begin{itemize}
+			\item Razor сам пытается угадать, где разметка, а где код
+			\begin{itemize}
+				\item Но у него не всегда получается
+			\end{itemize}
+			\item После \mintinline{text}|@| и до пробела (или до конца оператора) --- код
+			\item После открывающего тэга --- разметка
+			\item После \mintinline{text}|@:| --- HTML-разметка
+			\item \mintinline{text}|@* ... *@| --- комментарии (серверные, не отправляются клиенту)
+			\item \mintinline{text}|@@| --- \mintinline{text}|@| в HTML (escaping)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Хелперы}
+		\begin{itemize}
+			\item Функции, которые генерируют HTML-код
+			\item Есть много стандартных
+			\begin{itemize}
+				\item Html.BeginForm
+				\item Html.TextBox
+				\item Html.CheckBox
+				\item ...
+				\item Html.ActionLink
+			\end{itemize}
+			\item Ещё бывают TagHelper-ы:
+			
+			\mintinline{text}|@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers|
+		\end{itemize}
+	\end{frame}
+
+	\section{Модели}
+
+	\begin{frame}[fragile]
+		\frametitle{Модели}
+		\begin{itemize}
+			\item Всё, что выше, не сильно полезнее статической HTML
+			\item Реальное веб-приложение использует данные из модели
+		\end{itemize}
+		\begin{minted}{csharp}
+@page
+@using RazorPagesIntro.Pages
+@model IndexModel2
+
+<h2>Separate page model</h2>
+<p>
+    @Model.Message
+</p>
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Code behind}
+		\begin{small}
+			\begin{minted}{csharp}
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+
+namespace RazorPagesIntro.Pages
+{
+    public class IndexModel2 : PageModel
+    {
+        public string Message { get; private set; } = "PageModel in C#";
+
+        public void OnGet()
+        {
+            Message += $" Server time is { DateTime.Now }";
+        }
+    }
+}
+			\end{minted}
+		\end{small}
+		\attribution{MSDN}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Routing}
+		\framesubtitle{Или как ASP.NET находит по запросу страницу}
+		\begin{itemize}
+			\item Convention over configuration --- пока вы выполняете соглашения об именовании, по умолчанию всё происходит за вас
+			\item Есть возможность конфигурировать роутинг вручную
+			\item Соглашения:
+			\begin{itemize}
+				\item URL вида ``адрес сайта/'' или ``адрес сайта/Index'' отображаются в /Pages/Index.cshtml
+				\item /Pages/Contact.cshtml --- URL вида ``адрес сайта/Contact''
+				\item /Pages/Store/Contact.cshtml --- ``адрес сайта/Store/Contact''
+				\item /Pages/Store/Index.cshtml --- ``адрес сайта/Store'' или ``адрес сайта/Store/Index''
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Как всё вообще обрабатывается}
 		\begin{center}
 			\includegraphics[width=0.85\textwidth]{requestLifecycle.png}
 			\vspace{-5mm}
 			\attribution{MSDN}
 		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Model binding}
+		\framesubtitle{Или как передать в Code Behind параметры}
+		\begin{small}
+			\begin{minted}{csharp}
+@page
+@model WebApplication1.Pages.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+<body>
+    <p>
+        Enter your name:
+    </p>
+    <form method="post">
+        Name: <input type="text" name="name" />
+        <input type="submit" />
+    </form>
+</body>
+</html>
+			\end{minted}
+		\end{small}
+		(GET тоже будет работать)
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Способ 1: в параметрах обработчика}
+		\begin{small}
+			\begin{minted}{csharp}
+namespace WebApplication1.Pages
+{
+    public class IndexModel : PageModel
+    {
+        public void OnGet()
+        {
+
+        }
+
+        public void OnPost(string name)
+        {
+            Console.WriteLine(name);
+        }
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Способ 2: вручную}
+		\begin{small}
+			\begin{minted}{csharp}
+public void OnPost()
+{
+    var name = Request.Form["name"];
+    Console.WriteLine(name);
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Способ 3: через свойства}
+		\begin{small}
+			\begin{minted}{csharp}
+[BindProperty]
+public string Name { get; set; }
+
+public void OnPost()
+{
+    var name = Request.Form["name"];
+    Console.WriteLine(name);
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\section{Большой пример}
+
+	\begin{frame}
+		\frametitle{Теперь попробуем написать что-нибудь ``настоящее''}
+		\begin{itemize}
+			\item Приложение для регистрации на конференцию
+			\item Титульная страница конференции со ссылкой на форму регистрации
+			\item Форма регистрации
+			\begin{itemize}
+				\item Как слушатель или как докладчик
+			\end{itemize}
+			\item Страница, на которой можно просмотреть всех зарегистрировавшихся
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Моделирование предметной области}
+		\begin{minted}{csharp}
+public class Participant
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public bool? Speaker { get; set; }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Титульная страница}
+		\begin{minted}{html}
+@page
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+<body>
+    <h1>SEIM-2019</h1>
+    <p>Coolest conference ever</p>
+    <p>Please register:</p>
+    <a asp-page="Register">Register</a>
+</body>
+</html>
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Страница регистрации}
+		\begin{scriptsize}
+			\begin{minted}{html}
+@page
+@model WebApplication1.Pages.RegisterModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+<body>
+    <form asp-action="Register" method="post">
+        <p>
+            <label asp-for="Participant.Name">Your name:</label>
+            <input asp-for="Participant.Name" />
+        </p>
+        <p>
+            <label asp-for="Participant.Email">Your email:</label>
+            <input asp-for="Participant.Email" />
+        </p>
+        <p>
+            <label>Are you a speaker?</label>
+            <select asp-for="Participant.Speaker">
+                <option value="">Choose an option</option>
+                <option value="true">Yes</option>
+                7
+                <option value="false">No</option>
+            </select>
+        </p>
+        <button type="submit">Register!</button>
+    </form>
+</body>
+</html>
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Code behind}
+		\begin{small}
+			\begin{minted}{csharp}
+public class RegisterModel : PageModel
+{
+    public void OnGet()
+    {
+    }
+
+    [BindProperty]
+    public Data.Participant Participant { get; set; }
+
+    public IActionResult OnPost()
+    {
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        return RedirectToPage($"/Thanks", new { name = Participant.Name });
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Страница благодарности}
+		\begin{scriptsize}
+			\begin{minted}{html}
+@page "{name}"
+
+<html>
+<body>
+    <h1>Thanks for registration, @RouteData.Values["name"]!</h1>
+</body>
+</html>
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Добавим немного СУБД}
+		\framesubtitle{Класс Data.AppDbContext}
+		\begin{small}
+			\begin{minted}{csharp}
+public class AppDbContext: DbContext
+{
+    public AppDbContext(DbContextOptions options)
+        : base(options)
+    {
+    }
+
+    public DbSet<Participant> Participants { get; set; }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Но где же Connection String?}
+		\begin{itemize}
+			\item Dependency Injection --- архитектурный паттерн, отделяющий создание и конфигурирование объектов от их логики
+			\item За создание и конфигурирование/переконфигурирование отвечает DI-контейнер, обычно отдельная подсистема
+			\item Мы лишь описываем ограничения на то, что должно получиться
+			\item Конкретно в нашем случае:
+			\begin{itemize} 
+				\item Подключаем пакет Microsoft.EntityFrameworkCore.Sqlite
+				\item Пишем в Startup.ConfigureServices:
+				\begin{minted}{csharp}
+services.AddDbContext<Data.AppDbContext>(
+    options => options.UseSqlite(@"Data source=Test.db;"));
+				\end{minted}
+			\end{itemize}
+			\item DI-контейнер создаёт и регистрирует контекст, передавая ему в конструктор опции
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Инициализация базы данных}
+		\begin{itemize}
+			\item Идём ВНЕЗАПНО в Tools -> Nuget Package Manager -> Package Manager Console
+			\item Набираем в консоли Add-Migration Initial
+			\begin{itemize}
+				\item Создаётся \textit{миграция}, которая создаст базу
+			\end{itemize}
+			\item Набираем в консоли Update-Database
+			\begin{itemize}
+				\item Миграция применяется, в папке с проектом создаётся Test.db
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пришла пора воспользоваться СУБД}
+		\begin{tiny}
+			\begin{minted}{csharp}
+public class RegisterModel : PageModel
+{
+    private readonly AppDbContext _db;
+
+    public RegisterModel(AppDbContext db)
+    {
+        _db = db;
+    }
+
+    [BindProperty]
+    public Participant Participant { get; set; }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        _db.Participants.Add(Participant);
+        await _db.SaveChangesAsync();
+
+        return RedirectToPage($"/Thanks", new { name = Participant.Name });
+    }
+}
+			\end{minted}
+		\end{tiny}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ну и последняя страница, просмотр участников}
+		\framesubtitle{Code Behind}
+		\begin{tiny}
+			\begin{minted}{csharp}
+public class ViewModel : PageModel
+{
+    private readonly AppDbContext db;
+
+    public ViewModel(AppDbContext db)
+    {
+        this.db = db;
+    }
+
+    public IList<Participant> Participants { get; private set; }
+
+    public async Task OnGetAsync()
+    {
+        Participants = await db.Participants.AsNoTracking().ToListAsync();
+    }
+}
+			\end{minted}
+		\end{tiny}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{.cshtml}
+		\begin{scriptsize}
+			\begin{minted}{html}
+@page
+@model WebApplication1.Pages.ViewModel
+
+<html>
+<body>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Is Speaker</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var participant in Model.Participants)
+            {
+            <tr>
+                <td>@participant.Id</td>
+                <td>@participant.Name</td>
+                <td>@participant.Email</td>
+                <td>@(participant.Speaker == true ? "Yes" : "No")</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Но так даже в 90-е не верстали!}
+		\framesubtitle{Добавим Bootstrap}
+		\begin{tiny}
+			\begin{minted}{html}
+@page
+@model WebApplication1.Pages.ViewModel
+
+<html>
+<head>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+</head>
+<body>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Is Speaker</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var participant in Model.Participants)
+            {
+            <tr>
+                <td>@participant.Id</td>
+                <td>@participant.Name</td>
+                <td>@participant.Email</td>
+                <td>@(participant.Speaker == true ? "Yes" : "No")</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+			\end{minted}
+		\end{tiny}
 	\end{frame}
 
 \end{document}
