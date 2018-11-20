@@ -24,7 +24,7 @@
 \title{Веб-программирование}
 \subtitle{Часть 1}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{26.10.2018г}
+\date{23.11.2018г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -93,12 +93,248 @@
 		\end{itemize}
 	\end{frame}
 
+	\section{Фронтенд}
+
+	\begin{frame}
+		\frametitle{Браузерная часть}
+		\begin{itemize}
+			\item HTML (HyperText Markup Language) --- используется для задания содержимого и структуры веб-страницы
+			\begin{itemize}
+				\item Тут размечаются параграфы, заголовки, списки, таблицы и т.д.
+				\item Тут же обычно определяются способы идентифицировать элементы
+			\end{itemize}
+			\item CSS (Cascading Style Sheet) --- используется для задания внешнего вида, оформления и расположения элементов
+			\item JavaScript --- используется для задания поведения веб-страницы на клиенте
+			\begin{itemize}
+				\item Интерпретируется браузером
+				\item Полноценный язык программирования
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{DOM}
+		\begin{itemize}
+			\item DOM (Document Object Model) --- представление HTML-документа в виде дерева объектов и API для доступа к нему
+			\item JavaScript может манипулировать DOM-деревом, браузер рендерит его ``на лету'', что и даёт интерактивность
+		\end{itemize}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{tiny}
+					\begin{minted}{html}
+<table class="listing">
+    <thead>
+        <tr class="odd">
+            <th>Выпускник</th>
+            <th>Научный руководитель</th>
+            <th>Текст</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="odd">
+            <td>Акбаров Артур Александрович</td>
+            <td>д.т.н., проф. Д.В. Кознов</td>
+            <td><a href="bmo/441-Akbarov-report.pdf">Текст</a></td>
+        </tr>
+    </tbody>
+</table>
+					\end{minted}
+				\end{tiny}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\textwidth]{domTree.png}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{HTML-формы}
+		\begin{itemize}
+			\item Способ получить ввод от пользователя
+			\item Возможность организовать POST-запрос (GET по умолчанию)
+		\end{itemize}
+		\begin{minted}{html}
+<form method="post">
+  First name:<br>
+  <input type="text" name="firstName"><br>
+  Last name:<br>
+  <input type="text" name="lastName"><br><br>
+  <input type="radio" name="gender" value="male" checked>Male<br>
+  <input type="radio" name="gender" value="female">Female<br>
+  <input type="submit" value="Submit">
+</form>
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{CSS}
+		\begin{itemize}
+			\item Способ задать внешний вид элементов
+		\end{itemize}
+		\begin{minted}{html}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {background-color: powderblue;}
+  h1   {color: blue;}
+  p    {color: red;}
+</style>
+</head>
+<body>
+<h1>This is a heading</h1>
+<p>This is a paragraph.</p>
+</body>
+</html>
+		\end{minted}
+		\attribution{https://www.w3schools.com}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Или, что более типично}
+		\begin{minted}{html}
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>This is a heading</h1>
+<p>This is a paragraph.</p>
+
+</body>
+</html>
+		\end{minted}
+		\attribution{https://www.w3schools.com}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Селекторы}
+		\begin{minted}{html}
+<p id="p01">I am different</p>
+<p class="error">Error message</p>
+		\end{minted}
+		\vspace{5mm}
+		\begin{minted}{css}
+#p01 {
+    color: blue;
+}
+
+p.error {
+    color: red;
+}
+		\end{minted}
+		\attribution{https://www.w3schools.com}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Немного JavaScript-а}
+		\begin{minted}{html}
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>My First JavaScript</h1>
+
+<button type="button"
+onclick="document.getElementById('demo').innerHTML = Date()">
+Click me to display Date and Time.</button>
+
+<p id="demo"></p>
+
+</body>
+</html> 
+		\end{minted}
+		\attribution{https://www.w3schools.com}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Или так}
+		\begin{small}
+			\begin{minted}{html}
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function doSomething() {
+  document.getElementById("demo").style.fontSize = "25px";
+  document.getElementById("demo").style.color = "red";
+  document.getElementById("demo").style.backgroundColor = "yellow";
+}
+</script>
+</head>
+<body>
+
+<button type="button" id="demo" onclick="doSomething()">Click me!</button>
+
+</body>
+</html>
+			\end{minted}
+		\end{small}
+		\vspace{-3mm}
+		\attribution{https://www.w3schools.com}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{AJAX}
+		\framesubtitle{Asynchronous JavaScript And XML}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{ajax.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{scriptsize}
+			\begin{minted}{html}
+<!DOCTYPE html>
+<html>
+<body>
+<div id="demo">
+  <h2>The XMLHttpRequest Object</h2>
+  <button type="button" onclick="loadDoc()">Change Content</button>
+</div>
+<script>
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML =
+      this.responseText;
+    }
+  };
+  xhttp.open("GET", "ajax_info.txt", true);
+  xhttp.send();
+}
+</script>
+</body>
+</html>
+			\end{minted}
+		\end{scriptsize}
+		\vspace{-3mm}
+		\attribution{https://www.w3schools.com}
+	\end{frame}
+
+	\section{Бэкенд}
+
+	\begin{frame}
+		\frametitle{Бэкенд}
+		\framesubtitle{Обработка веб-запроса в Windows}
+		\begin{center}
+			\includegraphics[width=0.65\textwidth]{requestProcessing.png}
+			\vspace{-5mm}
+			\attribution{MSDN}
+		\end{center}
+	\end{frame}
+
+	\section{Архитектура ASP.NET MVC}
+
 	\begin{frame}
 		\frametitle{ASP.NET MVC, основные понятия}
 		\begin{center}
 			\includegraphics[width=0.7\textwidth]{mvc.png}
-			\vspace{-5mm}
-			\attribution{\textcopyright A. Freeman, Pro ASP.NET Core MVC}
+			\attribution{A. Freeman, Pro ASP.NET Core MVC}
 		\end{center}
 
 		\vspace{-5mm}
@@ -118,75 +354,12 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Работа с БД}
-		\begin{itemize}
-			\item Entity Framework
-			\begin{itemize}
-				\item Object-Relational Mapping-технология, представляет таблицы реляционной БД как объекты C\#
-				\item Если вы пишете SQL руками в коде, вы делаете что-то не так
-			\end{itemize}
-			\item MS SQL Server LocalDB
-			\begin{itemize}
-				\item Реляционная СУБД, урезанная версия SQL Server, предназначенная прежде всего для разработчиков
-				\item Не требует конфигурации, после установки экземпляр создаётся автоматически и к нему можно просто подключаться
-			\end{itemize}
-			\item На самом деле, подобных технологий только популярных десятки
-			\begin{itemize}
-				\item Например, MongoDB или SQLite неплохи
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Entity Framework, подробности}
-		\begin{itemize}
-			\item Работа с базой делается через классы \textit{модели}
-			\begin{itemize}
-				\item Code first
-				\item Database first
-				\item Model first
-			\end{itemize}
-			\item \textit{DbContext} --- базовый класс, представляющий сессию при работе с базой
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Немного примеров}
-		\framesubtitle{Из \url{https://docs.microsoft.com/en-us/ef/core/}}
-		\begin{tiny}
-			Конфигурирование:
-			\begin{minted}{csharp}
-public class BloggingContext : DbContext
-    {
-        public DbSet<Blog> Blogs { get; set; }
-        public DbSet<Post> Posts { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=MyDatabase;Trusted_Connection=True;");
-        }
-    }
-			\end{minted}
-			Чтение:
-			\begin{minted}{csharp}
-using (var db = new BloggingContext())
-{
-    var blogs = db.Blogs
-        .Where(b => b.Rating > 3)
-        .OrderBy(b => b.Url)
-        .ToList();
-}
-			\end{minted}
-			Запись:
-			\begin{minted}{csharp}
-using (var db = new BloggingContext())
-{
-    var blog = new Blog { Url = "http://sample.com" };
-    db.Blogs.Add(blog);
-    db.SaveChanges();
-}
-			\end{minted}
-		\end{tiny}
+		\frametitle{Обработка веб-запроса в ASP.NET}
+		\begin{center}
+			\includegraphics[width=0.85\textwidth]{requestLifecycle.png}
+			\vspace{-5mm}
+			\attribution{MSDN}
+		\end{center}
 	\end{frame}
 
 \end{document}
