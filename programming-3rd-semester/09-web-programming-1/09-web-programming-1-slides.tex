@@ -300,8 +300,7 @@ function loadDoc() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("demo").innerHTML =
-      this.responseText;
+      document.getElementById("demo").innerHTML = this.responseText;
     }
   };
   xhttp.open("GET", "ajax_info.txt", true);
@@ -520,7 +519,7 @@ namespace RazorPagesIntro.Pages
 		\frametitle{Model binding}
 		\framesubtitle{Или как передать в Code Behind параметры}
 		\begin{small}
-			\begin{minted}{csharp}
+			\begin{minted}{html}
 @page
 @model WebApplication1.Pages.IndexModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -586,8 +585,7 @@ public string Name { get; set; }
 
 public void OnPost()
 {
-    var name = Request.Form["name"];
-    Console.WriteLine(name);
+    Console.WriteLine(Name);
 }
 			\end{minted}
 		\end{small}
@@ -640,7 +638,7 @@ public class Participant
 
 	\begin{frame}[fragile]
 		\frametitle{Страница регистрации}
-		\begin{scriptsize}
+		\begin{ssmall}
 			\begin{minted}{html}
 @page
 @model WebApplication1.Pages.RegisterModel
@@ -671,12 +669,12 @@ public class Participant
 </body>
 </html>
 			\end{minted}
-		\end{scriptsize}
+		\end{ssmall}
 	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Code behind}
-		\begin{small}
+		\begin{footnotesize}
 			\begin{minted}{csharp}
 public class RegisterModel : PageModel
 {
@@ -698,12 +696,12 @@ public class RegisterModel : PageModel
     }
 }
 			\end{minted}
-		\end{small}
+		\end{footnotesize}
 	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Страница благодарности}
-		\begin{scriptsize}
+		\begin{small}
 			\begin{minted}{html}
 @page "{name}"
 
@@ -713,7 +711,7 @@ public class RegisterModel : PageModel
 </body>
 </html>
 			\end{minted}
-		\end{scriptsize}
+		\end{small}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -770,15 +768,15 @@ services.AddDbContext<Data.AppDbContext>(
 
 	\begin{frame}[fragile]
 		\frametitle{Пришла пора воспользоваться СУБД}
-		\begin{tiny}
+		\begin{ssmall}
 			\begin{minted}{csharp}
 public class RegisterModel : PageModel
 {
-    private readonly AppDbContext _db;
+    private readonly AppDbContext db;
 
     public RegisterModel(AppDbContext db)
     {
-        _db = db;
+        this.db = db;
     }
 
     [BindProperty]
@@ -791,20 +789,20 @@ public class RegisterModel : PageModel
             return Page();
         }
 
-        _db.Participants.Add(Participant);
-        await _db.SaveChangesAsync();
+        db.Participants.Add(Participant);
+        await db.SaveChangesAsync();
 
         return RedirectToPage($"/Thanks", new { name = Participant.Name });
     }
 }
 			\end{minted}
-		\end{tiny}
+		\end{ssmall}
 	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Ну и последняя страница, просмотр участников}
 		\framesubtitle{Code Behind}
-		\begin{tiny}
+		\begin{scriptsize}
 			\begin{minted}{csharp}
 public class ViewModel : PageModel
 {
@@ -823,12 +821,12 @@ public class ViewModel : PageModel
     }
 }
 			\end{minted}
-		\end{tiny}
+		\end{scriptsize}
 	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{.cshtml}
-		\begin{scriptsize}
+		\begin{ssmall}
 			\begin{minted}{html}
 @page
 @model WebApplication1.Pages.ViewModel
@@ -859,7 +857,7 @@ public class ViewModel : PageModel
 </body>
 </html>
 			\end{minted}
-		\end{scriptsize}
+		\end{ssmall}
 	\end{frame}
 
 	\begin{frame}[fragile]
