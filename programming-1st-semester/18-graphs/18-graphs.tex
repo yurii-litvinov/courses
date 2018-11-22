@@ -8,14 +8,14 @@
 \usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage[normalem]{ulem}
-\usepackage{algorithm2e}
-\usepackage{algorithmic}
+\usepackage{algpseudocode}
 \usepackage{float}
 \useoutertheme{infolines}
 
 \usepackage{fontspec}
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
+\usepackage{moresize}
 
 \usepackage{forest}
 \usetikzlibrary{arrows}
@@ -149,7 +149,7 @@
 			\item Для неориентированного графа сумма элементов в столбце равна 2, в строке --- степени вершины
 			\item Требует $O(m * n)$ памяти для хранения
 			\item Проверка наличия ребра между двумя вершинами --- за $O(m)$
-			\item Поиск инцидентных ребру вершин --- за $O(n)$, проверка на инцидентность --- за $О(1)$
+			\item Поиск инцидентных ребру вершин --- за $O(n)$, проверка на инцидентность --- за $O(1)$
 		\end{itemize}
 	\end{frame}
 
@@ -321,9 +321,34 @@
 
 	\begin{frame}[fragile]
 		\frametitle{Алгоритм Дейкстры, псевдокод}
-		\begin{center}
-			\includegraphics[width=0.8\textwidth]{dijkstra-pseudocode.png}
-		\end{center}
+		\begin{ssmall}
+			\begin{algorithmic}[1]
+			\Procedure{Dijkstra}{$s$}
+				\For{$v \in V$}
+					\State $d[v] \gets \infty$
+					\State $used[v] \gets false$
+				\EndFor
+				\State $d[s] \gets 0$
+				\For{$i \in V$}
+					\State $v \gets null$
+					\For{$j \in V$}
+						\If{$!used[j]\ and\ (v == null\ or\ d[j] < d[v])$}
+							\State $v \gets j$
+						\EndIf
+					\EndFor
+					\If{$d[v] == \infty$}
+						\State $break$
+					\EndIf
+					\State $used[v] \gets true$
+					\For{$e \in\; $исходящие из v рёбра}
+						\If{$d[v] + e.len < d[e.to]$}
+							\State $d[e.to] \gets d[v] + e.len$
+						\EndIf
+					\EndFor
+				\EndFor
+			\EndProcedure
+			\end{algorithmic}
+		\end{ssmall}
 	\end{frame}
 
 	\begin{frame}
@@ -372,7 +397,7 @@
 			\item Считает кратчайший путь из каждой вершины в каждую
 			\item Над матрицей смежности выполняется $n$ итераций, на $k$-й итерации $A[i,j]$ содержит значение наименьшей длины путей из вершины $i$ в вершину $j$, которые не проходят через вершины с номером, большим $k$:
 			\begin{footnotesize}
-				\begin{minted}{cpp}
+				\begin{minted}{pascal}
 for k = 1 to n
     for i = 1 to n
         for j = 1 to n
@@ -390,7 +415,7 @@ for k = 1 to n
 	\begin{frame}[fragile]
 		\frametitle{Алгоритм Уоршелла}
 		\begin{footnotesize}
-			\begin{minted}{cpp}
+			\begin{minted}{pascal}
 for k = 1 to n
     for i = 1 to n
         for j = 1 to n
@@ -435,6 +460,7 @@ for k = 1 to n
 			\item Алгоритм Кнута-Морриса-Пратта
 			\item Алгоритм Рабина-Карпа
 			\item Алгоритм Бойера-Мура
+			\item Алгоритм A*
 		\end{enumerate}
 	\end{frame}
 
