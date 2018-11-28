@@ -24,7 +24,7 @@
 \title{Веб-программирование}
 \subtitle{Часть 2}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{02.11.2018г}
+\date{28.11.2018г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -33,5 +33,396 @@
 \begin{document}
 
 	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Попробуем написать что-нибудь ``настоящее''}
+		\begin{itemize}
+			\item Приложение для регистрации на конференцию
+			\item Титульная страница конференции со ссылкой на форму регистрации
+			\item Форма регистрации
+			\begin{itemize}
+				\item Как слушатель или как докладчик
+			\end{itemize}
+			\item Страница, на которой можно просмотреть всех зарегистрировавшихся
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Моделирование предметной области}
+		\begin{minted}{csharp}
+public class Participant
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public bool? Speaker { get; set; }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Титульная страница}
+		\begin{minted}{html}
+@page
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+<body>
+    <h1>SEIM-2019</h1>
+    <p>Coolest conference ever</p>
+    <p>Please register:</p>
+    <a asp-page="Register">Register</a>
+</body>
+</html>
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Страница регистрации}
+		\begin{ssmall}
+			\begin{minted}{html}
+@page
+@model WebApplication1.Pages.RegisterModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+<body>
+    <form asp-action="Register" method="post">
+        <p>
+            <label asp-for="Participant.Name">Your name:</label>
+            <input asp-for="Participant.Name" />
+        </p>
+        <p>
+            <label asp-for="Participant.Email">Your email:</label>
+            <input asp-for="Participant.Email" />
+        </p>
+        <p>
+            <label>Are you a speaker?</label>
+            <select asp-for="Participant.Speaker">
+                <option value="">Choose an option</option>
+                <option value="true">Yes</option>
+                7
+                <option value="false">No</option>
+            </select>
+        </p>
+        <button type="submit">Register!</button>
+    </form>
+</body>
+</html>
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Code behind}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+public class RegisterModel : PageModel
+{
+    public void OnGet()
+    {
+    }
+
+    [BindProperty]
+    public Data.Participant Participant { get; set; }
+
+    public IActionResult OnPost()
+    {
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        return RedirectToPage($"/Thanks", new { name = Participant.Name });
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Страница благодарности}
+		\begin{small}
+			\begin{minted}{html}
+@page "{name}"
+
+<html>
+<body>
+    <h1>Thanks for registration, @RouteData.Values["name"]!</h1>
+</body>
+</html>
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Добавим немного СУБД}
+		\framesubtitle{Класс Data.AppDbContext}
+		\begin{small}
+			\begin{minted}{csharp}
+public class AppDbContext: DbContext
+{
+    public AppDbContext(DbContextOptions options)
+        : base(options)
+    {
+    }
+
+    public DbSet<Participant> Participants { get; set; }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Но где же Connection String?}
+		\begin{itemize}
+			\item Dependency Injection --- архитектурный паттерн, отделяющий создание и конфигурирование объектов от их логики
+			\item За создание и конфигурирование/переконфигурирование отвечает DI-контейнер, обычно отдельная подсистема
+			\item Мы лишь описываем ограничения на то, что должно получиться
+			\item Конкретно в нашем случае:
+			\begin{itemize} 
+				\item Подключаем пакет Microsoft.EntityFrameworkCore.Sqlite
+				\item Пишем в Startup.ConfigureServices:
+				\begin{minted}{csharp}
+services.AddDbContext<Data.AppDbContext>(
+    options => options.UseSqlite(@"Data source=Test.db;"));
+				\end{minted}
+			\end{itemize}
+			\item DI-контейнер создаёт и регистрирует контекст, передавая ему в конструктор опции
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Инициализация базы данных}
+		\begin{itemize}
+			\item Идём ВНЕЗАПНО в Tools -> Nuget Package Manager -> Package Manager Console
+			\item Набираем в консоли Add-Migration Initial
+			\begin{itemize}
+				\item Создаётся \textit{миграция}, которая создаст базу
+			\end{itemize}
+			\item Набираем в консоли Update-Database
+			\begin{itemize}
+				\item Миграция применяется, в папке с проектом создаётся Test.db
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пришла пора воспользоваться СУБД}
+		\begin{ssmall}
+			\begin{minted}{csharp}
+public class RegisterModel : PageModel
+{
+    private readonly AppDbContext db;
+
+    public RegisterModel(AppDbContext db)
+    {
+        this.db = db;
+    }
+
+    [BindProperty]
+    public Participant Participant { get; set; }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        db.Participants.Add(Participant);
+        await db.SaveChangesAsync();
+
+        return RedirectToPage($"/Thanks", new { name = Participant.Name });
+    }
+}
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ну и последняя страница, просмотр участников}
+		\framesubtitle{Code Behind}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public class ViewModel : PageModel
+{
+    private readonly AppDbContext db;
+
+    public ViewModel(AppDbContext db)
+    {
+        this.db = db;
+    }
+
+    public IList<Participant> Participants { get; private set; }
+
+    public async Task OnGetAsync()
+    {
+        Participants = await db.Participants.AsNoTracking().ToListAsync();
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{.cshtml}
+		\begin{ssmall}
+			\begin{minted}{html}
+@page
+@model WebApplication1.Pages.ViewModel
+
+<html>
+<body>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Is Speaker</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var participant in Model.Participants)
+            {
+            <tr>
+                <td>@participant.Id</td>
+                <td>@participant.Name</td>
+                <td>@participant.Email</td>
+                <td>@(participant.Speaker == true ? "Yes" : "No")</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+			\end{minted}
+		\end{ssmall}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Но так даже в 90-е не верстали!}
+		\framesubtitle{Добавим Bootstrap}
+		\begin{tiny}
+			\begin{minted}{html}
+@page
+@model WebApplication1.Pages.ViewModel
+
+<html>
+<head>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+</head>
+<body>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Is Speaker</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var participant in Model.Participants)
+            {
+            <tr>
+                <td>@participant.Id</td>
+                <td>@participant.Name</td>
+                <td>@participant.Email</td>
+                <td>@(participant.Speaker == true ? "Yes" : "No")</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+			\end{minted}
+		\end{tiny}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Валидация}
+		\begin{itemize}
+			\item Клиентская
+			\begin{itemize}
+				\item Работает с помощью jquery-validation
+				\item Только в браузере у клиента, без нужды связи с сервером
+				\item Только если там включён JavaScript
+			\end{itemize}
+			\item Серверная
+			\begin{itemize}
+				\item Проверка модели при Model Binding-е в контроллере
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Атрибуты валидации}
+		\begin{scriptsize}
+			\begin{minted}{csharp}
+public class Participant
+{
+    public int Id { get; set; }
+
+    [Required]
+    public string Name { get; set; }
+
+    [Required]
+    [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)"
+        + @"@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")]
+    public string Email { get; set; }
+
+    [Required(ErrorMessage = "Укажите Вашу роль")]
+    public bool? Speaker { get; set; }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что ещё бывает}
+		\begin{itemize}
+			\item Required --- для nullable-типов требует значение, для не-nullable не имеет смысла, они обязательны всегда
+			\item StringLength --- задаёт максимальную и минимальную длину строки
+			\item RegularExpression
+			\item Range --- ограничивает значение заданным атрибутом
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Что надо сделать на клиенте}
+		\begin{tiny}
+			\begin{minted}{html}
+<form asp-action="Register" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <p>
+        <label asp-for="Participant.Name">Your name:</label>
+        <input asp-for="Participant.Name" />
+        <span asp-validation-for="Participant.Name" class="text-danger" />
+    </p>
+    <p>
+        <label asp-for="Participant.Email">Your email:</label>
+        <input asp-for="Participant.Email" />
+        <span asp-validation-for="Participant.Email" class="text-danger" />
+    </p>
+    <p>
+        <label>Are you a speaker?</label>
+        <select asp-for="Participant.Speaker">
+            <option value="">Choose an option</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+        <span asp-validation-for="Participant.Speaker" class="text-danger" />
+    </p>
+    <button type="submit">Register!</button>
+</form>
+...
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+			\end{minted}
+		\end{tiny}
+	\end{frame}
 
 \end{document}
