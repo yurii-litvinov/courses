@@ -1,0 +1,105 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{О презентациях семестровых}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{07.12.2018г}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Общее}
+		\begin{itemize}
+			\item Доклад на 5-7 минут
+			\item Возможна одна презентация на несколько человек, но у каждого должен быть свой слайд с результатами
+			\item Чеклист по презентации: \url{https://docs.google.com/spreadsheets/d/1LvHveX6TdbzexuACcqGPeHIEph6cm4Hd0arCRQBqODw}
+			\item Презентации прошлых лет: \url{http://se.math.spbu.ru/SE/Members/ylitvinov/semesterWorks2018_2year}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Структура презентации}
+		\begin{itemize}
+			\item Титульный слайд 
+			\begin{itemize}
+				\item Тема, автор, научник (учёная степень если есть, должность)
+			\end{itemize}
+			\item Введение
+			\begin{itemize}
+				\item Краткий рассказ про предметную область
+				\item Обосновать актуальность задачи
+			\end{itemize}
+			\item Постановка задачи (обязательно!)
+			\begin{itemize}
+				\item ``Целью работы является...''
+				\item Список из 3-5 задач, которые надо было решить для достижения цели
+				\item ``Сделать обзор'' (чего?), ``Разработать архитектуру'', ``Реализовать'', ``Провести эксперименты''...
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Структура презентации (2)}
+		\begin{itemize}
+			\item Обзор
+			\begin{itemize}
+				\item Существующие решения
+				\item Используемые технологии
+				\item Всё, что делали не вы, но что нужно для понимания работы
+			\end{itemize}
+			\item Описание реализации
+			\begin{itemize}
+				\item Архитектура (UML-диаграммы приветствуются)
+				\item Особенности реализации (то, над чем пришлось подумать)
+			\end{itemize}
+			\item Эксперименты
+			\begin{itemize}
+				\item Численные измерения (нужен матстат --- матожидание, дисперсия)
+				\item Подписи к осям
+				\item Примеры использования
+				\item Сравнение с существующими аналогами, выводы
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Структура презентации (3)}
+		\begin{itemize}
+			\item Результаты
+			\begin{itemize}
+				\item Список того, что выносится на защиту
+				\item Должно соответствовать списку задач (лучше --- полностью повторять, с заменой ``сделать'' на ``сделано'')
+				\item Всё, что перечислено в результатах, должно быть отражено ранее на слайдах
+				\item Не очень приветствуются неотчуждаемые результаты (типа ``изучил'')
+				\item Должно быть последним слайдом
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+\end{document}
