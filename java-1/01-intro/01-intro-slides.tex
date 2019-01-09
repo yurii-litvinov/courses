@@ -14,17 +14,12 @@
 \definecolor{links}{HTML}{2A1B81}
 \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
 \tabulinesep=1.2mm
 
 \title{Практика по Java}
 \subtitle{Введение}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{??.09.2018г}
+\date{16.01.2019г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -44,6 +39,7 @@
 				\item Сдать некоторый (большой!) процент домашних работ
 				\item Успешно написать две контрольные
 				\item По каждой домашке дедлайн порядка двух недель
+				\item Решения оцениваются от 0 до 10 баллов
 			\end{itemize}
 			\item Условия, материалы и сдача домашек через \url{http://hwproj.me/}
 			\item Среда программирования --- какая угодно
@@ -59,7 +55,7 @@
 	\begin{frame}
 		\frametitle{Язык Java}
 		\begin{itemize}
-			\item Появился в 1995 году, актуальная версия --- Java 10
+			\item Появился в 1995 году, актуальная версия --- Java 11
 			\item Объектно-ориентированный язык с сильной типизацией
 			\item Прежде всего --- для разработки прикладного ПО (в отличие от С++)
 			\item Использует виртуальную машину (compile once --- run everywhere, опять же в отличие от C++)
@@ -79,7 +75,7 @@
 			\end{itemize}
 			\item Практически всё --- объект
 			\item Стандартизация элементарных типов (в отличие от С++)
-			\item Пакеты и библиотеки
+			\item Пакеты и библиотеки (имена пакетов стандартизованы, например, com.example.myclasses)
 			\item Рефлексия
 			\item Некоторая поддержка функционального стиля
 			\item Несколько странная реализация шаблонов (генерики)
@@ -89,7 +85,7 @@
 	\begin{frame}
 		\frametitle{Что скачать и поставить}
 		\begin{itemize}
-			\item JDK 10 (\url{http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html})
+			\item JDK 11 (\url{https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html})
 			\begin{itemize}
 				\item Обратите внимание, JRE --- среда времени выполнения, JDK --- среда времени выполнения + инструменты разработки (включая компилятор)
 			\end{itemize}
@@ -135,7 +131,7 @@
 		\frametitle{Как запускать из консоли}
 		\begin{itemize}
 			\item Нет никакого .exe-шника, виртуальной машине передаётся на исполнение файл с байт-кодом класса
-			\item Оный класс должен иметь метод \mintinline{java}|public static void main(String [] args)|
+			\item Оный класс должен иметь метод \mintinline{java}|public static void main(Stringы[] args)|
 			\item java (javaw)
 			\begin{itemize}
 				\item java MyClass
@@ -151,6 +147,48 @@
 				\item Нелишне посмотреть документацию, есть много полезных ключей командной строки
 			\end{itemize}
 			\item Системы сборки несколько облегчают эту боль
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{IntelliJ IDEA, демонстрация}
+		\begin{center}
+			\huge{Демонстрация}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Некоторые тонкости IDEA}
+		\begin{itemize}
+			\item Есть отдельно меню File -> Settings и отдельно File -> Project Structure
+			\begin{itemize}
+				\item Settings --- это в основном настройки самой среды
+				\item Project Structure --- это настройки проекта
+				\begin{itemize}
+					\item Версия языка (есть отдельно версия языка и отдельно версия SDK)
+					\item Модули --- в какой папке код, в какой тесты, в какой ресурсы; IDEA компилит только папки, отмеченные как Sources или Tests
+				\end{itemize}
+			\end{itemize}
+			\item Справа вверху --- конфигурации запуска. Там можно настроить, например, параметры командной строки.
+			\item Знание основных хоткеев может спасти жизнь на контрольной
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Стайлгайд}
+		\begin{itemize}
+			\item \url{https://google.github.io/styleguide/javaguide.html} (только для отступа используйте 4 пробела, а не 2)
+			\item На что обратить внимание:
+			\begin{itemize}
+				\item camelCase для методов и ``переменных'', CamelCase для типов, КАПС\_ДЛЯ\_КОНСТАНТ
+				\item Правильные имена пакетов (DNS-имя наоборот + собственно имя пакета)
+				\item ``Египетские'' фигурные скобки (так же известны, как K \& R)
+				\item Минимально возможная видимость полей, методов и всего-всего
+				\begin{itemize}
+					\item Всегда указывайте модификатор видимости
+				\end{itemize}
+				\item Комментарии к каждому классу и каждому public-методу
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
