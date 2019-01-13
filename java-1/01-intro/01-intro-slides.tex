@@ -38,6 +38,7 @@
 			\begin{itemize}
 				\item Сдать некоторый (большой!) процент домашних работ
 				\item Успешно написать две контрольные
+				\item Решать задачи прямо на паре
 				\item По каждой домашке дедлайн порядка двух недель
 				\item Решения оцениваются от 0 до 10 баллов
 			\end{itemize}
@@ -82,16 +83,77 @@
 		\end{itemize}
 	\end{frame}
 
+	\section{Типы}
+
+	\begin{frame}
+		\frametitle{Mandatory slide про стандартные числовые типы}
+		\begin{tabu} {| X[0.3 l p] | X[1 l p] | X[0.2 l p] |}
+			\tabucline-
+			Тип       & Значения                                                                              & Размер  \\
+			\tabucline-
+			\everyrow{\tabucline-}
+			$byte$    & $-2^7..2^7-1 (-128..127)$                                                             & 8 бит   \\
+			$short$   & $-2^15..2^15-1 (-32768..32767)$                                                       & 16 бит  \\
+			$int$     & $-2^31..2^31-1$                                                                       & 32 бит  \\
+			$long$    & $-2^63 .. 2^63-1$                                                                     & 64 бит  \\
+			$float$   & $-3.4028235E+38..-1.4E-45$ \newline и $1.4E-45..3.4028235E+38$                        & 32 бит  \\
+			$double$  & $-1.7976931348623157E+308..-4.9E-324$ \newline и $4.9E-324..1.7976931348623157E+308$  & 64 бит  \\
+		\end{tabu}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ссылочные типы и типы-значения}
+		\begin{itemize}
+			\item Примитивные типы: \mintinline{java}|byte, short, int, long, float, double, boolean, char|
+			\item Ссылочные типы: массивы, классы (в том числе строки и типы-обёртки), интерфейсы, перечисления, аннотации
+			\item Ссылочные типы всегда хранятся на куче и передаются по ссылке, примитивные типы всегда хранятся и передаются по значению
+			\item У каждого типа есть значение по умолчанию --- \mintinline{java}|null| для ссылочных типов (в том числе массивов и строк), нули для всех остальных
+			\item Оператор == для ссылочных типов всегда сравнивает их место в памяти
+			\begin{itemize}
+				\item Строки нельзя сравнивать ==, используйте equals
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Типы-обёртки, что?}
+		\begin{itemize}
+			\item Классы, соответствующие примитивным типам и поддержанные компилятором
+			\item Boxing/Unboxing
+			\item \mintinline{java}|byte| --- \mintinline{java}|Byte|, \mintinline{java}|short| --- \mintinline{java}|Short|, ну вы поняли
+			\item Не всё так просто: \mintinline{java}|char| --- \mintinline{java}|Character|, \mintinline{java}|int| --- \mintinline{java}|Integer|
+			\item Методы: \mintinline{java}|int ololo = Integer.parseInt("239");|
+			\item Известная ``особенность'':
+			\begin{itemize}
+				\item \mintinline{java}|Integer.valueOf(127) == Integer.valueOf(127)|
+				\item но \mintinline{java}|Integer.valueOf(128) != Integer.valueOf(128)|
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Инструменты}
+
+	\begin{frame}
+		\frametitle{IntelliJ IDEA, демонстрация}
+		\begin{center}
+			\huge{Демонстрация}
+		\end{center}
+	\end{frame}
+
 	\begin{frame}
 		\frametitle{Что скачать и поставить}
 		\begin{itemize}
 			\item JDK 11 (\url{https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html})
 			\begin{itemize}
 				\item Обратите внимание, JRE --- среда времени выполнения, JDK --- среда времени выполнения + инструменты разработки (включая компилятор)
+				\item Очень желательно добавить javac в PATH и прописать переменную окружения JAVA\_HOME
 			\end{itemize}
 			\item IntelliJ IDEA (\url{https://www.jetbrains.com/student/})
 		\end{itemize}
-		Что сдавать:
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что сдавать}
 		\begin{itemize}
 			\item Файлы .java
 			\item Папку .idea
@@ -131,7 +193,7 @@
 		\frametitle{Как запускать из консоли}
 		\begin{itemize}
 			\item Нет никакого .exe-шника, виртуальной машине передаётся на исполнение файл с байт-кодом класса
-			\item Оный класс должен иметь метод \mintinline{java}|public static void main(Stringы[] args)|
+			\item Оный класс должен иметь метод \mintinline{java}|public static void main(String[] args)|
 			\item java (javaw)
 			\begin{itemize}
 				\item java MyClass
@@ -142,19 +204,12 @@
 				\end{itemize}
 				\item Имя запускаемого класса должно быть \textbf{полностью квалифицированным}
 				\begin{itemize}
-					\item например, \textit{java ru.spbau.mit.MyClass}
+					\item например, \textit{java com.example.MyClass}
 				\end{itemize}
 				\item Нелишне посмотреть документацию, есть много полезных ключей командной строки
 			\end{itemize}
 			\item Системы сборки несколько облегчают эту боль
 		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{IntelliJ IDEA, демонстрация}
-		\begin{center}
-			\huge{Демонстрация}
-		\end{center}
 	\end{frame}
 
 	\begin{frame}
@@ -169,10 +224,12 @@
 					\item Модули --- в какой папке код, в какой тесты, в какой ресурсы; IDEA компилит только папки, отмеченные как Sources или Tests
 				\end{itemize}
 			\end{itemize}
-			\item Справа вверху --- конфигурации запуска. Там можно настроить, например, параметры командной строки.
+			\item Справа вверху --- конфигурации запуска. Там можно настроить, например, параметры командной строки
 			\item Знание основных хоткеев может спасти жизнь на контрольной
 		\end{itemize}
 	\end{frame}
+
+	\section{Стайлгайд}
 
 	\begin{frame}
 		\frametitle{Стайлгайд}
@@ -188,7 +245,29 @@
 					\item Всегда указывайте модификатор видимости
 				\end{itemize}
 				\item Комментарии к каждому классу и каждому public-методу
+				\begin{itemize}
+					\item JavaDoc
+				\end{itemize}
 			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{JavaDoc}
+		\begin{itemize}
+			\item Стандартная система генерации документации
+			\item В IDEA это Tools -> Generate JavaDoc
+			\item \mintinline{java}|/**  */| --- JavaDoc-комментарий
+			\item Сначала общее описание, затем, опционально, уточняющие тэги
+			\item Тэги:
+			\begin{itemize}
+				\item \mintinline{java}|@param имя описание параметра|
+				\item \mintinline{java}|@return описание возвращаемого значения|
+				\item \mintinline{java}|@exception ИмяКлассаИсключения описание, когда бросается|
+				\item \mintinline{java}|{@inheritDoc}|
+				\item \mintinline{java}|@see|
+			\end{itemize}
+			\item Пустые тэги не очень полезны
 		\end{itemize}
 	\end{frame}
 
