@@ -70,12 +70,58 @@
 
 	\begin{frame}
 		\frametitle{JUnit 5}
-		
+		\begin{itemize}
+			\item JUnit --- самая известная библиотека юнит-тестирования для Java
+			\item JUnit 5 --- его последняя версия (часто до сих пор используется JUnit 4)
+			\item Отлично интегрируется с IDEA
+			\begin{itemize}
+				\item Генерация заглушек тестов, запуск тестов прямо из редактора и т.д.
+			\end{itemize}
+			\item Тест --- это отдельный класс, в котором есть методы, помеченные аннотацией \mintinline{java}|@Test|
+			\item Внутри теста обычно три фазы
+			\begin{itemize}
+				\item Настройка тестового окружения
+				\item Выполнение действия, которое хотим тестировать
+				\item Проверка результатов
+				\begin{itemize}
+					\item Вызовы assertEquals, assertNull, assertTrue и т.д.
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Демонстрация}
-		
+		\begin{center}
+			\huge{Демонстрация}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё аннотации}
+		\begin{itemize}
+			\item \mintinline{java}|@BeforeEach| --- метод, запускающийся перед каждым тестом
+			\item \mintinline{java}|@AfterEach| --- метод, запускающийся после каждого теста
+			\item \mintinline{java}|@BeforeAll| --- метод, запускающийся перед всеми тестами в классе (должен быть static)
+			\item \mintinline{java}|@AfterAll| --- метод, запускающийся после всех тестов в классе (должен быть static)
+			\item \mintinline{java}|@Disabled| --- тест отключён и не запускается
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Assertions}
+		\framesubtitle{Наиболее интересные}
+		\begin{itemize}
+			\item assertEquals
+			\begin{itemize}
+				\item Обратите внимание на порядок параметров, сначала ожидаемое, затем то, что получилось
+			\end{itemize}
+			\item assertArrayEquals
+			\item assertTrue/assertFalse
+			\item assertNull/assertNotNull
+			\item assertThrows
+			\item fail
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
