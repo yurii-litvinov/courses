@@ -18,7 +18,7 @@
 \title{Пример архитектуры --- Bash}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{22.02.2018г}
+\date{23.01.2019г}
 
 \begin{document}
 	
@@ -51,13 +51,35 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Основные соображения}
+		\frametitle{Хорошие идеи}
 		\begin{itemize}
+			\item Separation of Concerns
+			\item Dependency Inversion
+			\item Dependency Injection
+			\begin{itemize}
+				\item Spring Framework
+			\end{itemize}
+			\item Паттерны ``Фабрика'', ``Стратегия'', ``Посетитель'', ``Адаптер'', что-то вроде паттернов ``Спецификация'' и ``Цепочка ответственности''
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Плохие идеи}
+		\begin{itemize}
+			\item Не выполняется принцип Keep It Simple Stupid
+			\begin{itemize}
+				\item Неправильно говорить ``строк кода написано'', правильно --- ``строк кода израсходовано''
+			\end{itemize}
+			\item ``Синтаксическое'' разделение на пакеты, а не ``семантическое''
+			\begin{itemize}
+				\item Отсуствие модульности, антипаттерн ``Big Ball of Mud''
+			\end{itemize}
+			\item Хардкод основных параметров вычисления
+			\item Нет юнит-тестов, только интеграционные; нет логирования
 			\item 1663 строки кода и всего 40 строк комментариев
-			\item Spring Framework
-			\item Паттерны ``Фабрика'', ``Стратегия'', ``Посетитель''
-			\item Separation of Concerns: LoopContext и LoopRunner
-			\item Инверсия зависимостей
+			\begin{itemize}
+				\item Отсутствие архитектурного описания
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
