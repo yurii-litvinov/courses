@@ -1,0 +1,136 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=1.2mm
+
+\title{I/O в Java}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{23.01.2019г}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{IO Streams}
+
+	\begin{frame}[fragile]
+		\frametitle{I/O в Java}
+		\begin{itemize}
+			\item Интерфейсы
+			\begin{itemize}
+				\item InputStream, OutputStream --- работа с байтами
+				\item Reader, Writer --- работа с символами
+			\end{itemize}
+			\item Реализации
+			\begin{itemize}
+				\item File* --- работа с файлами
+				\item Buffered* --- оптимизация с помощью буферизации
+				\item Data* --- работа с данными
+				\item ByteArray* --- потоки в оперативной памяти
+			\end{itemize}
+			\item Исключения
+			\begin{itemize}
+				\item IOException --- общий предок
+				\item FileNotFoundException, EOFException и т.д.
+			\end{itemize}
+			\item Пример:
+				\begin{minted}{java}
+new BufferedReader(new FileReader("path/to/file"));
+				\end{minted}
+			\item Потоки надо закрывать (close(), try-with-resource)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример чтения из файла}
+		\begin{minted}{java}
+FileInputStream in = null;
+
+try {
+   in = new FileInputStream("test.txt");
+   int c;
+
+   while ((c = in.read()) != -1) {
+       doSomething(c);
+   }
+} finally {
+   if (in != null) {
+       in.close();
+   }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Или (try-with-resource)}
+		\begin{minted}{java}
+try (var in = new FileInputStream("test.txt")) {
+   int c;
+
+   while ((c = in.read()) != -1) {
+       doSomething(c);
+   }
+}
+		\end{minted}
+		\begin{itemize}
+			\item Работает для классов, реализующих java.lang.AutoCloseable
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё пример}
+		\begin{minted}{java}
+static String readFirstLineFromFile(String path)
+       throws IOException {
+   try (var br = new BufferedReader(new FileReader(path))) {
+       return br.readLine();
+   }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Scanner}
+		\begin{minted}{java}
+try (var s = new Scanner(
+       new BufferedReader(new FileReader("test.txt")))) {
+   while (s.hasNextDouble()) {
+       System.out.println(s.nextDouble());
+   }
+}
+		\end{minted}
+	\end{frame}
+
+	\section{Задача}
+
+	\begin{frame}
+		\frametitle{Задача на остаток пары}
+		\begin{itemize}
+			\item Реализовать консольную программу, работающую в трёх режимах:
+			\begin{itemize}
+				\item архивирует каталог (путь до него -- первый аргумент командной строки) с заданным именем (второй аргумент)
+				\item разархивирует заданный архив (первый аргумент) в заданное место (второй аргумент)
+				\item распечатывает содержимое архива (первый аргумент): имена файлов, размер сжатый/несжатый, метод архивации и т.п.
+			\end{itemize}
+			\item Могут быть полезны классы ZipFile, ZipEntry, ZipOutputStream, ZipInputStream
+		\end{itemize}
+	\end{frame}
+
+\end{document}
