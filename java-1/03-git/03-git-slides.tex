@@ -32,8 +32,41 @@
 
 	\begin{frame}
 		\frametitle{Комментарии по домашке}
+		\framesubtitle{Концептуальные}
 		\begin{itemize}
-			\item 
+			\item hashCode() может (и будет) возвращать отрицательные числа, программа должна быть к этому готова
+			\item Надо решить, что делать с ключами и значениями null
+			\begin{itemize}
+				\item Явно запретить и кидать IllegalArgumentException
+				\item Разрешить им быть null-ами и придумать другой способ сигнализировать об отсутствии значения
+				\item Вообще, null всегда допустим для всех ссылочных типов, поэтому о нём надо помнить
+				\begin{itemize}
+					\item И иметь юнит-тесты на это!
+				\end{itemize}
+			\end{itemize}
+			\item clear должен ресайзить таблицу обратно до исходного размера, иначе утечка памяти
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Комментарии по домашке (2)}
+		\framesubtitle{Технические}
+		\begin{itemize}
+			\item Инициализация полей --- за или против
+			\item \mintinline{java}|@BeforeEach| для инициализации хеш-таблицы в тестах
+			\item Если тип переменной очевиден из правой части --- var
+			\item Сдавать решение одним коммитом немудро
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Комментарии по домашке (3)}
+		\framesubtitle{По оформлению}
+		\begin{itemize}
+			\item Комментарии не должны начинаться с \mintinline{java}|@return|
+			\item Не надо сокращать идентификаторы
+			\item Стоит избегать побочных эффектов в выражениях
+			\item Каждый класс (не вложенный) должен быть в своём файле
 		\end{itemize}
 	\end{frame}
 
@@ -95,6 +128,27 @@
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Удалённые репозитории}
+		\begin{columns}
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}
+					\item git clone
+					\item git remote
+					\item git push
+					\item git fetch
+					\item git pull
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{center}
+					\includegraphics[width=0.95\textwidth]{remoteRepos.png}
+					\attribution{https://www.git-tower.com/learn/git/ebook/en}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}[fragile]
 		\frametitle{Как всё устроено}
 		\begin{minted}{text}
@@ -121,6 +175,24 @@ $ git commit -m 'initial commit of my project'
 			\includegraphics[width=0.8\textwidth]{branches.png}
 			\attribution{https://git-scm.com/book/ru}
 		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ссылки, как это выглядит}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{gitRefs.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{HEAD}
+		Теперь не надо помнить хеши, но как переключаться между ветками?
+
+		Текущая ветка хранится в HEAD. HEAD --- символическая ссылка, то есть ссылка на другую ссылку.
+		\begin{minted}{text}
+$ cat .git/HEAD
+ref: refs/heads/master
+		\end{minted}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -234,187 +306,7 @@ Applying: added staged command
 		\end{center}
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{Удалённые репозитории}
-		\begin{columns}
-			\begin{column}{0.4\textwidth}
-				\begin{itemize}
-					\item git clone
-					\item git remote
-					\item git push
-					\item git fetch
-					\item git pull
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.6\textwidth}
-				\begin{center}
-					\includegraphics[width=0.95\textwidth]{remoteRepos.png}
-					\attribution{https://www.git-tower.com/learn/git/ebook/en}
-				\end{center}
-			\end{column}
-		\end{columns}
-	\end{frame}
-
-	\section{Внутреннее устройство Git}
-
-	\begin{frame}
-		\frametitle{Немного про внутреннее устройство Git\footnote{\tiny{По гл. 10 \url{https://git-scm.com/book} и \url{http://aosabook.org/en/git.html}}}}
-		Структура папки .git:
-		\begin{itemize}
-			\item HEAD
-			\item index
-			\item config
-			\item description
-			\item hooks/
-			\item info/
-			\item objects/
-			\item refs/
-			\item ...
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Объекты}
-		Git внутри --- хеш-таблица, отображающая SHA-1-хеш файла в содержимое файла. Пример:
-		\begin{minted}{text}
-$ git init test
-Initialized empty Git repository in /tmp/test/.git/
-$ cd test
-$ find .git/objects
-.git/objects
-.git/objects/info
-.git/objects/pack
-
-$ echo 'test content' | git hash-object -w --stdin
-d670460b4b4aece5915caf5c68d12f560a9fe3e4
-
-$ find .git/objects -type f
-.git/objects/d6/70460b4b4aece5915caf5c68d12f560a9fe3e4
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Объекты (2)}
-		Как получить сохранённый объект:
-		\begin{minted}{text}
-$ git cat-file -p d670460b4b4aece5915caf5c68d12f560a9fe3e4
-test content
-		\end{minted}
-
-		Версионный контроль:
-		\begin{minted}{text}
-$ echo 'version 1' > test.txt
-$ git hash-object -w test.txt
-83baae61804e65cc73a7201a7252750c76066a30
-$ echo 'version 2' > test.txt
-$ git hash-object -w test.txt
-1f7a7a472abf3dd9643fd615f6da379c4acb3e3a
-$ find .git/objects -type f
-.git/objects/1f/7a7a472abf3dd9643fd615f6da379c4acb3e3a
-.git/objects/83/baae61804e65cc73a7201a7252750c76066a30
-.git/objects/d6/70460b4b4aece5915caf5c68d12f560a9fe3e4
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Объекты (3)}
-		Переключение между версиями файла:
-		\begin{minted}{text}
-$ git cat-file -p 83baae61804e65cc73a7201a7252750c76066a30 \
-    > test.txt
-$ cat test.txt
-version 1
-
-$ git cat-file -p 1f7a7a472abf3dd9643fd615f6da379c4acb3e3a \
-    > test.txt
-$ cat test.txt
-version 2
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Деревья}
-		blob (то, что мы видели раньше) хранит только содержимое файла, не хранит даже его имя. Решение проблемы --- tree:
-		\begin{scriptsize}
-		\begin{minted}{text}
-$ git cat-file -p master^{tree}
-100644 blob a906cb2a4a904a152e80877d4088654daad0c859      README
-100644 blob 8f94139338f9404f26296befa88755fc2598c289      Rakefile
-040000 tree 99f1a6d12cb4b6f19c8655fca46c3ecf317074e0      lib
-		\end{minted}
-		\end{scriptsize}
-		\begin{center}
-			\includegraphics[width=0.5\textwidth]{gitTreeObject.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Какие ещё виды объектов бывают}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{gitDataStructure.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Коммиты}
-		tree-объекты могут хранить структуру файлов (как inode в файловой системе), но не хранят метаинформацию типа автора файла и даты создания. Это хранится в commit-объектах
-		
-		\vspace{1cm}
-		Ещё коммит хранит список коммитов-родителей
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Коммиты, как это выглядит}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{gitCommitObjects.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Ссылки}
-		Теперь вся информация хранится на диске, но чтобы ей воспользоваться, нужно помнить SHA-1 хеши. На помощь приходят reference-ы. 
-
-		\begin{itemize}
-			\item .git/refs
-			\item .git/refs/heads
-			\item .git/refs/tags
-		\end{itemize}
-
-		\begin{minted}{text}
-$ echo "1a410efbd13591db07496601ebc7a059dd55cfe9" \
-    > .git/refs/heads/master
-
-$ git log --pretty=oneline master
-1a410efbd13591db07496601ebc7a059dd55cfe9 third commit
-cac0cab538b970a37ea1e769cbbde608743bc96d second commit
-fdf4fc3344e67ab068f836878b6c4951e3b15f3d first commit
-		\end{minted}
-		\begin{itemize}
-			\item Команда \verb|git update-ref|
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Ссылки, как это выглядит}
-		\begin{center}
-			\includegraphics[width=0.9\textwidth]{gitRefs.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{HEAD}
-		Теперь не надо помнить хеши, но как переключаться между ветками?
-
-		Текущая ветка хранится в HEAD. HEAD --- символическая ссылка, то есть ссылка на другую ссылку.
-		\begin{minted}{text}
-$ cat .git/HEAD
-ref: refs/heads/master
-
-$ git symbolic-ref HEAD refs/heads/test
-$ cat .git/HEAD
-ref: refs/heads/test
-		\end{minted}
-	\end{frame}
+	\section{Тэги}
 
 	\begin{frame}[fragile]
 		\frametitle{Тэги}
@@ -442,9 +334,11 @@ test tag
 		\end{footnotesize}
 	\end{frame}
 
+	\section{Packfiles}
+
 	\begin{frame}[fragile]
 		\frametitle{Packfiles}
-		Пока что получалось, что все версии всех файлов в Git хранятся целиком, как они есть. Все они всегда сжимаются zlib, но в целом, если создать репозиторий, добавлять туда файлы, коммитить и т.д., все версии всех файлов будут в нём целиком. На помощь приходят .pack-файлы:
+		Пока что получалось, что все версии всех файлов в Git хранятся целиком, как они есть. Все они сжимаются zlib, но в целом, если создать репозиторий, добавлять туда файлы, коммитить и т.д., все версии всех файлов будут в нём целиком. На помощь приходят .pack-файлы:
 		\begin{center}
 			\includegraphics[width=0.4\textwidth]{gitPackFiles.png}
 		\end{center}
