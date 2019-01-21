@@ -33,6 +33,7 @@
 	\begin{frame}[fragile]
 		\frametitle{I/O в Java}
 		\begin{itemize}
+			\item Пакет java.io
 			\item Интерфейсы
 			\begin{itemize}
 				\item InputStream, OutputStream --- работа с байтами
@@ -58,8 +59,53 @@ new BufferedReader(new FileReader("path/to/file"));
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Потоки ввода, основные операции}
+		\begin{itemize}
+			\item \mintinline{java}|int read()| --- чтение элемента
+			\item \mintinline{java}|read(T[] v)|, \mintinline{java}|read(T[] v, off, len)| --- чтение элементов в массив
+			\item \mintinline{java}|skip(n)| --- пропуск n элементов
+			\item \mintinline{java}|available()| --- сколько элементов доступно
+			\item \mintinline{java}|mark(limit)| --- пометка текущей позиции
+			\item \mintinline{java}|reset()| --- возврат к помеченной позиции
+			\item \mintinline{java}|close()| --- закрытие потока
+			\begin{itemize}
+				\item Интерфейс Closeable extends AutoCloseable
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Потоки вывода, основные операции}
+		\begin{itemize}
+			\item \mintinline{java}|write(int v)| --- запись элемента
+			\item \mintinline{java}|write(T[] v)| --- запись массива элементов
+			\item \mintinline{java}|write(T[] v, off, len)| --- запись части массива
+			\item \mintinline{java}|flush()| --- запись буфера
+			\begin{itemize}
+				\item Интерфейс Flushable
+			\end{itemize}
+			\item \mintinline{java}|close()| --- закрытие потока
+		\end{itemize}
+	\end{frame}
+
 	\begin{frame}[fragile]
-		\frametitle{Пример чтения из файла}
+		\frametitle{Пример, блочное копирование}
+		\begin{minted}{java}
+void copy(InputStream is, OutputStream os)
+    throws IOException
+{
+    var b = new byte[1024];
+    int c = 0;
+    while ((c = is.read(b)) > 0) {
+        os.write(b, 0, c);
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример, чтение из файла}
 		\begin{minted}{java}
 FileInputStream in = null;
 
@@ -94,8 +140,53 @@ try (var in = new FileInputStream("test.txt")) {
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Исключения}
+		\begin{itemize}
+			\item IOException 
+			\begin{itemize}
+				\item Корень иерархии исключений ввода-вывода
+				\item Бросается всеми операциями ввода/вывода
+			\end{itemize}
+			\item EOFException --- достигнут конец потока
+			\item FileNotFoundException --- файл не найден
+			\item UnsupportedEncodingException --- неизвестная кодировка
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Преобразование потоков}
+		\begin{itemize}
+			\item При чтении возможно преобразование байтового потока в символьный, с указанием кодировки, класс InputStreamReader
+			\begin{itemize}
+				\item \mintinline{java}|InputStreamReader(InputStream, encoding?)|
+			\end{itemize}
+			\item Наоборот, из символьного в байтовый: OutputStreamWriter
+			\begin{itemize}
+				\item \mintinline{java}|OutputStreamWriter(OutputStream, encoding?)|
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
 	\begin{frame}[fragile]
-		\frametitle{Ещё пример}
+		\frametitle{Пример, перекодирование файла}
+		\begin{minted}{java}
+Reader reader = new InputStreamReader(
+    new FileInputStream("input.txt"), "Cp1251");
+Writer writer = new OutputStreamWriter(
+    new FileOutputStream("output.txt"), "Cp866");
+int c = 0;
+while ((c = reader.read()) >= 0) {
+    writer.write(c);
+}
+
+reader.close();
+writer.close();
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё пример, буферизующий поток}
 		\begin{minted}{java}
 static String readFirstLineFromFile(String path)
        throws IOException {
@@ -104,6 +195,18 @@ static String readFirstLineFromFile(String path)
    }
 }
 		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Потоки для работы в памяти}
+		\begin{itemize}
+			\item ByteArrayInputStream --- чтение из массива байт
+			\item CharArrayReader --- чтение из массива символов
+			\item StringReader --- чтение из строки
+			\item ByteArrayOutputStream --- запись в массив байт (toByteArray())
+			\item CharArrayWriter --- запись в массив символов (toString(),toCharArray())
+			\item StringWriter – запись в StringBuffer (toString(), toStringBuffer())
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}[fragile]
