@@ -221,6 +221,24 @@ try (var s = new Scanner(
 		\end{minted}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Работа с данными}
+		\begin{itemize}
+			\item Интерфейс DataOutput, класс DataOutputStream
+			\begin{itemize}
+				\item \mintinline{java}|writeT(T)| --- запись примитивных типов
+				\item \mintinline{java}|writeUnsignedByte()| / \mintinline{java}|writeUnsignedShort()| --- запись беззнаковых целых
+				\item \mintinline{java}|writeUTF()| --- запись строки в кодировке UTF-8
+			\end{itemize}
+			\item Интерфейс DataInput, класс DataInputStream
+			\begin{itemize}
+				\item \mintinline{java}|T readT()| --- чтение примитивных типов
+				\item \mintinline{java}|readUnsignedByte()| / \mintinline{java}|readUnsignedShort()| --- чтение беззнаковых целых
+				\item \mintinline{java}|readUTF()| --- чтение строки в кодировке UTF-8
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
 	\section{Задача}
 
 	\begin{frame}
