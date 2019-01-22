@@ -1,0 +1,92 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=1.2mm
+
+\title{IDEA code inspections, практика}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{30.01.2019г}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{IDEA code inspections}
+
+	\begin{frame}
+		\frametitle{IDEA code inspections}
+		\begin{itemize}
+			\item Набор статических анализаторов, встроенных в IDEA
+			\item Settings -> Editor -> Inspections
+			\begin{itemize}
+				\item Analyze -> Inspect Code...
+			\end{itemize}
+			\item Надо включать как можно больше
+			\begin{itemize}
+				\item Некоторые взаимоисключающие или противоречат стайлгайду
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Nullability Analysis}
+		\begin{itemize}
+			\item \mintinline{java}|@NotNull|
+			\item \mintinline{java}|@Nullable|
+			\item org.jetbrains.annotations (не путать с com.sun.internal и т.п.!)
+			\item Чем больше --- тем лучше!
+			\item \mintinline{java}|Optional<T>| --- в каком-то смысле альтернатива
+		\end{itemize}
+		С этого дня \mintinline{java}|@NotNull| и \mintinline{java}|@Nullable| обязательны
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Контракты}
+		\begin{itemize}
+			\item \mintinline{java}|@Contract("null -> null")|
+			\item \mintinline{java}|@Contract("_ -> this")|
+			\item \mintinline{java}|@Contract("!null,_ -> param1; null,!null -> param2; null,null -> fail")|
+			\item \url{https://www.jetbrains.com/help/idea/contract-annotations.html}
+		\end{itemize}
+	\end{frame}
+
+	\section{Задача}
+
+	\begin{frame}
+		\frametitle{Задача}
+		\begin{itemize}
+			\item Реализовать generic-класс Maybe
+			\begin{itemize}
+				\item \mintinline{java}|public static <T> Maybe<T> just(T t)|
+				\item \mintinline{java}|public static <T> Maybe<T> nothing()|
+				\item \mintinline{java}|public T get()|
+				\item \mintinline{java}|public boolean isPresent()|
+				\item \mintinline{java}|public <U> Maybe<U> map(Function<?, ?> mapper)|
+			\end{itemize}
+			\item Прочитать числа из файла:
+			\begin{itemize}
+				\item если на строке действительно число, возвращается ``Maybe'' с числом
+				\item если на строке записано не число, возвращается ``Maybe'' с null
+			\end{itemize}
+			\item Возвести в квадрат прочитанные числа и сохранить их в новый файл
+		\end{itemize}
+	\end{frame}
+	
+\end{document}
