@@ -25,10 +25,10 @@
 \title{Объектно-ориентированное проектирование}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{01.03.2017г}
+\date{30.01.2019г}
 
 \begin{document}
-	
+
 	\frame{\titlepage}
 	\begin{frame}
 		\frametitle{Абстрактные типы данных}
@@ -218,10 +218,11 @@ class Point {
 class Employee {
 public:
     Employee(...);
-    FullName name() const;
+    std::string name() const;
+    std::string surname() const;
     std::string address() const;
 private:
-    std::string mName;
+    FullName mName;
     std::string mAddress;
     int mJobClass;
 };
@@ -580,7 +581,7 @@ public class Main {
 			\item Проанализировать запрос \url{https://goo.gl/MiyH8c}
 			\item Нарисовать IDEF0- и BPMN-диаграммы бизнес-процесса завода
 			\item Нарисовать диаграмму случаев использования создаваемого приложения
-			\item Без дедлайна
+			\item Дедлайн --- 10:00 13.02.2019
 		\end{itemize}
 	\end{frame}
 
