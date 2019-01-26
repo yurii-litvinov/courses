@@ -28,6 +28,8 @@
 
 	\frame{\titlepage}
 
+	\section{Коллекции}
+
 	\begin{frame}
 		\frametitle{Коллекции}
 		\begin{itemize}
@@ -45,6 +47,7 @@
 	\begin{frame}
 		\frametitle{Основные интерфейсы}
 		\begin{itemize}
+			\item Iterable --- всё, по чему можно итерироваться
 			\item Collection --- просто группа объектов
 			\begin{itemize}
 				\item Set, SortedSet --- множества
@@ -91,6 +94,9 @@
 			\item AbstractMap
 			\begin{itemize}
 				\item Требуется реализовать entrySet()
+				\begin{itemize}
+					\item ``View Collection'' --- сам элементы не хранит
+				\end{itemize}
 				\item Для возможности модификации --- переопределить put() и, для итератора, remove()
 			\end{itemize}
 		\end{itemize}
@@ -145,5 +151,20 @@
 		\end{itemize}
 	\end{frame}
 
+	\section{Задача}
+
+	\begin{frame}
+		\frametitle{Задача}
+		Переделать список из задачи про хеш-таблицы, чтобы он был генериком и реализовывал стандартный интерфейс \mintinline{java}|List<E>|. Нужны:
+		\begin{itemize}
+			\item Мутабельность
+			\item Более эффективный итератор, чем по умолчанию
+			\begin{itemize}
+				\item С remove()
+			\end{itemize}
+			\item Эффективный ListIterator
+			\item Тесты
+		\end{itemize}
+	\end{frame}
 
 \end{document}
