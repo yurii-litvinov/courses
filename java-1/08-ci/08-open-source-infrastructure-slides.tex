@@ -1,0 +1,360 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Экосистема open source проектов}
+\subtitle{Полезные инструменты и сервисы}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{06.02.2019г}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{CI}
+
+	\begin{frame}
+		\frametitle{Continuous Integration}
+		Непрерывная интеграция --- практика слияния всех изменений по нескольку раз в день, сборки их в известном окружении и запуска юнит-тестов.
+		\begin{itemize}
+			\item Автоматический билд
+			\begin{itemize}
+				\item Всё, что нужно для сборки, есть в репозитории, может быть получено на чистую (ну, практически) машину и собрано одной консольной командой
+			\end{itemize}
+			\item Большое количество юнит-тестов, запускаемых автоматически
+			\item Выделенная машина, слушающая репозиторий и выполняющая билд
+			\begin{itemize}
+				\item Чаще всего каждый билд запускается на заранее настроенной виртуалке
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Continuous Integration}
+		\begin{itemize}
+			\item Извещение всех разработчиков о статусе
+			\begin{itemize}
+				\item Если билд не прошёл, разработка приостанавливается до его починки
+			\end{itemize}
+			\item Автоматическое выкладывание
+			\item Пока билд не прошёл, задача не считается сделанной
+			\begin{itemize}
+				\item Короткие билды (<10 мин.)
+				\item deployment pipeline
+				\begin{itemize}
+					\item Отдельная машина для сборки, для коротких тестов, для длинных тестов, для выкладывания
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Travis}
+
+	\begin{frame}
+		\frametitle{Travis}
+		\begin{itemize}
+			\item \url{https://travis-ci.org/} --- пример бесплатной для open source-проектов облачной CI-системы
+			\item Собирает на чистой виртуальной машине под Ubuntu 12.04 (или Ubuntu 14.04) или OS X (есть экспериментальная поддержка Windows)
+			\item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
+			\item Окружение настраивается конфигурационным файлом или ``вручную'' из скрипта сборки (некоторые конфигурации разрешают sudo)
+			\item Сборка выполняется либо автоматически, либо указанным скриптом сборки
+			\item Build Matrix
+			\begin{itemize}
+				\item Разные конфигурации сборки, выполняемые на разных виртуальных машинах
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Travis, настройка сборки}
+		\begin{itemize}
+			\item Установить commit hook на гитхабе
+			\begin{itemize}
+				\item Travis умеет это делать сам, надо залогиниться под своим GitHub-аккаунтом на Travis и выбрать нужный репозиторий в профиле
+			\end{itemize}
+			\item Добавить .travis.yml в корень репозитория
+			\begin{itemize}
+				\item Это конфигурационный файл, говорящий, что и как собирать
+			\end{itemize}
+			\item Закоммитить и запушить, это инициирует процесс сборки
+			\begin{itemize}
+				\item Коммит, где в комментарии есть подстрока ``[ci skip]'', игнорируется Travis-ом, остальные он собирает
+			\end{itemize}
+			\item Результаты будут видны у каждого коммита в истории и в пуллреквесте
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{travisSuccess.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Travis, конфигурационный файл}
+		\begin{minted}{yaml}
+language: java
+		\end{minted}
+		--- всё :) Если у вас проект прямо в корне репозитория.
+
+		Жизненный цикл сборки:
+		\begin{footnotesize}
+			\begin{itemize}
+				\item Install apt addons
+				\item before\_install
+				\item install
+				\item before\_script
+				\item script
+				\item after\_success или after\_failure
+				\item \mintinline{text}|[OPTIONAL]| before\_deploy
+				\item \mintinline{text}|[OPTIONAL]| deploy
+				\item \mintinline{text}|[OPTIONAL]| after\_deploy
+				\item after\_script
+			\end{itemize}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Travis, примеры}
+		\begin{itemize}
+			\item Веб-приложение из нескольких сервисов на Java:
+			\begin{itemize}
+				\item \url{https://github.com/qreal/wmp/blob/master/.travis.yml}
+			\end{itemize}
+			\item Относительно большое десктопное приложение на C++:
+			\begin{itemize}
+				\item \url{https://github.com/qreal/qreal/blob/master/.travis.yml}
+			\end{itemize}
+			\item Билд в Docker-окружении (все зависимости носим с собой):
+			\begin{itemize}
+				\item \url{https://github.com/trikset/trikRuntime/blob/master/.travis.yml}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Travis, конфиг для домашки}
+		\begin{minted}{yaml}
+language: java
+os:
+  - linux
+env:
+  - PROJECT_DIR=hw1
+  - PROJECT_DIR=hw2
+  - PROJECT_DIR=hw3
+script: cd $PROJECT_DIR && ./gradlew check
+		\end{minted}
+	\end{frame}
+
+	\section{AppVeyor}
+
+	\begin{frame}
+		\frametitle{AppVeyor}
+		\begin{itemize}
+			\item CI c поддержкой Windows и Linux, прежде всего для сборки .NET-приложений, но умеет много чего ещё (в т.ч. Java)
+			\begin{itemize}
+				\item Windows Server 2016 или Windows Server 2012 R2
+				\item Ubuntu 16.04.4 LTS или Ubuntu 18.04 LTS
+			\end{itemize}
+			\item Тоже бесплатен для open source
+			\item Конфигурируется через appveyor.yml
+			\item Собирает по умолчанию MSBuild
+			\begin{itemize}
+				\item Можно переубедить
+			\end{itemize}
+			\item Синтаксис .yml-файла: \url{https://www.appveyor.com/docs/appveyor-yml/}
+			\item Пример: \url{https://github.com/qreal/qreal/blob/master/appveyor.yml}
+			\begin{itemize}
+				\item Собирать двумя CI-серверами один проект не зазорно
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{CodeCov}
+
+	\begin{frame}
+		\frametitle{Анализ тестового покрытия, CodeCov}
+		\begin{itemize}
+			\item \url{https://codecov.io/}
+			\item Визуализатор для функциональности компиляторов или специальных инструментов по слежению за исполнявшимися строчками
+			\item Чем больше операторов было исполнено во время тестового прогона, тем меньше вероятность пропустить баг
+			\begin{itemize}
+				\item 100\% покрытие не гарантирует работоспособность программы
+			\end{itemize}
+			\item Для Java (Kotlin, Scala) используется библиотека JaCoCo, для C++/gcc --- ключ ``-coverage''
+			\item Интегрируется с гитхабом (комментит пуллреквесты информацией о тестовом покрытии)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{CodeCov, пример конфигурации}
+		Travis:
+		\begin{minted}{yaml}
+language: java
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+		\end{minted}
+		Пример для Android-приложения:
+		\begin{footnotesize}
+			\begin{itemize}
+				\item \url{https://github.com/codecov/example-android/blob/master/.travis.yml}
+			\end{itemize}
+		\end{footnotesize}
+	\end{frame}
+
+	\section{Codacy}
+
+	\begin{frame}
+		\frametitle{Статический анализ, Codacy}
+		\begin{itemize}
+			\item \url{https://www.codacy.com/}
+			\item Ищет типичные ошибки: потенциальные баги, стайлгайд, мёртвый код, производительность и т.д.
+			\item Поддерживает много языков (в том числе C\#, C++, Java, Kotlin, Python, Scala)
+			\item Не требует дополнительных манипуляций с репозиторием
+			\item Очень настраиваема
+		\end{itemize}
+	\end{frame}
+
+	\section{Инструменты планирования}
+
+	\begin{frame}
+		\frametitle{Инструменты планирования, Trello}
+		\begin{itemize}
+			\item \url{https://trello.com/}
+			\item Интерактивная доска с карточками, организованными в списки
+			\item Карточки легко редактируются и перетаскиваются между списками
+			\begin{itemize}
+				\item Типичные списки: TODO, In Progress, Done (возможны варианты)
+			\end{itemize}
+			\item Поддерживает дедлайны, чеклисты, вложения, комментарии, голосования, метки
+			\item Легковесный инструмент планирования, подходящий, тем не менее, и для больших проектов
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Инструменты планирования, Pivotal Tracker}
+		\begin{itemize}
+			\item \url{https://www.pivotaltracker.com}
+			\item Более ``тяжеловесный'' инструмент, ориентированный на Scrum
+			\item Всего три списка
+			\begin{itemize}
+				\item Icebox --- что было бы неплохо сделать
+				\item Backlog --- запланированные задачи
+				\item Current --- задачи на текущую итерацию
+			\end{itemize}
+			\item Задачи можно оценивать, задачи имеют тип и статус
+			\begin{itemize}
+				\item По оценкам задач и статистике работы команды считается team velocity, позволяющая предсказать линейные сроки
+			\end{itemize}
+			\item Есть релизы с дедлайнами, метки, epic-и, чеклисты, вложения, комментарии
+			\item Умеет считать статистику, рисовать графики (burndown charts)
+		\end{itemize}
+	\end{frame}
+
+	\section{Средства коммуникации}
+
+	\begin{frame}
+		\frametitle{Средства коммуникации, Slack и Gitter}
+		\begin{itemize}
+			\item Instant messenger-ы, ориентированные на команды и интегрированные со средствами разработки
+			\begin{itemize}
+				\item Информация о коммитах и пуллреквестах
+				\item Статус CI
+				\item Другие тулы
+			\end{itemize}
+			\item Синтаксическая подсветка (markdown), вложения, отображение картинок, ...
+			\item Gitter интегрирован с гитхабом и ``более открыт'' (предназначается прежде всего для общения сообщества)
+			\item Slack интегрирован с чем угодно, предназначается прежде всего для общения внутри команды
+		\end{itemize}
+	\end{frame}
+
+	\section{Встроенные средства GitHub}
+
+	\begin{frame}
+		\frametitle{GitHub: Issues, Projects, Wiki, Pages}
+		\begin{itemize}
+			\item GitHub сам многое умеет
+			\item Issues --- довольно удобный багтрекер
+			\begin{itemize}
+				\item Майлстоуны, дедлайны, метки на багах, возможность закрывать баги автоматически (если в сообщении коммита есть ``close'' или ``fix'' и \#<номер бага>)
+				\item Пуллреквест тоже считается Issue
+			\end{itemize}
+			\item Projects --- представляет Issues в виде набора списков, между которыми их можно перетаскивать в духе Trello
+			\item Wiki --- викистраницы, куда можно выкладывать полезную информацию о проекте
+			\begin{itemize}
+				\item Тоже git-репозиторий
+			\end{itemize}
+			\item Pages --- хостинг для статических сайтов <имя проекта>.github.io
+		\end{itemize}
+	\end{frame}
+
+	\section{Авторское право}
+
+	\begin{frame}
+		\frametitle{Авторское право}
+		\begin{itemize}
+			\item Open source-кодом можно пользоваться, только если автор явно это разрешил, так что просто код на GitHub --- не совсем open source
+			\item Бывают исключительные и личные неимущественные права
+			\begin{itemize}
+				\item Личные неимущественные права неотчуждаемы
+				\item Исключительные права можно передать
+				\item Права появляются в момент создания произведения и принадлежат автору
+				\begin{itemize}
+					\item Если произведение создано по служебному заданию --- работодателю
+					\item Знак копирайта служит только для информирования, регистрация прав не требуется
+				\end{itemize}
+				\item Соавторы владеют произведением в равной степени
+			\end{itemize}
+			\item Идея не охраняется, охраняется её физическое выражение
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Open source-лицензии}
+		\begin{itemize}
+			\item Лицензия --- способ передачи части прав на произведение
+			\item Пример --- ``Do what the **** you want to public license''
+			\begin{itemize}
+				\item ``Want to'' может включать в себя патентование произведения и подачу в суд на автора за нарушение патента, поэтому обычно лицензии более длинны и унылы
+				\item В России и Европе программы не патентуют, в США --- да
+			\end{itemize}
+			\item Каждый нормальный open source-проект должен иметь лицензию
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Open source-лицензии}
+		\begin{itemize}
+			\item Часто используемые open source-лицензии:
+			\begin{itemize}
+				\item GPL, LGPL (GPL вирусная, поэтому использовать её, внезапно, плохая практика)
+				\item MIT License
+				\item Apache License 2.0 (может применяться пофайлово)
+				\item BSD License (в разных вариантах)
+				\item The Unlicense --- явная передача произведения в Public Domain
+				\item Семейство лицензий Creative Commons --- не для софта, но хорошо подходит для ресурсов (картинок, текстов и т.д.)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+\end{document}
