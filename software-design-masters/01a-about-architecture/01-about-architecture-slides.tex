@@ -1,0 +1,472 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Архитектура ПО}
+\subtitle{Лекция 1: Об архитектуре}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{04.02.2019г}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\newcommand{\DownArrow} {
+	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
+}
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{#1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Введение}
+
+	\begin{frame}
+		\frametitle{Программа и программный продукт}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{brooksSquare.png}
+		\end{center}
+		\begin{textblock}{2}(10,-3)
+			\includegraphics[width=\textwidth]{brooksCover.png}
+		\end{textblock}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Размер типичного ПО}
+		\begin{footnotesize}
+			\begin{center}
+				\begin{tabu} {| X[0.6 l p] | X[1 l p] |}
+					\tabucline-
+					\everyrow{\tabucline-}
+					Простая игра для iOS            & 10000 LOC  \\
+					Unix v1.0 (1971)                & 10000 LOC  \\
+					Quake 3 engine                  & 310000 LOC \\
+					Windows 3.1 (1992)              & 2.5M LOC   \\
+					Linux kernel 2.6.0 (2003)       & 5.2M LOC   \\
+					MySQL                           & 12.5M LOC  \\
+					Microsoft Office (2001)         & 25M LOC    \\
+					Microsoft Office (2013)         & 45M LOC    \\
+					Microsoft Visual Studio 2012    & 50M LOC    \\
+					Windows Vista (2007)            & 50M LOC    \\
+					Mac OS X 10.4                   & 86M LOC    \\
+				\end{tabu}
+			\end{center}
+			\url{http://www.informationisbeautiful.net/visualizations/million-lines-of-code/}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура}
+		\begin{columns}
+			\begin{column}{0.7\textwidth}
+				\begin{itemize}
+					\item Совокупность важнейших решений об организации программной системы
+					\begin{itemize}
+						\item Эволюционирующий свод знаний
+						\item Разные точки зрения
+						\item Разный уровень детализации
+					\end{itemize}
+					\item Для чего
+					\begin{itemize}
+						\item База для реализации, <<фундамент>> системы
+						\item Инструмент для оценки трудоёмкости и отслеживания прогресса
+						\item Средство обеспечения переиспользования
+						\item Средство анализа системы ещё до того, как она реализована
+					\end{itemize}
+					\item Заказчику на неё почти всегда плевать
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\includegraphics[width=\textwidth]{whatArchitecture.png}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Разработка ПО vs Строительство}
+		\begin{itemize}
+			\item Процесс
+			\begin{itemize}
+				\item Сбор требований
+				\item Высокоуровневая архитектура
+				\item Уточнение и формализация в моделях
+				\item Производство
+				\item Приёмка и сдача
+				\item Эксплуатация
+			\end{itemize}
+		\end{itemize}
+		\begin{textblock}{5}(7,-1)
+			\includegraphics[width=\textwidth]{buildingArchitecture.png}
+		\end{textblock}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Некоторые выводы из метафоры}
+		\begin{itemize}
+			\item Процесс разработки учитывает пожелания и требования пользователей
+			\item Возможно разделение труда
+			\begin{itemize}
+				\item Архитекторы
+				\item Реализаторы
+			\end{itemize}
+			\item Прогресс контролируется в ключевых точках
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура как отдельная сущность}
+		\begin{itemize}
+			\item Архитектура --- есть!
+			\begin{itemize}
+				\item Проектируется, развивается, документируется, тестируется, сравнивается с другими, проверяется на воплощение в коде
+				\item Даже если про неё никто специально не думал
+			\end{itemize}
+			Поэтому:
+			\begin{itemize}
+				\item Откуда берётся архитектура?
+				\item Чем она характеризуется?
+				\item Какими свойствами обладает?
+				\item Что такое хорошая и плохая архитектура?
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура и качества системы}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{architectureAndRequirements.png}
+		\end{center}
+	\end{frame}
+
+	\section{Профессия <<Архитектор>>}
+
+	\begin{frame}
+		\frametitle{Профессия <<Архитектор>>}
+		\begin{itemize}
+			\item Архитектор --- специально выделенный человек (или группа людей), отвечающий за:
+			\begin{itemize}
+				\item разработку и описание архитектуры системы
+				\item доведение её до всех заинтересованных лиц
+				\item контроль реализации архитектуры
+				\item поддержание её актуального состояния по ходу разработки и сопровождения
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Профессиональный стандарт <<Архитектор>>}
+		Создание и сопровождение архитектуры программных средств, заключающейся
+		\begin{itemize}
+			\item в синтезе и документировании решений о структуре
+			\item компонентном устройстве
+			\item основных показателях назначения
+			\item порядке и способах реализации программных средств в рамках системной архитектуры
+			\item реализации требований к программным средствам
+			\item контроле реализации и ревизии решений
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Трудовые функции архитектора}
+		\framesubtitle{По стандарту}
+		\begin{itemize}
+			\item Создание вариантов архитектуры программного средства
+			\item Документирование архитектуры программных средств
+			\item Реализация программных средств \textit{(в основном контроль и анализ)}
+			\item Оценка требований к программному средству
+			\item Оценка и выбор варианта архитектуры программного средства
+			\item Контроль реализации программного средства
+			\item Контроль сопровождения программных средств
+			\item Оценка возможности создания архитектурного проекта
+			\item Утверждение и контроль методов и способов взаимодействия программного средства со своим окружением
+			\item Модернизация программного средства и его окружения
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектор vs разработчик}
+		\begin{center}
+			\includegraphics[width=0.35\textwidth]{architectVsDeveloper.png}
+		\end{center}
+		\begin{itemize}
+			\item Широта знаний
+			\item Коммуникационные навыки
+			\item Часто архитектор играет роль разработчика и наоборот
+			\begin{itemize}
+				\item Архитектор в <<башне из слоновой кости>> --- это плохо
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Пример: ПО для осциллографа}
+
+	\begin{frame}
+		\frametitle{Пример: ПО для осциллографа}
+		\begin{columns}
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}
+					\item Считывать параметры сигнала
+					\item Оцифровывать и сохранять их
+					\item Выполнять разные фильтрации и преобразования
+					\item Отображать результаты на экране
+					\begin{itemize}
+						\item С тач-скрином и встроенным хелпом
+					\end{itemize}
+					\item Возможность настройки под конкретные задачи
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\begin{center}
+					\includegraphics[width=0.9\textwidth]{oscilloscope.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\vspace{1cm}
+		\begin{tiny}
+			По статье Garlan D., Shaw M. An introduction to software architecture
+		\end{tiny}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Вариант 1: объектная модель}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{oscilloscopeObjects.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Вариант 2: слоистая архитектура}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{oscilloscopeLayers.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Вариант 3: каналы и фильтры}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{oscilloscopeFilters.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Вариант 4: модифицированные каналы и фильтры}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{oscilloscopeModifiedFilters.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Выводы}
+		\begin{itemize}
+			\item Можем делать утверждения о свойствах системы, базируясь на её структурных свойствах
+			\begin{itemize}
+				\item Не написав ни строчки кода и даже не выбрав язык реализации
+			\end{itemize}
+			\item Рассуждения очень субъективны
+			\begin{itemize}
+				\item Многое зависит от интуиции и вкуса архитектора, однако ошибки очень дороги
+			\end{itemize}
+			\item Можно выделить \emph{архитектурные стили} --- <<архитектуры архитектур>>
+			\item Можно выделить \emph{архитектурные точки зрения} и \emph{архитектурные виды}
+			\item Разный уровень детализации
+		\end{itemize}
+	\end{frame}
+
+	\section{Роль архитектуры в жизненном цикле}
+
+	\begin{frame}
+		\frametitle{Роль архитектуры в жизненном цикле}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{architectureLifeCycle.png}
+
+			\begin{tiny}
+				Рисунок из Z. Quin, "Software Architecture"
+			\end{tiny}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура и требования}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{useCaseDiagram.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Требования}
+		\begin{itemize}
+			\item Функциональные --- то, \emph{что} система должна делать
+			\item Нефункциональные --- то, \emph{как} система должна это делать
+			\begin{itemize}
+				\item Эффективность
+				\item Масштабируемость
+				\item Удобство использования
+				\item Надёжность
+				\item Безопасность
+				\item Сопровождаемость и расширяемость
+				\item ...
+			\end{itemize}
+			\item Ограничения
+			\begin{itemize}
+				\item Технические
+				\item Бизнес-ограничения
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Требования и качество ПО}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{quality.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура и проектирование}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{trikRuntimeComponents.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура и проектирование --- задачи}
+		\begin{itemize}
+			\item Декомпозиция задачи
+			\item Определение границ компонентов
+			\item Определение интерфейсов между компонентами
+			\item Общие для всей системы вопросы
+			\begin{itemize}
+				\item Стратегия обработки ошибок
+				\item Стратегия логирования
+				\item Стратегия обновлений
+				\item Стратегия разделения доступа
+				\item Вопросы локализации
+				\item ...
+			\end{itemize}
+			\item Анализ и верификация архитектуры
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура и тестирование}
+		\begin{itemize}
+			\item Можно тестировать не только код, но и архитектуру
+			\begin{itemize}
+				\item Целостность
+				\item Синтаксическая и семантическая корректность
+				\item Поиск антипаттернов
+				\item Control/data flow analysis
+				\item Анализ многопоточной работы
+				\item Поиск проблем с безопасностью
+				\item Оценка сложности и размера программы
+				\item Соответствие требованиям
+			\end{itemize}
+			\item Архитектура как источник данных для тестов
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Архитектура и разработка}
+		\begin{itemize}
+			\item \emph{prescriptive architecture} --- архитектура, как её определил архитектор
+			\item \emph{descriptive architecture} --- архитектура, как она есть в системе
+			\begin{itemize}
+				\item Архитектура у ПО есть всегда, как вес у камня
+			\end{itemize}
+			\item \emph{architectural drift} --- <<сползание>> фактической архитектуры
+			\begin{itemize}
+				\item появление в ней важных решений, которых нет в описательной архитектуре
+			\end{itemize}
+			\item \emph{architectural erosion} --- <<размывание>> архитектуры
+			\begin{itemize}
+				\item отклонения от описательной архитектуры, нарушения ограничений
+			\end{itemize}
+			\item Антипаттерн <<\emph{Big ball of mud}>> --- результат эрозии
+		\end{itemize}
+	\end{frame}
+
+	\section{Пример: Hadoop}
+
+	\begin{frame}
+		\frametitle{Пример: Hadoop}
+		\framesubtitle{As-designed}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{hadoopPrescriptive.png}
+		\end{center}
+		\attribution{Special thanks to prof. Nenad Medvidovic (USC) for kind permission for using his slides}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Hadoop as-built}
+		\framesubtitle{HDFS}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{hadoopDescriptive.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Hadoop as-built}
+		\framesubtitle{HDFS + MapReduce}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{hdfsMapReduce.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Hadoop as-built}
+		\framesubtitle{Полная архитектура}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{hadoopFull.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Hadoop as-built}
+		\framesubtitle{Граф зависимостей}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{hadoopDependencies.png}
+		\end{center}
+	\end{frame}
+
+	\section{Заключение}
+
+	\begin{frame}
+		\frametitle{Дальнейший план курса}
+		\begin{itemize}
+			\item Принципы проектирования, декомпозиция
+			\item Проектирование и ООП
+			\item Моделирование при разработке архитектуры
+			\item Стили/шаблоны проектирования
+			\item Средства интеграции приложений
+			\item Проектирование распределённых приложений
+			\item Case studies
+		\end{itemize}
+	\end{frame}
+
+\end{document}
