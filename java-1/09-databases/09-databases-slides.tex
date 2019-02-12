@@ -98,6 +98,8 @@
 		\end{center}
 	\end{frame}
 
+	\subsection{Ключи}
+
 	\begin{frame}
 		\frametitle{Ключи}
 		\begin{columns}
@@ -145,6 +147,8 @@
 		\end{columns}
 	\end{frame}
 
+	\subsection{Ограничения}
+
 	\begin{frame}
 		\frametitle{Ограничения}
 		\begin{itemize}
@@ -155,6 +159,8 @@
 			\item ...
 		\end{itemize}
 	\end{frame}
+
+	\subsection{SELECT}
 
 	\begin{frame}
 		\frametitle{SQL SELECT}
@@ -175,6 +181,8 @@ WHERE price < (SELECT AVG(price) FROM Book)
 ORDER BY title;
 		\end{minted}
 	\end{frame}
+
+	\subsection{JOIN-ы}
 
 	\begin{frame}
 		\frametitle{INNER JOIN}
@@ -199,6 +207,73 @@ ORDER BY title;
 			\attribution{Wikipedia}
 		\end{center}
 	\end{frame}
+
+	\subsection{Таблицы-развязки}
+
+	\begin{frame}
+		\frametitle{Таблицы-развязки}
+		\begin{footnotesize}
+			\begin{center}
+				\begin{tabular}{c c c}
+					Author & AuthorArticle & Article \\
+					\begin{tabu} to 0.25\textwidth {| X[0.2 l p] | X[1 l p] |}
+						\tabucline-
+						ID      & Name \\
+						\tabucline-
+						\everyrow{\tabucline-}
+						1       & Терехов \\
+						2       & Брыксин \\
+						3       & Литвинов \\
+					\end{tabu}
+					&
+					\begin{tabu} to 0.25\textwidth {| X[1 l p] | X[1 l p] |}
+						\tabucline-
+						AuthorId             & ArticleId \\
+						\tabucline-
+						\everyrow{\tabucline-}
+						1   & 1 \\
+						1   & 2 \\
+						2   & 1 \\
+						2   & 3 \\
+						3   & 1 \\
+						3   & 3 \\
+					\end{tabu}
+					&
+					\begin{tabu} to 0.40\textwidth {| X[0.1 l p] | X[1 l p] |}
+						\tabucline-
+						ID      & Title \\
+						\tabucline-
+						\everyrow{\tabucline-}
+						1       & Архитектура среды визуального моделирования QReal \\
+						2       & Технология программирования \\
+						3       & Среда визуального программирования роботов QReal:Robots \\
+					\end{tabu}
+				\end{tabular}
+			\end{center}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Примеры запросов}
+		\begin{small}
+			\begin{minted}{sql}
+SELECT Article.Title FROM Author, AuthorArticle, Article 
+    WHERE Author.Id = AuthorArticle.AuthorId 
+        AND AuthorArticle.ArticleId = Article.Id 
+        AND Author.Name = 'Терехов'
+			\end{minted}
+
+			\vspace{3mm}
+			\begin{minted}{sql}
+SELECT Author.Name FROM Author, AuthorArticle, Article 
+    WHERE Author.Id = AuthorArticle.AuthorId 
+        AND AuthorArticle.ArticleId = Article.Id 
+        AND Article.Title = 'Технология программирования'
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\subsection{Модификация}
 
 	\begin{frame}[fragile]
 		\frametitle{INSERT, UPDATE, DELETE}
@@ -227,6 +302,8 @@ DELETE ab, b
 			\end{minted}
 		\end{small}
 	\end{frame}
+
+	\subsection{Метаинформация}
 
 	\begin{frame}[fragile]
 		\frametitle{Работа с метаинформацией}
