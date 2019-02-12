@@ -33,6 +33,32 @@
 
 	\frame{\titlepage}
 
+	\section{Домашка}
+
+	\begin{frame}
+		\frametitle{Комментарии по домашке}
+		\begin{itemize}
+			\item Надо закрывать потоки в тестах
+			\item Папку .idea можно не выкладывать
+			\item Можно инициализировать поля прямо в месте их объявления
+			\item Надо ли закрывать стрим в serialize/deserialize?
+			\item Аннотации \mintinline{java}|@NotNull|, \mintinline{java}|@Nullable| должны работать и при консольной сборке
+			\begin{itemize}
+				\item \url{https://github.com/JetBrains/gradle-intellij-plugin}
+				\item intellij-annotations-instrumenter-maven-plugin
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Новые штрафы}
+		\begin{itemize}
+			\item Неиспользование nullability-аннотаций там, где они явно полезны --- -0.5 балла
+			\item Не static вложенные классы не по делу --- -0.5 балла
+			\item Отсутствие комментария ко всему классу, интерфейсу, enum-у и т.д. --- -0.5 балла
+		\end{itemize}
+	\end{frame}
+
 	\section{CI}
 
 	\begin{frame}

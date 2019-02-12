@@ -18,11 +18,121 @@
 \title{Пример архитектуры --- Bash}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{02.03.2018г}
+\date{11.02.2019г}
 
 \begin{document}
 	
 	\frame{\titlepage}
+
+	\section{Юнит-тестирование}
+
+	\begin{frame}
+		\frametitle{Сначала, внезапно, юнит-тесты}
+		\begin{itemize}
+			\item Любая программа содержит ошибки
+			\item Если программа не содержит ошибок, их содержит алгоритм, который реализует эта программа
+			\item Если ни программа, ни алгоритм ошибок не содержат, такая программа даром никому не нужна
+		\end{itemize}
+		Тестирование не позволяет доказать отсутствие ошибок, оно позволяет лишь найти ошибки, которые в программе присутствуют
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Модульное тестирование}
+		\begin{itemize}
+			\item Тест на каждый отдельный метод, функцию, иногда класс
+			\item Пишутся программистами
+			\item Запускаются часто (как минимум, после каждого коммита)
+			\item Должны всегда проходить
+			\item Помогают быстро искать ошибки (вы ещё помните, что исправляли), рефакторить код (``ремни безопасности''), продумывать архитектуру (мешанину невозможно оттестировать), документировать код (каждый тест -- это рабочий пример вызова)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Пример, JUnit 5}
+		\begin{itemize}
+			\item JUnit --- самая известная библиотека юнит-тестирования для Java
+			\item JUnit 5 --- его последняя версия (часто до сих пор используется JUnit 4)
+			\item Отлично интегрируется с IDEA
+			\begin{itemize}
+				\item Генерация заглушек тестов, запуск тестов прямо из редактора и т.д.
+			\end{itemize}
+			\item Тест --- это отдельный класс, в котором есть методы, помеченные аннотацией \mintinline{java}|@Test|
+			\item Внутри теста обычно три фазы
+			\begin{itemize}
+				\item Настройка тестового окружения
+				\item Выполнение действия, которое хотим тестировать
+				\item Проверка результатов
+				\begin{itemize}
+					\item Вызовы assertEquals, assertNull, assertTrue и т.д.
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{small}
+			\begin{minted}{java}
+class StackTest {
+
+    private Stack<Integer> stack;
+
+    @BeforeEach
+    void init() {
+        stack = new Stack<>();
+    }
+
+    @Test
+    void testSimpleCaseWithPushAndPop() {
+        stack.push(1);
+        var result = stack.pop();
+        assertEquals(1, result);
+        assertThrows(IllegalStateException.class, () -> stack.pop());
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё хорошие библиотеки}
+		\begin{itemize}
+			\item Apache Hamcrest --- библиотека матчеров
+			\item NUnit, XUnit, Microsoft Unit Testing Framework --- для .NET
+			\item Google Testing and Mocking Framework, CxxTest, Boost.Test, Catch, тысячи их для C++
+			\item HUnit, HSpec, QuickCheck для Haskell
+			\item FsUnit, FsCheck для F\#
+			\item А ещё есть mock-объекты: Mockito, NSubstitute, ...
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Best practices}
+		\begin{itemize}
+			\item Независимость тестов
+			\begin{itemize}
+				\item Желательно, чтобы поломка одного куска функциональности ломала один тест
+			\end{itemize}
+			\item Тесты должны работать быстро
+			\begin{itemize}
+				\item И запускаться после каждой сборки
+				\begin{itemize}
+					\item Continuous Integration
+				\end{itemize}
+			\end{itemize}
+			\item Тестов должно быть много
+			\begin{itemize}
+				\item Следите за Code coverage, должно быть близко к 100\%
+			\end{itemize}
+			\item Каждый тест должен проверять конкретный тестовый сценарий
+			\begin{itemize}
+				\item Нельзя ловить исключения в тесте без крайней нужды
+				\item С большой осторожностью пользоваться Random-ом
+			\end{itemize}
+			\item Именование тестов: \url{http://stackoverflow.com/questions/155436/unit-test-naming-best-practices}
+			\item Test-driven development
+		\end{itemize}
+	\end{frame}
 
 	\section{Enterprise Fizz-Buzz}
 
@@ -51,13 +161,35 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Основные соображения}
+		\frametitle{Хорошие идеи}
 		\begin{itemize}
+			\item Separation of Concerns
+			\item Dependency Inversion
+			\item Dependency Injection
+			\begin{itemize}
+				\item Spring Framework
+			\end{itemize}
+			\item Паттерны ``Фабрика'', ``Стратегия'', ``Посетитель'', ``Адаптер'', что-то вроде паттернов ``Спецификация'' и ``Цепочка ответственности''
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Плохие идеи}
+		\begin{itemize}
+			\item Не выполняется принцип Keep It Simple Stupid
+			\begin{itemize}
+				\item Неправильно говорить ``строк кода написано'', правильно --- ``строк кода израсходовано''
+			\end{itemize}
+			\item ``Синтаксическое'' разделение на пакеты, а не ``семантическое''
+			\begin{itemize}
+				\item Отсуствие модульности, антипаттерн ``Big Ball of Mud''
+			\end{itemize}
+			\item Хардкод основных параметров вычисления
+			\item Нет юнит-тестов, только интеграционные; нет логирования
 			\item 1663 строки кода и всего 40 строк комментариев
-			\item Spring Framework
-			\item Паттерны ``Фабрика'', ``Стратегия'', ``Посетитель''
-			\item Separation of Concerns: LoopContext и LoopRunner
-			\item Инверсия зависимостей
+			\begin{itemize}
+				\item Отсутствие архитектурного описания
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
@@ -258,7 +390,7 @@ preonepost pretwopost prethreepost
     group = 'ru.example'
     version = '1.0'
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Замечания}

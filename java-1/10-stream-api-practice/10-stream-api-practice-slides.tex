@@ -1,0 +1,53 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=1.2mm
+
+\title{Практика по Stream API}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{13.02.2019г}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Домашка}
+
+	\begin{frame}
+		\frametitle{Комментарии по домашке}
+		\begin{itemize}
+			\item
+		\end{itemize}
+	\end{frame}
+
+	\section{Задача}
+
+	\begin{frame}
+		\frametitle{Задача на пару}
+		Реализовать с помощью Java Stream API:
+		\begin{itemize}
+			\item Методы в \hyperref{FirstPartTasks}{https://gist.github.com/yurii-litvinov/527f289e454c296f7505ccaf79873428#file-firstparttasks-java} и SecondPartTasks
+			\item Тесты в SecondPartTasksTest
+			\begin{itemize}
+				\item Тесты в FirstPartTasksTest и SecondPartTasksTest должны успешно завершаться
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+\end{document}
