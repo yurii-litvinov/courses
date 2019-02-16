@@ -1,0 +1,735 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=1.2mm
+
+\title{Effective Java}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{20.02.2019г}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Контрольная}
+
+	\begin{frame}
+		\frametitle{О контрольной}
+		\begin{itemize}
+			\item Ожидалось решение, использующее Object для хранения данных, разбор случаев и кучу unchecked cast-ов
+			\begin{itemize}
+				\item Естественно, заглушенных с помощью \mintinline{java}|//noinspection unchecked|
+				\item Было одно решение, где использовалась иерархия классов-обёрток с одним полем, получилось лучше, чем ожидалось
+			\end{itemize}
+			\item Надо было реализовать size, get, set, add и remove по индексу
+			\begin{itemize}
+				\item Остальное реализовано в AbstractList достаточно эффективно
+			\end{itemize}
+			\item addAll в конструкторе, принимающем коллекцию --- нехорошо
+			\item System.arraycopy
+			\item Магические константы
+			\item Беда с сырыми типами и unchecked cast-ами не по делу
+		\end{itemize}
+	\end{frame}
+
+	\section{Книжка}
+
+	\begin{frame}
+		\frametitle{Книжка, по которой рассказ}
+		Joshua Bloch, Effective Java, 3rd Edition. Addison-Wesley Professional, 2017. 412PP.
+		\begin{center}
+			\includegraphics[width=0.25\textwidth]{bookCover.png}
+		\end{center}
+	\end{frame}
+
+	\section{Защитное программирование}
+
+	\begin{frame}
+		\frametitle{38. Проверяем достоверность параметров}
+		\begin{itemize}
+			\item Часто на аргументы методов накладываются ограничения
+			\begin{itemize}
+				\item Нужно их документировать
+				\begin{itemize}
+					\item \mintinline{java}|@throws|
+				\end{itemize}
+				\item А метод начинать с проверки и быстро завершать, иначе
+				\begin{itemize}
+					\item Половина метода может выполниться, оставив некорректное состояние
+					\item Метод тихо вернёт некорректный результат
+				\end{itemize}
+			\end{itemize}
+			\item Особенно если аргументы откладываются для обработки в дальнейшем
+			\begin{itemize}
+				\item Частый случай --- конструкторы
+			\end{itemize}
+			\item IllegalArgumentException, IndexOutOfBoundsException, NullPointerException...
+			\begin{itemize}
+				\item Или преобразование исключения в понятное пользователю
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{public-методы}
+		\begin{small}
+			\begin{minted}{java}
+/*
+* Возвращает объект Biglnteger, значением которого является модуль 
+* данного числа по основанию m. Этот метод отличается от метода 
+* remainder тем, что всегда возвращает неотрицательное значение 
+* Biglnteger.
+*
+* @раrаm m модуль, должен быть положительным числом
+* @return this mod m
+* @throws ArithmeticException, if m <= 0
+*/
+public Biglnteger mod(BigInteger m) {
+    if (m.signum() <= 0) {
+        throw new ArithmeticException("Modulus not positive");
+    }
+    ... // Вычисления
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{private-методы}
+		\begin{small}
+			\begin{minted}{java}
+// Закрытая вспомогательная функция для рекурсивной сортировки
+private static void sort(long a[], int offset, int length) {
+    assert a != null;
+    assert offset >= 0 && offset <= a.length;
+    assert length >= 0 && length <= a.length - offset;
+    // Вычисления
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{39. Резервные копии могут быть полезны}
+		\begin{itemize}
+			\item JVM даёт уверенность в безопасности работы с памятью
+			\item Однако всё равно надо оберегать свои инварианты!
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\begin{small}
+			\begin{minted}{java}
+// Неправильный класс «неизменяемого» периода времени
+public final class Period {
+   private final Date start;
+   private final Date end;
+   /**
+    @param start - начало периода.
+    @param end - конец периода; не должен предшествовать началу.
+    @throws IllegalArgumentException, если start позже, чем end.
+    @throws NullPointerException, если start или end равны null.
+   */
+   public Period(Date start, Date end) {
+       if (start.compareTo(end) > 0)
+           throw new IllegalArgumentException(start + " after " + end);
+       this.start = start;
+       this.end = end;
+   }
+   public Date start() { return start; }
+   public Date end() { return end; }
+   // Остальное опущено
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\begin{minted}{java}
+// Атака на содержимое экземпляра Period
+Date start = new Date();
+Date end = new Date();
+Period p = new Period(start, end);
+end.setYear(78); // Изменяет содержимое объекта p!
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Defensive copies}
+		\begin{minted}{java}
+// Исправленный конструктор: для представленных параметров
+// создает резервные копии
+public Period(Date start, Date end) {
+   this.start = new Date(start.getTime());
+   this.end = new Date(end.getTime());
+   if (this.start.compareTo(this.end) > 0) {
+       throw new IllegalArgumentException(start + " after " + end);
+   }
+}
+		\end{minted}
+		\begin{itemize}
+			\item Проверяем уже созданные копии
+			\item Не используем clone()
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Атака №2}
+		\begin{minted}{java}
+Date start = new Date();
+Date end = new Date();
+Period p = new Period(start, end);
+p.end().setYear(78); // Изменяет внутренние данные p!
+		\end{minted}
+		\vspace{3mm}
+		\pause
+		Решение:
+		\begin{minted}{java}
+public Date start() {
+   return (Date) start.clone();
+}
+
+public Date end() {
+   return (Date) end.clone();
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Мораль}
+		\begin{itemize}
+			\item Для каждого аргумента сеттера или конструктора, который сохраняем
+			\begin{itemize}
+				\item А является ли передаваемый объект изменяемым?
+				\item Будет ли наш объект устойчив к его изменениям?
+				\begin{itemize}
+					\item Например, ключ в Map
+					\item Массивы ненулевой длины всегда изменяемы
+				\end{itemize}
+			\end{itemize}
+			\item Или можно хранить что-то другое
+			\begin{itemize}
+				\item Например, Date.getTime() вместо Date
+			\end{itemize}
+			\item Не забыть отразить всё это в документации к классу!
+			\item А также помнить про производительность
+		\end{itemize}
+	\end{frame}
+
+	\section{Сигнатуры методов}
+
+	\begin{frame}
+		\frametitle{40. Советы по проектированию сигнатур методов}
+		\begin{itemize}
+			\item Тщательно выбирайте названия методов
+			\begin{itemize}
+				\item С учётом всех соглашений и стайлгайдов
+			\end{itemize}
+			\item Методов не должно быть слишком много
+			\begin{itemize}
+				\item Одна операция --- один метод
+				\item Не надо гнаться за удобством сразу, пусть время покажет
+			\end{itemize}
+			\item Длинный перечень параметров --- плохо
+			\begin{itemize}
+				\item 4 --- уже много (особенно если они похожих типов)
+				\item Что делать?
+				\begin{itemize}
+					\item Разбить метод на несколько ортогональных (например, методы в List)
+					\item Создание вспомогательных классов, выделение параметров в сущность
+					\item Шаблон Builder
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Ещё советы}
+		\begin{itemize}
+			\item Интерфейсы вместо конкретных классов параметров
+			\begin{itemize}
+				\item Более обобщённый код
+			\end{itemize}
+			\item Двухэлементные перечисления вместо Boolean
+			\begin{itemize}
+				\item \mintinline{java}|Thermometer.newInstance(true);|
+				\item \mintinline{java}|public enum TemperatureScale { FAHRENHEIT, CELSIUS }|
+				
+					\mintinline{java}|Thermometer.newInstance(TemperatureScale.CELSIUS);|
+				\item Потом можно и Кельвины какие-нибудь добавить при желании
+				\item В enum можно добавить полезных методов
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{41. Перегружаем методы осторожно}
+		\begin{small}
+			\begin{minted}{java}
+// Что выведет данная программа?
+public class CollectionClassifier {
+   public static String classify(Set<?> s) { return "Set"; }
+   public static String classify(List<?> l) { return "List"; }
+   public static String classify(Collection<?> c) { 
+      return "Unknown Collection"; }
+
+   public static void main(String[] args) {
+       Collection<?>[] collections = {
+               new HashSet<String>(),
+               new ArrayList<BigInteger>(),
+               new HashMap<String, String>().values()
+       };
+       for (Collection<?> c : collections)
+           System.out.println(classify(c));
+   }
+}
+			\end{minted}
+		\end{small}
+		\pause
+		\begin{textblock}{3}(9,-4)
+			Выбор варианта перегрузки \\
+			осуществляется на стадии \\
+			компиляции!
+		\end{textblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{А вот с переопределением всё иначе}
+		\begin{small}
+			\begin{minted}{java}
+class Wine {
+   String name() { return "wine"; }
+}
+class SparklingWine extends Wine {
+   @Override String name() { return "sparkling wine"; }
+}
+class Champagne extends SparklingWine {
+   @Override String name() { return "champagne"; }
+}
+public class Overriding {
+   public static void main(String[] args) {
+       Wine[] wines = { new Wine(), new SparklingWine(), new Champagne() };
+       for (Wine wine : wines) System.out.println(wine.name());
+   }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Мораль}
+		\begin{itemize}
+			\item Не следует писать код, непонятный среднему программисту
+			\begin{itemize}
+				\item Особенно в рамках API
+				\item Стоит избегать запутанных вариантов перегрузки
+				\item Всегда можно назвать методы по-разному
+			\end{itemize}
+			\item Одинаковое количество параметров перегруженных методов --- плохо
+			\begin{itemize}
+				\item Надо будет следить за приводимостью типов
+				\item Методы с varargs лучше не перегружать вообще
+			\end{itemize}
+			\item А как же конструкторы?
+			\begin{itemize}
+				\item Статические фабричные методы
+			\end{itemize}
+			\item Особая боль --- автоупаковщики
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё один пример}
+		\begin{columns}
+			\begin{column}{0.7\textwidth}
+				\begin{minted}{java}
+public class SetList {
+   public static void main(String[] args) {
+       Set<Integer> set = new TreeSet<Integer>();
+       List<Integer> list = new ArrayList<Integer>();
+       for (int i = -3; i < 3; i++) {
+           set.add(i);
+           list.add(i);
+       }
+       for (int i = 0; i < 3; i++) {
+           set.remove(i);
+           list.remove(i);
+       }
+       System.out.println(set + " " + list);
+   }
+}
+				\end{minted}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\pause
+				Вывод:
+				\begin{minted}{text}
+[-3, -2, -1] [-2, 0, 2]
+				\end{minted}
+				\vspace{5mm}
+				Перегрузка -- зло.
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{42. varargs --- опасная штука}
+		\begin{footnotesize}
+			\begin{minted}{java}
+// Простое использование varargs
+static int sum(int... args) {
+   int sum = 0;
+   for (int arg : args)
+       sum += arg;
+   return sum;
+}
+			\end{minted}
+			\pause
+			\begin{minted}{java}
+// Неверное использование varargs для передачи одного или более аргументов!
+static int min(int... args) {
+   if (args.length == 0)
+       throw new IllegalArgumentException("Too few arguments");
+   int min = args[0];
+   for (int i = 1; i < args.length; i++)
+       if (args[i] < min)
+           min = args[i];
+   return min;
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Более правильный вариант}
+		\begin{minted}{java}
+static int min(int firstArg, int... remainingArgs) {
+   int min = firstArg:
+   for (int arg : remainingArgs)
+       if (arg < min)
+           min = arg;
+   return min;
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{varargs методы}
+		\begin{itemize}
+			\item Метод с final массивом можно заменить на varargs метод
+			\begin{itemize}
+				\item Но это не значит, что так надо делать
+			\end{itemize}
+			\item Идиома печати массива (java 1.5-):
+				\begin{minted}{java}
+System.out.println(Arrays.asList(myArray));
+				\end{minted}
+			\item Но с примитивными типами всё равно получим не то:
+				\begin{minted}{java}
+public static void main(String[] args) {
+   int[] digits = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 4 };
+   System.out.println(Arrays.asList(digits));
+}
+
+// Правильный способ напечатать массив
+System.out.рrintln(Arrays.toString(myArray));
+				\end{minted}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Производительность}
+		\begin{itemize}
+			\item Каждый вызов приводит к размещению и инициализации массива
+			\item Если критична производительность --- делаем несколько перегрузок:
+				\begin{minted}{java}
+public void foo()  {}
+public void foo(int a1)  {}
+public void foo(int a1, int a2)  {}
+public void foo(int a1, int a2, int a3)  {}
+public void foo(int a1, int a2, int a3, int... rest)  {}
+				\end{minted}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{43. Возвращаем массив нулевой длины вместо null}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{minted}{java}
+private List cheesesInStock = ...;
+public Cheese[] getCheeses() {
+   if (cheesesInStock.size() == 0)
+       return null;
+}
+				\end{minted}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Можно возвращать закэшированный пустой список
+					\item И вообще, предварительная оптимизация это зло
+				\end{itemize}
+			\end{column}
+		\end{columns}
+		\vspace{5mm}
+		\begin{small}
+			\begin{minted}{java}
+Cheese[] cheeses = shop.getCheeses();
+if (cheeses != null && Arrays.asList(shop.getCheeses())
+      .contains(Cheese.STILTON)) {
+   System.out.println("Jolly good, just the thing.");
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Выгрузка элементов из коллекции в массив}
+		\begin{small}
+			\begin{minted}{java}
+// Правильный способ вывести массив из коллекции
+private final List cheesesInStock = ...;
+private static final Cheese[] EMPTY_CHEESE_ARRAY = new Cheese[0]:
+public Cheese[] getCheeses() {
+   return (Cheese[]) cheesesInStock.toArray(EMPTY_CHEESE_ARRAY);
+}
+
+// Правильный способ возврата копии коллекции.
+public List<Cheese> getCheeseList() {
+   if (cheesesInStock.isEmpty())  
+      return Collections.emptyList(); // Always returns same list
+   else 
+      return new ArrayList<Cheese>(cheesesInStock);
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{44. Для всех открытых элементов API пишите доки!}
+		\begin{itemize}
+			\item А ещё стоит документировать и другие элементы для тех, кто будет это всё сопровождать
+			\item Документация для метода должна лаконично описывать контракт между этим методом и его клиентами
+			\begin{itemize}
+				\item Что делает, а не как
+				\begin{itemize}
+					\item Исключения --- методы в классах, предназначенных для наследования
+				\end{itemize}
+				\item Предусловия и постусловия
+				\begin{itemize}
+					\item \mintinline{java}|@throws| для описания предусловий
+					\item Или в \mintinline{java}|@param|
+				\end{itemize}
+				\item Побочные эффекты
+				\item Потокобезопасность
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\begin{footnotesize}
+			\begin{minted}{java}
+/**
+* Возвращает элемент, который занимает заданную позицию в данном списке.
+*
+* <р>Этот метод <i>He</i> дает гарантии, что будет выполняться в постоянное
+* время. В некоторых реализациях он будет выполняться во время,
+* пропорциональное положению его элементов.
+*
+* @param index индекс элемента, который нужно возвратить;
+*    индекс должен быть меньше размера списка и неотрицательным.
+* @return элемент, занимающий в списке указанную позицию.
+* @throws IndexOutOfBoundsException, если индекс лежит вне диапазона
+*
+({@code index < 0 || index >= this.size()})
+*/
+E get(int index);
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Подробности}
+		\begin{itemize}
+			\item Методы и конструкторы --- глагольная конструкция
+			\begin{itemize}
+				\item ``Создаёт пустой список'', ``Возвращает количество элементов''
+			\end{itemize}
+			\item Классы, интерфейсы, поля --- именная конструкция
+			\begin{itemize}
+				\item ``Значение, наиболее близкое к пи'', ``Задача для однократного исполнения''
+			\end{itemize}
+			\item Для генериков не забываем комментировать параметры типа
+			\item Для перечислений документируем константы, тип и все открытые методы
+			\begin{itemize}
+				\item Можно в одну строку, если комментарий краткий
+			\end{itemize}
+			\item Не забываем документировать аннотации для аннотируемых типов
+			\item Для пакетов создаём package-info.java
+			\item Наследование комментариев
+		\end{itemize}
+	\end{frame}
+
+	\section{Исключения}
+
+	\begin{frame}
+		\frametitle{58. Проверяемые vs непроверяемые исключения}
+		\begin{itemize}
+			\item Проверяемые исключения
+			\begin{itemize}
+				\item Явное предупреждение клиентскому коду
+				\item Вызывающая сторона в состоянии обработать и восстановиться
+				\begin{itemize}
+					\item Вспомогательные методы и данные в объекте исключения
+				\end{itemize}
+			\end{itemize}
+			\item Непроверяемые исключения
+			\begin{itemize}
+				\item RuntimeExceptions --- индикация программных ошибок
+				\item Errors -- невозможность дальнейшего выполнения
+			\end{itemize}
+			\item Throwable
+			\begin{itemize}
+				\item Не рекомендуется наследовать явно
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{59. Избегайте ненужного использования проверяемых исключений}
+		\begin{itemize}
+			\item Невозможно предотвратить условие для исключительной ситуации
+			\item Программист может как-то полезно её обработать
+		\end{itemize}
+		\begin{minted}{java}
+} catch (TheCheckedException е) {
+    throw new AssertionError(); // Этого случиться не может!
+}
+		\end{minted}
+		\vspace{3mm}
+		\begin{minted}{java}
+} catch (TheCheckedException е) {
+    // nothing to do
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Вариант решения: разделение на два метода}
+		\begin{columns}
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}
+					\item Прямо как в Iterator
+					\item Beware!
+					\begin{itemize}
+						\item Многопоточность
+						\item Изменение состояния извне
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{footnotesize}
+					\begin{minted}{java}
+// Вызов с проверяемым исключением
+try {
+    obj.action(args);
+} catch (TheCheckedException e) {
+    // Обработать исключительную ситуацию
+}
+					\end{minted}
+					\vspace{3mm}
+					\begin{minted}{java}
+// Вызов с использованием метода проверки
+// состояния и непроверяемого исключения
+if (obj.actionPermitted(args)) {
+    obj.action(args);
+} else {
+    // Обработать исключительную ситуацию
+}
+					\end{minted}
+				\end{footnotesize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{61. Выбрасывайте исключения, соответствующие абстракции}
+		\begin{itemize}
+			\item Трансляция исключений
+			\begin{itemize}
+				\item Перехватывайте исключения, бросайте дальше что-то более адекватное
+				\item Exception chaining
+			\end{itemize}
+		\end{itemize}
+		\begin{footnotesize}
+			\begin{minted}{java}
+/**
+* Возвращает элемент, находящийся в указанной позиции в этом списке.
+* @throws IndexOutOfBoundsException, если индекс находится
+* за пределами диапазона (index < 0 || index >= size()).
+*/
+public E get(int index) {
+    ListIterator<E> i = listIterator(index);
+    try {
+        return i.next();
+    } catch (NoSuchElementException e) {
+        throw new IndexOutOfBoundsException("Index: " + index);
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{62. Документируйте все выбрасываемые исключения}
+		\begin{itemize}
+			\item Объявляйте все проверяемые исключения при помощи \mintinline{java}|throws| и \mintinline{java}|@throws|
+			\begin{itemize}
+				\item Не экономьте при помощи суперкласса (\mintinline{java}|throws Throwable|)
+				\begin{itemize}
+					\item Однако бывают исключения в публичных интерфейсах
+				\end{itemize}
+			\end{itemize}
+			\item Документируйте все непроверяемые исключения при помощи \mintinline{java}|@throws|
+			\begin{itemize}
+				\item В сигнатуре метода не нужно
+				\item Не всегда получается это сделать в полной мере
+			\end{itemize}
+			\item Документирование на уровне класса в целом
+			\begin{itemize}
+				\item ``Все методы выбрасывают NPE, если им передают аргументом null''
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{65. Не игнорируйте исключения}
+		\begin{itemize}
+			\item Пустой блок \mintinline{java}|catch| лишает смысла механизм исключений
+			\item Как минимум -- комментарий, почему исключение игнорируется
+			\item Логирование исключений
+			\item Fail fast
+		\end{itemize}
+	\end{frame}
+
+\end{document}
