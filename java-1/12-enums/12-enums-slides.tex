@@ -1,0 +1,418 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=1.2mm
+
+\title{Правда про enum-ы}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{20.02.2019г}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\begin{frame}[fragile]
+		\frametitle{Enum-ы}
+		\begin{itemize}
+			\item Типобезопасны
+			\item Автоматически получают пространство имен
+			\item Возможны конструкторы и методы
+		\end{itemize}
+		\begin{minted}{java}
+public enum Apple { FUJI, PIPPIN, GRANNY_SMITH }
+public enum Orange { NAVEL, TEMPLE, BLOOD }
+
+enum Season {
+    WINTER, 
+    SPRING,
+    SUMMER, 
+    AUTUMN
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы}
+		\begin{itemize}
+			\item Можно сравнивать с помощью \mintinline{java}|==|
+			\item \mintinline{java}|name(), ordinal(), toString()|
+		\end{itemize}
+		\begin{minted}{java}
+var season = Season.WINTER; 
+System.out.println(
+    season.name() + ", " +
+    season.toString() + ", " +
+    season.ordinal()
+);
+
+WINTER, WINTER, 0
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Статические методы}
+		\begin{itemize}
+			\item \mintinline{java}|valueOf()|
+				\begin{minted}{java}
+String name = "WINTER"; 
+Season season = Season.valueOf(name); 
+
+Season.valueOf(null); // NullPointerException
+Season.valueOf("HOLIDAYS"); // IllegalArgumentException
+				\end{minted}
+			\item \mintinline{java}|values()|
+				\begin{minted}{java}
+System.out.println(Arrays.toString(Season.values()));
+				\end{minted}
+				\vspace{3mm}
+				\begin{minted}{text}
+[WINTER, SPRING, SUMMER, AUTUMN]
+				\end{minted}
+			\item Автоматически добавляются компилятором
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Поля}
+		\begin{minted}{java}
+enum Type {
+    INT(true), 
+    INTEGER(false),
+    STRING(false); 
+ 
+    private final boolean primitive;
+     
+    Type(boolean primitive) { this.primitive = primitive; } 
+ 
+    public boolean isPrimitive() { return primitive; } 
+} 
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы}
+		\begin{minted}{java}
+enum Direction { 
+   UP, DOWN; 
+ 
+   public Direction opposite() {
+       switch (this) {
+           case UP:
+               return DOWN;
+           case DOWN:
+               return UP;
+           throw new AssertionError("Unknown op: " + this);
+       }
+   } 
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Методы (constant-specific)}
+		\begin{minted}{java}
+enum Direction { 
+   UP { 
+        public Direction opposite() { return DOWN; } 
+   }, 
+   
+   DOWN { 
+        public Direction opposite() { return UP; } 
+   }; 
+ 
+   public abstract Direction opposite(); 
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\begin{footnotesize}
+			\begin{minted}{java}
+enum Type {
+    INT(true) {
+        public Object parse(String string) { return Integer.valueOf(string); }  
+    }, 
+    INTEGER(false) {
+        public Object parse(String string) { return Integer.valueOf(string); }  
+    },
+    STRING(false) {
+        public Object parse(String string) { return string; }
+    }; 
+ 
+    private final boolean primitive;
+     
+    Type(boolean primitive) { this.primitive = primitive; } 
+ 
+    public boolean isPrimitive() { return primitive; } 
+    public abstract Object parse(String string); 
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё пример}
+		\begin{scriptsize}
+			\begin{minted}{java}
+enum PayrollDay {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+
+    private static final int HOURS_PER_SHIFT = 8;
+
+    double pay(double hoursWorked, double payRate) {
+        double basePay = hoursWorked * payRate;
+        double overtimePay;
+        switch (this) {
+            case SATURDAY: case SUNDAY:
+                overtimePay = hoursWorked * payRate / 2;
+                break;
+            default:
+                overtimePay = hoursWorked <= HOURS_PER_SHIFT 
+                        ? 0 : (hoursWorked - HOURS_PER_SHIFT) * payRate / 2;
+                break;
+        }
+        return basePay + overtimePay;
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Паттерн ``Стратегия'' на enum-ах}
+		\begin{footnotesize}
+			\begin{minted}{java}
+enum PayrollDay {
+    MONDAY(PayType.WEEKDAY), TUESDAY(PayType.WEEKDAY),
+    WEDNESDAY(PayType.WEEKDAY), THURSDAY(PayType.WEEKDAY),
+    FRIDAY(PayType.WEEKDAY),
+    SATURDAY(PayType.WEEKEND), SUNDAY(PayType.WEEKEND);
+    
+    private final PayType payType;
+
+    PayrollDay(PayType payType) { this.payType = payType; }
+
+    double pay(double hoursWorked, double payRate) {
+        return payType.pay(hoursWorked, payRate);
+    }
+    ...
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{PayType}
+		\begin{scriptsize}
+			\begin{minted}{java}
+private enum PayType {
+    WEEKDAY {
+        double overtimePay(double hours, double payRate) {
+            return hours <= HOURS_PER_SHIFT ? 0 :
+                    (hours - HOURS_PER_SHIFT) * payRate / 2;
+        }
+    },
+
+    WEEKEND {
+        double overtimePay(double hours, double payRate) {
+            return hours * payRate / 2;
+        }
+    };
+
+    private static final int HOURS_PER_SHIFT = 8;
+    
+    abstract double overtimePay(double hrs, double payRate);
+    
+    double pay(double hoursWorked, double payRate) {
+        double basePay = hoursWorked * payRate;
+        return basePay + overtimePay(hoursWorked, payRate);
+    }
+}
+			\end{minted}
+		\end{scriptsize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Битовые поля}
+		Как делали без enum-ов:
+
+		\begin{minted}{java}
+public class Text {
+    public static final int STYLE_BOLD = 1 << 0;
+    public static final int STYLE_ITALIC = 1 << 1;
+    public static final int STYLE_UNDERLINE = 1 << 2;
+   
+    public void applyStyles(int styles) {
+        // styles — побитовое "или"
+        // text.applyStyles(STYLE_BOLD | STYLE_ITALIC);
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{EnumSet}
+		\begin{itemize}
+			\item Все возможности Set
+			\item Внутри --- long или long[]
+			\begin{itemize}
+				\item Производительность сравнима с битовыми масками
+			\end{itemize}
+		\end{itemize}
+		\vspace{4mm}
+		\begin{minted}{java}
+public class Text {
+    public enum Style { BOLD, ITALIC, UNDERLINE }
+    
+    public void applyStyles(Set<Style> styles) {
+        // text.applyStyles(EnumSet.of(Style.BOLD, Style.ITALIC));
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{EnumMap, пример без}
+		\begin{minted}{java}
+public class Herb {
+    public enum Type { ANNUAL, PERENNIAL, BIENNIAL }
+    
+    private final String name;
+    private final Type type;
+    
+    public Herb(String name, Type type) {
+        this.name = name;
+        this.type = type;
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{EnumMap, пример без (2)}
+		\begin{minted}{java}
+var herbsByType = 
+    (Set<Herb>[]) new Set[Herb.Type.values().length];
+    // Indexed by Herb.Type.ordinal()
+
+for (int i = 0; i < herbsByType.length; i++) {
+    herbsByType[i] = new HashSet<Herb>();
+}
+
+for (Herb h : garden) {
+    herbsByType[h.type.ordinal()].add(h);
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{EnumMap, пример с}
+		\begin{minted}{java}
+var herbsByType =
+    new EnumMap<Herb.Type, Set<Herb>>(Herb.Type.class);
+
+for (Herb.Type t : Herb.Type.values()) {
+    herbsByType.put(t, new HashSet<Herb>());
+}
+
+for (Herb h : garden) {
+    herbsByType.get(h.type).add(h);
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{EnumMap EnumMap-ов, пример без}
+		\begin{small}
+			\begin{minted}{java}
+public enum Phase {
+    SOLID, LIQUID, GAS;
+    
+    public enum Transition {
+        MELT, FREEZE, BOIL, CONDENSE, SUBLIME, DEPOSIT;
+        
+        private static final Transition[][] TRANSITIONS = {
+            { null, MELT, SUBLIME },
+            { FREEZE, null, BOIL },
+            { DEPOSIT, CONDENSE, null }
+        };
+
+        public static Transition from(Phase src, Phase dst) { 
+            return TRANSITIONS[src.ordinal()][dst.ordinal()]; 
+        }
+    }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{EnumMap EnumMap-ов, пример с}
+		\begin{minted}{java}
+public enum Phase {
+    SOLID, LIQUID, GAS;
+    
+    public enum Transition {
+        MELT(SOLID, LIQUID), FREEZE(LIQUID, SOLID),
+        BOIL(LIQUID, GAS), CONDENSE(GAS, LIQUID),
+        SUBLIME(SOLID, GAS), DEPOSIT(GAS, SOLID);
+        
+        final Phase src;
+        final Phase dst;
+        
+        Transition(Phase src, Phase dst) { ... }
+        ...
+    }
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{EnumMap EnumMap-ов, пример с (2)}
+		\begin{footnotesize}
+			\begin{minted}{java}
+public enum Transition {
+        ...
+        private static final Map<Phase, Map<Phase, Transition>> m =
+            new EnumMap<Phase, Map<Phase, Transition>>(Phase.class);
+        
+        static {
+            for (Phase p : Phase.values()) {
+                m.put(p, new EnumMap<Phase, Transition>(Phase.class));
+            }
+            for (Transition trans : Transition.values()) {
+                m.get(trans.src).put(trans.dst, trans);
+            }
+        }
+        
+        public static Transition from(Phase src, Phase dst) { 
+            return m.get(src).get(dst); 
+        }
+    }
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+\end{document}
