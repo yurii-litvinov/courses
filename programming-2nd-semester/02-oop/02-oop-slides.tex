@@ -20,7 +20,7 @@
 
 \title{Объектно-ориентированное программирование}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
-\date{20.02.2018г}
+\date{22.02.2019г}
 
 \begin{document}
 	
@@ -381,6 +381,43 @@ class Shape : IDrawable
     protected int x;
     protected int y;
 }
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Зачем}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+interface IDrawable {
+    void Draw();
+}
+
+interface IMySpecialDrawable {
+    void Draw();
+}
+
+class Shape : IDrawable, IMySpecialDrawable
+{
+    void IDrawable.Draw()
+        => Console.Write("Drawing Shape");
+
+    void IMySpecialDrawable.Draw()
+        => Console.Write("Drawing Shape, but completely unrelated to IDrawable");
+
+    protected int x;
+    protected int y;
+}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{И вот что будет}
+		\begin{minted}{csharp}
+var shape = new Shape();
+shape.Draw();  // Ошибка компиляции
+((IDrawable)shape).Draw();  // Drawing Shape
+((IMySpecialDrawable)shape).Draw();  // Drawing Shape, but...
 		\end{minted}
 	\end{frame}
 
