@@ -1,0 +1,210 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\title{Функциональное программирование на языке F\#}
+\subtitle{Введение}
+\author{Юрий Литвинов}
+\date{19.02.2019г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Введение}
+	
+	\begin{frame}
+		\frametitle{О чём этот курс}
+		\begin{itemize}
+			\item Теория и практика функционального программирования
+			\begin{itemize}
+				\item $\lambda$-исчисление
+				\item Базовые принципы ФП (программирование без состояний, функции высших порядков, каррирование~и~т.д.)
+				\item Типы в функциональном программировании (немутабельные коллекции,
+					генерики, автообобщение~и~т.д.)
+				\item Паттерны функционального программирования (CPS, монады, point-free)
+			\end{itemize}
+			\item Программирование на F\# 
+			\begin{itemize}
+				\item ООП в F\#
+				\item Асинхронное и многопоточное программирование в F\#
+				\item Может, анализ данных и машинное обучение
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\section{Введение в функциональное программирование}
+	
+	\begin{frame}
+		\frametitle{Императивное программирование}
+		Программа как последовательность \textbf{операторов}, изменяющих \textbf{состояние} вычислителя.
+
+		Для конечных программ есть \textbf{начальное состояние}, \textbf{конечное состояние} и последовательность переходов:
+		$$\sigma = \sigma_1 \rightarrow \sigma_2 \rightarrow ... \rightarrow \sigma_n = \sigma'$$
+		
+		Основные понятия:
+		\begin{itemize}
+			\item Переменная
+			\item Присваивание
+			\item Поток управления
+			\begin{itemize}
+				\item Последовательное исполнение
+				\item Ветвления
+				\item Циклы
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Функциональное программирование}
+		Программа как вычисление значения \textbf{выражения} в математическом смысле на некоторых входных данных.
+		$$\sigma' = f(\sigma)$$
+	
+		\begin{itemize}
+			\item Нет состояния $\Rightarrow$ нет переменных
+			\item Нет переменных $\Rightarrow$ нет циклов
+			\item Нет явной спецификации потока управления
+		\end{itemize}
+		Порядок вычислений не важен, потому что нет состояния, результат вычисления зависит только от входных данных.
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Сравним}
+		\begin{alertblock}{C++}
+			\begin{minted}{fsharp}
+int factorial(int n) {
+    int result = 1;
+    for (int i = 1; i <= n; ++i) {
+        result *= i;
+    }
+    return result;
+}
+			\end{minted}
+		\end{alertblock}
+		\begin{exampleblock}{F\#}
+			\begin{minted}{fsharp}
+let rec factorial x =
+    if x = 1 then 1 else x * factorial (x - 1)
+            \end{minted}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Как с этим жить}
+		\begin{itemize}
+			\item Состояние и переменные <<эмулируются>> параметрами функций
+			\item Циклы <<эмулируются>> рекурсией
+			\item Последовательность вычислений --- рекурсия + параметры
+		\end{itemize}
+		\begin{exampleblock}{F\#}
+			\begin{minted}{fsharp}
+let rec sumFirst3 ls acc i =
+    if i = 3 then 
+         acc 
+    else 
+        sumFirst3 
+            (List.tail ls) 
+            (acc + ls.Head) 
+            (i + 1)
+            \end{minted}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Зачем}
+		\begin{itemize}
+			\item Строгая математическая основа
+			\item Семантика программ более естественна
+			\begin{itemize}
+				\item Применима математическая интуиция
+			\end{itemize}
+			\item Программы проще для анализа
+			\begin{itemize}
+				\item Автоматический вывод типов
+				\item Оптимизации
+			\end{itemize}
+			\item Более декларативно
+			\begin{itemize}
+				\item Ленивость
+				\item Распараллеливание
+			\end{itemize}
+			\item Модульность и переиспользуемость
+			\item Программы более выразительны
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Пример: функции высших порядков}
+		\begin{exampleblock}{F\#}
+			\begin{minted}{fsharp}
+let sumFirst3 ls = 
+    Seq.fold 
+        (fun x acc -> acc + x) 
+        0 
+        (Seq.take 3 ls)
+            \end{minted}
+		\end{exampleblock}
+		\begin{exampleblock}{F\#}
+			\begin{minted}{fsharp}
+let sumFirst3 ls = ls |> Seq.take 3 |> Seq.fold (+) 0
+            \end{minted}
+		\end{exampleblock}
+		\begin{exampleblock}{F\#}
+			\begin{minted}{fsharp}
+let sumFirst3 = Seq.take 3 >> Seq.fold (+) 0
+            \end{minted}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё пример}
+		\framesubtitle{Возвести в квадрат и сложить все чётные числа в списке}
+		\begin{exampleblock}{F\#}
+			\begin{minted}{fsharp}
+let calculate = 
+    Seq.filter (fun x -> x % 2 = 0) 
+    >> Seq.map (fun x -> x * x) 
+    >> Seq.reduce (+)
+            \end{minted}
+		\end{exampleblock}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Почему тогда все не пишут функционально}
+		\begin{itemize}
+			\item Чистые функции не могут оказывать влияние на внешний мир. Ввод-вывод, работа с данными,
+					вообще выполнение каких-либо действий не укладывается в функциональную модель.
+			\item Сложно анализировать производительность, иногда функциональные программы проигрывают
+					в производительности императивным. <<Железо>>, грубо говоря, представляет собой 
+					реализацию машины Тьюринга, тогда как функциональные программы определяются над
+					$\lambda$-исчислением.
+			\item Требуется математический склад ума и вообще желание думать.
+		\end{itemize}
+	\end{frame}
+
+	\section{Задачи}
+
+	\begin{frame}
+		\frametitle{Задачи}
+		\begin{enumerate}
+			\item Посчитать факториал
+			\item Посчитать числа Фибоначчи (за линейное время)
+			\item Реализовать функцию обращения списка (за линейное время)
+			\item Реализовать функцию, которая принимает на вход n и m и возвращает список из элементов $[2^n; 2^{n + 1}; ...; 2^{n + m}]$
+		\end{enumerate}
+	\end{frame}
+
+\end{document}
+
+
+
