@@ -121,7 +121,7 @@ public interface Point {
 			\item Объектно-ориентированный код, напротив, упрощает добавление новых классов без изменения существующих функций
 		\end{itemize}
 		\vspace{3mm}
-		Пример --- списки в F\#. Тип list имеет 6 методов, тип Collections.List --- больше 60
+		Пример --- списки в F\#. Тип list имеет 7 методов, тип Collections.List --- больше 60
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -221,7 +221,7 @@ public:
     std::string surname() const;
     std::string address() const;
 private:
-    FullName *mName;
+    FullName mName;
     std::string mAddress;
     int mJobClass;
 };
@@ -239,7 +239,7 @@ class EmployeeImplementation;
 class Employee {
 public:
     Employee(...);
-    FullName name() const;
+    FullName &name() const;
     std::string address() const;
 private:
     EmployeeImplementation *mImpl;
@@ -402,7 +402,7 @@ class Plus extends Operation {
 		\framesubtitle{Стековый калькулятор}
 		\begin{small}
 			\begin{minted}{java}
-package ru.spbau.mit.ioc;
+package com.example.ioc;
 
 public class Calculator {
 
