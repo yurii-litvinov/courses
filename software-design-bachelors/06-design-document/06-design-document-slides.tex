@@ -10,13 +10,20 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
 \tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
 
 \title{Архитектурная документация}
 \subtitle{Design Documents}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{05.04.2018г}
+\date{20.03.2019г}
 
 \begin{document}
 	
@@ -87,7 +94,26 @@
 				\item Границы системы (Scope)
 				\item Контекст, в котором существует система
 			\end{itemize}
-			\item Architectural drivers, соображения проектирования
+			\item Architectural drivers
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Architectural drivers}
+		\begin{itemize}
+			\item Architectural drivers --- ключевые требования, определяющие архитектуру
+			\item Бывают:
+			\begin{itemize}
+				\item Технические ограничения
+				\item Бизнес-ограничения
+				\item Качественные характеристики системы
+				\begin{itemize}
+					\item Сопровождаемость, расширяемость и т.д.
+					\item Масштабируемость, производительность
+					\item Безопасность
+				\end{itemize}
+				\item Ключевые функциональные требования
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
@@ -301,7 +327,8 @@
 	\begin{frame}
 		\frametitle{Сети Петри, пример}
 		\begin{center}
-			\includegraphics[width=0.6\textwidth]{petriNet.png}
+			\includegraphics[width=\textwidth]{petriNet.png}
+			\attribution{Murata Tadao. Petri nets: Properties, analysis and applications}
 		\end{center}
 	\end{frame}
 
@@ -324,40 +351,71 @@
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{Примеры}
+		\begin{itemize}
+			\item Формальные документы:
+			\begin{itemize}
+				\item \url{http://robotics.ee.uwa.edu.au/courses/design/examples/example_design.pdf}
+				\item \url{https://arxiv.org/ftp/arxiv/papers/1005/1005.0595.pdf}
+			\end{itemize}
+			\item Неформальные документы:
+			\begin{itemize}
+				\item \url{https://github.com/aspnet/EntityFramework/wiki/Design-Documents}
+				\item \url{https://github.com/golang/proposal}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Домашнее задание: Roguelike}
+		\begin{itemize}
+			\item Жанр компьютерных игр, назван в честь игры Rogue, 1980 года выхода
+			\item Характеризуется:
+			\begin{itemize}
+				\item Простой тайловой или консольной графикой
+				\item Активным использованием случайной генерации
+				\item Перманентной смертью персонажа и невозможностью загрузить предыдущее сохранение
+				\item Чрезвычайно развитым набором игровых правил
+				\item Высокой свободой действий персонажа (``игры-песочницы'')
+			\end{itemize}
+			\item Примеры:
+			\begin{itemize}
+				\item \url{https://en.wikipedia.org/wiki/NetHack}
+				\item \url{https://en.wikipedia.org/wiki/Angband_(video_game)}
+				\item \url{https://en.wikipedia.org/wiki/Ancient_Domains_of_Mystery}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Функциональные требования}
+		\begin{itemize}
+			\item Персонаж игрока, способный перемещаться по карте, управляемый с клавиатуры
+			\begin{itemize}
+				\item Карта обычно генерируется, но для некоторых уровней грузится из файла
+				\item Характеристики --- здоровье, сила атаки и т.д.
+				\item Экспа и уровни персонажа, с ростом уровня повышаются характеристики
+			\end{itemize}
+			\item Инвентарь персонажа, включающий элементы, влияющие на его характеристики, которые можно надеть и снять
+			\item Несколько разных видов мобов, способных перемещаться по карте
+			\item Боевая система --- движущиеся объекты, пытающиеся занять одну клетку карты, атакуют друг друга
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Домашнее задание}
-		Написать архитектурное описание Roguelike
+		Разделиться на команды по три человека и написать архитектурное описание Roguelike
 		\begin{itemize}
 			\item Общие сведения о системе
 			\item Architectural drivers
 			\item Роли и случаи использования
 			\begin{itemize}
-				\item Описание типичного пользователя, как было на лекции по UI
+				\item Описание типичного пользователя, как было в курсе по SE
 			\end{itemize}
 			\item Композиция (диаграмма компонентов)
 			\item Логическая структура (диаграмма классов)
-			\begin{itemize}
-				\item Из предыдущей домашки
-			\end{itemize}
 			\item Взаимодействия и состояния (диаграммы последовательностей и конечных автоматов)
-			\item Дедлайн: \textbf{10:00 19.04.2018г}
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Примеры}
-		\begin{itemize}
-			\item Формальные документы:
-			\begin{itemize}
-				\item \url{http://robotics.ee.uwa.edu.au/courses/design/examples/example\_design.pdf}
-				\item \url{https://www.cise.ufl.edu/class/cen3031fa11/documents/examples/SDD\_Example\_1\_2011.pdf}
-				\item \url{https://www.cs.drexel.edu/~dpn52/Therawii/design.pdf}
-			\end{itemize}
-			\item Неформальные документы:
-			\begin{itemize}
-				\item \url{https://github.com/gradle/gradle/tree/master/design-docs}
-				\item \url{https://github.com/aspnet/EntityFramework/wiki/Design-Documents}
-				\item \url{https://github.com/golang/proposal}
-			\end{itemize}
+			\item Дедлайн: \textbf{10:00 27.02.2019г}
 		\end{itemize}
 	\end{frame}
 
