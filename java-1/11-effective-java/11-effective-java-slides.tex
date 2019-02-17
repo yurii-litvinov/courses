@@ -52,6 +52,19 @@
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}[fragile]
+		\frametitle{О домашке}
+		Заклинание, заставляющее красиво отображеть состояние тестов в CI:
+		\begin{minted}{groovy}
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
+}
+		\end{minted}
+	\end{frame}
+
 	\section{Книжка}
 
 	\begin{frame}
