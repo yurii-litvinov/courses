@@ -13,9 +13,6 @@
 \definecolor{links}{HTML}{2A1B81}
 \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
 \tabulinesep=0.7mm
 
 \newcommand{\attribution}[1] {
@@ -25,7 +22,7 @@
 \title{Объектно-ориентированное проектирование}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{23.03.2018г}
+\date{18.02.2019г}
 
 \begin{document}
 	
@@ -172,6 +169,8 @@ public class EmployeeRoster {
 		\end{itemize}
 	\end{frame}
 
+	\section{Инкапсуляция}
+
 	\begin{frame}[fragile]
 		\frametitle{Инкапсуляция}
 		\begin{itemize}
@@ -207,33 +206,34 @@ class Point {
 				\end{minted}
 			\end{column}
 		\end{columns}
-\end{frame}
+	\end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{Pointer To Implementation}
-	\begin{columns}
-		\begin{column}{0.32\textwidth}
-			\begin{footnotesize}
-				\begin{minted}{c++}
+	\begin{frame}[fragile]
+		\frametitle{Pointer To Implementation}
+		\begin{columns}
+			\begin{column}{0.32\textwidth}
+				\begin{footnotesize}
+					\begin{minted}{c++}
 class Employee {
 public:
     Employee(...);
-    FullName name() const;
+    std::string name() const;
+    std::string surname() const;
     std::string address() const;
 private:
-    std::string mName;
+    FullName *mName;
     std::string mAddress;
     int mJobClass;
 };
-				\end{minted}
-			\end{footnotesize}
-		\end{column}
-		\begin{column}{0.02\textwidth}
-			vs
-		\end{column}
-		\begin{column}{0.45\textwidth}
-			\begin{footnotesize}
-				\begin{minted}{c++}
+					\end{minted}
+				\end{footnotesize}
+			\end{column}
+			\begin{column}{0.02\textwidth}
+				vs
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\begin{footnotesize}
+					\begin{minted}{c++}
 class EmployeeImplementation;
 
 class Employee {
@@ -244,11 +244,11 @@ public:
 private:
     EmployeeImplementation *mImpl;
 };
-				\end{minted}
-			\end{footnotesize}
-		\end{column}
-	\end{columns}
-\end{frame}
+					\end{minted}
+				\end{footnotesize}
+			\end{column}
+		\end{columns}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Ещё рекомендации}
@@ -275,6 +275,7 @@ private:
 		\end{itemize}
 	\end{frame}
 
+	\section{Наследование}
 	\begin{frame}
 		\frametitle{Наследование}
 		\begin{itemize}
@@ -341,7 +342,9 @@ class Plus extends Operation {
 				\end{column}
 			\end{columns}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
+
+	\section{Инициализация}
 
 	\begin{frame}
 		\frametitle{Конструкторы}
@@ -474,6 +477,7 @@ public class Main {
 		\end{minted}
 	\end{frame}
 
+	\section{Мутабельность}
 	\begin{frame}
 		\frametitle{Мутабельность}
 		\textbf{Мутабельность} --- способность изменяться
@@ -495,6 +499,8 @@ public class Main {
 		Всё должно быть немутабельно по умолчанию!
 	\end{frame}
 
+	\section{Оптимизация}
+
 	\begin{frame}
 		\frametitle{Про оптимизацию}
 		Во имя эффективности (без обязательности ее достижения) делается больше вычислительных ошибок, чем по каким-либо иным причинам, включая непроходимую тупость. \newline
@@ -510,6 +516,8 @@ public class Main {
 		Правило 2 (только для экспертов). Пока не делайте этого -- т.е. пока у вас нет абсолютно четкого, но неоптимизированного решения. \newline
 		-- M. A. Jackson
 	\end{frame}
+
+	\section{Общие рекомендации}
 
 	\begin{frame}
 		\frametitle{Общие рекомендации}
@@ -574,13 +582,15 @@ public class Main {
 		\end{columns}
 	\end{frame}
 
+	\section{Домашка}
+
 	\begin{frame}
 		\frametitle{Задача на дом}
 		\begin{itemize}
 			\item Проанализировать запрос \url{https://goo.gl/MiyH8c}
 			\item Нарисовать IDEF0- и BPMN-диаграммы бизнес-процесса завода
 			\item Нарисовать диаграмму случаев использования создаваемого приложения
-			\item Без дедлайна
+			\item Дедлайн --- 10:00 04.03.2019
 		\end{itemize}
 	\end{frame}
 
