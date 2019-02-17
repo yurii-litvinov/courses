@@ -14,16 +14,11 @@
 \definecolor{links}{HTML}{2A1B81}
 \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
 \tabulinesep=0.8mm
 
 \title{Введение в F\#}
 \author{Юрий Литвинов}
-\date{20.02.2018г}
+\date{22.02.2019г}
 
 \begin{document}
 	
@@ -50,10 +45,11 @@
 			\item Под Windows --- Visual Studio, из коробки
 			\item Под Linux
 			\begin{itemize}
+				\item Rider (студентам бесплатно)
 				\item Mono + MonoDevelop + F\# Language Binding, из репозиториев
-				\item .NET Core + Visual Studio Code
+				\item .NET Core + Visual Studio Code + Ionide
 			\end{itemize}
-			\item Прямо в браузере: \url{http://www.tryfsharp.org/Learn}
+			\item Прямо в браузере: \url{https://dotnetfiddle.net/}
 		\end{itemize}
 	\end{frame}
 	
@@ -77,14 +73,6 @@ namespace HelloWorld
 		\end{minted}
 	\end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Ещё пример}
-		\begin{minted}{fsharp}
-let rec factorial x =
-    if x = 1 then 1 else x * factorial (x - 1)
-		\end{minted}
-	\end{frame}
-	
 	\section{Let-определения}
 
 	\begin{frame}[fragile]
@@ -100,7 +88,7 @@ let x = 1 in let x = 2 in printfn "%d" x
 		\end{minted}
 		и понимать как подстановку $\lambda$-терма
 	\end{frame}
-		
+
 	\begin{frame}[fragile]
 		\frametitle{let-определение, функции}
 		\begin{minted}{fsharp}
@@ -138,9 +126,9 @@ let powerOfFourPlusTwoTimesSix n =
 					функция --- когда её вызовут. Хотя, конечно, функция --- тоже значение.
 		\end{itemize}
 	\end{frame}
-			
+
 	\section{Типы}
-			
+
 	\begin{frame}[fragile]
 		\frametitle{Типы}
 		\begin{minted}{fsharp}
@@ -157,7 +145,7 @@ val f : x:int -> int
 			\end{minted}
 		\end{alertblock}
 		Каждое значение имеет тип, известный во время компиляции
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Элементарные типы}
@@ -220,15 +208,15 @@ let n = f 4
 		\begin{small}
 			\begin{tabu} {| X[0.9 l p] | X[1 l p] | X[1 l p] |}
 				\tabucline-
-				Синтаксис                               & Описание                  & Пример                             \\
+				Синтаксис                               & Описание                  & Пример                                      \\
 				\tabucline-
 				\everyrow{\tabucline-}
-				$[]$                                    & Пустой список             & $[]$                               \\
-				$[expr; ...; expr]$                     & Список с элементами       & $[1; 2; 3]$                        \\
-				$expr :: list$                          & cons, добавление в голову & $1 :: [2; 3]$                      \\
-				$[expr\ ..\ expr]$                      & Промежуток целых чисел    & $[1 .. 10]$                        \\
+				$[]$                                    & Пустой список             & $[]$                                        \\
+				$[expr; ...; expr]$                     & Список с элементами       & $[1; 2; 3]$                                 \\
+				$expr :: list$                          & cons, добавление в голову & $1 :: [2; 3]$                               \\
+				$[expr\ ..\ expr]$                      & Промежуток целых чисел    & $[1 .. 10]$                                 \\
 				$[for\ x\ in\ list\ \rightarrow\ expr]$ & Генерированный список     & $[for\ x\ in\ 1..99\ \rightarrow\ x\ *\ x]$ \\
-				$list\ @\ list$                         & Конкатенация              & $[1; 2]\ @\ [3; 4]$                \\
+				$list\ @\ list$                         & Конкатенация              & $[1; 2]\ @\ [3; 4]$                         \\
 			\end{tabu}
 		\end{small}
 	\end{frame}
