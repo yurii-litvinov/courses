@@ -78,7 +78,7 @@ test {
 	\section{Защитное программирование}
 
 	\begin{frame}
-		\frametitle{38. Проверяем достоверность параметров}
+		\frametitle{49. Проверяем достоверность параметров}
 		\begin{itemize}
 			\item Часто на аргументы методов накладываются ограничения
 			\begin{itemize}
@@ -100,6 +100,7 @@ test {
 			\begin{itemize}
 				\item Или преобразование исключения в понятное пользователю
 			\end{itemize}
+			\item java.util.Objects.checkFromIndexSize, checkFromToIndex​, checkIndex
 		\end{itemize}
 	\end{frame}
 
@@ -143,10 +144,16 @@ private static void sort(long a[], int offset, int length) {
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{39. Резервные копии могут быть полезны}
+		\frametitle{50. Резервные копии могут быть полезны}
 		\begin{itemize}
 			\item JVM даёт уверенность в безопасности работы с памятью
+			\begin{itemize}
+				\item В отличие от C++, инварианты класса будут выполняться, что бы ни происходило в остальной системе
+			\end{itemize}
 			\item Однако всё равно надо оберегать свои инварианты!
+			\begin{itemize}
+				\item Программировать надо так, будто все клиенты вашего класса делают (практически) всё возможное, чтобы нарушить его инварианты
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
@@ -201,8 +208,8 @@ public Period(Date start, Date end) {
 }
 		\end{minted}
 		\begin{itemize}
-			\item Проверяем уже созданные копии
-			\item Не используем clone()
+			\item Проверяем уже созданные копии, а не исходные параметры (ибо многопоточность)
+			\item Не используем clone(), потому что его могут переопределить и подсунуть нам подкласс
 		\end{itemize}
 	\end{frame}
 
@@ -242,7 +249,7 @@ public Date end() {
 			\end{itemize}
 			\item Или можно хранить что-то другое
 			\begin{itemize}
-				\item Например, Date.getTime() вместо Date
+				\item Например, Instant, LocalDateTime, ZonedDateTime или даже Date.getTime() вместо Date
 			\end{itemize}
 			\item Не забыть отразить всё это в документации к классу!
 			\item А также помнить про производительность
@@ -252,7 +259,7 @@ public Date end() {
 	\section{Сигнатуры методов}
 
 	\begin{frame}
-		\frametitle{40. Советы по проектированию сигнатур методов}
+		\frametitle{51. Советы по проектированию сигнатур методов}
 		\begin{itemize}
 			\item Тщательно выбирайте названия методов
 			\begin{itemize}
@@ -268,7 +275,7 @@ public Date end() {
 				\item 4 --- уже много (особенно если они похожих типов)
 				\item Что делать?
 				\begin{itemize}
-					\item Разбить метод на несколько ортогональных (например, методы в List)
+					\item Разбить метод на несколько ортогональных (например, метод subList в List, возвращающий view на часть списка)
 					\item Создание вспомогательных классов, выделение параметров в сущность
 					\item Шаблон Builder
 				\end{itemize}
@@ -296,7 +303,7 @@ public Date end() {
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{41. Перегружаем методы осторожно}
+		\frametitle{52. Перегружаем методы осторожно}
 		\begin{small}
 			\begin{minted}{java}
 // Что выведет данная программа?
@@ -406,7 +413,7 @@ public class SetList {
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{42. varargs --- опасная штука}
+		\frametitle{53. varargs --- опасная штука}
 		\begin{footnotesize}
 			\begin{minted}{java}
 // Простое использование varargs
@@ -486,30 +493,30 @@ public void foo(int a1, int a2, int a3, int... rest)  {}
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{43. Возвращаем массив нулевой длины вместо null}
-		\begin{columns}
-			\begin{column}{0.5\textwidth}
-				\begin{minted}{java}
-private List cheesesInStock = ...;
-public Cheese[] getCheeses() {
-   if (cheesesInStock.size() == 0)
-       return null;
-}
-				\end{minted}
-			\end{column}
-			\begin{column}{0.5\textwidth}
-				\begin{itemize}
-					\item Можно возвращать закэшированный пустой список
-					\item И вообще, предварительная оптимизация это зло
-				\end{itemize}
-			\end{column}
-		\end{columns}
-		\vspace{5mm}
+		\frametitle{54. Возвращаем массив нулевой длины вместо null}
 		\begin{small}
+			\begin{columns}
+				\begin{column}{0.5\textwidth}
+					\begin{minted}{java}
+private List cheesesInStock = ...;
+public List<Cheese> getCheeses() {
+    return cheesesInStock.isEmpty() 
+        ? null
+        : new ArrayList<>(cheesesInStock);
+}
+					\end{minted}
+				\end{column}
+				\begin{column}{0.5\textwidth}
+					\begin{itemize}
+						\item Можно возвращать закэшированный пустой список
+						\item И вообще, предварительная оптимизация это зло
+					\end{itemize}
+				\end{column}
+			\end{columns}
+			\vspace{5mm}
 			\begin{minted}{java}
-Cheese[] cheeses = shop.getCheeses();
-if (cheeses != null && Arrays.asList(shop.getCheeses())
-      .contains(Cheese.STILTON)) {
+List<Cheese> cheeses = shop.getCheeses();
+if (cheeses != null && cheeses.contains(Cheese.STILTON)) {
    System.out.println("Jolly good, just the thing.");
 }
 			\end{minted}
@@ -539,7 +546,7 @@ public List<Cheese> getCheeseList() {
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{44. Для всех открытых элементов API пишите доки!}
+		\frametitle{56. Для всех открытых элементов API пишите доки!}
 		\begin{itemize}
 			\item А ещё стоит документировать и другие элементы для тех, кто будет это всё сопровождать
 			\item Документация для метода должна лаконично описывать контракт между этим методом и его клиентами
@@ -570,11 +577,10 @@ public List<Cheese> getCheeseList() {
 * пропорциональное положению его элементов.
 *
 * @param index индекс элемента, который нужно возвратить;
-*    индекс должен быть меньше размера списка и неотрицательным.
-* @return элемент, занимающий в списке указанную позицию.
+*    индекс должен быть меньше размера списка и неотрицательным
+* @return элемент, занимающий в списке указанную позицию
 * @throws IndexOutOfBoundsException, если индекс лежит вне диапазона
-*
-({@code index < 0 || index >= this.size()})
+*     ({@code index < 0 || index >= this.size()})
 */
 E get(int index);
 			\end{minted}
@@ -606,7 +612,7 @@ E get(int index);
 	\section{Исключения}
 
 	\begin{frame}
-		\frametitle{58. Проверяемые vs непроверяемые исключения}
+		\frametitle{70. Проверяемые vs непроверяемые исключения}
 		\begin{itemize}
 			\item Проверяемые исключения
 			\begin{itemize}
@@ -629,7 +635,7 @@ E get(int index);
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{59. Избегайте ненужного использования проверяемых исключений}
+		\frametitle{71. Избегайте ненужного использования проверяемых исключений}
 		\begin{itemize}
 			\item Невозможно предотвратить условие для исключительной ситуации
 			\item Программист может как-то полезно её обработать
@@ -686,7 +692,7 @@ if (obj.actionPermitted(args)) {
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{61. Выбрасывайте исключения, соответствующие абстракции}
+		\frametitle{73. Выбрасывайте исключения, соответствующие абстракции}
 		\begin{itemize}
 			\item Трансляция исключений
 			\begin{itemize}
@@ -714,7 +720,7 @@ public E get(int index) {
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{62. Документируйте все выбрасываемые исключения}
+		\frametitle{74. Документируйте все выбрасываемые исключения}
 		\begin{itemize}
 			\item Объявляйте все проверяемые исключения при помощи \mintinline{java}|throws| и \mintinline{java}|@throws|
 			\begin{itemize}
@@ -736,7 +742,7 @@ public E get(int index) {
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{65. Не игнорируйте исключения}
+		\frametitle{77. Не игнорируйте исключения}
 		\begin{itemize}
 			\item Пустой блок \mintinline{java}|catch| лишает смысла механизм исключений
 			\item Как минимум -- комментарий, почему исключение игнорируется
