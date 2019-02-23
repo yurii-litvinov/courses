@@ -23,7 +23,7 @@
 
 \title[Декомпозиция, ООП]{Лекция 2: Декомпозиция, объектно-ориентированное проектирование}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{14.09.2018г}
+\date{26.02.2019г}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -405,7 +405,36 @@ public class Employee {
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Ещё один пример абстракции}
+		\begin{columns}
+			\begin{column}{0.32\textwidth}
+				\begin{minted}{java}
+public class Point {
+    public double x;
+    public double y;
+}
+				\end{minted}
+			\end{column}
+			\begin{column}{0.05\textwidth}
+				vs
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{minted}{java}
+public interface Point {
+    double getX();
+    double getY();
+    void setCartesian(double x, double y);
+    double getR();
+    double getTheta();
+    void setPolar(double r, double theta);
+}
+				\end{minted}
+			\end{column}
+		\end{columns}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Уровень абстракции (плохо)}
@@ -418,7 +447,7 @@ public class EmployeeRoster implements MyList<Employee> {
     public Employee lastItem() { ... }
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Уровень абстракции (хорошо)}
@@ -431,7 +460,7 @@ public class EmployeeRoster {
     public Employee lastEmployee() { ... }
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Общие рекомендации}
@@ -485,48 +514,7 @@ class Point {
 				\end{minted}
 			\end{column}
 		\end{columns}
-\end{frame}
-
-\begin{frame}[fragile]
-	\frametitle{Pointer To Implementation}
-	\begin{columns}
-		\begin{column}{0.32\textwidth}
-			\begin{footnotesize}
-				\begin{minted}{c++}
-class Employee {
-public:
-    Employee(...);
-    FullName name() const;
-    std::string address() const;
-private:
-    std::string mName;
-    std::string mAddress;
-    int mJobClass;
-};
-				\end{minted}
-			\end{footnotesize}
-		\end{column}
-		\begin{column}{0.02\textwidth}
-			vs
-		\end{column}
-		\begin{column}{0.45\textwidth}
-			\begin{footnotesize}
-				\begin{minted}{c++}
-class EmployeeImplementation;
-
-class Employee {
-public:
-    Employee(...);
-    FullName name() const;
-    std::string address() const;
-private:
-    EmployeeImplementation *mImpl;
-};
-				\end{minted}
-			\end{footnotesize}
-		\end{column}
-	\end{columns}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Ещё рекомендации}
@@ -610,7 +598,7 @@ class Plus extends Operation {
 				\end{column}
 			\end{columns}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Конструкторы}
