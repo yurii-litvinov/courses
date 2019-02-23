@@ -552,4 +552,132 @@ let isSame pair =
 	$:?\ type$                              & Проверка на тип           & $:?\ string$            \\
 \end{tabu}
 
+\section{Юнит-тестирование в F\#}
+
+Теперь про юнит-тестирование, штуку, хоть и не связанную с функциональным программированием напрямую, но имеющую в F\# несколько приятных функциональных особенностей. Кстати, теперь юнит-тесты в домашке обязательны.
+
+Поскольку F\# компилируется в байт-коды .NET, то нет никаких причин не работать стандартным библиотекам модульного тестирования, которые работают и в C\#, например, NUnit, Microsoft Testing Framework и т.д. Ими вполне можно пользоваться, но есть более красивые с функциональной точки зрения обёртки над ними, которые позволят писать тесты в более F\#-овом стиле, прежде всего FsUnit, стандарт де-факто в модульном тестировании для F\#. Есть и библиотеки, специфичные для F\#: FsCheck и Unquote, например (на самом деле, не совсем для F\#, FsCheck портирована с Хаскеля, но в C\# точно нет ничего такого --- хотя никто не мешает тесты для программ на C\# писать на F\#-е, естественно, пользуясь его тулами).
+
+Вот небольшой пример теста с FsUnit-ом:
+
+\begin{minted}{fsharp}
+module ``Project Euler - Problem 1`` =
+    open NUnit.Framework
+    open FsUnit
+
+    let GetSumOfMultiplesOf3And5 max =
+        seq{3 .. max - 1} 
+        |> Seq.fold(fun acc number ->
+                    (if (number % 3 = 0 || number % 5 = 0) then
+                         acc + number else acc)) 0
+
+    [<Test>]
+    let ``Sum of multiples of 3 and 5 to 10 should return 23`` () =
+        GetSumOfMultiplesOf3And5(10) |> should equal 23
+\end{minted}
+
+Тут показан, кстати, способ записи идентификаторов через двойные апострофы --- вся строка внутри считается именем, даже если там пробелы, ключевые слова и прочая жесть. Сам тест помечен атрибутом \textit{[<Test>]}, и вообще в F\# атрибуты пишутся в скобках вида [< >] (потому что просто квадратные скобки, как в C\#, заняты под списки). \textit{should equal} --- это что-то вроде \textit{Assert.Equals}, только круче.
+
+Круче тем, что условие, которое надо проверить, на самом деле может быть довольно сложным, не просто равенство-истинность-не null, как принято в C\#. Условие записывается в виде так называемых \textit{матчеров}. Для тех, кто в курсе, такой же подход используется в библиотеке Hamcrest/NHamcrest. Вот примеры, из которых по идее всё должно стать понятно:
+
+\begin{minted}{fsharp}
+1 |> should equal 1
+1 |> should not' (equal 2)
+10.1 |> should (equalWithin 0.1) 10.11
+"ships" |> should startWith "sh"
+"ships" |> should not' (endWith "ss")
+"ships" |> should haveSubstring "hip"
+[1] |> should contain 1
+[] |> should not' (contain 1)
+anArray |> should haveLength 4
+
+(fun () -> failwith "BOOM!" |> ignore) 
+    |> should throw typeof<System.Exception>
+
+shouldFail (fun () -> 5/0 |> ignore)
+\end{minted}
+
+Есть некоторые заморочки с should throw и shouldFail, они хотят функцию без аргументов, возвращающую ничего, поэтому при вызове настоящий код обёрнут в лямбду.
+
+Вот ещё примеры матчеров:
+
+\begin{minted}{fsharp}
+true |> should be True
+false |> should not' (be True)
+"" |> should be EmptyString
+null |> should be Null
+
+anObj |> should not' (be sameAs otherObj)
+
+11 |> should be (greaterThan 10)
+10.0 |> should be (lessThanOrEqualTo 10.1)
+
+0.0 |> should be ofExactType<float>
+1 |> should not' (be ofExactType<obj>)
+
+Choice<int, string>.Choice1Of2(42) |> should be (choice 1)
+
+"test" |> should be instanceOfType<string>
+"test" |> should not' (be instanceOfType<int>)
+
+2.0 |> should not' (be NaN)
+
+[1; 2; 3] |> should be unique
+
+[1; 2; 3] |> should be ascending
+[1; 3; 2] |> should not' (be ascending)
+[3; 2; 1] |> should be descending
+[3; 1; 2] |> should not' (be descending)
+\end{minted}
+
+Более интересная, хотя и реже используемая штука --- это FsCheck. FsCheck берёт функцию, рефлексией понимает, что функция принимает, и генерирует случайные значения её параметрам, после чего сколько-то раз её вызывает. Функция должна возвращать булевое значение. Если функция вернёт false, то FsCheck скажет, что тест провален, и ещё и покажет минимальный контрпример, на котором, собственно, получилось плохо. Например: 
+
+\begin{minted}{fsharp}
+open FsCheck
+
+let revRevIsOrig (xs:list<int>) = List.rev(List.rev xs) = xs
+
+Check.Quick revRevIsOrig
+// Ok, passed 100 tests.
+
+let revIsOrig (xs:list<int>) = List.rev xs = xs
+Check.Quick revIsOrig
+// Falsifiable, after 2 tests (2 shrinks) (StdGen (338235241,296278002)):
+// Original:
+// [3; 0]
+// Shrunk:
+// [1; 0]
+\end{minted}
+
+Замечу, что FsCheck прекрасно работает в паре с FsUnit (бросает исключение, которое FsUnit ловит и помечает тест как проваленный), так что писать часть тестов руками, а часть отдавать FsCheck не зазорно и повышает качество кода.
+
+Ещё одна интересная библиотека --- это Unquote. Вообще, она просто интерпретатор F\#-а, использующий встроенный в язык механизм Quotation-ов, дающий возможность в программе получить дерево разбора куска кода на F\#, потом обходить его как обычное дерево и делать с ним что угодно. Unquote хороша тем, что умеет не просто сказать, прошёл тест или нет, но и если не прошёл, показать последовательность преобразований, которая привела к ошибке. Вот пример:
+
+\begin{minted}{fsharp}
+[<Test>]
+let ``Unquote demo`` () =
+    test <@ ([3; 2; 1; 0] |> List.map ((+) 1)) = [1 + 3..1 + 0] @>
+
+// ([3; 2; 1; 0] |> List.map ((+) 1)) = [1 + 3..1 + 0]
+// [4; 3; 2; 1] = [4..1]
+// [4; 3; 2; 1] = []
+// false
+\end{minted}
+
+Эти ``<@'' и ``@>'' и есть границы quotation-а, всё, что внутри, не вычисляется, а превращается в дерево разбора, которое отдаётся функции test из Unquote.
+
+И конечно, библиотека для создания mock-объектов. В случае F\#-а это Foq, тоже использующая quotation-ы, но на сей раз для генерации моков. Вот пример:
+
+\begin{minted}{fsharp}
+[<Test>]
+let ``Foq demo`` () =
+    let mock = Mock<System.Collections.Generic.IList<int>>()
+                .Setup(fun x -> <@ x.Contains(any()) @>).Returns(true)
+                .Create()
+
+    mock.Contains 1 |> Assert.True
+\end{minted}
+
+Этот мок имитирует мутабельный список, который на запрос Contains всегда возвращает true. Собственно, тоже хорошо работает с FsUnit и NUnit, можно использовать, чтобы красиво генерить тестовые заглушки и уменьшать зависимость теста от других кусков программы.
+
 \end{document}
