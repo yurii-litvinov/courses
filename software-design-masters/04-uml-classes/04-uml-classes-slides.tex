@@ -20,11 +20,167 @@
 \title{Диаграммы классов UML}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{30.03.2018г}
+\date{25.02.2019г}
 
 \begin{document}
 	
 	\frame{\titlepage}
+
+	\section{CI}
+
+	\begin{frame}
+		\frametitle{Ликбез по Continuous Integration}
+		Непрерывная интеграция --- практика слияния всех изменений по нескольку раз в день, сборки их в известном окружении и запуска юнит-тестов.
+		\begin{itemize}
+			\item Автоматический билд
+			\begin{itemize}
+				\item Всё, что нужно для сборки, есть в репозитории, может быть получено на чистую (ну, практически) машину и собрано одной консольной командой
+			\end{itemize}
+			\item Большое количество юнит-тестов, запускаемых автоматически
+			\item Выделенная машина, слушающая репозиторий и выполняющая билд
+			\begin{itemize}
+				\item Чаще всего каждый билд запускается на заранее настроенной виртуалке
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Continuous Integration}
+		\begin{itemize}
+			\item Извещение всех разработчиков о статусе
+			\begin{itemize}
+				\item Если билд не прошёл, разработка приостанавливается до его починки
+			\end{itemize}
+			\item Автоматическое выкладывание
+			\item Пока билд не прошёл, задача не считается сделанной
+			\begin{itemize}
+				\item Короткие билды (<10 мин.)
+				\item deployment pipeline
+				\begin{itemize}
+					\item Отдельная машина для сборки, для коротких тестов, для длинных тестов, для выкладывания
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Travis}
+
+	\begin{frame}
+		\frametitle{Travis}
+		\begin{itemize}
+			\item \url{https://travis-ci.org/} --- пример бесплатной для open source-проектов облачной CI-системы
+			\item Собирает на чистой виртуальной машине под Ubuntu 12.04, 14.04, 16.04 или OS X 10.13 (есть экспериментальная поддержка Windows)
+			\item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
+			\item Окружение настраивается конфигурационным файлом или ``вручную'' из скрипта сборки (некоторые конфигурации разрешают sudo)
+			\item Сборка выполняется либо автоматически, либо указанным скриптом сборки
+			\item Build Matrix
+			\begin{itemize}
+				\item Разные конфигурации сборки, выполняемые на разных виртуальных машинах
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Travis, настройка сборки}
+		\begin{itemize}
+			\item Установить commit hook на гитхабе
+			\begin{itemize}
+				\item Travis умеет это делать сам, надо залогиниться под своим GitHub-аккаунтом на Travis и выбрать нужный репозиторий в профиле
+			\end{itemize}
+			\item Добавить .travis.yml в корень репозитория
+			\begin{itemize}
+				\item Это конфигурационный файл, говорящий, что и как собирать
+			\end{itemize}
+			\item Закоммитить и запушить, это инициирует процесс сборки
+			\begin{itemize}
+				\item Коммит, где в комментарии есть подстрока ``[ci skip]'', игнорируется Travis-ом, остальные он собирает
+			\end{itemize}
+			\item Результаты будут видны у каждого коммита в истории и в пуллреквесте
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{travisSuccess.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Travis, конфигурационный файл}
+		\begin{minted}{yaml}
+language: java
+		\end{minted}
+		--- всё :) Если у вас проект прямо в корне репозитория.
+
+		Жизненный цикл сборки:
+		\begin{footnotesize}
+			\begin{itemize}
+				\item Install apt addons
+				\item before\_install
+				\item install
+				\item before\_script
+				\item script
+				\item after\_success или after\_failure
+				\item \mintinline{text}|[OPTIONAL]| before\_deploy
+				\item \mintinline{text}|[OPTIONAL]| deploy
+				\item \mintinline{text}|[OPTIONAL]| after\_deploy
+				\item after\_script
+			\end{itemize}
+		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Travis, примеры}
+		\begin{itemize}
+			\item Веб-приложение из нескольких сервисов на Java:
+			\begin{itemize}
+				\item \url{https://github.com/qreal/wmp/blob/master/.travis.yml}
+			\end{itemize}
+			\item Относительно большое десктопное приложение на C++:
+			\begin{itemize}
+				\item \url{https://github.com/qreal/qreal/blob/master/.travis.yml}
+			\end{itemize}
+			\item Билд в Docker-окружении (все зависимости носим с собой):
+			\begin{itemize}
+				\item \url{https://github.com/trikset/trikRuntime/blob/master/.travis.yml}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Travis, пример конфига для домашки}
+		\begin{minted}{yaml}
+language: java
+os:
+  - linux
+env:
+  - PROJECT_DIR=hw1
+  - PROJECT_DIR=hw2
+  - PROJECT_DIR=hw3
+script: cd $PROJECT_DIR && ./gradlew check
+		\end{minted}
+	\end{frame}
+
+	\subsection{AppVeyor}
+
+	\begin{frame}
+		\frametitle{AppVeyor}
+		\begin{itemize}
+			\item CI c поддержкой Windows и Linux, прежде всего для сборки .NET-приложений, но умеет много чего ещё (в т.ч. Java)
+			\begin{itemize}
+				\item Windows Server 2016 или Windows Server 2012 R2
+				\item Ubuntu 16.04.4 LTS или Ubuntu 18.04 LTS
+			\end{itemize}
+			\item Тоже бесплатен для open source
+			\item Конфигурируется через appveyor.yml
+			\item Собирает по умолчанию MSBuild
+			\begin{itemize}
+				\item Можно переубедить
+			\end{itemize}
+			\item Синтаксис .yml-файла: \url{https://www.appveyor.com/docs/appveyor-yml/}
+			\item Пример: \url{https://github.com/qreal/qreal/blob/master/appveyor.yml}
+			\begin{itemize}
+				\item Собирать двумя CI-серверами один проект не зазорно
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
 
 	\section{Domain-Driven Design: анализ}
 
@@ -37,7 +193,7 @@
 			\item Модель --- это не только диаграммы, это ещё (и прежде всего) код, и устное общение
 		\end{itemize}
 		Причём тут UML --- DDD даёт ответ на вопрос ``откуда брать эти все классы'' и позволяет целенаправленно уточнять и улучшать модель. 
-		Особенно полезно, когда предметная область не очень знакома (как будет в домашке).
+		Особенно полезно, когда предметная область не очень знакома.
 	\end{frame}
 
 	\begin{frame}
@@ -274,21 +430,7 @@
 	\section{Задания}
 
 	\begin{frame}
-		\frametitle{Домашнее задание 1: Магазин книг}
-		Выполнить анализ предметной области и построить модель в виде диаграммы классов для интернет-магазина книг по следующему ТЗ:
-		\begin{itemize}
-			\item \url{https://goo.gl/94LyFc}
-		\end{itemize}
-
-		Обратите внимание, что это должна быть модель предметной области, детали реализации наподобие способа хранения информации в базе данных не важны.
-
-		Будет оцениваться точность следования ТЗ, соответствие модели сущностям предметной области (в том числе, неявным) и, естественно, пунктуальность в следовании синтаксису UML.
-		\bigskip
-		Дедлайн: \textbf{10:00 13.04.2018г}.
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Домашнее задание 2: cd, ls}
+		\frametitle{Домашнее задание: cd, ls}
 		\framesubtitle{Кое-что на ``покодить''}
 		\begin{itemize}
 			\item Реализовать команды \textbf{ls} и \textbf{cd} на базе кода одногруппника
@@ -301,8 +443,8 @@
 			\begin{itemize}
 				\item Если ``жертва'' не против, можно и в исходный репозиторий
 			\end{itemize}
-			\item Реализация, в которой надо сделать команды, определяется циклическим сдвигом на \textbf{2} вверх по списку на HwProj
-			\item Дедлайн: \textbf{10:00 13.04.2018г}.
+			\item Реализация, в которой надо сделать команды, определяется циклическим сдвигом на \textbf{2} вниз по списку на HwProj, с пропуском несданных решений
+			\item Дедлайн: \textbf{10:00 11.03.2019г}.
 		\end{itemize}
 	\end{frame}
 
