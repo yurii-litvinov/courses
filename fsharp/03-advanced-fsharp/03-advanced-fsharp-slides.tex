@@ -17,7 +17,7 @@
 
 \title{Продолжение про F\#}
 \author{Юрий Литвинов}
-\date{27.02.2018г}
+\date{01.03.2018г}
 
 \begin{document}
 	
@@ -323,7 +323,7 @@ let createMutableList () =
 let createImmutableList () =
     let rec createList i max =
         if i = max then
-            []	
+            []
         else
             i :: createList (i + 1) max
     createList 0 100000
