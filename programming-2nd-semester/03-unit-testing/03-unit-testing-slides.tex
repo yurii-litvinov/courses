@@ -35,13 +35,51 @@
 
 	\section{Домашка}
 
-	\begin{frame}
+	\begin{frame}[fragile]
 		\frametitle{Комментарии по домашке}
 		\begin{itemize}
-			\item Нельзя сравнивать double через ==
+			\item Expression-bodied methods:
+				\begin{minted}{csharp}
+public bool IsEmpty() 
+{
+    return size == 0;
+}
+				\end{minted}
+				лучше писать как
+				\begin{minted}{csharp}
+public bool IsEmpty() 
+    => size == 0;
+				\end{minted}
 			\item Если из стека на массивах неаккуратно удалять, можно организовать утечку памяти даже в C\#
-			\item Стековый калькулятор хотелось отдельным классом, чтобы в его коде упоминался только интерфейс стека.
+			\item Почти все забили на тестирование, комментарии и прочие практики
 		\end{itemize}
+	\end{frame}
+
+	\section{Комментарии}
+
+	\begin{frame}[fragile]
+		\frametitle{Комментарии XML Documentation}
+		\begin{small}
+			\begin{minted}{csharp}
+/// <summary>
+/// Stack, a first-in-first-out container for integer values.
+/// </summary>
+public class Stack
+{
+    /// <summary>
+    /// Adds element to a top of the stack.
+    /// </summary>
+    /// <param name="value">Element to add.</param>
+    public void Push(int value) { ... }
+
+    /// <summary>
+    /// Gets element from a top of the stack and removes it.
+    /// </summary>
+    /// <returns>Element that was on the top.</returns>
+    public int Pop() { ... }
+}
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 	\section{Введение}

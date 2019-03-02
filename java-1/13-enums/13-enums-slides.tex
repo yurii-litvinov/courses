@@ -20,6 +20,7 @@
 \tabulinesep=1.2mm
 
 \title{Правда про enum-ы}
+\subtitle{(c) Effective Java}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
 \date{27.02.2019г}
 
@@ -49,6 +50,20 @@ enum Season {
     AUTUMN
 }
 		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Обещанная правда про Enum-ы}
+		\begin{itemize}
+			\item Enum-ы --- это классы
+			\item Каждый элемент перечисления --- это public static final поле
+			\item Нет доступных конструкторов
+			\begin{itemize}
+				\item Невозможно создать экземпляр, кроме элемента перечисления
+				\item Обобщение паттерна ``Одиночка''
+			\end{itemize}
+			\item Реализуют Comparable и Serializable
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -145,6 +160,14 @@ enum Direction {
 		\end{minted}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Почему?}
+		\begin{itemize}
+			\item Enum-ы --- это иерархия классов
+			\item Каждый элемент перечисления --- это экземпляр своего наследника от базового класса-перечисления
+		\end{itemize}
+	\end{frame}
+
 	\begin{frame}[fragile]
 		\frametitle{Пример}
 		\begin{footnotesize}
@@ -169,6 +192,27 @@ enum Type {
 }
 			\end{minted}
 		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{fromString}
+		\begin{minted}{java}
+// Implementing a fromString method on an enum type
+private static final Map<String, Type> stringToEnum =
+    Stream.of(values()).collect(
+        toMap(Object::toString, e -> e));
+
+// Returns Type for string, if any
+public static Optional<Type> fromString(String symbol) {
+    return Optional.ofNullable(stringToEnum.get(symbol));
+}
+		\end{minted}
+		\begin{itemize}
+			\item Сначала инициализируются элементы enum-а, затем остальные статические поля
+			\begin{itemize}
+				\item Поэтому доступ к статическим полям из конструкторов элементов запрещён
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -254,6 +298,33 @@ private enum PayType {
 	\end{frame}
 
 	\begin{frame}[fragile]
+		\frametitle{Опасайтесь ordinal()}
+		\begin{small}
+			Неправильно:
+			\begin{minted}{java}
+public enum Ensemble {
+    SOLO, DUET, TRIO, QUARTET, QUINTET,
+    SEXTET, SEPTET, OCTET, NONET, DECTET;
+    public int numberOfMusicians() { return ordinal() + 1; }
+}
+			\end{minted}
+			\vspace{3mm}
+			Правильно:
+			\begin{minted}{java}
+public enum Ensemble {
+    SOLO(1), DUET(2), TRIO(3), QUARTET(4), QUINTET(5),
+    SEXTET(6), SEPTET(7), OCTET(8), DOUBLE_QUARTET(8),
+    NONET(9), DECTET(10), TRIPLE_QUARTET(12);
+
+    private final int numberOfMusicians;
+    Ensemble(int size) { this.numberOfMusicians = size; }
+    public int numberOfMusicians() { return numberOfMusicians; }
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
 		\frametitle{Битовые поля}
 		Как делали без enum-ов:
 
@@ -293,35 +364,35 @@ public class Text {
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{EnumMap, пример без}
+		\frametitle{EnumMap, пример}
 		\begin{minted}{java}
-public class Herb {
-    public enum Type { ANNUAL, PERENNIAL, BIENNIAL }
+public class Plant {
+    public enum LifeCycle { ANNUAL, PERENNIAL, BIENNIAL }
     
     private final String name;
-    private final Type type;
+    private final LifeCycle lifeCycle;
     
-    public Herb(String name, Type type) {
+    public Plant(String name, LifeCycle lifeCycle) {
         this.name = name;
-        this.type = type;
+        this.lifeCycle = lifeCycle;
     }
 }
 		\end{minted}
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{EnumMap, пример без (2)}
+		\frametitle{EnumMap, пример без}
 		\begin{minted}{java}
-var herbsByType = 
-    (Set<Herb>[]) new Set[Herb.Type.values().length];
-    // Indexed by Herb.Type.ordinal()
+var plantsByLifeCycle = 
+    (Set<Plant>[]) new Set[Plant.LifeCycle.values().length];
+    // Indexed by Plant.LifeCycle.ordinal()
 
-for (int i = 0; i < herbsByType.length; i++) {
-    herbsByType[i] = new HashSet<Herb>();
+for (int i = 0; i < plantsByLifeCycle.length; i++) {
+    plantsByLifeCycle[i] = new HashSet<>();
 }
 
-for (Herb h : garden) {
-    herbsByType[h.type.ordinal()].add(h);
+for (Plant p : garden) {
+    plantsByLifeCycle[p.lifeCycle.ordinal()].add(p);
 }
 		\end{minted}
 	\end{frame}
@@ -329,16 +400,25 @@ for (Herb h : garden) {
 	\begin{frame}[fragile]
 		\frametitle{EnumMap, пример с}
 		\begin{minted}{java}
-var herbsByType =
-    new EnumMap<Herb.Type, Set<Herb>>(Herb.Type.class);
+var plantsByLifeCycle =
+    new EnumMap<Plant.LifeCycle, Set<Plant>>(Plant.LifeCycle.class);
 
-for (Herb.Type t : Herb.Type.values()) {
-    herbsByType.put(t, new HashSet<Herb>());
+for (Plant.LifeCycle lc : Plant.LifeCycle.values()) {
+    plantsByLifeCycle.put(lc, new HashSet<>());
 }
 
-for (Herb h : garden) {
-    herbsByType.get(h.type).add(h);
+for (Plant p : garden) {
+    plantsByLifeCycle.get(p.lifeCycle).add(p);
 }
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Или, через Stream API}
+		\begin{minted}{java}
+System.out.println(Arrays.stream(garden)
+    .collect(groupingBy(p -> p.lifeCycle,
+        () -> new EnumMap<>(LifeCycle.class), toSet())));
 		\end{minted}
 	\end{frame}
 
@@ -369,7 +449,8 @@ public enum Phase {
 
 	\begin{frame}[fragile]
 		\frametitle{EnumMap EnumMap-ов, пример с}
-		\begin{minted}{java}
+		\begin{small}
+			\begin{minted}{java}
 public enum Phase {
     SOLID, LIQUID, GAS;
     
@@ -377,15 +458,19 @@ public enum Phase {
         MELT(SOLID, LIQUID), FREEZE(LIQUID, SOLID),
         BOIL(LIQUID, GAS), CONDENSE(GAS, LIQUID),
         SUBLIME(SOLID, GAS), DEPOSIT(GAS, SOLID);
+
+        private final Phase from;
+        private final Phase to;
         
-        final Phase src;
-        final Phase dst;
-        
-        Transition(Phase src, Phase dst) { ... }
+        Transition(Phase from, Phase to) {
+            this.from = from;
+            this.to = to;
+        }
         ...
     }
 }
-		\end{minted}
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -395,24 +480,39 @@ public enum Phase {
 public enum Transition {
         ...
         private static final Map<Phase, Map<Phase, Transition>> m =
-            new EnumMap<Phase, Map<Phase, Transition>>(Phase.class);
+            Stream.of(values()).collect(groupingBy(t -> t.from,
+                () -> new EnumMap<>(Phase.class),
+                toMap(t -> t.to, t -> t,
+                    (x, y) -> y, () -> new EnumMap<>(Phase.class))));
         
-        static {
-            for (Phase p : Phase.values()) {
-                m.put(p, new EnumMap<Phase, Transition>(Phase.class));
-            }
-            for (Transition trans : Transition.values()) {
-                m.get(trans.src).put(trans.dst, trans);
-            }
-        }
-        
-        public static Transition from(Phase src, Phase dst) { 
-            return m.get(src).get(dst); 
+        public static Transition from(Phase from, Phase to) { 
+            return m.get(from).get(to); 
         }
     }
 }
 			\end{minted}
 		\end{footnotesize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Добавим новое состояние}
+		\begin{small}
+			\begin{minted}{java}
+public enum Phase {
+    SOLID, LIQUID, GAS, PLASMA;
+    
+    public enum Transition {
+        MELT(SOLID, LIQUID), FREEZE(LIQUID, SOLID),
+        BOIL(LIQUID, GAS), CONDENSE(GAS, LIQUID),
+        SUBLIME(SOLID, GAS), DEPOSIT(GAS, SOLID),
+        IONIZE(GAS, PLASMA), DEIONIZE(PLASMA, GAS);
+
+        // Дальше ничего не поменялось
+        ...
+    }
+}
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 \end{document}
