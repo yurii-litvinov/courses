@@ -9,20 +9,14 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
-\lstset{language=Caml,basicstyle=\small\normalfont,keywordstyle=\color{red}}
-
 \newtheorem{rustheorem}{Теорема}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
 \title{Нетипизированное $\lambda$-исчисление}
 \author{Юрий Литвинов}
-\date{06.03.2017г}
+\date{12.03.2019г}
 
 \begin{document}
 	
@@ -236,6 +230,8 @@
 		$$\dfrac{S = T}{\lambda x.S = \lambda x.T}$$
 	\end{frame}
 	
+	\section{$\beta$-редукция}
+
 	\begin{frame}
 		\frametitle{Вычисление, что мы хотим}
 		Очевидно, что равенство --- это отношение эквивалентности. Оно <<не даёт терять
@@ -311,6 +307,8 @@
 		если она есть, её можно получить нормальной стратегией, причём нормальная форма единственная.
 	\end{frame}
 
+	\section{Комбинаторы}
+
 	\begin{frame}
 		\frametitle{Комбинаторы}
 		\textbf{Комбинатор} формально --- это $\lambda$-терм без свободных переменных. Неформально --- функция,
@@ -333,23 +331,27 @@
 		$$K\ I \equiv (\lambda x.\lambda y.x) (\lambda x.x) \rightarrow_\beta $$		
 		$$\rightarrow_\beta \lambda y.(\lambda x.x) \rightarrow_\alpha \lambda x.\lambda y.y \equiv K_\ast$$		
 	\end{frame}
-		
 
 	\begin{frame}
 		\frametitle{Комбинатор неподвижной точки}
 		\begin{rustheorem}[О неподвижной точке]
 			Для любого $\lambda$-терма $F$ существует неподвижная точка:
 			$$\forall F\ \ \exists X : F\ X = X$$
+			\vspace{-5mm}
 		\end{rustheorem}
+		\vspace{-5mm}
 		\begin{rustheorem}[О комбинаторе неподвижной точки]
 			Существует комбинатор неподвижной точки
 			$$Y = \lambda f.(\lambda x.f\ (x\ x)) (\lambda x.f\ (x\ x))$$
 			такой, что 
 			$$\forall F\ \ \ F\ (Y\ F) = Y\ F$$
 		\end{rustheorem}
+		\vspace{-5mm}
 		\begin{proof}
+			\vspace{-7mm}
 			$$Y\ F \equiv (\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) 
 				= F\ ((\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) = F(Y\ F)$$
+			\vspace{-10mm}
 		\end{proof}
 	\end{frame}
 
@@ -379,8 +381,10 @@
 		$$= mult\ 3\ (mult\ 2\ (mult\ 1\ ((Y\ F)\ 0)))$$
 		$$= mult\ 3\ (mult\ 2\ (mult\ 1\ 1))$$
 		$$= 6$$
-		(очень рекомендую курс "Системы типизации лямбда-исчисления" Дениса Москвина на https://www.lektorium.tv, примеры взяты оттуда)
+		(очень рекомендую курс "Системы типизации лямбда-исчисления" Дениса Москвина на \url{https://www.lektorium.tv}, примеры взяты оттуда)
 	\end{frame}
+
+	\section{$\lambda$-исчисление как язык программирования}
 
 	\begin{frame}
 		\frametitle{Булевые выражения}
