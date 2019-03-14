@@ -16,7 +16,7 @@
 
 \title{Нетипизированное $\lambda$-исчисление}
 \author{Юрий Литвинов}
-\date{12.03.2019г}
+\date{15.03.2019г}
 
 \begin{document}
 	
@@ -381,7 +381,7 @@
 		$$= mult\ 3\ (mult\ 2\ (mult\ 1\ ((Y\ F)\ 0)))$$
 		$$= mult\ 3\ (mult\ 2\ (mult\ 1\ 1))$$
 		$$= 6$$
-		(очень рекомендую курс "Системы типизации лямбда-исчисления" Дениса Москвина на \url{https://www.lektorium.tv}, примеры взяты оттуда)
+		(очень рекомендую курс ``Системы типизации лямбда-исчисления'' Дениса Москвина на \url{https://www.lektorium.tv}, примеры и часть дальнейшего изложения --- оттуда)
 	\end{frame}
 
 	\section{$\lambda$-исчисление как язык программирования}
@@ -442,9 +442,10 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Умножение и степень}
+		\frametitle{Умножение и степень, проверка на 0}
 		$$MUL \equiv \lambda m\ n.m\ (ADD\ n)\ 0$$
 		$$EXP \equiv \lambda m\ n.m\ (MUL\ n)\ 1$$
+		$$ISZRO \equiv \lambda n.n\ (\lambda x.FALSE)\ TRUE$$
 	\end{frame}
 
 	\begin{frame}
@@ -473,6 +474,49 @@
 		$$= FALSE\ a\ b$$
 		$$= (\lambda x.\lambda y.y)\ a\ b$$
 		$$= b$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Функция предшествования}
+		Вспомогательные функции:
+		$$ZP \equiv PAIR\ 0\ 0$$
+		$$SP \equiv \lambda p.PAIR\ (SND\ p)\ (SUCC\ (SND\ p))$$
+		\begin{itemize}
+			\item $ZP$ --- ZeroPair
+			\item $SP\ (PAIR\ i\ j) = PAIR\ j\ (j + 1)$
+		\end{itemize}
+
+		\vspace{3mm}
+
+		Функция предшествования:
+		$$PRED \equiv \lambda m.FST\ (m\ SP\ ZP)$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Примитивная рекурсия}
+		$$XZ \equiv \lambda x.PAIR\ x\ 0$$
+		$$FS \equiv \lambda f\ p.PAIR\ (f\ (FST\ p)\ (SND\ p))\ (SUCC\ (SND\ p))$$
+		$$REC \equiv \lambda m\ f\ x.FST\ (m\ (FS\ f)\ (XZ\ x))$$
+		Получаем:
+		$$(x, 0) \rightarrow$$
+		$$(f\ x\ 0, 1) \rightarrow$$
+		$$(f\ (f\ x\ 0) 1, 2) \rightarrow$$
+		$$(f\ (f\ (f\ x\ 0)\ 1)\ 2, 3) \rightarrow ...$$
+		В частности, 
+		$$PRED = \lambda m.REC\ m\ (\lambda x\ y.y)\ 0$$
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Списки}
+		$$NIL \equiv \lambda c\ n.n$$
+		$$CONS \equiv \lambda e\ l\ c\ n.c\ e\ (l\ c\ n)$$
+		Например,
+		$$[] \equiv NIL \equiv \lambda c\ n.n$$
+		$$[5; 3; 2] \equiv CONS\ 5\ (CONS\ 3\ (CONS\ 2\ NIL)) \equiv \lambda c\ n.c\ 5\ (c\ 3\ (c\ 2\ n))$$
+		Стандартные функции:
+		$$EMPTY \equiv \lambda l.l\ (\lambda h\ t.FALSE)\ TRUE$$
+		$$HEAD \equiv \lambda l.l\ (\lambda h\ t.h)\ 0$$
+		$$TAIL \equiv \lambda l.FST\ (l\ (\lambda a\ b.PAIR\ (SND\ b)\ (CONS\ a\ (SND\ b)))\ (PAIR\ NIL\ NIL))$$
 	\end{frame}
 
 \end{document}
