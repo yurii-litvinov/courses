@@ -366,7 +366,7 @@
 		$$factorial = (\lambda f.\lambda n.if\ (isZero\ n)\ 1\ (mult\ n\ (f\ (pred\ n)))) factorial$$
 		Внезапно, 
 		$$factorial = Y (\lambda f.\lambda n.if\ (isZero\ n)\ 1\ (mult\ n\ (f\ (pred\ n))))$$
-		(ну, $F\ (Y\ X) = Y\ X$, тут $factorial$ выступает в роли неподвижной точки, а $F$ --- 
+		(ну, $F\ (Y\ F) = Y\ F$, тут $factorial$ выступает в роли неподвижной точки, а $F$ --- 
 		штуки в скобках).
 	\end{frame}
 
