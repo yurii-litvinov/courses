@@ -17,35 +17,13 @@
 
 \tabulinesep=0.5mm
 
-\title{Async и многопоточное программирование}
+\title{Async и многопоточное программирование в F\#}
 \author{Юрий Литвинов}
-\date{10.04.2018г}
+\date{12.04.2019г}
 
 \begin{document}
 	
 	\frame{\titlepage}
-
-	\begin{frame}
-		\frametitle{Многопоточное программирование}
-		Зачем это нужно:
-		\begin{itemize}
-			\item Не ``вешать'' GUI
-			\item Использовать ресурсы ``железа''
-			\item Использовать асинхронные операции ввода-вывода
-			\item Показывать прогресс
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Основные понятия}
-		\begin{description}
-			\item[Процесс] --- экземпляр выполняемой программы и все связанные с ней данные и ресурсы
-			\item[Поток] --- поток исполняемых команд (стек, регистры)
-			\item[Параллельная программа] --- программа с несколькими исполняемыми потоками или процессами
-			\item[Асинхронная программа] выполняет запросы, которые выполняются не мгновенно, а через некоторое время
-			\item[Реактивная программа] --- программа, нормальное состояние которой --- ожидать наступление какого-нибудь события
-		\end{description}
-	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Простой способ: Async workflow}
@@ -131,41 +109,6 @@ Read 4475 characters for http://spisok.math.spbu.ru...
 				\end{minted}
 			\end{alertblock}
 		\end{footnotesize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Пул потоков}
-		\framesubtitle{Почему такие результаты}
-		Пул потоков --- набор заранее созданных потоков, управляемых рантаймом .NET автоматически.
-		\begin{minted}{fsharp}
-open System.Threading
-
-fun _ -> printfn "Hello from %d!" 
-      <| Thread.CurrentThread.ManagedThreadId
-|> List.replicate 10
-|> List.map ThreadPool.QueueUserWorkItem 
-|> ignore
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Что получится}
-		\begin{alertblock}{F\# Interactive}
-			\begin{minted}{fsharp}
-valHello from 73! 
-Hello from 73! 
-Hello from 73! 
-Hello from 73! 
- it Hello from 77: Hello from Hello from 74! 
-! 
-unit = 65! 
-Hello from Hello from 76! 
-78! 
-()
-
-> Hello from 75! 
-			\end{minted}
-		\end{alertblock}
 	\end{frame}
 
 	\begin{frame}[fragile]
