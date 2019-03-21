@@ -108,19 +108,64 @@
 
 	\begin{frame}[fragile]
 		\frametitle{AppVeyor, пример файла конфигурации}
+		\framesubtitle{AppVeyor, .NET Core}
 		\begin{minted}{text}
-image: Visual Studio 2017
+image: Visual Studio 2017 
 
-init:
-  - git config --global core.autocrlf input
-build_script:
-  - cmd: build.cmd All
-test: off
-version: 0.0.1.{build}
-artifacts:
-  - path: bin
-    name: bin
+before_build: 
+    - nuget restore myCoolHomework/Homework.sln
+
+build: 
+    project: myCoolHomework/Homework.sln
+
+test_script: 
+    - dotnet test myCoolHomework/Homework.sln
 		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример файла конфигурации}
+		\framesubtitle{AppVeyor, .NET Framework}
+		\begin{minted}{yaml}
+image: Visual Studio 2017 
+
+before_build: 
+    - nuget restore myCoolHomework/Homework.sln
+
+build: 
+    project: myCoolHomework/Homework.sln
+
+test_script: 
+    - nunit3-console myCoolHomework/Homework.sln \ 
+        --result=myresults.xml;format=AppVeyor
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{На что обратить внимание}
+		\begin{itemize}
+			\item Файл должен называться именно appveyor.yml (или .appveyor.yml)
+			\item И лежать именно в корне репозитория
+			\item Отступы и минусы критически важны
+			\item \url{https://www.appveyor.com/docs/appveyor-yml/}
+			\item Выкладывается обычно в master, потом вмердживается в остальные ветки
+			\begin{itemize}
+				\item При этом возможны конфликты, которые надо не забывать разрешать
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{При этом, чтобы работали тесты}
+		\begin{itemize}
+			\item Нужно добавить Reference на
+			\begin{itemize}
+				\item Microsoft.NET.Test.Sdk
+				\item NUnit3TestAdapter
+				\item NUnit
+			\end{itemize}
+			\item Или другие библиотеки, которыми пользуетесь, но не забыть SDK и раннер.
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
@@ -225,22 +270,43 @@ build_script:
 		\end{itemize}
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{Travis, примеры}
-		\begin{itemize}
-			\item Веб-приложение из нескольких сервисов на Java:
-			\begin{itemize}
-				\item \url{https://github.com/qreal/wmp/blob/master/.travis.yml}
-			\end{itemize}
-			\item Относительно большое десктопное приложение на C++:
-			\begin{itemize}
-				\item \url{https://github.com/qreal/qreal/blob/master/.travis.yml}
-			\end{itemize}
-			\item Билд в Docker-окружении (все зависимости носим с собой):
-			\begin{itemize}
-				\item \url{https://github.com/trikset/trikRuntime/blob/master/.travis.yml}
-			\end{itemize}
-		\end{itemize}
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{Travis, .NET Core}
+		\begin{minted}{yaml}
+language: csharp
+
+mono: none
+dotnet: 2.1
+
+before_build: 
+    - nuget restore myCoolHomework/Homework.sln
+
+build: 
+    - dotnet build myCoolHomework/Homework.sln
+
+test_script: 
+    - dotnet test myCoolHomework/Homework.sln
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Пример}
+		\framesubtitle{Travis, .NET Framework}
+		\begin{small}
+			\begin{minted}{yaml}
+language: csharp
+
+install:
+  - nuget restore myCoolHomework/Homework.sln
+  - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
+
+script:
+  - msbuild /p:Configuration=Release myCoolHomework/Homework.sln
+  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe \
+        .myCoolHomework/Homework.sln
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 	\section{CodeCov}
