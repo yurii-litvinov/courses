@@ -94,7 +94,7 @@
 		\begin{itemize}
 			\item Зайти на \url{https://www.appveyor.com/} по GitHub-аккаунту
 			\item Добавить проект (разрешив AppVeyor просматривать список репозиториев на гитхабе)
-			\item Положить в корень проекта файл appveyor.yml с конфигурацией сборки
+			\item Положить в корень репозитория файл appveyor.yml с конфигурацией сборки
 			\begin{itemize}
 				\item Пустой тоже ок, это конфигурация по умолчанию, VS 2015 + MSBuild, ищет .sln в корне репозитория и пытается его собрать
 			\end{itemize}
@@ -109,7 +109,7 @@
 	\begin{frame}[fragile]
 		\frametitle{AppVeyor, пример файла конфигурации}
 		\framesubtitle{AppVeyor, .NET Core}
-		\begin{minted}{text}
+		\begin{minted}{yaml}
 image: Visual Studio 2017 
 
 before_build: 
@@ -134,10 +134,6 @@ before_build:
 
 build: 
     project: myCoolHomework/Homework.sln
-
-test_script: 
-    - nunit3-console myCoolHomework/Homework.sln \ 
-        --result=myresults.xml;format=AppVeyor
 		\end{minted}
 	\end{frame}
 
