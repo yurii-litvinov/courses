@@ -16,7 +16,7 @@
 \subtitle{Детали реализации}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{19.04.2017г}
+\date{08.04.2019г}
 
 \begin{document}
 	
@@ -361,6 +361,35 @@
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{``Фасад'' (Facade), детали реализации}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Абстрактный Facade
+					\begin{itemize}
+						\item Существенно снижает связность клиента с подсистемой
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.8\textwidth]{facade.png}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\begin{itemize}
+			\item Открытые и закрытые классы подсистемы
+			\begin{itemize}
+				\item Пространства имён и пакеты помогают, но требуют дополнительных соглашений
+				\begin{itemize}
+					\item Пространство имён details
+				\end{itemize}
+				\item Инкапсуляция целой подсистемы --- это хорошо
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{``Заместитель'' (Proxy), детали реализации}
 		\begin{center}
 			\includegraphics[width=0.7\textwidth]{proxy.png}
@@ -395,32 +424,67 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{``Фасад'' (Facade), детали реализации}
-		\begin{columns}
-			\begin{column}{0.5\textwidth}
-				\begin{itemize}
-					\item Абстрактный Facade
-					\begin{itemize}
-						\item Существенно снижает связность клиента с подсистемой
-					\end{itemize}
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.5\textwidth}
-				\begin{center}
-					\includegraphics[width=0.8\textwidth]{facade.png}
-				\end{center}
-			\end{column}
-		\end{columns}
+		\frametitle{Пример: Apache Thrift}
 		\begin{itemize}
-			\item Открытые и закрытые классы подсистемы
-			\begin{itemize}
-				\item Пространства имён и пакеты помогают, но требуют дополнительных соглашений
-				\begin{itemize}
-					\item Пространство имён details
-				\end{itemize}
-				\item Инкапсуляция целой подсистемы --- это хорошо
-			\end{itemize}
+			\item Реализация механизма RPC от Facebook
+			\item Берёт на себя задачи общения по сети
+			\item Сервисы (сигнатуры функций) и используемые типы данных описываются в .thrift-файле
+			\item Заглушки (тот самый Proxy) генерятся для 25 языков программирования
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{.thrift}
+		\begin{small}
+			\begin{minted}{text}
+enum PhoneType {
+  HOME,
+  WORK,
+  MOBILE,
+  OTHER
+}
+
+struct Phone {
+  1: i32 id,
+  2: string number,
+  3: PhoneType type
+}
+
+service PhoneSvc {
+  Phone findById(1: i32 id),
+  list<Phone> findAll()
+}
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Заглушка}
+		\begin{small}
+			Генерация:
+
+			\mintinline{text}|thrift --gen netcore demo.thrift|
+
+			\vspace{3mm}
+
+			Использование:
+		\begin{minted}{csharp}
+public static async Task Main(string[] args)
+{
+    var phone = new PhoneSvc.Client(
+        new TBinaryProtocol(
+            new TSocketClientTransport(IPAddress.Loopback, 8888)));
+
+    await phone.OpenTransportAsync(CancellationToken.None);
+    var allPhones = await phone.findAllAsync(CancellationToken.None);
+
+    foreach (var result in allPhones)
+    {
+        Console.WriteLine(result);
+    }
+}
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 \end{document}
