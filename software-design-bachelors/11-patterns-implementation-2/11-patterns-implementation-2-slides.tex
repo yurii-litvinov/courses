@@ -69,7 +69,6 @@
 		\begin{columns}
 			\begin{column}{0.45\textwidth}
 				\begin{itemize}
-					\item Паттерн интересен только для языков, где мало runtime-информации о типе (C++)
 					\item Реестр прототипов, обычно ассоциативное хранилище
 				\end{itemize}
 			\end{column}
@@ -314,8 +313,10 @@ void MyCheckBox::mousePressEvent(QMouseEvent *event)
 			\begin{minted}{csharp}
 internal class NewMessageEventArgs : EventArgs {
     private readonly string message;
+
     public MessageEventArgs(string message) 
         => this.message = message;
+
     public string Message => message;
 }
 			\end{minted}
@@ -328,14 +329,16 @@ internal class NewMessageEventArgs : EventArgs {
 			\begin{minted}{csharp}
 internal class Messenger {
     public event EventHandler<NewMessageEventArgs> NewMessage;
+
     protected virtual void OnMessage(NewMessageEventArgs e) {
         EventHandler<NewMessageEventArgs> temp 
                 = Volatile.Read(ref NewMessage);
         if (temp != null) 
             temp(this, e);
     }
+
     public void SimulateMessage(String message) {
-        NewMessageEventArgs e = new NewMessageEventArgs(message);
+        var e = new NewMessageEventArgs(message);
         OnMessage(e);
     }
 }
@@ -356,7 +359,7 @@ internal sealed class Fax {
     }
 
     public void Unregister(Messenger mm) 
-            => mm.NewMessage -= FaxMsg;
+        => mm.NewMessage -= FaxMsg;
 }
 			\end{minted}
 		\end{itemize}
