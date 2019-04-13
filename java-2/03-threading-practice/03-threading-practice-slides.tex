@@ -19,57 +19,19 @@
 
 \tabulinesep=0.7mm
 
-\title{Практика}
+\title{Задача CountdownLatch}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{23.03.2017г}
+\date{17.04.2019г}
 
 \begin{document}
 	
 	\frame{\titlepage}
 	
-	\section{Слоистая архитектура для VCS}
-
-	\begin{frame}
-		\frametitle{Архитектура VCS, уровень пользователя}
-		\begin{center}
-			\includegraphics[width=0.35\textwidth]{vcsInterfaceLevel.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Архитектура VCS, команды}
-		\begin{center}
-			\includegraphics[width=0.55\textwidth]{vcsCommandsHierarchy.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Архитектура VCS, уровень бизнес-логики}
-		\begin{center}
-			\includegraphics[width=0.9\textwidth]{vcsDomainModel.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Архитектура VCS, уровень данных}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{vcsDataLayer.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Архитектура VCS, итог}
-		\begin{center}
-			\includegraphics[width=0.63\textwidth]{vcsOverallArchitecture.png}
-		\end{center}
-	\end{frame}
-
 	\section{Задача на пару}
 
 	\begin{frame}
 		\frametitle{Задача, CountdownLatch}
-		\framesubtitle{Репетиция контрольной}
 		Реализовать свой собственный CountdownLatch (но хитрый):
 		\begin{itemize}
 			\item Конструктор, принимающий число (счётчик) в качестве аргумента
@@ -80,9 +42,6 @@
 			\end{itemize}
 			\item Метод \mintinline{java}|countUp()|, который увеличивает счётчик на 1 и запускает потоки, заблокированные на \mintinline{java}|countDown()|, если такие есть
 			\item Нельзя использовать synchronized
-			\begin{itemize}
-				\item Можно Lock/Condition
-			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
