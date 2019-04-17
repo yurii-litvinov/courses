@@ -86,8 +86,7 @@ if (i >= 0) {
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Objects}
-		Класс \textbf{Objects} не так полезен с появлением Java 7, но есть ещё \textbf{MoreObjects}. Пример:
+		\frametitle{MoreObjects}
 		\begin{minted}{java}
 // Returns "ClassName{x=1}"
 MoreObjects.toStringHelper(this)
@@ -134,7 +133,7 @@ MoreObjects.toStringHelper("MyObject")
 		\end{minted}
 
 		\begin{scriptsize}
-			Ещё есть \mintinline{java}|List<Throwable> getCausalChain(Throwable throwable)|, \mintinline{java}|Throwable getRootCause(Throwable throwable)|, \mintinline{java}|void propagateIfPossible(Throwable throwable, Class<X> declaredType)|, \mintinline{java}|void throwIfInstanceOf(Throwable throwable, Class<X> declaredType)|
+			Ещё есть \mintinline{java}|List<Throwable> getCausalChain(Throwable throwable)|, \mintinline{java}|Throwable getRootCause(Throwable throwable)|, \mintinline{java}|void throwIfInstanceOf(Throwable throwable, Class<X> declaredType)|
 		\end{scriptsize}
 \end{frame}
 
