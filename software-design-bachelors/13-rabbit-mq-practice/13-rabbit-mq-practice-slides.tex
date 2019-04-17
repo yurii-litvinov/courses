@@ -23,7 +23,7 @@
 \title{Распределённые приложения, RabbitMQ}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{10.05.2018г}
+\date{24.04.2019г}
 
 \begin{document}
 
@@ -55,7 +55,7 @@ public class Sender {
     private static final String QUEUE_NAME = "MyQueue";
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        ConnectionFactory factory = new ConnectionFactory();
+        var factory = new ConnectionFactory();
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
@@ -81,7 +81,7 @@ public class Receiver {
     private static final String QUEUE_NAME = "MyQueue";
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        ConnectionFactory factory = new ConnectionFactory();
+        var factory = new ConnectionFactory();
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
@@ -115,7 +115,7 @@ public class Receiver {
 			\end{itemize}
 			\item Добавить зависимость от клиента RabbitMQ в проект
 			\begin{itemize}
-				\item \mintinline{groovy}|compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.2.0'|
+				\item \mintinline{groovy}|compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.7.0'|
 			\end{itemize}
 			\item Пролистать Getting Started 
 			\begin{itemize}
@@ -132,12 +132,13 @@ public class Receiver {
 		\begin{itemize}
 			\item Сервер для обмена сообщениями, о котором договариваются клиенты
 			\begin{itemize}
-				\item Центральный сервер, задаваемый в настройках клиента (хардкод или параметром командной строки)
+				\item Центральный сервер, задаваемый при запуске (127.0.0.1 по умолчанию)
 			\end{itemize}
 			\item Нет списка контактов, есть именованные каналы, на которые можно подписываться и постить туда
 			\begin{itemize}
-				\item Должны поддерживаться консольные команды subscribe <имя канала> и post <имя канала> <сообщение>
-				\item subscribe или post для не существующего канала должен его создавать
+				\item Должна быть кнопка подписки на канал и поле для ввода имени канала
+				\item Сообщения в разные каналы должны быть в разных вкладках
+				\item Подписка на несуществующий канал должна его создавать
 			\end{itemize}
 			\item Нет истории, получать только те сообщения, что были опубликованы с момента подключения
 			\begin{itemize}
