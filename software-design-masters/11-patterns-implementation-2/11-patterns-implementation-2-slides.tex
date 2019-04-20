@@ -15,7 +15,7 @@
 \title{Порождающие и поведенческие паттерны, детали реализации}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{26.04.2017г}
+\date{22.04.2019г}
 
 \begin{document}
 	
@@ -69,7 +69,6 @@
 		\begin{columns}
 			\begin{column}{0.45\textwidth}
 				\begin{itemize}
-					\item Паттерн интересен только для языков, где мало runtime-информации о типе (C++)
 					\item Реестр прототипов, обычно ассоциативное хранилище
 				\end{itemize}
 			\end{column}
@@ -261,7 +260,7 @@ void MyCheckBox::mousePressEvent(QMouseEvent *event)
 	\begin{frame}
 		\frametitle{``Наблюдатель'' (Observer), детали реализации}
 		\begin{itemize}
-			\item В ``нормальных'' языках поддержан ``из коробки'' (через механизм событий)
+			\item В некоторых языках поддержан ``из коробки'' (через механизм событий)
 		\end{itemize}
 		\begin{columns}
 			\begin{column}{0.45\textwidth}
@@ -312,36 +311,33 @@ void MyCheckBox::mousePressEvent(QMouseEvent *event)
 		\begin{itemize}
 			\item События в C\#:
 			\begin{minted}{csharp}
-internal class NewMessageEventArgs : EventArgs {
+internal class NewMessageEventArgs : EventArgs 
+{
     private readonly string message;
+
     public MessageEventArgs(string message) 
         => this.message = message;
+
     public string Message => message;
 }
 			\end{minted}
 		\end{itemize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{``Наблюдатель'', пример (2)}
 		\begin{small}
 			\begin{minted}{csharp}
-internal class Messenger {
+internal class Messenger 
+{
     public event EventHandler<NewMessageEventArgs> NewMessage;
-    protected virtual void OnMessage(NewMessageEventArgs e) {
-        EventHandler<NewMessageEventArgs> temp 
-                = Volatile.Read(ref NewMessage);
-        if (temp != null) 
-            temp(this, e);
-    }
-    public void SimulateMessage(String message) {
-        NewMessageEventArgs e = new NewMessageEventArgs(message);
-        OnMessage(e);
-    }
+
+    public void SimulateMessage(String message) 
+        => NewMessage?.Invoke(this, new NewMessageEventArgs(message));
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{``Наблюдатель'', пример (3)}
@@ -350,17 +346,18 @@ internal class Messenger {
 internal sealed class Fax {
     public Fax(Messenger mm) => mm.NewMessage += FaxMsg;
 
-    private void FaxMsg(object sender, NewMessageEventArgs e) {
+    private void FaxMsg(object sender, NewMessageEventArgs e) 
+    {
         Console.WriteLine("Faxing message:");
         Console.WriteLine($"Message={e.Message}");
     }
 
     public void Unregister(Messenger mm) 
-            => mm.NewMessage -= FaxMsg;
+        => mm.NewMessage -= FaxMsg;
 }
 			\end{minted}
 		\end{itemize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{``Состояние'' (State), детали реализации}
@@ -406,15 +403,6 @@ internal sealed class Fax {
 			\end{column}
 		\end{columns}
 	\end{frame}
-
-% 	\begin{frame}[fragile]
-% 		\frametitle{``Посетитель'', пример}
-% 		\begin{itemize}
-% 			\begin{minted}{csharp}
-% 				Здесь будет пример кода на ANTLR
-% 			\end{minted}
-% 		\end{itemize}
-% \end{frame}
 
 	\begin{frame}
 		\frametitle{``Хранитель'' (Memento), детали реализации}

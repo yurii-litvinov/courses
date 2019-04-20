@@ -18,7 +18,7 @@
 \title{gRPC}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{18.05.2018г}
+\date{29.04.2019г}
 
 \begin{document}
 	
@@ -73,7 +73,7 @@ john.writeTo(output);
 		\begin{itemize}
 			\item .proto-файлы --- в папку src/main/proto
 			\item gradle-плагин com.google.protobuf
-			\item \url{https://github.com/google/protobuf-gradle-plugin/blob/master/exampleProject/build.gradle}
+			\item \url{https://github.com/google/protobuf-gradle-plugin/blob/master/examples/exampleProject/build.gradle}
 		\end{itemize}
 		Для остального: скачать и поставить protoc
 		\begin{itemize}
@@ -246,15 +246,21 @@ public HelloWorldClient(String host, int port) {
 
 	\begin{frame}
 		\frametitle{Задание на пару}
-		Разработать сетевой чат (наподобие Jabber) с помощью gRPC
+		В командах по три человека разработать сетевой чат (наподобие Telegram) с помощью gRPC
 		\begin{itemize}
 			\item peer-to-peer, то есть соединение напрямую
-			\item Консольный пользовательский интерфейс
+			\item Графический пользовательский интерфейс
 			\begin{itemize}
 				\item Отображение имени отправителя, даты и текста сообщения
 			\end{itemize}
-			\item Адрес peer-а и порт --- параметры
-			\item Указание своего имени --- параметром или в конфигурационном файле
+			\item При запуске указываются:
+			\begin{itemize}
+				\item Адрес peer-а и порт, если хотим подключиться
+				\begin{itemize}
+					\item Должно быть можно не указывать, тогда работаем в режиме сервера
+				\end{itemize}
+				\item Своё имя пользователя
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
