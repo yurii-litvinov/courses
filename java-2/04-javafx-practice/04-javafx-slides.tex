@@ -18,7 +18,7 @@
 \title{Графический интерфейс на Java}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{23.04.2019г}
+\date{24.04.2019г}
 
 \begin{document}
 	
@@ -66,7 +66,7 @@ public class MyFxApp extends Application {
     }
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Кнопки}
@@ -74,11 +74,11 @@ public class MyFxApp extends Application {
 public class ButtonExperiments extends Application  {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Button button = new Button("Click me");
+        var button = new Button("Click me");
 
         button.setOnAction(value -> Platform.exit());
 
-        Scene scene = new Scene(button, 200, 100);
+        var scene = new Scene(button, 200, 100);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -88,7 +88,7 @@ public class ButtonExperiments extends Application  {
     }
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Лейауты}
@@ -108,23 +108,23 @@ public class ButtonExperiments extends Application  {
 		\frametitle{Пример, GridPane}
 		\begin{scriptsize}
 			\begin{minted}{java}
-Button button1 = new Button("Click me");
+var button1 = new Button("Click me");
 button1.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 button1.setOnAction(value -> Platform.exit());
 
-Button button2 = new Button("Or me");
+var button2 = new Button("Or me");
 button2.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 button2.setOnAction(value -> Platform.exit());
 
-GridPane pane = new GridPane();
+var pane = new GridPane();
 
-ColumnConstraints column1 = new ColumnConstraints();
+var column1 = new ColumnConstraints();
 column1.setPercentWidth(50);
 
-ColumnConstraints column2 = new ColumnConstraints();
+var column2 = new ColumnConstraints();
 column2.setPercentWidth(50);
 
-RowConstraints row = new RowConstraints();
+var row = new RowConstraints();
 row.setPercentHeight(100);
 row.setFillHeight(true);
 
@@ -147,6 +147,34 @@ pane.getRowConstraints().add(row);
 		\begin{center}
 			\includegraphics[width=0.7\textwidth]{javaFxControls.png}
 		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Bindings}
+		\begin{itemize}
+			\item \mintinline{java}|Property<T>| --- свойство, на которое можно подписываться и которое можно автоматом менять
+			\item \mintinline{java}|ObservableValue<T>|, \mintinline{java}|WritableValue<T>|
+			\item Паттерн node.someProperty(), node.setSome(), node.getSome()
+		\end{itemize}
+		\begin{scriptsize}
+			\begin{minted}{java}
+public class CircleApp extends Application {
+    public void start(Stage primaryStage) {
+        var pane = new Pane();
+        var circle = new Circle();
+        circle.centerXProperty().bind(pane.widthProperty().divide(2));
+        circle.centerYProperty().bind(pane.heightProperty().divide(2));
+        circle.radiusProperty().bind(pane.widthProperty().divide(2).subtract(30));
+        pane.getChildren().add(circle);
+
+        var scene = new Scene(pane, 200, 200);
+        primaryStage.setTitle("CircleApp");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+}
+			\end{minted}
+		\end{scriptsize}
 	\end{frame}
 
 	\begin{frame}
@@ -172,7 +200,7 @@ pane.getRowConstraints().add(row);
 		\frametitle{Пример, установка стиля}
 		Java:
 		\begin{minted}{java}
-Scene scene = new Scene(new Group(), 500, 400);
+var scene = new Scene(new Group(), 500, 400);
 scene.getStylesheets().add("path/stylesheet.css");
 		\end{minted}
 		\vspace{1cm}
@@ -222,6 +250,33 @@ public class FXMLExample extends Application {
     }
 }
 		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сборка в gradle}
+		\begin{footnotesize}
+			\begin{minted}{groovy}
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
+}
+
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls' ]
+}
+
+group 'com.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+			\end{minted}
+		\end{footnotesize}
 	\end{frame}
 
 	\section{Задание}
