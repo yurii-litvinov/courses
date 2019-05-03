@@ -10,17 +10,78 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
 \tabulinesep=0.8mm
 
-\title{Процессоры аннотаций, Lombok}
+\title{Аннотации, Lombok}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{18.05.2017г}
+\date{15.05.2019г}
 
 \begin{document}
 	
 	\frame{\titlepage}
-	
+
+	\section{Аннотации}
+
+	\begin{frame}
+		\frametitle{Аннотации}
+		\begin{itemize}
+			\item Нужны для добавления метаданных в классы
+			\begin{itemize}
+				\item Могут потом использоваться во время компиляции или во время выполнения
+				\item Активно используются самим компилятором (\mintinline{java}|@Override|, \mintinline{java}|@SuppressWarnings|)
+			\end{itemize}
+			\item Могут использоваться для генерации кода во время компиляции (например, Lombok)
+			\item Полезны во время выполнения вместе с рефлексией (например, JUnit)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Объявление своей аннотации}
+		\begin{minted}{java}
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Mammal {
+    String sound();
+    int color();
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Использование}
+		\begin{minted}{java}
+@Mammal(color = 0xFFA844, sound = "uuuu")
+class Giraffe {
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Работа с аннотациями в рантайме}
+		\begin{minted}{java}
+@PermissionRequired(User.Permission.USER_MANAGEMENT)
+class UserDeleteAction {
+    public void invoke(User user) { /* */ }
+}
+
+User user = ...;
+Class<?> actionClass = ...;
+PermissionRequired permissionRequired =
+        actionClass.getAnnotation(PermissionRequired.class);
+if (permissionRequired != null)
+    if (user != null && user.getPermissions().contains(
+        permissionRequired.value())) {
+            // выполнить действие
+        }
+    }
+}
+		\end{minted}
+	\end{frame}
+
 	\section{Процессоры аннотаций}
 
 	\begin{frame}
@@ -61,7 +122,7 @@ public class MyProcessor extends AbstractProcessor {
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{API, с Java 7}
@@ -69,7 +130,7 @@ public class MyProcessor extends AbstractProcessor {
 			\begin{minted}{java}
 @SupportedSourceVersion(SourceVersion.latestSupported())
 @SupportedAnnotationTypes({...})
- public class MyProcessor extends AbstractProcessor {
+public class MyProcessor extends AbstractProcessor {
 
     @Override
     public synchronized void init(
@@ -82,7 +143,7 @@ public class MyProcessor extends AbstractProcessor {
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Регистрация процессора}
@@ -97,8 +158,8 @@ MyProcessor.jar
         - services
             - javax.annotation.processing.Processor
 		\end{minted}
-	javax.annotation.processing.Processor содержит полностью квалифицированные имена классов-процессоров через перевод строки
-\end{frame}
+		javax.annotation.processing.Processor содержит полностью квалифицированные имена классов-процессоров через перевод строки
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Компиляция кода с процессором}
@@ -109,7 +170,7 @@ MyProcessor.jar
      com.example.annotations.processors.jar
      MyCode.java
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\section{Пример: фабрика}
 
@@ -118,26 +179,26 @@ MyProcessor.jar
 		\begin{footnotesize}
 			\begin{minted}{java}
 public interface Meal {
-  public float getPrice();
+    public float getPrice();
 }
 public class MargheritaPizza implements Meal {
-  @Override public float getPrice() {
-    return 6.0f;
-  }
+    @Override public float getPrice() {
+        return 6.0f;
+    }
 }
 public class CalzonePizza implements Meal {
-  @Override public float getPrice() {
-    return 8.5f;
-  }
+    @Override public float getPrice() {
+        return 8.5f;
+    }
 }
 public class Tiramisu implements Meal {
-  @Override public float getPrice() {
-    return 4.5f;
-  }
+    @Override public float getPrice() {
+        return 4.5f;
+    }
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Основной класс}
@@ -145,21 +206,21 @@ public class Tiramisu implements Meal {
 			\begin{minted}{java}
 public class PizzaStore {
 
-  private MealFactory factory = new MealFactory();
+    private MealFactory factory = new MealFactory();
 
-  public Meal order(String mealName) {
-    return factory.create(mealName);
-  }
+    public Meal order(String mealName) {
+        return factory.create(mealName);
+    }
 
-  public static void main(String[] args) throws IOException {
-    PizzaStore pizzaStore = new PizzaStore();
-    Meal meal = pizzaStore.order(readConsole());
-    System.out.println("Bill: " + meal.getPrice());
-  }
+    public static void main(String[] args) throws IOException {
+        var pizzaStore = new PizzaStore();
+        Meal meal = pizzaStore.order(readConsole());
+        System.out.println("Bill: " + meal.getPrice());
+    }
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Фабрика}
@@ -167,23 +228,23 @@ public class PizzaStore {
 			\begin{minted}{java}
 public class MealFactory {
 
-  public Meal create(String id) {
-    if (id == null) {
-      throw new IllegalArgumentException("id is null!");
-    } else if ("Calzone".equals(id)) {
-      return new CalzonePizza();
-    } else if ("Tiramisu".equals(id)) {
-      return new Tiramisu();
-    } else if ("Margherita".equals(id)) {
-      return new MargheritaPizza();
-    }
+    public Meal create(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id is null!");
+        } else if ("Calzone".equals(id)) {
+            return new CalzonePizza();
+        } else if ("Tiramisu".equals(id)) {
+            return new Tiramisu();
+        } else if ("Margherita".equals(id)) {
+            return new MargheritaPizza();
+        }
 
-    throw new IllegalArgumentException("Unknown id = " + id);
-  }
+        throw new IllegalArgumentException("Unknown id = " + id);
+    }
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Аннотация @Factory}
@@ -193,15 +254,15 @@ public class MealFactory {
 @Retention(RetentionPolicy.CLASS)
 public @interface Factory {
 
-  /** The name of the factory */
-  Class type();
+    /** The name of the factory */
+    Class type();
 
-  /** The identifier for determining which item should be instantiated */
-  String id();
+    /** The identifier for determining which item should be instantiated */
+    String id();
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пиццы}
@@ -209,20 +270,20 @@ public @interface Factory {
 			\begin{minted}{java}
 @Factory(id = "Margherita", type = Meal.class)
 public class MargheritaPizza implements Meal {
-  @Override public float getPrice() {
-    return 6f;
-  }
+    @Override public float getPrice() {
+        return 6f;
+    }
 }
 
 @Factory(id = "Calzone", type = Meal.class)
 public class CalzonePizza implements Meal {
-  @Override public float getPrice() {
-    return 8.5f;
-  }
+    @Override public float getPrice() {
+        return 8.5f;
+    }
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Самое интересное: процессор}
@@ -230,31 +291,31 @@ public class CalzonePizza implements Meal {
 			\begin{minted}{java}
 @AutoService(Processor.class)
 public class FactoryProcessor extends AbstractProcessor {
-  private Types typeUtils;
-  private Elements elementUtils;
-  private Filer filer;
-  private Messager messager;
-  private Map<String, FactoryGroupedClasses> factoryClasses 
-      = new LinkedHashMap<String, FactoryGroupedClasses>();
-  @Override
-  public synchronized void init(ProcessingEnvironment processingEnv) {
-    super.init(processingEnv);
-    typeUtils = processingEnv.getTypeUtils();
-    elementUtils = processingEnv.getElementUtils();
-    filer = processingEnv.getFiler();
-    messager = processingEnv.getMessager();
-  }
-  @Override
-  public Set<String> getSupportedAnnotationTypes() {
-    Set<String> annotations = new LinkedHashSet<String>();
-    annotations.add(Factory.class.getCanonicalName());
-    return annotations;
-  }
-  ...
+    private Types typeUtils;
+    private Elements elementUtils;
+    private Filer filer;
+    private Messager messager;
+    private Map<String, FactoryGroupedClasses> factoryClasses 
+        = new LinkedHashMap<String, FactoryGroupedClasses>();
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        typeUtils = processingEnv.getTypeUtils();
+        elementUtils = processingEnv.getElementUtils();
+        filer = processingEnv.getFiler();
+        messager = processingEnv.getMessager();
+    }
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        Set<String> annotations = new LinkedHashSet<String>();
+        annotations.add(Factory.class.getCanonicalName());
+        return annotations;
+    }
+    ...
 }
 			\end{minted}
 		\end{scriptsize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Элементы}
@@ -275,7 +336,7 @@ public class Foo {      // TypeElement
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Пример работы с элементами}
@@ -285,28 +346,28 @@ for (Element e : fooClass.getEnclosedElements()) {
     Element parent = e.getEnclosingElement();
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Вернёмся к процессору}
 		\begin{minted}{java}
 @AutoService(Processor.class)
 public class FactoryProcessor extends AbstractProcessor {
-  ...
-  @Override
-  public boolean process(
-      Set<? extends TypeElement> annotations, 
-      RoundEnvironment roundEnv) {
-    // Iterate over all @Factory annotated elements
-    for (Element annotatedElement 
-        : roundEnv.getElementsAnnotatedWith(Factory.class)) {
-      ...
+    ...
+    @Override
+    public boolean process(
+            Set<? extends TypeElement> annotations, 
+            RoundEnvironment roundEnv) {
+        // Iterate over all @Factory annotated elements
+        for (Element annotatedElement 
+                : roundEnv.getElementsAnnotatedWith(Factory.class)) {
+            ...
+        }
     }
-  }
- ...
+    ...
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FactoryAnnotatedClass}
@@ -319,18 +380,18 @@ public class FactoryAnnotatedClass {
     private String id;
     public FactoryAnnotatedClass(TypeElement classElement) 
             throws IllegalArgumentException {
-    this.annotatedClassElement = classElement;
-    Factory annotation = classElement.getAnnotation(Factory.class);
-    id = annotation.id(); 
-    if (StringUtils.isEmpty(id)) {
-        throw new IllegalArgumentException(
-                String.format("id() in @%s for class %s is null or empty! that's not allowed",
-                Factory.class.getSimpleName(), classElement.getQualifiedName().toString()));
-    }
-    ...
+        this.annotatedClassElement = classElement;
+        Factory annotation = classElement.getAnnotation(Factory.class);
+        id = annotation.id(); 
+        if (StringUtils.isEmpty(id)) {
+            throw new IllegalArgumentException(
+                    String.format("id() in @%s for class %s is null or empty! that's not allowed",
+                    Factory.class.getSimpleName(), classElement.getQualifiedName().toString()));
+        }
+        ...
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FactoryAnnotatedClass (2)}
@@ -353,7 +414,7 @@ public class FactoryAnnotatedClass {
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{FactoryGroupedClasses}
@@ -379,7 +440,7 @@ public class FactoryGroupedClasses {
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Вернёмся к процессору ещё раз}
@@ -392,7 +453,7 @@ public class FactoryProcessor extends AbstractProcessor {
         for (Element annotatedElement 
                 : roundEnv.getElementsAnnotatedWith(Factory.class)) {
             ...
-            TypeElement typeElement = (TypeElement) annotatedElement;
+            var typeElement = (TypeElement) annotatedElement;
             try {
                 FactoryAnnotatedClass annotatedClass =
                         new FactoryAnnotatedClass(typeElement); 
@@ -407,14 +468,14 @@ public class FactoryProcessor extends AbstractProcessor {
         }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Продолжим}
 		\begin{footnotesize}
 			\begin{minted}{java}
 try {
-    FactoryAnnotatedClass annotatedClass = new FactoryAnnotatedClass(typeElement);
+    var annotatedClass = new FactoryAnnotatedClass(typeElement);
     if (!isValidClass(annotatedClass)) {
         return true; // Error message printed, exit processing
     }
@@ -434,7 +495,7 @@ try {
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{И генерация кода}
@@ -453,9 +514,9 @@ public boolean process(Set<? extends TypeElement> annotations,
     }
     return true;
 }
-		\end{minted}
-	\end{footnotesize}
-\end{frame}
+			\end{minted}
+		\end{footnotesize}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Собственно, генерация}
@@ -472,7 +533,7 @@ public class FactoryGroupedClasses {
         String factoryClassName = superClassName.getSimpleName() + SUFFIX;
         JavaFileObject jfo = filer.createSourceFile(qualifiedClassName + SUFFIX);
         Writer writer = jfo.openWriter();
-        JavaWriter jw = new JavaWriter(writer);
+        var jw = new JavaWriter(writer);
         PackageElement pkg = elementUtils.getPackageOf(superClassName);
         if (!pkg.isUnnamed()) {
             jw.emitPackage(pkg.getQualifiedName().toString());
@@ -482,7 +543,7 @@ public class FactoryGroupedClasses {
         }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{Собственно, генерация (2)}
@@ -510,7 +571,7 @@ public class FactoryGroupedClasses {
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Полезные ссылки}
@@ -579,7 +640,7 @@ protected void setName(final String name) {
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{@ToString}
@@ -608,7 +669,7 @@ public class Foo extends Bar {
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{@EqualsAndHashCode}
@@ -629,7 +690,7 @@ public class Person extends SentientBeing {
 }
 			\end{minted}
 		\end{footnotesize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{@Data}
@@ -641,7 +702,7 @@ public class Company {
     private List<Person> employees;
 }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{@Synchronized}
@@ -666,7 +727,7 @@ public String synchronizedFormat(Date date) {
 }
 			\end{minted}
 		\end{small}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{@Builder}
@@ -677,7 +738,7 @@ public String synchronizedFormat(Date date) {
         private final String bar;
  }
 		\end{minted}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{@Builder, эквивалентный код}
@@ -716,7 +777,7 @@ public String synchronizedFormat(Date date) {
  } 
 			\end{minted}
 		\end{tiny}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}[fragile]
 		\frametitle{@val}
@@ -729,6 +790,6 @@ val y = new ArrayList<String>();
 			\item Выводит тип из выражения инициализации
 			\item Делает переменную \mintinline{java}|final|
 		\end{itemize}
-\end{frame}
+	\end{frame}
 
 \end{document}

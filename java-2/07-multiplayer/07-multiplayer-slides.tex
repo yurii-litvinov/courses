@@ -1,0 +1,35 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\title{Практика, сетевая пушка}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{29.05.2019г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задача на пару}
+		Переделать задачу про пушку из д/з 2 так, чтобы можно было играть по сети:
+		\begin{itemize}
+			\item должно быть можно запустить два приложения (возможно, на разных компьютерах) и подключить их друг к другу
+			\begin{itemize}
+				\item одно запускается в режиме сервера и ждёт подключения
+				\item одно запускается в режиме клиента и подключается на указанный адрес и порт
+			\end{itemize}
+			\item пушки в реальном времени движутся и стреляют друг в друга
+			\item когда одна из пушек уничтожена, обоим игрокам выводится сообщение о победе/поражении и игра начинается снова
+		\end{itemize}
+	\end{frame}
+
+\end{document}

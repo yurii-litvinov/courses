@@ -9,10 +9,10 @@
 \setmainfont{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
-\title{Практика, неблокирующий сервер}
+\title{Практика, MyFTP}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{06.04.2017г}
+\date{22.05.2019г}
 
 \begin{document}
 	
@@ -37,8 +37,8 @@ public @NotNull byte[] hash(@NotNull Path path) throws
     }
 
     try (InputStream rawStream = Files.newInputStream(path)) {
-        DigestInputStream stream = new DigestInputStream(rawStream, md);
-        byte[] buffer = new byte[BUFFER_SIZE];
+        var stream = new DigestInputStream(rawStream, md);
+        var buffer = new byte[BUFFER_SIZE];
         while (stream.read(buffer) != -1)
         {
         }
@@ -58,7 +58,7 @@ if (Files.isDirectory(path)) {
     md.update(path.getFileName().toString().getBytes());
     List<ForkJoinHasher> subTasks = new LinkedList<>();
     for (Path subPath : Files.walk(path).filter(Files::isRegularFile).collect(Collectors.toList())) {
-        ForkJoinHasher task = new ForkJoinHasher(subPath);
+        var task = new ForkJoinHasher(subPath);
         task.fork();
         subTasks.add(task);
     }
@@ -68,8 +68,8 @@ if (Files.isDirectory(path)) {
     return md.digest();
 } else {
     try (InputStream rawStream = Files.newInputStream(path)) {
-        DigestInputStream stream = new DigestInputStream(rawStream, md);
-        byte[] buffer = new byte[BUFFER_SIZE];
+        var stream = new DigestInputStream(rawStream, md);
+        var buffer = new byte[BUFFER_SIZE];
         while (stream.read(buffer) != -1)
         {
         }
@@ -78,7 +78,7 @@ if (Files.isDirectory(path)) {
 }
 			\end{minted}
 		\end{scriptsize}
-\end{frame}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Частые проблемы}
@@ -102,10 +102,10 @@ if (Files.isDirectory(path)) {
 		\end{itemize}
 	\end{frame}
 
-	\section{Домашка}
+	\section{Задача на пару}
 
 	\begin{frame}
-		\frametitle{Домашка, Simple FTP}
+		\frametitle{Задача на пару, Simple FTP}
 		Требуется реализовать сервер, обрабатывающий два запроса.
 		\begin{itemize}
 			\item \textbf{list} --- листинг файлов в директории на сервере
@@ -129,7 +129,7 @@ if (Files.isDirectory(path)) {
 			\item name --- название файла или папки
 			\item is\_dir --- флаг, принимающий значение True для директорий
 		\end{itemize}
-		Если директории не существует, сервер посылает ответ с size = 0
+		Если директории не существует, сервер посылает ответ с size = -1
 	\end{frame}
 
 	\begin{frame}
@@ -144,7 +144,7 @@ if (Files.isDirectory(path)) {
 			\item size --- размер файла
 			\item content --- его содержимое
 		\end{itemize}
-		Если файла не существует, сервер посылает ответ с size = 0
+		Если файла не существует, сервер посылает ответ с size = -1
 	\end{frame}
 
 	\begin{frame}
@@ -157,20 +157,6 @@ if (Files.isDirectory(path)) {
 				\item Server: start/stop
 				\item Client: connect/disconnect/executeList/executeGet
 			\end{itemize}
-		\end{itemize}
-		Срок: \textbf{26.04.2017 23:59}.
-	\end{frame}
-
-	\section{Задача на пару}
-
-	\begin{frame}
-		\frametitle{Задача на пару, Non-blocking server}
-		\begin{itemize}
-			\item Сервер сразу начинает отдавать клиенту содержимое одного файла, после чего разрывает соединение
-			\item Содержимое файла можно перед началом работы прочитать в память
-			\item Работа с клиентскими сокетами и открытие новых должно происходить в неблокирующем режиме
-			\item Сервер должен работать в одном потоке 
-			\item Рекомендуется для клиентских сокетов включать TCP\_NODELAY
 		\end{itemize}
 	\end{frame}
 
