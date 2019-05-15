@@ -61,6 +61,20 @@ class Giraffe {
 	\end{frame}
 
 	\begin{frame}[fragile]
+		\frametitle{Значения по умолчанию}
+		\begin{minted}{java}
+@interface ClassPreamble {
+    String author();
+    String date();
+    int currentRevision() default 1;
+    String lastModified() default "N/A";
+    String lastModifiedBy() default "N/A";
+    String[] reviewers();
+}
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
 		\frametitle{Работа с аннотациями в рантайме}
 		\begin{minted}{java}
 @PermissionRequired(User.Permission.USER_MANAGEMENT)
@@ -138,7 +152,7 @@ public class MyProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(
-        Set<? extends TypeElement> annoations, 
+        Set<? extends TypeElement> annotations, 
         RoundEnvironment env) { }
 }
 			\end{minted}
