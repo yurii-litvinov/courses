@@ -56,7 +56,7 @@ public @NotNull byte[] hash(@NotNull Path path) throws
 MessageDigest md = MessageDigest.getInstance("MD5");
 if (Files.isDirectory(path)) {
     md.update(path.getFileName().toString().getBytes());
-    List<ForkJoinHasher> subTasks = new LinkedList<>();
+    var subTasks = new LinkedList<ForkJoinHasher>();
     for (Path subPath : Files.walk(path, 1).filter(Files::isRegularFile).collect(Collectors.toList())) {
         var task = new ForkJoinHasher(subPath);
         task.fork();
@@ -83,26 +83,22 @@ if (Files.isDirectory(path)) {
 	\begin{frame}
 		\frametitle{Частые проблемы}
 		\begin{itemize}
-			\item listFiles и Files.walk не обещают возвращать файлы в каком-то конкретном порядке
-			\item Излишнее доверие пользователю в main-е
+			\item listFiles и Files.walk не гарантируют определённого порядка элементов
 			\begin{itemize}
-				\item Что параметр вообще есть, проверили, но что он ровно один --- нет
-				\item System.in для ввода --- не очень 
+				\item Надо было сначала отсортировать
 			\end{itemize}
-			
-			
-			\item Невнимательное чтение условия
-			\item Недостаток тестов
-			\item Суровый копипаст в тестах
-			\item Конечно же, комментарии
-			\item Нетехнологичность
+			\item Не было проверок, что параметр ровно один
 			\begin{itemize}
-				\item Отсутствие аннотаций \mintinline{java}|@NotNull/@Nullable|
-				\item try-with-resources
-				\item assertArrayEquals
+				\item Надо, чтобы программа не только не падала, но и была удобной
 				\begin{itemize}
-					\item Hamcrest?
+					\item Error reporting!
 				\end{itemize}
+				\item Читать параметры из stdin тут вообще не очень
+			\end{itemize}
+			\item Недостаток тестов
+			\item NoSuchAlgorithmException можно было ловить только в main 
+			\begin{itemize}
+				\item Или не ловить вовсе
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
@@ -162,6 +158,8 @@ if (Files.isDirectory(path)) {
 				\item Server: start/stop
 				\item Client: connect/disconnect/executeList/executeGet
 			\end{itemize}
+			\item Рекомендуется включать setTcpNoDelay(true) для клиентских сокетов
+			\item Надо использовать неблокирующие сокеты
 		\end{itemize}
 	\end{frame}
 
