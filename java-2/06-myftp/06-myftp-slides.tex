@@ -30,7 +30,7 @@ public @NotNull byte[] hash(@NotNull Path path) throws
     MessageDigest md = MessageDigest.getInstance("MD5");
     if (Files.isDirectory(path)) {
         md.update(path.getFileName().toString().getBytes());
-        for (Path subPath : Files.walk(path).filter(Files::isRegularFile).collect(Collectors.toList())) {
+        for (Path subPath : Files.walk(path, 1).filter(Files::isRegularFile).collect(Collectors.toList())) {
             md.update(hash(subPath));
         }
         return md.digest();
@@ -57,7 +57,7 @@ MessageDigest md = MessageDigest.getInstance("MD5");
 if (Files.isDirectory(path)) {
     md.update(path.getFileName().toString().getBytes());
     List<ForkJoinHasher> subTasks = new LinkedList<>();
-    for (Path subPath : Files.walk(path).filter(Files::isRegularFile).collect(Collectors.toList())) {
+    for (Path subPath : Files.walk(path, 1).filter(Files::isRegularFile).collect(Collectors.toList())) {
         var task = new ForkJoinHasher(subPath);
         task.fork();
         subTasks.add(task);
@@ -83,21 +83,26 @@ if (Files.isDirectory(path)) {
 	\begin{frame}
 		\frametitle{Частые проблемы}
 		\begin{itemize}
+			\item listFiles и Files.walk не обещают возвращать файлы в каком-то конкретном порядке
+			\item Излишнее доверие пользователю в main-е
+			\begin{itemize}
+				\item Что параметр вообще есть, проверили, но что он ровно один --- нет
+				\item System.in для ввода --- не очень 
+			\end{itemize}
+			
+			
 			\item Невнимательное чтение условия
 			\item Недостаток тестов
 			\item Суровый копипаст в тестах
 			\item Конечно же, комментарии
-			\item Излишнее доверие пользователю в main-е
 			\item Нетехнологичность
 			\begin{itemize}
 				\item Отсутствие аннотаций \mintinline{java}|@NotNull/@Nullable|
-				\item \mintinline{java}|@Rule TemporaryFolder|
 				\item try-with-resources
 				\item assertArrayEquals
 				\begin{itemize}
-					\item Hamcrest? Только одно решение, seriously?
+					\item Hamcrest?
 				\end{itemize}
-				\item \textbf{Tools are everything!}
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
