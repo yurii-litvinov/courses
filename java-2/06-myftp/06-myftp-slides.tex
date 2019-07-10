@@ -30,7 +30,7 @@ public @NotNull byte[] hash(@NotNull Path path) throws
     MessageDigest md = MessageDigest.getInstance("MD5");
     if (Files.isDirectory(path)) {
         md.update(path.getFileName().toString().getBytes());
-        for (Path subPath : Files.walk(path).filter(Files::isRegularFile).collect(Collectors.toList())) {
+        for (Path subPath : Files.walk(path, 1).filter(Files::isRegularFile).collect(Collectors.toList())) {
             md.update(hash(subPath));
         }
         return md.digest();
@@ -57,7 +57,7 @@ MessageDigest md = MessageDigest.getInstance("MD5");
 if (Files.isDirectory(path)) {
     md.update(path.getFileName().toString().getBytes());
     var subTasks = new LinkedList<ForkJoinHasher>();
-    for (Path subPath : Files.walk(path).filter(Files::isRegularFile).collect(Collectors.toList())) {
+    for (Path subPath : Files.walk(path, 1).filter(Files::isRegularFile).collect(Collectors.toList())) {
         var task = new ForkJoinHasher(subPath);
         task.fork();
         subTasks.add(task);
