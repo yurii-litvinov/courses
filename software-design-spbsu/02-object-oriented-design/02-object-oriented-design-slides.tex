@@ -177,6 +177,29 @@
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{Наследование и композиция}
+		\begin{itemize}
+			\item \textbf{Наследование}
+			\begin{itemize}
+				\item Отношение ``Является'' (is-a)
+				\item Способ абстрагирования и классификации
+				\item Средство обеспечения полиморфизма
+			\end{itemize}
+			\item \textbf{Композиция}
+			\begin{itemize}
+				\item Отношение ``Имеет'' (has-a)
+				\item Способ создания динамических связей
+				\item Средство обеспечения делегирования
+			\end{itemize}
+			\item Более-менее взаимозаменяемы
+			\begin{itemize}
+				\item Объект-потомок на самом деле включает в себя объект-предок
+				\item Композиция обычно предпочтительнее
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Определение объектов реального мира}
 		\framesubtitle{Объектная модель предметной области}
 		\begin{itemize}
@@ -238,29 +261,6 @@
 		\end{itemize}
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{Наследование и композиция}
-		\begin{itemize}
-			\item \textbf{Наследование}
-			\begin{itemize}
-				\item Отношение ``Является'' (is-a)
-				\item Способ абстрагирования и классификации
-				\item Средство обеспечения полиморфизма
-			\end{itemize}
-			\item \textbf{Композиция}
-			\begin{itemize}
-				\item Отношение ``Имеет'' (has-a)
-				\item Способ создания динамических связей
-				\item Средство обеспечения делегирования
-			\end{itemize}
-			\item Более-менее взаимозаменяемы
-			\begin{itemize}
-				\item Объект-потомок на самом деле включает в себя объект-предок
-				\item Композиция обычно предпочтительнее
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
 	\section{Принципы SOLID}
 	
 	\begin{frame}
@@ -278,7 +278,7 @@
 		\frametitle{Single responsibility principle}
 		\begin{itemize}
 			\item Каждый объект должен иметь одну обязанность
-			\item Эта обязанность должна быть полностью инкапсулирована в класс
+			\item Эта обязанность должна быть полностью инкапсулирована в объект
 		\end{itemize}
 		\begin{flushright}
 			\includegraphics[width=0.25\textwidth]{singleResponsibility.png}
@@ -570,6 +570,7 @@ class Operation {
     {
         switch (sign) {
             case '+': return left + right;
+            case '-': return left - right;
         }
         throw new RuntimeException();
     }
@@ -592,6 +593,12 @@ abstract class Operation {
 class Plus extends Operation {
     @Override public int eval() { 
         return getLeft() + getRight(); 
+    }
+}
+
+class Minus extends Operation {
+    @Override public int eval() { 
+        return getLeft() - getRight(); 
     }
 }
 					\end{minted}
