@@ -23,7 +23,7 @@
 
 \title{Введение, многопоточное программирование}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{07.09.2018г}
+\date{06.09.2019г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -59,21 +59,19 @@
 		\begin{itemize}
 			\item Домашка
 			\item Две контрольные
-			\item Доклады (-1 домашка)
-			\item Семестровая работа
+			\item Доклады (-1 домашка) (если успеем)
+			\item Учебная практика
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Семестровая работа}
+		\frametitle{Учебная практика}
 		\begin{itemize}
-			\item Мини-курсовая
-			\begin{itemize}
-				\item Программная реализация достаточно большой и полезной задачи
-				\item Пишется весь семестр
-				\item В конце --- защита с презентацией
-				\item Может быть групповой
-			\end{itemize}
+			\item Отдельный зачёт
+			\item Программная реализация достаточно большой и полезной задачи
+			\item Пишется весь семестр
+			\item В конце --- защита с презентацией
+			\item Может быть групповой
 			\item Где брать темы
 			\begin{itemize}
 				\item Продолжать начатое в летней школе
@@ -228,7 +226,7 @@
 	\begin{frame}
 		\frametitle{Поток в Windows}
 		\begin{itemize}
-			\item Thread Kernel Object (~1240 байт)
+			\item Thread Kernel Object (\textasciitilde1240 байт)
 			\item Thread environment block (TEB) (4 Кб)
 			\item User-mode stack (1 Мб)
 			\item Kernel-mode stack (24 Кб)
@@ -237,7 +235,7 @@
 		Ещё для каждой dll-ки, загруженной для процесса при старте или остановке потока, вызывается DllMain с параметрами DLL\_THREAD\_ATTACH и DLL\_THREAD\_DETACH
 
 		\vspace{3mm}
-		Квант времени --- ~20-30 мс, после чего происходит \textit{переключение контекстов}
+		Квант времени --- \textasciitilde20-30 мс, после чего происходит \textit{переключение контекстов}
 	\end{frame}
 
 	\begin{frame}
