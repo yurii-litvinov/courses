@@ -16,15 +16,15 @@
 
 \setbeamertemplate{blocks}[rounded][shadow=false]
 
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
 \tabulinesep=1.2mm
 
 \title{Программная инженерия, практика}
 \subtitle{Занятие 1: Введение}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{04.09.2018}
+\date{04.09.2019}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -56,22 +56,27 @@
 				\item Для этого их придётся придумать
 			\end{itemize}
 			\item Часть заданий будет прямо на паре, часть --- дома
+			\item Telegram-группа курса: \url{https://t.me/joinchat/EptgDVdWyEpVlrBlncTVew}
+			\item Все материалы курса и задания: \url{http://hwproj.me/courses/45}
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Организационное}
-		Оценка на 50\% состоит из оценки на экзамене, на 50\% --- из ``накопительной'' оценки за практику:
+		Оценка:
+		\begin{itemize}
+			\item 50\% --- оценка за экзамен
+			\item 40\% --- оценка за коллковиум
+			\item 10\% --- оценка за практику (catch в том, что надо сдать всё)
+		\end{itemize}
+		Практика:
 		\begin{itemize}
 			\item Домашние работы
-			\begin{itemize}
-				\item Дедлайны обычно по одной неделе, решения после дедлайна принимаются за 1/2 баллов
-			\end{itemize}
-			\item Домашние работы групповые
+			\item Проекты групповые
 			\begin{itemize}
 				\item Поэтому первая задача --- разбиться на команды
 			\end{itemize}
-			\item Надо прочитать одну из книг по управлению проектами и написать двухстраничный отзыв к концу семестра
+			\item Надо прочитать одну из книг по управлению проектами и написать двухстраничный отзыв к концу курса
 		\end{itemize}
 	\end{frame}
 
@@ -111,8 +116,7 @@
 				\item Техническое задание
 				\item План тестирования
 				\item Багтрекинг
-				\item CRM
-				\item Continious Delivery
+				\item CRM (если успеем)
 			\end{itemize}
 		\end{footnotesize}
 	\end{frame}
@@ -241,7 +245,7 @@
 				\begin{itemize}
 					\item ​Когда вызываются статические конструкторы классов в C\#?
 					\item Каким образом можно перехватить добавление и удаление делегата из события?
-					\item Попросить интуитивно объяснить принцип работы git
+					\item Попросить объяснить принцип работы git
 				\end{itemize}
 				\item \textbf{Прошлый опыт} --- спросить, в каких проектах он до этого участвовал, в чём заключалась его конкретная задача
 				\item ...
@@ -254,15 +258,16 @@
 	\begin{frame}
 		\frametitle{Домашнее задание}
 		\begin{itemize}
-			\item Разделиться на команды по 3-4 человека
+			\item Разделиться на команды по 3 человека
 			\item Придумать проект, для которого будете писать документацию
 			\begin{itemize}
 				\item Это может быть ваша НИР, ваша прошлая НИР или вообще выдуманный с нуля проект
 				\item Он должен быть достаточно содержателен, хотя бы на пару человеколет работы
 				\item Реализовывать его будет не нужно
+				\item Самые подходящие проекты будут предложены как учебные практики студентам СПбГУ
 			\end{itemize}
 			\item Подготовить презентацию на 10 минут с представлением идеи проекта
-			\item Дедлайн --- уже \textbf{6 сентября}!
+			\item Дедлайн --- \textbf{11 сентября}
 		\end{itemize}
 	\end{frame}
 
