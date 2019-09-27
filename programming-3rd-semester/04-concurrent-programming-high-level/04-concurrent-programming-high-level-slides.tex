@@ -522,17 +522,13 @@ void RotateMatrices(IEnumerable<Matrix> matrices, float degrees,
 			\begin{minted}{csharp}
 int InvertMatrices(IEnumerable<Matrix> matrices)
 {
-    object mutex = new object();
     int nonInvertibleCount = 0;
     Parallel.ForEach(matrices, matrix =>
     {
         if (matrix.IsInvertible) {
             matrix.Invert();
         } else {
-            // Не лучший способ увеличить счётчик, но как умею :(
-            lock (mutex) {
-                ++nonInvertibleCount;
-            }
+            Interlocked.Increment(ref nonInvertibleCount);
         }
     });
     return nonInvertibleCount;
@@ -640,7 +636,6 @@ Action action = () => {
     int localSum = 0;
     while (cq.TryDequeue(out int localValue)) 
         localSum += localValue;
-    // Более правильный способ прибавлять, о котором потом
     Interlocked.Add(ref outerSum, localSum);
 };
 
