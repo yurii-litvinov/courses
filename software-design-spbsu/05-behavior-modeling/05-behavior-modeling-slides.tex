@@ -18,7 +18,7 @@
 
 \title[Моделирование поведения]{Лекция 5: Моделирование поведения}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{12.03.2019г}
+\date{04.10.2019г}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -75,10 +75,6 @@
 						\item внутренний переход
 					\end{itemize}
 					\item Событие
-					\item Переход
-					\begin{itemize}
-						\item имя события (список параметров) [сторожевое условие] выражение действия
-					\end{itemize}
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.5\textwidth}
@@ -88,6 +84,12 @@
 				\end{center}
 			\end{column}
 		\end{columns}
+		\begin{itemize}
+			\item Переход
+			\begin{itemize}
+				\item \mintinline{text}|[<trigger> [',' <trigger>]* ['[' <guard>']'] ['/' <behavior-expression>]]|
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
