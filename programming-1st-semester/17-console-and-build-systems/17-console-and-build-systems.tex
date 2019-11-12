@@ -30,7 +30,7 @@
 \title{Консоль и системы сборки}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{16.11.2018}
+\date{12.11.2019}
 
 \begin{document}
 	
@@ -156,6 +156,23 @@ done
 			\end{itemize}
 			\item chmod +x ./test.sh
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Код возврата}
+		\framesubtitle{cmd}
+		\begin{itemize}
+			\item Можно проверить тот самый return -1 из main-а и в зависимости от него сделать или не сделать что-нибудь
+		\end{itemize}
+		\begin{minted}{text}
+test.exe
+
+if not errorlevel 0 (
+     echo Everything is bad
+) else (
+     echo Everything is good
+)
+		\end{minted}
 	\end{frame}
 
 	\begin{frame}
@@ -359,7 +376,7 @@ lynx -dump $<   >   $@
 				\item Qt-specific
 			\end{itemize}
 		\end{itemize}
-		Написание скриптов сборки для большого проекта – отдельная и трудоёмкая задача
+		Написание скриптов сборки для большого проекта – отдельная и довольно трудоёмкая задача
 	\end{frame}
 
 	\begin{frame}
@@ -373,7 +390,7 @@ lynx -dump $<   >   $@
 			\item \url{https://travis-ci.org/} --- пример бесплатной для open source-проектов облачной CI-системы
 			\begin{itemize}
 				\item Интегрируется с GitHub-ом
-				\item Собирает на чистой виртуальной машине под Ubuntu 12.04 (или Ubuntu 14.04) или OS X
+				\item Собирает на чистой виртуальной машине под Ubuntu 18.04 (или более старыми версиями) или macOS 10.14 или Windows Server 1803
 				\item Окружение и правила сборки настраиваются конфигурационным файлом, который должен лежать в корне репозитория
 			\end{itemize}
 		\end{itemize}
