@@ -33,33 +33,33 @@
 
 	\frame{\titlepage}
 
-	\section{Доклады}
+	% \section{Доклады}
 
-	\begin{frame}
-		\frametitle{Доклады}
-		\begin{itemize}
-			\item unsafe, fixed, P/Invoke
-			\begin{itemize}
-				\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/unsafe}
-				\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/unsafe-code-pointers/index}
-				\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/fixed-statement}
-				\item \url{https://docs.microsoft.com/ru-ru/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke}
-			\end{itemize}
-			\item Интернирование строк
-			\begin{itemize}
-				\item \url{https://habr.com/post/224281/}
-			\end{itemize}
-			\item Rx.NET
-			\begin{itemize}
-				\item \url{https://habr.com/post/242613/}, \url{http://introtorx.com/}
-			\end{itemize}
-			\item TPL.Dataflow
-			\begin{itemize}
-				\item \url{https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library}
-				\item \url{https://habr.com/post/138531/}
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+	% \begin{frame}
+	% 	\frametitle{Доклады}
+	% 	\begin{itemize}
+	% 		\item unsafe, fixed, P/Invoke
+	% 		\begin{itemize}
+	% 			\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/unsafe}
+	% 			\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/unsafe-code-pointers/index}
+	% 			\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/fixed-statement}
+	% 			\item \url{https://docs.microsoft.com/ru-ru/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke}
+	% 		\end{itemize}
+	% 		\item Интернирование строк
+	% 		\begin{itemize}
+	% 			\item \url{https://habr.com/post/224281/}
+	% 		\end{itemize}
+	% 		\item Rx.NET
+	% 		\begin{itemize}
+	% 			\item \url{https://habr.com/post/242613/}, \url{http://introtorx.com/}
+	% 		\end{itemize}
+	% 		\item TPL.Dataflow
+	% 		\begin{itemize}
+	% 			\item \url{https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library}
+	% 			\item \url{https://habr.com/post/138531/}
+	% 		\end{itemize}
+	% 	\end{itemize}
+	% \end{frame}
 
 	\section{Введение}
 
@@ -111,7 +111,7 @@
 			\item Технология для разработки веб-приложений --- ASP.NET MVC
 			\begin{itemize}
 				\item ASP.NET MVC 5
-				\item ASP.NET MVC Core 2.0
+				\item ASP.NET MVC Core 3.0
 			\end{itemize}
 			\item Технология для разработки веб-сервисов --- WCF
 			\item Работа с базами данных --- MS SQL Server (SQL Server Express)
@@ -517,6 +517,8 @@ namespace RazorPagesIntro.Pages
 		\attribution{MSDN}
 	\end{frame}
 
+	\section{Routing}
+
 	\begin{frame}
 		\frametitle{Routing}
 		\framesubtitle{Или как ASP.NET находит по запросу страницу}
@@ -541,6 +543,8 @@ namespace RazorPagesIntro.Pages
 			\attribution{MSDN}
 		\end{center}
 	\end{frame}
+
+	\section{Model binding}
 
 	\begin{frame}[fragile]
 		\frametitle{Model binding}
@@ -654,7 +658,7 @@ public class Participant
 
 <html>
 <body>
-    <h1>SEIM-2019</h1>
+    <h1>SEIM-2020</h1>
     <p>Coolest conference ever</p>
     <p>Please register:</p>
     <a asp-page="Register">Register</a>
