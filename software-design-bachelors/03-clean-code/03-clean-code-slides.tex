@@ -25,7 +25,7 @@
 \title{Объектно-ориентированное проектирование}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{30.01.2019г}
+\date{29.01.2020г}
 
 \begin{document}
 
@@ -129,7 +129,7 @@ public interface Point {
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Дихотомия данных и объектов}
+		\frametitle{Структуры против объектов}
 		\begin{itemize}
 			\item Объекты скрывают свои данные за абстракциями и предоставляют функции для работы с ними
 			\item Структуры раскрывают данные и не имеют осмысленных функций
@@ -181,6 +181,7 @@ public class EmployeeRoster {
 				\item Может потребоваться разделить класс на несколько разных классов просто потому, что методы по смыслу слабо связаны
 			\end{itemize}
 			\item По возможности делайте некорректные состояния невыразимыми в системе типов
+			\item Пользуйтесь семантикой языка
 			\begin{itemize}
 				\item Комментарии в духе ``не пользуйтесь объектом, не вызвав  init()'' можно заменить конструктором
 			\end{itemize}
@@ -263,11 +264,11 @@ public:
 private:
     EmployeeImplementation *mImpl;
 };
-				\end{minted}
-			\end{footnotesize}
-		\end{column}
-	\end{columns}
-\end{frame}
+					\end{minted}
+				\end{footnotesize}
+			\end{column}
+		\end{columns}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Ещё рекомендации}
@@ -310,6 +311,9 @@ private:
 				\item Наследование --- это наследование интерфейса (полиморфизм подтипов, subtyping)
 			\end{itemize}
 			\item Хороший тон --- явно запрещать наследование (final- или sealed-классы)
+			\begin{itemize}
+				\item Хотя спорно, есть и другая школа мысли
+			\end{itemize}
 			\item Не вводите новых методов с такими же именами, как у родителя
 			\item Code smells:
 			\begin{itemize}
@@ -611,7 +615,6 @@ public class Main {
 			\item Проанализировать запрос \url{https://goo.gl/MiyH8c}
 			\item Нарисовать IDEF0- и BPMN-диаграммы бизнес-процесса завода
 			\item Нарисовать диаграмму случаев использования создаваемого приложения
-			\item Дедлайн --- 10:00 13.02.2019
 		\end{itemize}
 	\end{frame}
 

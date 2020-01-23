@@ -1,0 +1,133 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Занятие 4: Scrum}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{25.09.2019}
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\; #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{SCRUM, инструменты}
+
+	\begin{frame}
+		\begin{center}
+			\includegraphics[width=\textwidth]{scrum.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Pivotal Tracker}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{pivotalTracker.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{GitHub Projects}
+		\begin{center}
+			\includegraphics[width=\textwidth]{githubProjects.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Trello}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{trello.png}
+		\end{center}
+	\end{frame}
+
+	\section{Домашнее задание}
+	
+	\begin{frame}
+		\frametitle{Домашнее задание}
+		\framesubtitle{Устав проекта}
+		Написать документ примерно на пару страниц текста, содержащий:
+		\begin{itemize}
+			\item Цель проекта (измеримая, конкретная, достижимая, ограниченная по времени)
+			\item Ключевые требования
+			\item Команду проекта
+			\begin{itemize}
+				\item Product Owner, Scrum Master
+			\end{itemize}
+			\item Временные рамки
+			\item Бюджет проекта (условный)
+			\item Основные информационные ресурсы проекта
+			\begin{itemize}
+				\item Проект на Pivotal Tracker
+				\item Проект на GitHub
+				\item GoogleDocs-папка?
+			\end{itemize}
+		\end{itemize}
+		Выложить это всё на вики на гитхабе
+	\end{frame}
+
+	\section{Задание на пару}
+
+	\begin{frame}
+		\frametitle{Задание на пару}
+		\begin{itemize}
+			\item Организоваться в Scrum-команду
+			\item Завести проект на Pivotal Tracker
+			\item Завести репозиторий воображаемого проекта на гитхабе
+			\item Создать бэклог в Pivotal Tracker, занести туда задачи проекта
+			\begin{itemize}
+				\item Детально на ближайшую пару недель
+				\item Более грубо дальше
+			\end{itemize}
+			\item Выполнить оценку
+			\begin{itemize}
+				\item Planning poker!
+			\end{itemize}
+			\item Запланировать первую итерацию
+			\item Занести задачи первой итерации на доску в GitHub Projects
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{При этом}
+		\begin{itemize}
+			\item Используйте классификацию задач:
+			\begin{itemize}
+				\item Feature --- задача, нужная пользователю
+				\item Shore --- не имеет самостоятельной ценности, но нужна для поддержки разработки
+				\item Release --- запланирвоанные промежуточные релизы
+			\end{itemize}
+			\item Все Feature-задачи должны быть описаны в формате User Story
+			\begin{itemize}
+				\item Я как <роль> хочу <функциональность>, чтобы <зачем она мне>
+			\end{itemize}
+			\item Избегайте водопадного подхода
+			\begin{itemize}
+				\item Задачи должны выстраиваться в последовательность итераций с рабочим продуктом в конце каждой
+			\end{itemize}
+			\item Возможно запланировать нулевой спринт, но тогда надо расписать и первый
+		\end{itemize}
+	\end{frame}
+
+\end{document}

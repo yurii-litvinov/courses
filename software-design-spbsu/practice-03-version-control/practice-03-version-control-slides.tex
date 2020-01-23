@@ -1,0 +1,71 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Необязательная практика 3: Проектирование системы контроля версий}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{01.11.2019г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задача, система контроля версий}
+		Требуется спроектировать систему контроля версий, представляющую из себя консольное приложение и умеющую:
+		\begin{itemize}
+			\item commit с commit message (сообщение обязательно и принимается как параметр, система должна сама добавлять ещё дату коммита и автора)
+			\item работу с ветками: создание и удаление
+			\item checkout по имени ревизии или ветки
+			\item log --- список ревизий вместе с commit message в текущей ветке
+			\item merge --- сливает указанную ветку с текущей
+			\begin{itemize}
+				\item Разрешение конфликтов
+			\end{itemize}
+			\item Работа с удалёнными репозиториями: clone, fetch/pull, push
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Нефункциональные требования}
+		\begin{itemize}
+			\item Вывод в консоль --- только в клиентском коде типа main(), основной код должен позволять себя использовать как библиотеку
+			\item Развитый программный интерфейс, должно быть можно без проблем потом прикрутить GUI
+			\item Сопровождаемость и расширяемость
+			\item Безопасность при работе с удалёнными репозиториями
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что надо сделать за пару}
+		\begin{itemize}
+			\item Диаграмму компонент + диаграмму классов
+			\begin{itemize}
+				\item Возможно, на одной диаграмме сразу
+				\item Возможно наоборот, по одной диаграмме для каждого компонента
+			\end{itemize}
+			\item Другие диаграммы для пояснения важных моментов (жизненный цикл файла, сценарии работы, ...)
+			\item Успеть показать на проекторе и обсудить пару решений
+			\item Нельзя подсматривать в Git Book
+		\end{itemize}
+	\end{frame}
+
+\end{document}

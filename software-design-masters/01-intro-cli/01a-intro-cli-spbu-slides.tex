@@ -1,0 +1,90 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\title{Практика 1: Введение, задача про CLI}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{18.10.2019г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}
+		\frametitle{Задача про CLI}
+		Реализовать простой интерпретатор командной строки, поддерживающий команды:
+		\begin{itemize}
+			\item \textbf{cat [FILE]} --- вывести на экран содержимое файла
+			\item \textbf{echo} --- вывести на экран свой аргумент (или аргументы)
+			\item \textbf{wc [FILE]} --- вывести количество строк, слов и байт в файле
+			\item \textbf{pwd} --- распечатать текущую директорию
+			\item \textbf{exit} --- выйти из интерпретатора
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Задача про CLI (продолжение)}
+		\begin{itemize}
+			\item Должны поддерживаться одинарные и двойные кавычки (full and weak quoting)
+			\item Окружение (команды вида ``имя=значение''), оператор \$
+			\item Вызов внешней программы через Process (или его аналоги)
+			\begin{itemize}
+				\item если введено что-то, чего интерпретатор не знает
+			\end{itemize}
+			\item Пайплайны (оператор ``|'')
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Примеры}
+\begin{minted}{sh}
+>echo "Hello, world!"
+Hello, world!
+> FILE=example.txt
+> cat $FILE
+Some example text
+> cat example.txt | wc
+1 3 18
+> echo 123 | wc
+1 1 3
+> x=exit
+> $x
+\end{minted}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{Нефункциональные требования}
+		\begin{itemize}
+			\item Легко добавлять новые команды (расширяемость)
+			\item Наличие возможности реализовать что-то новое из того, что умеют другие шеллы (сопровождаемость)
+			\item Архитектурное описание, как умеете (сопровождаемость)
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Что делать}
+		Первые фазы жизненного цикла
+		\begin{itemize}
+			\item Выполнить анализ и определить подходы к решению
+			\item Выявить подводные камни и способы их преодоления
+			\item Декомпозировать задачу на подсистемы, классы и методы
+			\item Нарисовать диаграмму классов
+			\item Словами описать принцип работы и основные принятые решения
+		\end{itemize}
+	\end{frame}
+
+\end{document}

@@ -1,0 +1,54 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage[11pt]{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\title{Распределённые приложения, RabbitMQ}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{13.12.2019г}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{RabbitMQ}
+
+	\begin{frame}
+		\frametitle{Задача на пару}
+		Переделать сетевой чат на RabbitMQ
+		\begin{itemize}
+			\item Консольное приложение
+			\item Сервер для обмена сообщениями, о котором договариваются клиенты
+			\begin{itemize}
+				\item Центральный сервер, задаваемый при запуске (127.0.0.1 по умолчанию)
+			\end{itemize}
+			\item При запуске указываем имя пользователя и канал
+			\begin{itemize}
+				\item Подписка на несуществующий канал должна его создавать
+			\end{itemize}
+			\item Нет истории, получать только те сообщения, что были опубликованы с момента подключения
+			\begin{itemize}
+				\item Может помочь \url{https://www.rabbitmq.com/tutorials/tutorial-three-python.html}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+\end{document}

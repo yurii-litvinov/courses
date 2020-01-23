@@ -1,0 +1,77 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\tabulinesep=1.2mm
+
+\title{Занятие 3: экстремальное программирование}
+\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
+\date{18.09.2019}
+
+\newcommand{\todo}[1] {
+	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\newcommand{\DownArrow} {
+	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
+}
+
+\newcommand{\attribution}[1] {
+	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\; #1}\end{scriptsize}\end{flushright}
+}
+
+\begin{document}
+
+	\frame{\titlepage}
+
+	\section{Задача}
+
+	\begin{frame}
+		\frametitle{Задача}
+		С использованием методов XP разработать приложение с GUI для игры в блэкджек:
+		\begin{itemize}
+			\item Цель игры --- набрать большую сумму очков, чем у сдающего, но не больше 21
+			\begin{itemize}
+				\item Карты от двойки до десятки дают 2 -- 10 очков соответственно
+				\item Карты с картинками дают 10 очков
+				\item Туз даёт 11 или 1 очко
+			\end{itemize}
+			\item Партия начинается с того, что каждому игроку сдаётся по 2 карты
+			\item На каждом ходу игрок может взять ещё одну карту или пасовать
+			\item Если у кого-то больше 21, он проиграл
+			\item Если в результате у игроков равное количество очков, ничья
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Что делать}
+		\begin{itemize}
+			\item Разбиться на команды примерно по 4 человека
+			\item Завести репозиторий, наладить CI
+			\item Описать несколько user stories, выполнить оценку, спланировать ближайший релиз
+			\item Реализовать проект на любимом языке программирования
+			\begin{itemize}
+				\item TDD
+				\item Парное программирование
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+\end{document}

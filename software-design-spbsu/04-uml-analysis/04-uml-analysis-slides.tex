@@ -21,7 +21,7 @@
 
 \title[Моделирование и анализ]{Лекция 4: Моделирование и анализ}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{12.03.2019г}
+\date{27.09.2019г}
 
 \newcommand{\todo}[1] {
 	\begin{center}\textcolor{red}{TODO: #1}\end{center}
@@ -79,6 +79,7 @@
 				\item Visio
 				\item Dia
 				\item SmartDraw
+				\item LucidChart
 				\item Creately
 			\end{itemize}
 			\item Полноценные CASE-системы
@@ -166,7 +167,7 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Случай использования, типичная структура}
+		\frametitle{Сценарий использования, типичная структура}
 		\begin{itemize}
 			\item Заголовок (цель основного актора)
 			\item Заинтересованые лица, акторы, основной актор
@@ -223,7 +224,7 @@
 	\begin{frame}
 		\frametitle{Диаграмма характеристик, пример}
 		\begin{center}
-			\includegraphics[width=0.9\textwidth]{featureDiagramExample.png}
+			\includegraphics[width=0.8\textwidth]{featureDiagramExample.png}
 			\attribution{D. Brugali}
 		\end{center}
 	\end{frame}
@@ -246,21 +247,6 @@
 			\includegraphics[width=0.6\textwidth]{sysMlRequirementDiagram.png}
 			\attribution{OMG SysML 1.4 Specification}
 		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Какие отношения бывают}
-		\begin{small}
-			\begin{tabu} {X[0.9 r m] X[0.2 l p] X[1 l p]}
-				Contains   & & \includegraphics[width=0.2\textwidth]{sysMlContains.png} \\
-				Derive     & & \includegraphics[width=0.25\textwidth]{sysMlDerive.png}  \\
-				Refine     & & \includegraphics[width=0.25\textwidth]{sysMlRefine.png}  \\
-				Satisfy    & & \includegraphics[width=0.25\textwidth]{sysMlSatisfy.png} \\
-				Verify     & & \includegraphics[width=0.25\textwidth]{sysMlVerify.png}  \\
-				Trace      & & \includegraphics[width=0.25\textwidth]{sysMlTrace.png}   \\
-				Copy       & & \includegraphics[width=0.25\textwidth]{sysMlCopy.png}    \\
-			\end{tabu}
-		\end{small}
 	\end{frame}
 
 	\begin{frame}
@@ -374,17 +360,25 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Диаграмма хореографии}
+		\frametitle{События}
 		\begin{center}
-			\includegraphics[width=0.9\textwidth]{bpmnChoreography.png}
-			\attribution{OMG BPMN 2.0 Specification}
+			\includegraphics[height=0.8\textheight]{bpmnEvents.png}
+			\attribution{\url{https://ru.wikipedia.org/wiki/BPMN}}
 		\end{center}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Диаграмма оркестрации}
+		\frametitle{Операторы ветвления}
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{bpmnOrchestration.png}
+			\includegraphics[width=0.5\textwidth]{bpmnGateways.png}
+			\attribution{\url{https://ru.wikipedia.org/wiki/BPMN}}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграмма хореографии}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{bpmnChoreography.png}
 			\attribution{OMG BPMN 2.0 Specification}
 		\end{center}
 	\end{frame}
