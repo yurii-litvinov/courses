@@ -1,0 +1,43 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Практика 7: Поведенческие шаблоны и Roguelike}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{21.04.2020г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задачи на остаток пары}
+		Уточнить модель компьютерной игры Roguelike:
+
+		\begin{enumerate}
+			\item Используя шаблон ``Команда'' для поддержки взаимодействия с пользователем
+			\item Собрать воедино все модификации и выложить итоговую архитектуру в виде набора диаграмм компонент и классов
+		\end{enumerate}
+
+		Выложить всё на HwProj
+	\end{frame}
+
+\end{document}
