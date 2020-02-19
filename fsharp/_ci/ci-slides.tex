@@ -1,0 +1,187 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.8mm
+
+\title{Продвинутый CI}
+\author{Юрий Литвинов}
+\date{21.02.2020г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Непрерывная интеграция, для тех, кто всё пропустил}
+		Зачем?
+		\begin{itemize}
+			\item Чтобы собиралось и работало не только у вас на компе
+			\item Чтобы было эталонное окружение и эталонный процесс сборки, который можно повторить кому угодно
+			\item Чтобы узнавать об ошибках сразу после коммита
+		\end{itemize}
+		Как?
+		\begin{itemize}
+			\item Облачные CI-системы: AppVeyor, Travis, CircleCI, ...
+			\item Локальные CI-системы: Jenkins, TeamCity, TFS, ...
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Более подробно, как}
+		\framesubtitle{AppVeyor}
+		\begin{itemize}
+			\item Логинимся на \url{https://www.appveyor.com/} по своему аккаунту на GitHub
+			\item Добавляем свой репозиторий через New Project -> GitHub -> Add
+			\item Добавляем в рабочую копию (прямо у себя на компе) appveyor.yml
+			\begin{itemize}
+				\item Файл должен называться именно так, вплоть до регистра букв
+				\item Обычно его кладут в мастер, потом вмердживают в каждую ветку с домашкой
+			\end{itemize}
+			\item Пишем туда описание процесса сборки
+			\item Коммитим-пушим
+			\item Наслаждаемся билдом
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Что писать}
+		\framesubtitle{AppVeyor, .NET Core}
+		\url{https://www.appveyor.com/docs/appveyor-yml/}
+		\begin{minted}{yaml}
+image: Visual Studio 2017 
+
+before_build: 
+    - nuget restore myCoolHomework/Homework.sln
+
+build: 
+    project: myCoolHomework/Homework.sln
+
+test_script: 
+    - dotnet test myCoolHomework/Homework.sln
+		\end{minted}
+		Отступы и минусы критически важны.
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{При этом}
+		\begin{itemize}
+			\item Нужно добавить Reference на
+			\begin{itemize}
+				\item Microsoft.NET.Test.Sdk
+				\item NUnit3TestAdapter
+				\item NUnit
+				\item FsUnit
+			\end{itemize}
+			\item Или другие библиотеки, которыми пользуетесь, но не забыть SDK и раннер.
+			\item Как вообще создать проект:
+			\begin{itemize}
+				\item \url{https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-fsharp-with-nunit}
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Что писать}
+		\framesubtitle{AppVeyor, .NET Framework}
+		\begin{minted}{yaml}
+image: Visual Studio 2017 
+
+before_build: 
+    - nuget restore myCoolHomework/Homework.sln
+
+build: 
+    project: myCoolHomework/Homework.sln
+
+test_script: 
+    - nunit3-console myCoolHomework/Homework.sln \ 
+        --result=myresults.xml;format=AppVeyor
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Что писать}
+		\framesubtitle{Travis, .NET Core}
+		\begin{minted}{yaml}
+language: csharp
+
+mono: none
+dotnet: 2.1
+
+before_build: 
+    - nuget restore myCoolHomework/Homework.sln
+
+build: 
+    - dotnet build myCoolHomework/Homework.sln
+
+test_script: 
+    - dotnet test myCoolHomework/Homework.sln
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Что писать}
+		\framesubtitle{Travis, .NET Framework}
+		\begin{small}
+			\begin{minted}{yaml}
+language: csharp
+
+install:
+  - nuget restore myCoolHomework/Homework.sln
+  - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
+
+script:
+  - msbuild /p:Configuration=Release myCoolHomework/Homework.sln
+  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe \
+        .myCoolHomework/Homework.sln
+			\end{minted}
+		\end{small}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{А как же другие домашки?}
+		\framesubtitle{AppVeyor, .NET Core}
+		\begin{minted}{yaml}
+image: Visual Studio 2017 
+
+environment:
+    matrix:
+        - SOLUTION: myCoolHomework/Homework1.sln
+        - SOLUTION: myCoolHomework2/Homework2.sln
+
+before_build: 
+    - nuget restore %SOLUTION%
+
+build: 
+    project: %SOLUTION%
+
+test_script: 
+    - dotnet test %SOLUTION%
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Автоматизация}
+		\framesubtitle{AppVeyor, .NET Core}
+		\begin{minted}{yaml}
+image: Visual Studio 2017 
+
+build_script: 
+    - For /R %%I in (*.sln) do dotnet test %%I
+
+test: off
+		\end{minted}
+	\end{frame}
+
+\end{document}
