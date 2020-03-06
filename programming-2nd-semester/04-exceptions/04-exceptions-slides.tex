@@ -311,9 +311,10 @@ catch (OutOfMemoryException e)
 
 	\begin{frame}[fragile]
 		\frametitle{Исключения и тесты}
-		\begin{minted}{csharp}
+		\begin{footnotesize}
+			\begin{minted}{csharp}
 [TestMethod]
-[ExpectedException(typeof(System.DivideByZeroException))]
+[ExpectedException(typeof(DivideByZeroException))]
 public void DivideTest()
 {
     var target = new DivisionClass();
@@ -321,7 +322,21 @@ public void DivideTest()
     int denominator = 0;
     int actual = target.Divide(numerator, denominator);
 }
-		\end{minted}
+			\end{minted}
+		\end{footnotesize}
+		или (более правильно)
+		\begin{footnotesize}
+			\begin{minted}{csharp}
+[TestMethod]
+public void DivideTest()
+{
+    var target = new DivisionClass();
+    int numerator = 4;
+    int denominator = 0;
+    Assert.Throws<DivideByZeroException>(target.Divide(numerator, denominator);
+}
+			\end{minted}
+		\end{footnotesize}
 	\end{frame}
 
 	\begin{frame}
