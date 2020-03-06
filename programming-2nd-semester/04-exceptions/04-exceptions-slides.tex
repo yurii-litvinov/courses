@@ -33,6 +33,32 @@
 	
 	\frame{\titlepage}
 
+	\section{Data-driven testing}
+
+	\begin{frame}[fragile]
+		\frametitle{TestCaseData (NUnit)}
+		\begin{minted}{csharp}
+public class StackTest
+{
+    [TestCaseSource(nameof(Stacks))]
+    public void StackShouldNotEmptyAfterPush(IStack stack)
+    {
+        stack.Push(1);
+        Assert.IsFalse(stack.IsEmpty());
+    }
+
+    private static IEnumerable<TestCaseData> Stacks
+        => new TestCaseData[]
+        {
+            new TestCaseData(new ArrayStack()),
+            new TestCaseData(new ListStack()),
+        };
+}
+		\end{minted}
+	\end{frame}
+
+	\section{Исключения}
+
 	\begin{frame}[fragile]
 		\frametitle{Бросание исключений}
 		\begin{minted}{csharp}
@@ -74,12 +100,13 @@ try {
 
 	\begin{frame}[fragile]
 		\frametitle{Пример}
-		\begin{minted}{csharp}
-private void ReadData(String pathname) 
+		\begin{small}
+			\begin{minted}{csharp}
+private void ReadData(String pathName) 
 {
     FileStream fs = null;
     try {
-        fs = new FileStream(pathname, FileMode.Open);
+        fs = new FileStream(pathName, FileMode.Open);
         // Делать что-то полезное
     }
     catch (IOException) {
@@ -87,10 +114,14 @@ private void ReadData(String pathname)
     }
     finally {
         // Закрыть файл надо в любом случае
-        if (fs != null) fs.Close();
+        if (fs != null) 
+        {
+            fs.Close();
+        }
     }
 }
-		\end{minted}
+			\end{minted}
+		\end{small}
 	\end{frame}
 
 	\begin{frame}[fragile]
@@ -285,7 +316,7 @@ catch (OutOfMemoryException e)
 [ExpectedException(typeof(System.DivideByZeroException))]
 public void DivideTest()
 {
-    DivisionClass target = new DivisionClass();
+    var target = new DivisionClass();
     int numerator = 4;
     int denominator = 0;
     int actual = target.Divide(numerator, denominator);
@@ -327,9 +358,9 @@ public void DivideTest()
 public static class Program {
     public static void Main() {
         // Create the bytes to write to the temporary file.
-        Byte[] bytesToWrite = new Byte[] { 1, 2, 3, 4, 5 };
+        var bytesToWrite = new Byte[] { 1, 2, 3, 4, 5 };
         // Create the temporary file.
-        using (FileStream fs = new FileStream("Temp.dat", FileMode.Create)) {
+        using (var fs = new FileStream("Temp.dat", FileMode.Create)) {
             // Write the bytes to the temporary file.
             fs.Write(bytesToWrite, 0, bytesToWrite.Length);
         }
@@ -340,6 +371,8 @@ public static class Program {
 			\end{minted}
 		\end{small}
 	\end{frame}
+
+	\section{Особенности современного C\#}
 
 	\begin{frame}[fragile]
 		\frametitle{Особенности современного C\#}
@@ -458,10 +491,10 @@ private Dictionary<int, string> webErrors = new Dictionary<int, string>
 PrintOrderDetails(productName: "Red Mug", 31, "Gift Shop");
 
 public void ExampleMethod(int required, 
-    string optionalstr = "default string",
-    int optionalint = 10)
+    string optionalStr = "default string",
+    int optionalInt = 10)
 
-anExample.ExampleMethod(3, optionalint: 4);
+anExample.ExampleMethod(3, optionalInt: 4);
 		\end{minted}
 	\end{frame}
 
@@ -584,6 +617,28 @@ static void WriteLinesToFile(IEnumerable<string> lines)
 // file is disposed here
 }
 		\end{minted}
+	\end{frame}
+
+		\begin{frame}[fragile]
+		\frametitle{Nullable reference-типы (C\# 8)}
+		\begin{itemize}
+			\item \mintinline{csharp}|string? name;| --- переменная может быть \mintinline{csharp}|null|
+			\item \mintinline{csharp}|string name;| --- переменная не может быть \mintinline{csharp}|null|
+			\begin{itemize}
+				\item Попытки присвоить \mintinline{csharp}|null| или что-то, что может быть \mintinline{csharp}|null|, вызовут предупреждения компилятора
+			\end{itemize}
+			\item \mintinline{csharp}|name!.Length| --- null-forgiving operator
+			\item Как включить: 
+				\begin{minted}{xml}
+<PropertyGroup>
+    <Nullable>enable</Nullable>
+</PropertyGroup>
+				\end{minted}
+				в проектный файл
+			\item Управляется директивами \mintinline{csharp}|#nullable disable| и \mintinline{csharp}|#nullable enable|
+			\item Подробности: \url{https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references}
+			\item Более-менее обязательно к применению
+		\end{itemize}
 	\end{frame}
 
 \end{document}
