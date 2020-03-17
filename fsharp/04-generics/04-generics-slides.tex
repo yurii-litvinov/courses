@@ -1,0 +1,586 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
+
+\title{Генерики в F\#}
+\author{Юрий Литвинов}
+\date{06.03.2020г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\section{Шаблонные типы}
+	
+	\begin{frame}[fragile]
+		\frametitle{Шаблонные типы}
+		\begin{minted}{fsharp}
+type 'a list = ...
+type list<'a> = ...
+		\end{minted}
+
+		\begin{minted}{fsharp}
+List.map : ('a -> 'b) -> 'a list -> 'b list
+let map<'a,'b> : ('a -> 'b) -> 'a list -> 'b list = 
+    List.map
+
+let rec map (f : 'a -> 'b) (l : 'a list) =
+    match l with
+    | h :: t -> (f h) :: (map f t)
+    | [] -> []
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Автоматическое обобщение}
+		\begin{minted}{fsharp}
+let getFirst (a, b, c) = a
+let mapPair f g (x, y) = (f x, g y)
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val getFirst: 'a * 'b * 'c -> 'a
+val mapPair : ('a -> 'b) -> ('c -> 'd) 
+    -> ('a * 'c) -> ('b * 'd)
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+	
+	\section{Встроенные шаблонные операции}
+
+	\begin{frame}[fragile]
+		\frametitle{Generic-сравнение}
+		\begin{minted}{fsharp}
+val compare : 'a -> 'a -> int
+val (=) : 'a -> 'a -> bool
+val (<) : 'a -> 'a -> bool
+val (<=) : 'a -> 'a -> bool
+val (>) : 'a -> 'a -> bool
+val (>=) : 'a -> 'a -> bool
+val (min) : 'a -> 'a -> 'a
+val (max) : 'a -> 'a -> 'a
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сравнение сложных типов}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> ("abc", "def") < ("abc", "xyz");;
+val it : bool = true
+> compare (10, 30) (10, 20);;
+val it : int = 1
+
+> compare [10; 30] [10; 20];;
+val it : int = 1
+> compare [| 10; 30 |] [| 10; 20 |];;
+val it : int = 1
+> compare [| 10; 20 |] [| 10; 30 |];;
+val it : int = -1
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Generic-печать}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> any_to_string (Some(100, [1.0; 2.0; 3.1415]));;
+val it : string = "Some (100, [1.0; 2.0; 3.1415])"
+
+> sprintf "result = %A" ([1], [true]);;
+val it : string = "result = ([1], [true])"
+val it : int = -1
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Boxing/unboxing}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> box 1;;
+val it : obj = 1
+
+> box "abc";;
+val it : obj = "abc"
+
+> let sobj = box "abc";;
+val sobj : obj = "abc"
+
+> (unbox<string> sobj);;
+val it : string = "abc"
+
+> (unbox sobj : string);;
+val it : string = "abc"
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сериализация}
+		\begin{minted}{fsharp}
+open System.IO
+open System.Runtime.Serialization.Formatters.Binary
+
+let writeValue outputStream (x: 'a) =
+    let formatter = new BinaryFormatter()
+    formatter.Serialize(outputStream, box x)
+
+let readValue inputStream =
+    let formatter = new BinaryFormatter()
+    let res = formatter.Deserialize(inputStream)
+    unbox res
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Сериализация, пример использования}
+		\begin{minted}{fsharp}
+let addresses = Map.ofList [ 
+    "Jeff", "123 Main Street, Redmond, WA 98052";
+    "Fred", "987 Pine Road, Phila., PA 19116";
+    "Mary", "PO Box 112233, Palo Alto, CA 94301" ]
+
+let fsOut = new FileStream("Data.dat", FileMode.Create)
+writeValue fsOut addresses
+fsOut.Close()
+
+let fsIn = new FileStream("Data.dat", FileMode.Open)
+let res : Map<string,string> = readValue fsIn
+fsIn.Close()
+		\end{minted}
+	\end{frame}
+
+	\section{Обобщение кода}
+
+	\begin{frame}[fragile]
+		\frametitle{Алгоритм Евклида, не генерик}
+		\begin{minted}{fsharp}
+let rec hcf a b =
+    if a = 0 then b
+    elif a < b then hcf a (b - a)
+    else hcf (a - b) b
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val hcf : int -> int -> int
+
+> hcf 18 12;;
+val it : int = 6
+
+> hcf 33 24;;
+val it : int = 3
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Алгоритм Евклида, генерик}
+		\begin{minted}{fsharp}
+let hcfGeneric (zero, sub, lessThan) =
+    let rec hcf a b =
+        if a = zero then b
+        elif lessThan a b then hcf a (sub b a)
+        else hcf (sub a b) b
+    hcf    
+    
+let hcfInt = hcfGeneric (0, (-), (<))
+let hcfInt64 = hcfGeneric (0L, (-), (<))
+let hcfBigInt = hcfGeneric (0I, (-), (<))
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val hcfGeneric: 'a * ('a -> 'a -> 'a) * ('a -> 'a -> bool) 
+    -> ('a -> 'a -> 'a)
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Словари операций}
+		\begin{minted}{fsharp}
+type Numeric<'a> =
+    { Zero: 'a;
+      Subtract: ('a -> 'a -> 'a);
+      LessThan: ('a -> 'a -> bool); }
+
+let hcfGeneric (ops : Numeric<'a>) =
+    let rec hcf a b =
+        if a = ops.Zero then b
+        elif ops.LessThan a b then hcf a 
+            (ops.Subtract b a)
+        else hcf (ops.Subtract a b) b
+    hcf
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Тип функции}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val hcfGeneric : Numeric<'a> -> ('a -> 'a -> 'a)
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Примеры использования}
+		\begin{minted}{fsharp}
+let intOps = { Zero = 0; 
+    Subtract = (-); 
+    LessThan = (<) }
+    
+let bigintOps = { Zero = 0I; 
+    Subtract = (-); 
+    LessThan = (<) }
+
+let hcfInt = hcfGeneric intOps
+let hcfBigInt = hcfGeneric bigintOps
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Результат}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val hcfInt : (int -> int -> int)
+val hcfBigInt : (bigint -> bigint -> bigint)
+
+> hcfInt 18 12;;
+val it : int = 6
+
+> hcfBigInt 1810287116162232383039576I 
+    1239028178293092830480239032I;;
+val it : bigint = 33224I
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\section{Наследование и генерики}
+	
+	\begin{frame}[fragile]
+		\frametitle{Повышающий каст}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> let xobj = (1 :> obj);;
+val xobj : obj = 1
+
+> let sobj = ("abc" :> obj);;
+val sobj : obj = "abc"
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Понижающий каст}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> let boxedObject = box "abc";;
+val boxedObject : obj
+
+> let downcastString = (boxedObject :?> string);;
+val downcastString : string = "abc"
+
+> let xobj = box 1;;
+val xobj : obj = 1
+
+> let x = (xobj :?> string);;
+error: InvalidCastException raised at or near stdin:(2,0)
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Каст и сопоставление шаблонов}
+		\begin{minted}{fsharp}
+let checkObject (x: obj) =
+    match x with
+    | :? string -> printfn "The object is a string"
+    | :? int -> printfn "The object is an integer"
+    | _ -> printfn "The input is something else"
+
+let reportObject (x: obj) =
+    match x with
+    | :? string as s -> 
+        printfn "The input is the string '%s'" s
+    | :? int as d -> 
+        printfn "The input is the integer '%d'" d
+    | _ -> printfn "the input is something else"
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Гибкие ограничения}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> open System.Windows.Forms
+> let setTextOfControl (c : #Control) (s:string) = 
+    c.Text <- s;;
+val setTextOfControl: #Control -> string -> unit
+
+> open System.Windows.Forms;;
+> let setTextOfControl (c : 'a when 'a :> Control) 
+    (s:string) = c.Text <- s;;
+val setTextOfControl: #Control -> string -> unit
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Гибкие ограничения: пример}
+		\begin{minted}{fsharp}
+module Seq =
+...
+val append : #seq<'a> -> #seq<'a> -> seq<'a>
+val concat : #seq<#seq<'a>> -> seq<'a>
+...
+
+Seq.append [1; 2; 3] [4; 5; 6]
+Seq.append [| 1; 2; 3 |] [4; 5; 6]
+Seq.append (seq { for x in 1 .. 3 -> x }) [4; 5; 6]
+Seq.append [| 1; 2; 3 |] [| 4; 5; 6 |]
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Повышающий каст: проблема}
+		\begin{minted}{fsharp}
+open System
+open System.IO
+let textReader =
+    if DateTime.Today.DayOfWeek = DayOfWeek.Monday
+    then Console.In
+    else File.OpenText("input.txt")
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+else File.OpenText("input.txt")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+error: FS0001: This expression has type StreamReader 
+but is here used with type TextReader 
+stopped due to error
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Повышающий каст: решение}
+		\begin{minted}{fsharp}
+let textReader =
+    if DateTime.Today.DayOfWeek = DayOfWeek.Monday
+    then Console.In
+    else (File.OpenText("input.txt") :> TextReader)
+		\end{minted}
+	\end{frame}
+
+	\section{Отладка типов}
+
+	\begin{frame}[fragile]
+		\frametitle{Проблемы в выводе типов, методы и свойства}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+> let transformData inp =
+    inp |> Seq.map (fun (x, y) -> (x, y.Length));;
+
+inp |> Seq.map (fun (x, y) -> (x, y.Length))
+-----------------------------------------^^^^^^^^
+stdin(11,36): error: Lookup on object of indeterminate 
+type. A type annotation may be needed prior to this 
+program point to constrain the type of the object. 
+This may allow the lookup to be resolved.
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Решение}
+		\begin{minted}{fsharp}
+let transformData inp =
+    inp |> Seq.map (fun (x, y:string) -> (x, y.Length))
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Уменьшение общности}
+		\begin{minted}{fsharp}
+let printSecondElements (inp : #seq<'a * int>) =
+    inp
+    |> Seq.iter (fun (x, y) -> printfn "y = %d" x)
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+|> Seq.iter (fun (x, y) -> printfn "y = %d" x)
+----------------------------------------^^^^^^^^^
+stdin(21,38): warning: FS0064: This construct causes 
+code to be less generic than indicated by the type 
+annotations. The type variable 'a has been 
+constrained to the type 'int'.
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Уменьшение общности, отладка}
+		\begin{minted}{fsharp}
+type PingPong = Ping | Pong
+
+let printSecondElements (inp : #seq<PingPong * int>) =
+    inp |> Seq.iter (fun (x, y) -> printfn "y = %d" x)
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+|> Seq.iter (fun (x,y) -> printfn "y = %d" x)
+---------------------------------------------------^
+stdin(27,47): error: FS0001: The type 'PingPong' is not 
+compatible with any of the types byte, int16, int32, 
+int64, sbyte, uint16, uint32, uint64, nativeint, 
+unativeint, arising from the use of a printf-style 
+format string
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Value Restriction}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{text}
+> let empties = Array.create 100 [];;
+------^^^^^^^^
+error: FS0030: Value restriction. Type inference 
+has inferred the signature 
+val empties : '_a list []
+but its definition is not a simple data constant. 
+Either define 'empties' as a simple data expression, 
+make it a function, or add a type constraint 
+to instantiate the type parameters.
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Корректные определения}
+		\begin{minted}{fsharp}
+let emptyList = []
+let initialLists = ([], [2])
+let listOfEmptyLists = [[]; []]
+let makeArray () = Array.create 100 []
+		\end{minted}
+		
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val emptyList : 'a list
+val initialLists : ('a list * int list)
+val listOfEmptyLists : 'a list list
+val makeArray : unit -> 'a list []
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Способы борьбы}
+		\begin{minted}{fsharp}
+let empties : int list [] = Array.create 100 []
+
+
+let mapFirst = List.map fst
+('a * 'b) list -> 'a list
+
+let mapFirst inp = List.map fst inp
+let printFstElements = List.map fst
+    >> List.iter (printf "res = %d")
+
+let printFstElements inp = inp
+    |> List.map fst
+    |> List.iter (printf "res = %d")
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Способы борьбы (2)}
+		\begin{minted}{fsharp}
+let empties () = Array.create 100 []
+let intEmpties : int list [] = empties ()
+let stringEmpties : string list [] = empties ()
+
+let emptyLists = Seq.init 100 (fun _ -> [])
+let emptyLists<'a> : seq<'a list> = Seq.init 
+    100 (fun _ -> [])
+		\end{minted}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Способы борьбы, результат}
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+> Seq.length emptyLists;;
+val it : int = 100
+
+> emptyLists<int>;;
+val it : seq<int list> = seq [[]; []; []; []; ...]
+
+> emptyLists<string>;;
+val it : seq<string list> = seq [[]; []; []; []; ...]
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+	\section{Point-free}
+	
+	\begin{frame}[fragile]
+		\frametitle{Point-free}
+		\begin{minted}{fsharp}
+let fstGt0 xs = List.filter (fun (a, b) -> a > 0) xs
+
+let fstGt0'1 : (int * int) list -> (int * int) list = 
+    List.filter (fun (a, b) -> a > 0)
+
+let fstGt0'2 : (int * int) list -> (int * int) list = 
+    List.filter (fun x -> fst x > 0)
+
+let fstGt0'3 : (int * int) list -> (int * int) list = 
+    List.filter (fun x -> ((<=) 0 << fst) x)
+
+let fstGt0'4 : (int * int) list -> (int * int) list = 
+    List.filter ((<=) 0 << fst)
+		\end{minted}
+	\end{frame}
+
+	\section{Арифметические операторы}
+
+	\begin{frame}[fragile]
+		\frametitle{Арифметические операторы}
+		\begin{minted}{fsharp}
+let twice x = (x + x)
+let threeTimes x = (x + x + x)
+let sixTimesInt64 (x:int64) = threeTimes x + threeTimes x
+		\end{minted}
+
+		\begin{alertblock}{F\# Interactive}
+			\begin{minted}{fsharp}
+val twice : x:int -> int
+val threeTimes : x:int64 -> int64
+val sixTimesInt64 : x:int64 -> int64
+			\end{minted}
+		\end{alertblock}
+	\end{frame}
+
+\end{document}

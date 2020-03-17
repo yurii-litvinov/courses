@@ -17,10 +17,14 @@
 
 \tabulinesep=0.7mm
 
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
 \title{Диаграммы классов UML}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{05.02.2020г}
+\date{12.02.2020г}
 
 \begin{document}
 	
@@ -36,95 +40,23 @@
 				\item Инструкция по сборке/запуску в README
 			\end{itemize}
 			\item CI под Windows и Linux
-		\end{itemize}
-	\end{frame}
-
-	\section{Domain-Driven Design: анализ}
-
-	\begin{frame}
-		\frametitle{Domain-Driven Design}
-		\textbf{Domain-Driven Design} --- модная нынче методология проектирования, использующая предметную область как основу архитектуры системы
-		\begin{itemize}
-			\item Архитектура приложения строится вокруг \textbf{Модели предметной области}
-			\item Модель определяет \textbf{Единый язык}, на котором общаются и разработчики, и эксперты, описывая естественными фразами то, что происходит и в программе, и в реальности
-			\item Модель --- это не только диаграммы, это ещё (и прежде всего) код, и устное общение
-		\end{itemize}
-		Причём тут UML --- DDD даёт ответ на вопрос ``откуда брать эти все классы'' и позволяет целенаправленно уточнять и улучшать модель. 
-		Особенно полезно, когда предметная область не очень знакома (как будет в домашке).
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Книжка}
-		Эрик Эванс, ``Предметно-ориентированное проектирование. Структуризация сложных программных систем''. М., ``Вильямс'', 2010, 448 стр.
-		\begin{center}
-			\includegraphics[width=0.25\textwidth]{dddCover.jpg}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Domain-Driven Design, анализ}
-		\framesubtitle{Пример: печатные платы}
-		\begin{center}
-			\includegraphics[width=0.6\textwidth]{netClasses.png}
-
-			\bigskip
-
-			\bigskip
-			\includegraphics[width=0.6\textwidth]{netObjects.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Печатные платы, топология}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{topology.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Печатные платы, сигналы}
-		\begin{center}
-			\includegraphics[width=0.9\textwidth]{signals.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Печатные платы, прозванивание}
-		\begin{center}
-			\includegraphics[width=\textwidth]{probeSimulation.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Печатные платы, типы}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{types.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Печатные платы, модель}
-		\begin{center}
-			\includegraphics[width=0.8\textwidth]{finalModel.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Выводы: правила игры}
-		\begin{itemize}
-			\item Детали реализации не участвуют в модели
+			\item Внимательно читайте условие!
 			\begin{itemize}
-				\item ``База данных? Какая база данных?''
+				\item Нет способа определить, вы не заметили какой-то пункт или злонамеренно решили его не делать
 			\end{itemize}
-			\item Должно быть можно общаться, пользуясь только именами классов и методов
-			\item Не нужные для текущей задачи сущности предметной области не должны быть в модели
-			\item Могут быть скрытые сущности, которые следует выделить явно
-			\begin{itemize}
-				\item при этом объяснив экспертам их роль в реальной жизни и послушав их мнение
-				\item например, различные ограничения могут стать отдельными классами
-			\end{itemize}
-			\item Диаграммы объектов могут быть очень полезны
+			\item Реализация exit
+			\item Поток ошибок
 		\end{itemize}
+	\end{frame}
+
+	\section{BPMN}
+
+	\begin{frame}
+		\frametitle{Нанорассказ про BPMN}
+		\begin{center}
+			\includegraphics[width=0.9\textwidth]{bpmnExample.png}
+			\attribution{OMG BPMN 2.0 Specification}
+		\end{center}
 	\end{frame}
 
 	\section{CASE-системы}
@@ -288,7 +220,6 @@
 
 	\begin{frame}
 		\frametitle{Домашнее задание: cd, ls}
-		\framesubtitle{Кое-что на ``покодить''}
 		\begin{itemize}
 			\item Реализовать команды \textbf{ls} и \textbf{cd} на базе кода одногруппника
 			\begin{itemize}

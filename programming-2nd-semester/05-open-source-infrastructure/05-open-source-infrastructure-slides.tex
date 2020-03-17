@@ -23,7 +23,7 @@
 \title{Экосистема open source проектов}
 \subtitle{Полезные инструменты и сервисы}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{22.03.2019г}
+\date{13.03.2020г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -34,6 +34,26 @@
 	\frame{\titlepage}
 
 	\section{CI}
+
+	\subsection{Работа с консолью}
+
+	\begin{frame}
+		\frametitle{Небольшое отступление про сборку из консоли}
+		\framesubtitle{В Windows, остальные и так умеют}
+		\begin{itemize}
+			\item Основные консольные команды: cd, dir
+			\item Переменные окружения, PATH
+			\item .NET Core
+			\item NuGet Command Line
+			\item Как сделать жизнь более удобной
+			\begin{itemize}
+				\item FAR (\url{https://www.farmanager.com/})
+				\item Chocolatey (\url{https://chocolatey.org/})
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Continuous Integration}
 
 	\begin{frame}
 		\frametitle{Continuous Integration}
@@ -70,7 +90,7 @@
 		\end{itemize}
 	\end{frame}
 
-	\section{AppVeyor}
+	\subsection{AppVeyor}
 
 	\begin{frame}
 		\frametitle{AppVeyor}
@@ -78,7 +98,8 @@
 			\item \url{https://www.appveyor.com/} --- пример бесплатной для open source-проектов облачной CI-системы
 			\item Виртуальная машина с ОС Windows и настроенными инструментами сборки .NET-приложений
 			\begin{itemize}
-				\item Windows Server 2016 + VS 2017 или Windows Server 2012 R2 + VS 2015
+				\item Windows Server 2019 + VS 2019 или более старые
+				\item Умеет Linux Ubuntu 18.04 и macOS 10.15
 			\end{itemize}
 			\item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
 			\item Собирает по умолчанию системой сборки MSBuild
@@ -96,7 +117,7 @@
 			\item Добавить проект (разрешив AppVeyor просматривать список репозиториев на гитхабе)
 			\item Положить в корень репозитория файл appveyor.yml с конфигурацией сборки
 			\begin{itemize}
-				\item Пустой тоже ок, это конфигурация по умолчанию, VS 2015 + MSBuild, ищет .sln в корне репозитория и пытается его собрать
+				\item Пустой тоже ок, это конфигурация по умолчанию, ищет .sln в корне репозитория и пытается его собрать
 			\end{itemize}
 			\item Закоммитить и запушить, это инициирует процесс сборки
 			\item Результаты будут видны прямо на гитхабе, у каждого коммита и в пуллреквесте:
@@ -110,7 +131,7 @@
 		\frametitle{AppVeyor, пример файла конфигурации}
 		\framesubtitle{AppVeyor, .NET Core}
 		\begin{minted}{yaml}
-image: Visual Studio 2017 
+image: Visual Studio 2019
 
 before_build: 
     - nuget restore myCoolHomework/Homework.sln
@@ -127,7 +148,7 @@ test_script:
 		\frametitle{Пример файла конфигурации}
 		\framesubtitle{AppVeyor, .NET Framework}
 		\begin{minted}{yaml}
-image: Visual Studio 2017 
+image: Visual Studio 2019
 
 before_build: 
     - nuget restore myCoolHomework/Homework.sln
@@ -217,32 +238,16 @@ build_script:
 		\end{minted}
 	\end{frame}
 
-	\section{Работа с консолью}
-
-	\begin{frame}
-		\frametitle{Небольшое отступление про сборку из консоли}
-		\framesubtitle{В Windows, остальные и так умеют}
-		\begin{itemize}
-			\item Developer Command Prompt
-			\item Основные консольные команды: cd, dir
-			\item Переменные окружения, PATH
-			\item msbuild
-			\item NuGet Command Line
-			\item Как сделать жизнь более удобной
-			\begin{itemize}
-				\item FAR (\url{https://www.farmanager.com/})
-				\item Chocolatey (\url{https://chocolatey.org/})
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\section{Travis}
+	\subsection{Travis}
 
 	\begin{frame}
 		\frametitle{Travis}
 		\begin{itemize}
 			\item \url{https://travis-ci.org/} --- ещё одна бесплатная для Open Source CI-система
 			\item Linux и OS X
+			\begin{itemize}
+				\item Умеет и Windows, но плохо
+			\end{itemize}
 			\item Умеет всё, что и AppVeyor
 			\item Собирать проект двумя разными CI-системами вполне ок
 			\begin{itemize}
@@ -273,7 +278,7 @@ build_script:
 language: csharp
 
 mono: none
-dotnet: 2.1
+dotnet: 3.1.101
 
 before_build: 
     - nuget restore myCoolHomework/Homework.sln

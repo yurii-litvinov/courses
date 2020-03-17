@@ -27,33 +27,11 @@
 
 \title{Модульное тестирование}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
-\date{01.03.2019г}
+\date{28.02.2020г}
 
 \begin{document}
 	
 	\frame{\titlepage}
-
-	\section{Домашка}
-
-	\begin{frame}[fragile]
-		\frametitle{Комментарии по домашке}
-		\begin{itemize}
-			\item Expression-bodied methods:
-				\begin{minted}{csharp}
-public bool IsEmpty() 
-{
-    return size == 0;
-}
-				\end{minted}
-				лучше писать как
-				\begin{minted}{csharp}
-public bool IsEmpty() 
-    => size == 0;
-				\end{minted}
-			\item Если из стека на массивах неаккуратно удалять, можно организовать утечку памяти даже в C\#
-			\item Почти все забили на тестирование, комментарии и прочие практики
-		\end{itemize}
-	\end{frame}
 
 	\section{Комментарии}
 
