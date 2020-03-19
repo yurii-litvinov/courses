@@ -60,13 +60,13 @@
 Ещё более идеологически правильным решением является паттерн <<Наблюдатель>>. Этот паттерн заключается в том, что есть наблюдаемый объект, который может производить некоторые события, и есть наблюдающие за ним объекты, которые хотят получать оповещения об этих событиях. В таком случае, наблюдающие объекты регистрируются в наблюдаемом (обычно просто заносятся в список), и когда в наблюдаемом объекте происходит какое-то событие, наблюдаемый объект бежит по списку наблюдателей, говоря каждому, что произошло событие:
 
 \begin{center}
-	\includegraphics[width=0.7\textwidth]{observerExample.png}
+    \includegraphics[width=0.7\textwidth]{observerExample.png}
 \end{center}
 
 Вот диаграмма классов, которая обобщает изложенное выше:
 
 \begin{center}
-	\includegraphics[width=0.7\textwidth]{observer.png}
+    \includegraphics[width=0.7\textwidth]{observer.png}
 \end{center}
 
 Subject --- это штука, которая может производить события (например, кнопка). У неё есть методы, позволяющие зарегистрировать наблюдателей (класс Observer), и метод notify(), который бежит по списку зарегистрированных наблюдателей и вызывает их метод, ответственный за обработку события (тут update()). При этом подробности произошедшего либо прямо передаются как параметры в этот метод, либо наблюдатель может спросить у субъекта подробности сам (как тут ConcreteObserver, наследующийся от Observer, может спросить у ConcreteSubject детали через метод getState()).
@@ -495,7 +495,11 @@ static void Main(string[] args)
 }
 \end{minted}
 
-Здесь мы описали функцию, которая принимает какие-то параметры и на их основе создаёт и возвращает нам новую функцию, которую мы потом можем использовать дальше. Впрочем, это скорее функциональное, чем событийно-ориентированное программирование, так что не совсем относится к теме, но это тот самый ещё один способ использования делегатов помимо событий --- если вам почему-то не нравится F\#, но хочется более фунционального стиля программирования. Обратите внимание на потенциальные утечки памяти, связанные с забытыми переменными из контекста, и на то, что в замыкание попадает не значение, а ссылка на переменную, что приводит к интересному способу прострелить себе ногу:
+Здесь мы описали функцию, которая принимает какие-то параметры и на их основе создаёт и возвращает нам новую функцию, которую мы потом можем использовать дальше. Впрочем, это скорее функциональное, чем событийно-ориентированное программирование, так что не совсем относится к теме, но это тот самый ещё один способ использования делегатов помимо событий --- если вам почему-то не нравится F\#, но хочется более фунционального стиля программирования. Обратите внимание на потенциальные утечки памяти, связанные с забытыми переменными из контекста.
+
+\section{Замыкания ``под капотом''}
+
+Есть некоторая тонкость, связанная с замыканиями и локальными переменными:
 
 \begin{minted}{csharp}
 delegate void F();
@@ -518,7 +522,84 @@ class Program
 }
 \end{minted}
 
-Выведется 10 раз число 10, поскольку в замыкание попадёт ссылка на локальную переменную цикла i, которая в тот момент, когда делегаты начнут вызываться, уже будет иметь значение 10. Может быть слегка не интуитивно.
+Выведется 10 раз число 10, поскольку в замыкание попадёт ссылка на локальную переменную цикла i, которая в тот момент, когда делегаты начнут вызываться, уже будет иметь значение 10. Может быть слегка не интуитивно. Тем не менее, если взять какой-нибудь декомпилятор (например, dotPeek), сказать ему показывать сгенерированный код и декомпилировать эту программу, мы увидим объяснение (тут код приводится с пропуском некоторых ненужных подробностей типа пустого конструктора):
+
+\begin{minted}{csharp}
+private static void Main(string[] args)
+{
+    F[] fArray = new F[10];
+    Program.<>c__DisplayClass0_0 cDisplayClass00 = new Program.<>c__DisplayClass0_0();
+    for (cDisplayClass00.i = 0; cDisplayClass00.i < 10; ++cDisplayClass00.i) {
+        fArray[cDisplayClass00.i] = new F((object) cDisplayClass00, __methodptr(<Main>b__0));
+    }
+    foreach (F f in fArray)
+        f();
+}
+
+[CompilerGenerated]
+private sealed class <>c__DisplayClass0_0
+{
+    public int i;
+    internal void <Main>b__0() {
+        Console.WriteLine(this.i);
+    }
+}
+\end{minted}
+
+Для замыкания сгенерировался отдельный класс с полем i, объект этого класса создаётся перед циклом, в цикле счётчиком стало это самое поле i из нового класса, так что не удивительно, что после цикла оно равно 10. Давайте немного поменяем программу:
+
+\begin{minted}{csharp}
+delegate void F();
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var delegates = new F[10];
+        for (var i = 0; i < 10; ++i)
+        {
+            var localI = i;
+            delegates[i] = delegate { Console.WriteLine(localI); };
+        }
+
+        foreach (var f in delegates)
+        {
+            f();
+        }
+    }
+}
+\end{minted}
+
+И теперь дизассемблер выдаст нам вто такое:
+
+\begin{minted}{csharp}
+private static void Main(string[] args)
+{
+    F[] fArray = new F[10];
+    for (int index = 0; index < 10; ++index)
+    {
+        Program.<>c__DisplayClass0_0 cDisplayClass00 = new Program.<>c__DisplayClass0_0();
+        cDisplayClass00.localI = index;
+        fArray[index] = new F((object) cDisplayClass00, __methodptr(<Main>b__0));
+    }
+    foreach (F f in fArray)
+        f();
+}
+
+[CompilerGenerated]
+private sealed class <>c__DisplayClass0_0
+{
+    public int localI;
+    internal void <Main>b__0()
+    {
+        Console.WriteLine(this.localI);
+    }
+}
+\end{minted}
+
+Теперь объект-замыкание создаётся внутри цикла, так что на каждой итерации значение localI, попавшее в замыкание делегата (который сгенерился как метод <Main>b\_\_0) будет своим. Программа распечатает числа от 0 до 9. 
+
+В целом, можно понимать замыкания так, что переменные попадают в замыкание по ссылке, а не по значению, и не заморачиваться тонкостями генерации кода.
 
 \section{Лямбда-выражения}
 
@@ -573,14 +654,14 @@ public event Action RightHandler = () => { };
 Итак, чтобы <<идеологически правильно>> объявить событие, надо выполнить следующие действия:
 
 \begin{enumerate}
-	\item Объявить наследник EventArgs, содержащий в себе параметры события
-		\begin{itemize}
-			\item Если параметров нет, то обработчики события всё равно должны принимать EventArgs
-			\begin{itemize}
-				\item Передавать при вызове имеет смысл EventArgs.Empty
-			\end{itemize}
-		\end{itemize}
-		\begin{minted}{csharp}
+    \item Объявить наследник EventArgs, содержащий в себе параметры события
+        \begin{itemize}
+            \item Если параметров нет, то обработчики события всё равно должны принимать EventArgs
+            \begin{itemize}
+                \item Передавать при вызове имеет смысл EventArgs.Empty
+            \end{itemize}
+        \end{itemize}
+        \begin{minted}{csharp}
 internal class NewMailEventArgs : EventArgs {
     private readonly string from;
     private readonly string to;
@@ -596,28 +677,28 @@ internal class NewMailEventArgs : EventArgs {
     public string To => to;
     public string Subject => subject;
 }
-		\end{minted}
-	\item Объявить само событие в наблюдаемом классе
-		\begin{itemize}
-			\item Инстанциация шаблона EventHandler
-			\item 
-				\begin{minted}{csharp}
+        \end{minted}
+    \item Объявить само событие в наблюдаемом классе
+        \begin{itemize}
+            \item Инстанциация шаблона EventHandler
+            \item 
+                \begin{minted}{csharp}
 public delegate void EventHandler<TEventArgs>(object sender, TEventArgs e);
-				\end{minted}
-		\end{itemize}
-		\begin{minted}{csharp}
+                \end{minted}
+        \end{itemize}
+        \begin{minted}{csharp}
 internal class MailManager 
 {
     public event EventHandler<NewMailEventArgs> NewMail;
     ...
 }
-		\end{minted}
-	\item Сделать вспомогательный метод, кидающий событие (строго говоря, не требуется стайлгайдом, но очень удобен)
-		\begin{itemize}
-			\item Сюда идёт проверка списка подписчиков на \mintinline{csharp}|null|
-			\item Вызов лучше делать потокобезопасным
-		\end{itemize}
-		\begin{minted}{csharp}
+        \end{minted}
+    \item Сделать вспомогательный метод, кидающий событие (строго говоря, не требуется стайлгайдом, но очень удобен)
+        \begin{itemize}
+            \item Сюда идёт проверка списка подписчиков на \mintinline{csharp}|null|
+            \item Вызов лучше делать потокобезопасным
+        \end{itemize}
+        \begin{minted}{csharp}
 internal class MailManager 
 {
     ...
@@ -630,13 +711,13 @@ internal class MailManager
     }
     ...
 }
-		\end{minted}
-	\item Собственно, бросить событие
-		\begin{itemize}
-			\item Создаём наследника EventArgs
-			\item Вызываем метод, отправляющий событие наблюдателям
-		\end{itemize}
-		\begin{minted}{csharp}
+        \end{minted}
+    \item Собственно, бросить событие
+        \begin{itemize}
+            \item Создаём наследника EventArgs
+            \item Вызываем метод, отправляющий событие наблюдателям
+        \end{itemize}
+        \begin{minted}{csharp}
 internal class MailManager 
 {
     public void SimulateNewMail(string from, string to, string subject) 
@@ -645,7 +726,7 @@ internal class MailManager
         OnNewMail(e);
     }
 }
-		\end{minted}
+        \end{minted}
 \end{enumerate}
 
 Теперь всё сделано <<по канону>> и событием можно воспользоваться вот так:
