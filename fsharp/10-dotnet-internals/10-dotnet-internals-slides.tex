@@ -329,6 +329,7 @@ public static class Program {
         \begin{itemize}
             \item Если выживших в поколении мало, бюджет уменьшается
             \item Сборки мусора происходят чаще, но быстрее, и надо меньше памяти
+            \item В реактивных системах часто всё Gen0 --- мусор
         \end{itemize}
     \end{frame}
 
@@ -589,6 +590,27 @@ public abstract class SafeHandle : CriticalFinalizerObject, IDisposable {
         \end{scriptsize}
     \end{frame}
 
+    \begin{frame}
+        \frametitle{Особенности}
+        \begin{itemize}
+            \item CriticalFinalizerObject
+            \begin{itemize}
+                \item Все методы Finalize в иерархии наследования компилируются в момент создания объекта
+                \item Их Finalize вызываются в последнюю очередь
+                \item Вызываются даже при аварийной выгрузке AppDomain-а
+            \end{itemize}
+            \item handle --- что-то вроде указателя на ресурс, невалиден, если равен 0 или -1
+            \begin{itemize}
+                \item SafeHandleZeroOrMinusOneIsInvalid
+            \end{itemize}
+            \item Про SafeHandle знает компилятор, поэтому:
+            \begin{itemize}
+                \item может оборачивать в него результат нативного вызова
+                \item умеет считать количество передач SafeHandle в нативный код
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
     \begin{frame}[fragile]
         \frametitle{Пример, SafeFileHandle}
         \begin{scriptsize}
@@ -662,6 +684,7 @@ public static class Program {
     \begin{frame}
         \frametitle{IDisposable, детали}
         \begin{itemize}
+            \item Если хоть одно поле IDisposable, то и весь класс должен быть IDisposable
             \item Класс, реализующий IDisposable, должен уметь бросать System.ObjectDisposedException из всех своих методов и свойств
             \item Dispose не должен бросать исключение
             \begin{itemize}
@@ -694,6 +717,21 @@ public static class Program {
         \begin{itemize}
             \item Или \mintinline{csharp}|using var| в C\# 8 или \mintinline{fsharp}|use| в F\#
         \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Очередной способ прострелить себе ногу}
+        \begin{minted}{csharp}
+FileStream fs = new FileStream("DataFile.dat", FileMode.Create);
+StreamWriter sw = new StreamWriter(fs);
+sw.Write("Hi there");
+
+// The following call to Dispose is what you should do.
+sw.Dispose();
+// NOTE: StreamWriter.Dispose closes the FileStream;
+// the FileStream doesn't have to be explicitly closed.
+        \end{minted}
+        Как реализовать финализаторы FileStream и StreamWriter, если порядок их вызова не определён?
     \end{frame}
 
     \section{Финализация изнутри}
