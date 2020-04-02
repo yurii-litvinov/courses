@@ -23,7 +23,7 @@
 \title{Правила написания хорошего кода}
 \subtitle{В ООП}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{15.05.2020г}
+\date{03.04.2020г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -32,6 +32,42 @@
 \begin{document}
 
 	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Сложность}
+		\begin{itemize}
+			\item \textbf{Существенная сложность} (essential complexity) --- сложность, присущая решаемой проблеме; ею можно управлять, но от неё нельзя избавиться
+			\item \textbf{Случайная сложность} (accidental complexity) --- сложность, привнесённая способом решения проблемы
+		\end{itemize}
+		\vskip 0.5cm
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{complexityHiding.png}
+		\end{center}
+		\attribution{G. Booch, ``Object-oriented analysis and design''}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Модульность}
+		\begin{itemize}
+			\item Разделение системы на компоненты
+			\item Потенциально позволяет создавать сколь угодно сложные системы
+			\item Строгое определение контрактов позволяет разрабатывать независимо
+			\item Необходим баланс между количеством и размером модулей
+		\end{itemize}
+		\vskip 1cm
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{modulesCost.png}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Сопряжение и связность}
+		\begin{itemize}
+			\item \textbf{Сопряжение (Coupling)} --- мера того, насколько взаимозависимы разные модули в программе
+			\item \textbf{Связность (Cohesion)} --- степень, в которой задачи, выполняемые одним модулем, связаны друг с другом
+			\item Цель: слабое сопряжение и сильная связность
+		\end{itemize}
+	\end{frame}
 
 	\begin{frame}
 		\frametitle{Объекты}
@@ -144,15 +180,6 @@
 				\item Объект-потомок на самом деле включает в себя объект-предок
 				\item Композиция обычно предпочтительнее
 			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Сопряжение и связность}
-		\begin{itemize}
-			\item \textbf{Сопряжение (Coupling)} --- мера того, насколько взаимозависимы разные модули в программе
-			\item \textbf{Связность (Cohesion)} --- степень, в которой задачи, выполняемые одним модулем, связаны друг с другом
-			\item Цель: слабое сопряжение и сильная связность
 		\end{itemize}
 	\end{frame}
 
@@ -337,6 +364,43 @@ public class EmployeeRoster {
 			\end{itemize}
 			\item При рефакторинге надо следить, чтобы интерфейсы не деградировали
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Инкапсуляция}
+		\begin{itemize}
+			\item Принцип минимизации доступности методов
+			\item Паблик-полей не бывает:
+		\end{itemize}
+		\begin{columns}
+			\begin{column}{0.25\textwidth}
+				\begin{minted}{java}
+class Point {
+    public float x;
+    public float y;
+    public float z;
+}
+				\end{minted}
+			\end{column}
+			\begin{column}{0.1\textwidth}
+				vs
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{minted}{java}
+class Point {
+    private float x;
+    private float y;
+    private float z;
+    public float getX() { ... }
+    public float getY() { ... }
+    public float getZ() { ... }
+    public void setX(float x) { ... }
+    public void setY(float y) { ... }
+    public void setZ(float z) { ... }
+}
+				\end{minted}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}
