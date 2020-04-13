@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4" Version="4.6.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Antlr4.Runtime">
+      <HintPath>..\..\..\..\..\Users\Yurii Litvinov\.nuget\packages\antlr4.runtime\4.6.6\lib\netstandard1.1\Antlr4.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
