@@ -21,7 +21,7 @@
 
 \title[Структурные шаблоны]{Лекция 6: Структурные шаблоны}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{07.04.2020г}
+\date{14.04.2020г}
 
 \newcommand{\attribution}[1] {
 	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -73,59 +73,7 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{Начнём с примера}
-		\framesubtitle{Текстовый редактор}
-		WYSIWYG-редактор, основные вопросы:
-		\begin{itemize}
-			\item Структура документа
-			\item Форматирование
-			\item Создание привлекательного интерфейса пользователя
-			\item Поддержка стандартов внешнего облика программы
-			\item Операции пользователя, undo/redo
-			\item Проверка правописания и расстановка переносов
-		\end{itemize}
-	\end{frame}
-
 	\section{Паттерн ``Компоновщик''}
-
-	\begin{frame}
-		\frametitle{Структура документа}
-		\begin{itemize}
-			\item Документ --- множество графических элементов
-			\begin{itemize}
-				\item Организация в физическую структуру
-				\item Средства UI для манипулирования структурой
-			\end{itemize}
-			\item Требования к внутреннему представлению
-			\begin{itemize}
-				\item Отслеживание внутренней структуры документа
-				\item Генерирование визуального представления
-				\item Отображение позиций экрана на внутреннее представление
-			\end{itemize}
-			\item Ограничения
-			\begin{itemize}
-				\item Текст и графика едины
-				\item Простой и составной элементы едины
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Рекурсивная композиция}
-		\begin{center}
-			\includegraphics[width=0.9\textwidth]{recursiveComposition.png}
-			\attribution{Э. Гамма и др., Приемы объектно-ориентированного проектирования}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Диаграмма классов: глифы}
-		\begin{center}
-			\includegraphics[width=0.6\textwidth]{glyphs.png}
-			\attribution{Э. Гамма и др., Приемы объектно-ориентированного проектирования}
-		\end{center}
-	\end{frame}
 
 	\begin{frame}
 		\frametitle{Паттерн ``Компоновщик''}
@@ -184,12 +132,6 @@
 		\frametitle{``Компоновщик'', детали реализации (2)}
 		\begin{itemize}
 			\item Операция getComposite() – более аккуратный аналог cast-а
-			\item Где определять список потомков
-			\begin{itemize}
-				\item В Composite, экономия памяти
-				\item В Component, единообразие операций
-				\item ``Список'' вполне может быть хеш-таблицей, деревом или чем угодно
-			\end{itemize}
 			\item Порядок потомков может быть важен, может нет
 			\item Кеширование информации для обхода или поиска
 			\begin{itemize}
