@@ -112,7 +112,7 @@
                 \item $N$ --- множество (алфавит) нетерминальных символов
                 \item $P$ --- продукции, функции вида <<цепочка символов>> $\rightarrow$ <<цепочка символов>>, где слева в цепочке есть хотя бы один нетерминал
                 \begin{itemize}
-                    \item $P: (\Sigma \cup N)^* N (\Sigma \cup N)^* \rightarrow (\Sigma \cup N)^*$
+                    \item $P: (\Sigma \cup N)^* N\ (\Sigma \cup N)^* \rightarrow (\Sigma \cup N)^*$
                 \end{itemize}
                 \item $S$ --- стартовый символ, $S \in N$
             \end{itemize}
@@ -405,7 +405,7 @@ E ::= E + E
 
     \begin{frame}[fragile]
         \frametitle{Пример}
-        \framesubtitle{BNF, записанная в синтаксисе BNF}
+        \framesubtitle{EBNF, записанная в синтаксисе EBNF}
         \begin{footnotesize}
             \begin{minted}{text}
 character = letter | digit | symbol | "_" ;
