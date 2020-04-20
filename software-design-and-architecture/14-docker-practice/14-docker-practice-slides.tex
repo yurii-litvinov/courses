@@ -16,36 +16,36 @@
 \tabulinesep=0.7mm
 
 \newcommand{\attribution}[1] {
-	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
 }
 
-\title{Практика 9: Развёртывание, Docker}
+\title{Практика 8: Развёртывание, Docker}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{19.05.2020г}
+\date{26.05.2020г}
 
 \begin{document}
-	
-	\frame{\titlepage}
+    
+    \frame{\titlepage}
 
-	\section{Docker}
+    \section{Docker}
 
-	\begin{frame}
-		\frametitle{Docker}
-		\begin{itemize}
-			\item Средство для ``упаковки'' приложений в изолированные контейнеры
-			\item Что-то вроде легковесной виртуальной машины
-		\end{itemize}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{docker.png}
-			\attribution{\url{https://www.docker.com}}
-		\end{center}
-	\end{frame}
-	
-	\begin{frame}[fragile]
-		\frametitle{Dockerfile}
-		\begin{scriptsize}
-			\begin{minted}{sh}
+    \begin{frame}
+        \frametitle{Docker}
+        \begin{itemize}
+            \item Средство для ``упаковки'' приложений в изолированные контейнеры
+            \item Что-то вроде легковесной виртуальной машины
+        \end{itemize}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{docker.png}
+            \attribution{\url{https://www.docker.com}}
+        \end{center}
+    \end{frame}
+    
+    \begin{frame}[fragile]
+        \frametitle{Dockerfile}
+        \begin{scriptsize}
+            \begin{minted}{sh}
 # Use an official Python runtime as a parent image
 FROM python:2.7-slim
 
@@ -66,15 +66,15 @@ ENV NAME World
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Балансировка нагрузки}
-		\framesubtitle{docker-compose.yml}
-		\begin{scriptsize}
-			\begin{minted}{yaml}
+    \begin{frame}[fragile]
+        \frametitle{Балансировка нагрузки}
+        \framesubtitle{docker-compose.yml}
+        \begin{scriptsize}
+            \begin{minted}{yaml}
 version: "3"
 services:
     web:
@@ -94,32 +94,44 @@ services:
             - webnet
 networks:
     webnet:
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Swarm-ы}
-		\begin{itemize}
-			\item Машина, на которой запускается контейнер, становится главной
-			\item Другие машины могут присоединяться к swarm-у и получать копию контейнера
-			\item Docker балансирует нагрузку по машинам
-		\end{itemize}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{swarmLoadBalancing.png}
-			\attribution{\url{https://www.docker.com}}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Swarm-ы}
+        \begin{itemize}
+            \item Машина, на которой запускается контейнер, становится главной
+            \item Другие машины могут присоединяться к swarm-у и получать копию контейнера
+            \item Docker балансирует нагрузку по машинам
+        \end{itemize}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{swarmLoadBalancing.png}
+            \attribution{\url{https://www.docker.com}}
+        \end{center}
+    \end{frame}
 
-	\section{Задача}
+    \section{Задача}
 
-	\begin{frame}
-		\frametitle{Задание на пару}
-		В командах по два человека оформить сетевой чат, разработанный на предыдущем занятии, в виде Docker-контейнера
-		\begin{itemize}
-			\item Убедиться, что при запуске клиента и сервера через Docker они могут установить соединение
-			\item Выложить в свой репозиторий Docker-файл
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Задание на пару}
+        В командах по два человека оформить сетевой чат, разработанный на предыдущем занятии, в виде Docker-контейнера
+        \begin{itemize}
+            \item Убедиться, что при запуске клиента и сервера через Docker они могут установить соединение
+            \item Выложить в свой репозиторий Docker-файл
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Что делать}
+        \begin{itemize}
+            \item Заполнить форму \url{https://forms.gle/fTaEJ2YQaBHUNmnZ6} ссылками на репозиторий и командный чат
+            \begin{itemize}
+                \item Сделать это в самом начале работы
+            \end{itemize}
+            \item Выложить на HwProj результаты к концу пары
+            \item Доделать ``дома'', если не успели
+        \end{itemize}
+    \end{frame}
 
 \end{document}

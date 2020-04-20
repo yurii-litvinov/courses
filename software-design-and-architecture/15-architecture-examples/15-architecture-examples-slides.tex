@@ -22,13 +22,13 @@
 \title{Лекция 10: Примеры архитектур}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{26.05.2020г}
+\date{02.06.2020г}
 
 \begin{document}
 	
 	\frame{\titlepage}
 
-	\section{Git}
+	\section{Введение}
 
 	\begin{frame}
 		\frametitle{Краткая история систем контроля версий}
@@ -52,6 +52,8 @@
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
+
+	\section{Git}
 
 	\begin{frame}
 		\frametitle{Git\footnote{\tiny{По гл. 10 \url{https://git-scm.com/book} и \url{http://aosabook.org/en/git.html}}}}
@@ -356,11 +358,17 @@ dangling blob 7108f7ecb345ee9d0084193f147cdad4d2998293
 			\begin{itemize}
 				\item Не портировать под Windows
 				\item Сложно интегрировать с IDE
-				\item В итоге замедлило внедрение git-а
-				\item В итоге побеждено
+				\item Замедлило внедрение git-а
 			\end{itemize}
 			\item Большой набор команд (включая plumbing) делает Git тяжёлым для изучения и усложняет сообщения об ошибках
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Мини-опрос}
+		\begin{center}
+			\url{https://forms.gle/DwHt1thHA1W4S3Kc8}
+		\end{center}
 	\end{frame}
 
 	\section{Mercurial}
@@ -522,165 +530,268 @@ COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
 		\frametitle{Lessons Learned}
 		\begin{itemize}
 			\item Python: и хорошо, и плохо
-			\item Намеренно сложно модифицировать changeset после публикации
-			\item Revlogs + модель данных -- хорошо и эффективно
+			\item Намеренно сложно модифицировать changeset после публикации, что плохо для локальной работы
+			\item Revlogs + модель данных -- хорошо и эффективно, но не дружат с переименованиями
 			\item Небольшое количество основных команд помогает легче научиться
 			\item .hgtags оказался внезапен для пользователей
 			\item Люди впервые знакомились с Python, чтобы писать расширения для mercurial, потому что это просто
 		\end{itemize}
 	\end{frame}
 
-	\section{Wesnoth}
-
 	\begin{frame}
-		\frametitle{Battle for Wesnoth\footnote{\tiny{По \url{http://aosabook.org}}}}
-		\begin{columns}
-			\begin{column}{0.4\textwidth}
-				\begin{itemize}
-					\item Пошаговая стратегия
-					\item Порядка 200000 строк кода на C++
-					\item 4 миллиона скачиваний
-					\item 9/10 на Steam
-					\item 2003 год
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.6\textwidth}
-				\includegraphics[width=\textwidth]{wesnoth.png}
-				\attribution{https://www.wesnoth.org/}
-			\end{column}
-		\end{columns}
+		\frametitle{Quiz time!}
+		\begin{center}
+			\url{https://forms.gle/p26KWXGHBRrQY29B6}
+		\end{center}
 	\end{frame}
 
+	\section{Subversion}
+
 	\begin{frame}
-		\frametitle{Architectural Drivers}
+		\frametitle{Subversion\footnote{\tiny{По \url{http://svnbook.red-bean.com/en/1.7/svn-book.html}}}}
 		\begin{itemize}
-			\item Доступность для новых разработчиков и авторов контента
-			\item В ущерб технической красоте
-			\item Не nice to have, а условие выживания проекта в контексте широкого open-source сообщества из людей без каких-либо обязательств и разного технического уровня
+			\item Написана на C
+			\item Централизованная VCS
+			\item Architectural drivers
+			\begin{itemize}
+				\item починить CVS
+				\item не поддерживать обратную совместимость с CVS, но сделать переход по возможности безболезненным
+				\item развивать проект как open source
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Высокоуровневая архитектура}
-		\begin{columns}
-			\begin{column}{0.6\textwidth}
-				\begin{itemize}
-					\item Wesnoth Markup Language (WML)
-					\item Минимизация зависимостей от сторонних библиотек
-					\begin{itemize}
-						\item SDL Simple Directmedia Layer) для видео и ввода/вывода
-						\begin{itemize}
-							\item Простота использования и кроссплатформенность
-						\end{itemize}
-						\item Boost, Pango, zlib, Python, Lua, GNU gettext
-					\end{itemize}
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.4\textwidth}
-				\includegraphics[width=\textwidth]{wesnothArchitecture.png}
-			\end{column}
-		\end{columns}
+		\frametitle{Архитектура}
+		\begin{center}
+			\includegraphics[height=0.8\textheight]{subversionArchitecture.png}
+		\end{center}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Основные компоненты}
+		\frametitle{Ревизии и репозиторий}
 		\begin{itemize}
-			\item Парсер и препроцессор WML
-			\item Базовый ввод-вывод --- видео, звук, сеть
-			\item GUI --- виджеты
-			\item Display module --- игровая доска, юниты, анимация и т.д.
-			\item ИИ
-			\item Поиск пути (плюс утилиты для работы с гексагональной доской)
-			\item Генератор карт
-			\item Специализированные модули
+			\item Ревизии имеют уникальный числовой номер
 			\begin{itemize}
-				\item Титульный экран
-				\item Storyline module --- для проигрывания катсцен
-				\item Лобби --- для мультиплеера
-				\item ``Play game'' module --- управление основным игровым процессом
+				\item Хранятся в виде обратных дельт со снапшотами
 			\end{itemize}
-			\item Отдельно --- wesnothd и content server
+			\item Номер ревизии --- свойство всего репозитория, а не файла
+			\item В рабочей копии ревизии разных файлов могут быть разными
+			\item Коммиты атомарны
+			\item Единое дерево исходников
+			\begin{itemize}
+				\item trunk
+				\item branches
+				\item tags
+			\end{itemize}
+			\item Ветка и тэг --- не более чем копия папки
+			\item Репозиторий не хранит копии одного файла
+			\item Можно чекаутить конкретную папку
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Структура репозитория}
+		\begin{itemize}
+			\item conf/ --- папка с конфигурационными файлами
+			\item db/ --- хранилище версионируемых данных
+			\begin{itemize}
+				\item BerkleyDB или FSFS
+			\end{itemize}
+			\item format --- описывает организацию репозитория
+			\item hooks/ --- папка со скриптами-хуками
+			\item locks/ --- замки для управления одновременным доступом
+			\item README.txt --- файл, в котором написано, что это репозиторий Subversion
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Wesnoth Markup Language}
-		\begin{minted}{text}
-[unit_type]
-    id=Elvish Fighter
-    name= _ "Elvish Fighter"
-    image="units/elves-wood/fighter.png"
-    hitpoints=33
-    advances_to=Elvish Captain,Elvish Hero
-    {LESS_NIMBLE_ELF}
-    [attack]
-        name=sword
-        icon=attacks/sword-elven.png
-        range=melee
-        damage=5
-    [/attack]
-[/unit_type]
-		\end{minted}
+		\frametitle{Свойства}
+		\begin{itemize}
+			\item Свойства --- пары ``ключ-значение'', которые хранятся вместе с файлами, папками или ревизиями
+			\item Ключ --- строка из ASCII-символов, значение --- либой массив байтов
+			\item Версионируются как данные в самих файлах
+			\item Активно используются самой Subversion и тулами
+			\begin{itemize}
+				\item Например, \verb|svn:ignore|, \verb|svn:eol-style|
+			\end{itemize}
+			\item Например, для набора изображений можно хранить в свойствах описание, дату и даже thumbnail
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}[fragile]
-		\frametitle{Макросы}
-		\begin{minted}{c++}
-#define GOLD EASY_AMOUNT NORMAL_AMOUNT HARD_AMOUNT
-  #ifdef EASY
-    gold={EASY_AMOUNT}
-  #endif
-  #ifdef NORMAL
-    gold={NORMAL_AMOUNT}
-  #endif
-  #ifdef HARD
-    gold={HARD_AMOUNT}
-  #endif
-#enddef
-...
-{GOLD 50 100 200}
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Модель данных}
+		\frametitle{Проблемы и ограничения}
+		% См. https://en.wikipedia.org/wiki/Apache_Subversion
 		\begin{itemize}
-			\item Всё сливается в один гигантский WML-документ
-			\item Перезагружается при смене опций
-			\item Всякие хаки на уровне препроцессора, чтобы не грузить вообще всё
-			\item Классы unit и unit\_type (архитектурный стиль Knowledge Layer)
-			\item Фиксированный набор поддерживаемых движком атрибутов, задаваемых для каждого типа через WML
+			\item Переименование реализовано как copy и delete, что смущает разрешение конфликтов
+			\item До версии 1.7 папки .svn хранились в каждой папке проекта
+			\item При чекауте не выставляются ``настоящие'' времена модификации файлов, используется время чекаута
 			\begin{itemize}
-				\item Нельзя описывать произвольное поведение через WML, хотели сохранить декларативность
+				\item Неожиданно для пользователя, но полезно для make
 			\end{itemize}
-			\item Класс attack\_type
-			\item Трейты, инвентарь
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Мультиплеер}
-		\begin{itemize}
-			\item Начальное состояние и команды
-			\item Сервер просто пересылает команды между клиентами
+			\item ``Наивная'' поддержка веток и тэгов, делает невозможными некоторые операции
 			\begin{itemize}
-				\item TCP/IP
+				\item Например, \verb|svn log -r tag1:tag2 myfile|
 			\end{itemize}
-			\item Replay
-			\item Никакой защиты от читов
-			\item Версии клиентов
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Lessons Learned}
-		\begin{itemize}
-			\item 250 тысяч строк на WML
-			\item Сотни созданных пользователями кампаний
-			\item 74 тысячи коммитов, 196 контрибуторов
-			\item Сами разработчики смеются над WML
-			\item В целом задача обеспечить доступность для модификации очень сложна
-		\end{itemize}
+		\frametitle{Как обычно, мини-опрос}
+		\center{\url{https://forms.gle/z3xYQFHY1BQbvCad6}}
 	\end{frame}
+
+% 	\section{Wesnoth}
+
+% 	\begin{frame}
+% 		\frametitle{Battle for Wesnoth\footnote{\tiny{По \url{http://aosabook.org}}}}
+% 		\begin{columns}
+% 			\begin{column}{0.4\textwidth}
+% 				\begin{itemize}
+% 					\item Пошаговая стратегия
+% 					\item Порядка 200000 строк кода на C++
+% 					\item 4 миллиона скачиваний
+% 					\item 9/10 на Steam
+% 					\item 2003 год
+% 				\end{itemize}
+% 			\end{column}
+% 			\begin{column}{0.6\textwidth}
+% 				\includegraphics[width=\textwidth]{wesnoth.png}
+% 				\attribution{https://www.wesnoth.org/}
+% 			\end{column}
+% 		\end{columns}
+% 	\end{frame}
+
+% 	\begin{frame}
+% 		\frametitle{Architectural Drivers}
+% 		\begin{itemize}
+% 			\item Доступность для новых разработчиков и авторов контента
+% 			\item В ущерб технической красоте
+% 			\item Не nice to have, а условие выживания проекта в контексте широкого open-source сообщества из людей без каких-либо обязательств и разного технического уровня
+% 		\end{itemize}
+% 	\end{frame}
+
+% 	\begin{frame}
+% 		\frametitle{Высокоуровневая архитектура}
+% 		\begin{columns}
+% 			\begin{column}{0.6\textwidth}
+% 				\begin{itemize}
+% 					\item Wesnoth Markup Language (WML)
+% 					\item Минимизация зависимостей от сторонних библиотек
+% 					\begin{itemize}
+% 						\item SDL Simple Directmedia Layer) для видео и ввода/вывода
+% 						\begin{itemize}
+% 							\item Простота использования и кроссплатформенность
+% 						\end{itemize}
+% 						\item Boost, Pango, zlib, Python, Lua, GNU gettext
+% 					\end{itemize}
+% 				\end{itemize}
+% 			\end{column}
+% 			\begin{column}{0.4\textwidth}
+% 				\includegraphics[width=\textwidth]{wesnothArchitecture.png}
+% 			\end{column}
+% 		\end{columns}
+% 	\end{frame}
+
+% 	\begin{frame}
+% 		\frametitle{Основные компоненты}
+% 		\begin{itemize}
+% 			\item Парсер и препроцессор WML
+% 			\item Базовый ввод-вывод --- видео, звук, сеть
+% 			\item GUI --- виджеты
+% 			\item Display module --- игровая доска, юниты, анимация и т.д.
+% 			\item ИИ
+% 			\item Поиск пути (плюс утилиты для работы с гексагональной доской)
+% 			\item Генератор карт
+% 			\item Специализированные модули
+% 			\begin{itemize}
+% 				\item Титульный экран
+% 				\item Storyline module --- для проигрывания катсцен
+% 				\item Лобби --- для мультиплеера
+% 				\item ``Play game'' module --- управление основным игровым процессом
+% 			\end{itemize}
+% 			\item Отдельно --- wesnothd и content server
+% 		\end{itemize}
+% 	\end{frame}
+
+% 	\begin{frame}[fragile]
+% 		\frametitle{Wesnoth Markup Language}
+% 		\begin{minted}{text}
+% [unit_type]
+%     id=Elvish Fighter
+%     name= _ "Elvish Fighter"
+%     image="units/elves-wood/fighter.png"
+%     hitpoints=33
+%     advances_to=Elvish Captain,Elvish Hero
+%     {LESS_NIMBLE_ELF}
+%     [attack]
+%         name=sword
+%         icon=attacks/sword-elven.png
+%         range=melee
+%         damage=5
+%     [/attack]
+% [/unit_type]
+% 		\end{minted}
+% 	\end{frame}
+
+% 	\begin{frame}[fragile]
+% 		\frametitle{Макросы}
+% 		\begin{minted}{c++}
+% #define GOLD EASY_AMOUNT NORMAL_AMOUNT HARD_AMOUNT
+%   #ifdef EASY
+%     gold={EASY_AMOUNT}
+%   #endif
+%   #ifdef NORMAL
+%     gold={NORMAL_AMOUNT}
+%   #endif
+%   #ifdef HARD
+%     gold={HARD_AMOUNT}
+%   #endif
+% #enddef
+% ...
+% {GOLD 50 100 200}
+% 		\end{minted}
+% 	\end{frame}
+
+% 	\begin{frame}
+% 		\frametitle{Модель данных}
+% 		\begin{itemize}
+% 			\item Всё сливается в один гигантский WML-документ
+% 			\item Перезагружается при смене опций
+% 			\item Всякие хаки на уровне препроцессора, чтобы не грузить вообще всё
+% 			\item Классы unit и unit\_type (архитектурный стиль Knowledge Layer)
+% 			\item Фиксированный набор поддерживаемых движком атрибутов, задаваемых для каждого типа через WML
+% 			\begin{itemize}
+% 				\item Нельзя описывать произвольное поведение через WML, хотели сохранить декларативность
+% 			\end{itemize}
+% 			\item Класс attack\_type
+% 			\item Трейты, инвентарь
+% 		\end{itemize}
+% 	\end{frame}
+
+% 	\begin{frame}
+% 		\frametitle{Мультиплеер}
+% 		\begin{itemize}
+% 			\item Начальное состояние и команды
+% 			\item Сервер просто пересылает команды между клиентами
+% 			\begin{itemize}
+% 				\item TCP/IP
+% 			\end{itemize}
+% 			\item Replay
+% 			\item Никакой защиты от читов
+% 			\item Версии клиентов
+% 		\end{itemize}
+% 	\end{frame}
+
+% 	\begin{frame}
+% 		\frametitle{Lessons Learned}
+% 		\begin{itemize}
+% 			\item 250 тысяч строк на WML
+% 			\item Сотни созданных пользователями кампаний
+% 			\item 74 тысячи коммитов, 196 контрибуторов
+% 			\item Сами разработчики смеются над WML
+% 			\item В целом задача обеспечить доступность для модификации очень сложна
+% 		\end{itemize}
+% 	\end{frame}
 
 \end{document}
