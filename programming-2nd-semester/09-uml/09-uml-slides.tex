@@ -36,8 +36,18 @@
 		\frametitle{Визуальное моделирование}
 		\begin{itemize}
 			\item Модели
+			\begin{itemize}
+				\item Содержат меньше информации, чем код
+			\end{itemize}
 			\item Метафора моделирования
+			\begin{itemize}
+				\item Не более чем соглашение между разработчиками
+			\end{itemize}
 			\item Цель моделирования
+			\begin{itemize}
+				\item Каждая модель существует для кого-то и для чего-то
+				\item Модели как средства общения, как документация и как графические исходники
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
@@ -49,7 +59,38 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Язык UML}
+		\frametitle{Unified Modeling Language}
+		\begin{itemize}
+			\item Семейство графических нотаций
+			\begin{itemize}
+				\item 14 видов диаграмм
+			\end{itemize}
+			\item Общая метамодель
+			\item Стандарт под управлением Object Management Group
+			\begin{itemize}
+				\item UML 1.1 --- 1997 год
+				\item UML 2.5.1 --- декабрь 2017 года
+			\end{itemize}
+			\item Прежде всего, для проектирования ПО
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Книжка}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.4\textwidth]{umlBookCover.png}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				М. Фаулер, UML. Основы. Краткое руководство по стандартному языку объектного моделирования. СПб., Символ-Плюс, 2011. 192 С.
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Диаграммы UML}
 		\begin{center}
 			\includegraphics[width=0.9\textwidth]{umlDiagrams.png}
 		\end{center}
@@ -58,8 +99,39 @@
 	\begin{frame}
 		\frametitle{Диаграммы классов UML}
 		\begin{center}
-			\includegraphics[width=0.7\textwidth]{umlClassDiagram.png}
+			\includegraphics[width=0.6\textwidth]{umlClassDiagram.png}
+			\attribution{М. Фаулер. ``UML. Основы''}
 		\end{center}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Как это связано с кодом}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{footnotesize}
+					\begin{minted}{java}
+public class OrderLine {
+    private int quantity;
+    private Product product;
+    public int getQuantity() {
+        return quantity;
+    }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    public Money getPrice() {
+        return product.getPrice().multiply(quantity);
+    }
+}
+					\end{minted}
+				\end{footnotesize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=0.5\textwidth]{orderLine.png}
+				\end{center}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}
@@ -103,6 +175,14 @@
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{Агрегация и композиция, пример}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{aggregationAndCompositionExample.png}
+			\attribution{М. Фаулер. ``UML. Основы''}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Прочее}
 		\begin{columns}
 			\begin{column}{0.5\textwidth}
@@ -142,6 +222,14 @@
 	\end{frame}
 
 	\begin{frame}
+		\frametitle{Более подробно}
+		\begin{center}
+			\includegraphics[width=0.95\textwidth]{componentDiagramsOverview.png}
+			\attribution{\url{http://www.uml-diagrams.org}}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
 		\frametitle{Диаграммы случаев использования}
 		\framesubtitle{Use case diagrams}
 		\begin{center}
@@ -158,32 +246,10 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Диаграммы активностей, разделы}
-		\framesubtitle{Swimlanes}
-		\begin{center}
-			\includegraphics[width=0.55\textwidth]{activitySwimlanes.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
 		\frametitle{Диаграммы последовательностей}
 		\framesubtitle{Sequence diagrams}
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{sequenceDiagram.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Диаграммы последовательностей, создание и удаление объектов}
-		\begin{center}
-			\includegraphics[width=0.65\textwidth]{sequenceLifeCycle.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Диаграммы последовательностей, фреймы}
-		\begin{center}
-			\includegraphics[width=0.8\textwidth]{sequenceFrames.png}
 		\end{center}
 	\end{frame}
 
@@ -216,6 +282,79 @@
 		\end{columns}
 	\end{frame}
 
+	\begin{frame}[fragile]
+		\frametitle{Генерация кода}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\begin{tiny}
+					\begin{minted}{java}
+public void handleEvent(PanelEvent anEvent) {
+    switch (currentState) {
+        case PanelState.Open:
+            switch (anEvent) {
+                case PanelEvent.SafeClosed:
+                    currentState = PanelState.Wait;
+            }
+            break;
+        case PanelState.Wait:
+            switch (anEvent) {
+                case PanelEvent.CandleRemoved:
+                    if (isDoorOpen) {
+                        revealLock();
+                        currentState = PanelState.Lock;
+                    }
+            }
+            break;
+        case PanelState.Lock:
+            switch (anEvent) {
+                case PanelEvent.KeyTurned:
+                    if (isCandleIn) {
+                        openSafe();
+                        currentState = PanelState.Open;
+                    } else {
+                        releaseKillerRabbit();
+                        currentState = PanelState.Final;
+                    }
+            }
+            break;
+    }
+}
+					\end{minted}
+				\end{tiny}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\includegraphics[width=\textwidth]{stateTransitionSyntax.png}
+					\attribution{М. Фаулер, UML. Основы}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Таблица состояний}
+		\begin{center}
+			\includegraphics[width=0.4\textwidth]{stateTransitionSyntax.png}
+		\end{center}
+
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{stateTransitionStateTable.png}
+			\attribution{М. Фаулер, UML. Основы}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Паттерн ``Состояние''}
+		\begin{center}
+			\includegraphics[width=0.4\textwidth]{stateTransitionSyntax.png}
+		\end{center}
+
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{stateTransitionStatePattern.png}
+			\attribution{М. Фаулер, UML. Основы}
+		\end{center}
+	\end{frame}
+
 	\begin{frame}
 		\frametitle{Диаграммы развёртывания}
 		\framesubtitle{Deployment diagrams}
@@ -233,6 +372,34 @@
 				\end{center}
 			\end{column}
 		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Примеры CASE-инструментов}
+		\begin{itemize}
+			\item ``Рисовалки''
+			\begin{itemize}
+				\item Visio
+				\item Dia
+				\item SmartDraw
+				\item LucidChart
+				\item Creately
+			\end{itemize}
+			\item Полноценные CASE-системы
+			\begin{itemize}
+				\item Enterprise Architect
+				\item Rational Software Architect
+				\item MagicDraw
+				\item Visual Paradigm
+				\item GenMyModel
+			\end{itemize}
+			\item Забавные штуки
+			\begin{itemize}
+				\item \url{https://www.websequencediagrams.com/}
+				\item \url{http://yuml.me/}
+				\item \url{http://plantuml.com/}
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
