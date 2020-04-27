@@ -23,7 +23,7 @@
 \title{Распределённые приложения, RabbitMQ}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{22.04.2020г}
+\date{29.04.2020г}
 
 \begin{document}
 
@@ -115,7 +115,7 @@ public class Receiver {
 			\end{itemize}
 			\item Добавить зависимость от клиента RabbitMQ в проект
 			\begin{itemize}
-				\item \mintinline{groovy}|compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.7.0'|
+				\item \mintinline{groovy}|compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.9.0'|
 			\end{itemize}
 			\item Пролистать Getting Started 
 			\begin{itemize}
@@ -128,7 +128,7 @@ public class Receiver {
 
 	\begin{frame}
 		\frametitle{Задача на пару}
-		Переделать сетевой чат на RabbitMQ
+		В командах по три человека (желательно, исходных) переделать сетевой чат на RabbitMQ
 		\begin{itemize}
 			\item Сервер для обмена сообщениями, о котором договариваются клиенты
 			\begin{itemize}
@@ -146,5 +146,18 @@ public class Receiver {
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
+
+    \begin{frame}
+        \frametitle{Что делать}
+        \begin{itemize}
+            \item Заполнить форму \url{https://forms.gle/d2BsvfmqJm13LGHd9} ссылками на репозиторий и командный чат
+            \begin{itemize}
+                \item Сделать это в самом начале работы
+            \end{itemize}
+            \item Делать коммиты почаще
+            \item Смотреть в чат группы в Telegram
+            \item Выложить на HwProj результаты к концу пары
+        \end{itemize}
+    \end{frame}
 
 \end{document}
