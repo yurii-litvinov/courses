@@ -12,16 +12,18 @@
 
 \tabulinesep=0.7mm
 
-\title{Порождающие и поведенческие паттерны, детали реализации}
+\title[Порождающие и поведенческие паттерны]{Практика 11. Порождающие и поведенческие паттерны, детали реализации}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{22.04.2019г}
+\date{29.04.2019г}
 
 \begin{document}
 	
 	\frame{\titlepage}
 
 	\section{Порождающие шаблоны}
+
+	\subsection{Фабричный метод}
 
 	\begin{frame}
 		\frametitle{``Фабричный метод'' (Factory Method), детали реализации}
@@ -39,6 +41,8 @@
 			\item Можно сделать шаблонный Creator
 		\end{itemize}
 	\end{frame}
+
+	\subsection{Абстрактная фабрика}
 
 	\begin{frame}
 		\frametitle{``Абстрактная фабрика'' (Abstract Factory), детали реализации}
@@ -63,6 +67,8 @@
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
+
+	\subsection{Прототип}
 
 	\begin{frame}
 		\frametitle{``Прототип'' (Prototype), детали реализации}
@@ -91,6 +97,8 @@
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
+
+	\subsection{Строитель}
 
 	\begin{frame}
 		\frametitle{``Строитель'' (Builder), детали реализации}
@@ -125,9 +133,11 @@ MutableNetwork<Webpage, Link> webSnapshot =
     .build();
 			\end{minted}
 		\end{itemize}
-\end{frame}
+	\end{frame}
 
 	\section{Поведенческие шаблоны}
+
+	\subsection{Шаблонный метод}
 
 	\begin{frame}
 		\frametitle{``Шаблонный метод'' (Template Method), детали реализации}
@@ -153,6 +163,8 @@ MutableNetwork<Webpage, Link> webSnapshot =
 		\end{itemize}
 	\end{frame}
 
+	\subsection{Посредник}
+
 	\begin{frame}
 		\frametitle{``Посредник'' (Mediator), детали реализации}
 		\begin{columns}
@@ -172,6 +184,8 @@ MutableNetwork<Webpage, Link> webSnapshot =
 			\end{column}
 		\end{columns}
 	\end{frame}
+
+	\subsection{Команда}
 
 	\begin{frame}
 		\frametitle{``Команда'' (Command), детали реализации}
@@ -208,7 +222,9 @@ fileMenu->addAction(openAct);
 fileToolBar->addAction(openAct);
 			\end{minted}
 		\end{itemize}
-\end{frame}
+	\end{frame}
+
+	\subsection{Цепочка ответственности}
 
 	\begin{frame}
 		\frametitle{``Цепочка ответственности'' (Chain of Responsibility), детали реализации}
@@ -257,6 +273,8 @@ void MyCheckBox::mousePressEvent(QMouseEvent *event)
 		\end{itemize}
 	\end{frame}
 
+	\subsection{Наблюдатель}
+
 	\begin{frame}
 		\frametitle{``Наблюдатель'' (Observer), детали реализации}
 		\begin{itemize}
@@ -287,7 +305,7 @@ void MyCheckBox::mousePressEvent(QMouseEvent *event)
 		\end{itemize}
 	\end{frame}
 
-		\begin{frame}
+	\begin{frame}
 		\frametitle{``Наблюдатель'' (Observer), детали реализации (2)}
 		\begin{itemize}
 			\item Ссылки на субъектов и наблюдателей
@@ -315,7 +333,7 @@ internal class NewMessageEventArgs : EventArgs
 {
     private readonly string message;
 
-    public MessageEventArgs(string message) 
+    public NewMessageEventArgs(string message) 
         => this.message = message;
 
     public string Message => message;
@@ -359,6 +377,8 @@ internal sealed class Fax {
 		\end{itemize}
 	\end{frame}
 
+	\subsection{Состояние}
+
 	\begin{frame}
 		\frametitle{``Состояние'' (State), детали реализации}
 		\begin{columns}
@@ -386,6 +406,8 @@ internal sealed class Fax {
 		\end{itemize}
 	\end{frame}
 
+	\subsection{Посетитель}
+
 	\begin{frame}
 		\frametitle{``Посетитель'' (Visitor), детали реализации}
 		\begin{columns}
@@ -404,6 +426,8 @@ internal sealed class Fax {
 		\end{columns}
 	\end{frame}
 
+	\subsection{Хранитель}
+
 	\begin{frame}
 		\frametitle{``Хранитель'' (Memento), детали реализации}
 		\begin{center}
@@ -417,6 +441,8 @@ internal sealed class Fax {
 			\item Можно хранить только дельты состояний
 		\end{itemize}
 	\end{frame}
+
+	\subsection{Интерпретатор}
 
 	\begin{frame}
 		\frametitle{``Интерпретатор'' (Interpreter)}
@@ -450,6 +476,8 @@ internal sealed class Fax {
 			\item Можно использовать ``Приспособленец'' для разделения терминальных символов
 		\end{itemize}
 	\end{frame}
+
+	\subsection{Итератор}
 
 	\begin{frame}
 		\frametitle{``Итератор'' (Iterator)}
