@@ -72,6 +72,8 @@ NUMBER ::= [0..9]+
 
     \section{FParsec}
 
+    \subsection{Подготовительная работа}
+
     \begin{frame}[fragile]
         \frametitle{Подготовительная работа}
         \begin{itemize}
@@ -90,6 +92,8 @@ let main argv =
         \end{minted}
     \end{frame}
 
+    \subsection{AST}
+
     \begin{frame}[fragile]
         \frametitle{Представление AST}
         \begin{minted}{fsharp}
@@ -103,6 +107,8 @@ type Expression =
         \end{minted}
     \end{frame}
 
+    \subsection{Разбор чисел}
+
     \begin{frame}[fragile]
         \frametitle{Начнём с Number}
         \begin{minted}{fsharp}
@@ -115,7 +121,7 @@ let testInput = "12"
 printfn "%A" (testInput |> run number)
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Success: '9'
 Success: '1'
@@ -135,7 +141,7 @@ let testInput = "12"
 printfn "%A" (testInput |> run number)
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Success: ['9']
 Success: ['1'; '2']
@@ -157,13 +163,15 @@ let testInput = "12"
 printfn "%A" (testInput |> run number)
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Success: Number 9
 Success: Number 12
             \end{minted}
         \end{exampleblock}
     \end{frame}
+
+    \subsection{Разбор унарного минуса}
 
     \begin{frame}[fragile]
         \frametitle{Рекурсивные правила}
@@ -179,13 +187,15 @@ let testInput = "--12"
 printfn "%A" (testInput |> run expression)
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Success: Negation (Number 9)
 Success: Negation (Negation (Number 12))
             \end{minted}
         \end{exampleblock}
     \end{frame}
+
+    \subsection{Пробелы}
 
     \begin{frame}[fragile]
         \frametitle{Победим пробелы}
@@ -199,12 +209,14 @@ let testInput = "- 9"
 printfn "%A" (testInput |> run expression)
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Success: Negation (Number 9)
             \end{minted}
         \end{exampleblock}
     \end{frame}
+
+    \subsection{Разбор сложения}
 
     \begin{frame}[fragile]
         \frametitle{Сложение!}
@@ -221,7 +233,7 @@ let testInput = "1 + 2"
 printfn "%A" (testInput |> run expression)
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Success: Number 1
             \end{minted}
@@ -243,7 +255,7 @@ let testInput = "1 + 2"
 printfn "%A" (testInput |> run expression)
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Stack overflow.
             \end{minted}
@@ -252,6 +264,8 @@ Stack overflow.
             \includegraphics[width=\textwidth]{hmm.png}
         \end{textblock}
     \end{frame}
+
+    \subsection{Факторизация}
 
     \begin{frame}[fragile]
         \frametitle{Факторизуем грамматику}
@@ -292,6 +306,8 @@ expression'Ref := pchar '+' >>. primary .>>. expression' |>> ???
         AST строить неудобно!
     \end{frame}
 
+    \subsection{Parse tree}
+
     \begin{frame}[fragile]
         \frametitle{Введём промежуточное представление дерева}
         \framesubtitle{Parse tree}
@@ -310,6 +326,8 @@ and E' =
     | Epsilon
         \end{minted}
     \end{frame}
+
+    \subsection{Факторизованный парсер}
 
     \begin{frame}[fragile]
         \frametitle{Теперь уже перепишем парсер (1)}
@@ -349,13 +367,15 @@ let testInput = "1 + 2"
 printfn "%A" (testInput |> run e)
             \end{minted}
 
-            \begin{exampleblock}{F\# Interactive}
+            \begin{exampleblock}{Вывод}
                 \begin{minted}{fsharp}
 Success: E (Number 1,Plus (Number 2,Epsilon))
                 \end{minted}
             \end{exampleblock}
         \end{small}
     \end{frame}
+
+    \subsection{Свои комбинаторы}
 
     \begin{frame}[fragile]
         \frametitle{Небольшой рефакторинг}
@@ -374,6 +394,8 @@ eRef := !primary .>>. !e' .>> eof |>> E
         \end{minted}
     \end{frame}
 
+    \subsection{Приоритет операций}
+
     \begin{frame}[fragile]
         \frametitle{Приоритет операций, проблема}
         \begin{small}
@@ -385,7 +407,7 @@ let testInput = "1 * 2 + 3"
 printfn "%A" (testInput |> run e)
             \end{minted}
 
-            \begin{exampleblock}{F\# Interactive}
+            \begin{exampleblock}{Вывод}
                 \begin{minted}{fsharp}
 Success: E (Number 1,Plus (Number 2,Multiplication (Number 3,Epsilon)))
 Success: E (Number 1,Multiplication (Number 2,Plus (Number 3,Epsilon)))
@@ -485,7 +507,7 @@ let testInput = "1 * 2 + 3"
 printfn "%A" (testInput |> run e)
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Success: E (Term (Number 1,Epsilon),
     Plus (Term (Number 2,Multiplication (Number 3,Epsilon)),Epsilon))
@@ -495,6 +517,8 @@ Success: E (Term (Number 1,Multiplication (Number 2,Epsilon)),
         \end{exampleblock}
         Сложнее, но тут уже получилась некоторая структура
     \end{frame}
+
+    \subsection{Построение AST}
 
     \begin{frame}[fragile]
         \frametitle{Построим AST по Parse Tree}
@@ -542,6 +566,8 @@ buildE expr
         \end{minted}
     \end{frame}
 
+    \subsection{Что получилось}
+
     \begin{frame}[fragile]
         \frametitle{Потестим}
         \begin{minted}{fsharp}
@@ -555,7 +581,7 @@ match result with
 | _ -> printfn "%A" result
         \end{minted}
 
-        \begin{exampleblock}{F\# Interactive}
+        \begin{exampleblock}{Вывод}
             \begin{minted}{fsharp}
 Success: E (Term (Number 1,Multiplication (Number 2,Epsilon)),
     Plus (Term (Number 3,Epsilon),Epsilon))
@@ -563,6 +589,8 @@ Plus (Multiplication (Number 1,Number 2),Number 3)
             \end{minted}
         \end{exampleblock}
     \end{frame}
+
+    \subsection{Что дальше}
 
     \begin{frame}
         \frametitle{Что дальше}
@@ -580,6 +608,525 @@ Plus (Multiplication (Number 1,Number 2),Number 3)
                 \url{https://www.quanttec.com/fparsec/reference/operatorprecedenceparser.html}
             \end{itemize}
         \end{small}
+    \end{frame}
+
+    \section{FsLex/FsYacc}
+
+    \subsection{Минимальный проект, лексер}
+
+    \begin{frame}[fragile]
+        \frametitle{FsLex/FsYacc, подготовительная работа}
+        \begin{itemize}
+            \item Создаём проект
+            \item Добавляем ссылку на nuget-пакет FsLexYacc
+            \item Создаём новый файл, Lexer.fsl
+            \item Пишем туда
+        \end{itemize}
+        \begin{small}
+            \begin{minted}{fsharp}
+{ 
+open FSharp.Text.Lexing
+open System
+
+let lexeme = LexBuffer<_>.LexemeString
+}
+
+let digit = ['0'-'9']
+
+rule token = parse
+| digit+  { Int32.Parse(lexeme lexbuf) }
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{FsLex/FsYacc, подготовительная работа (2)}
+        \begin{itemize}
+            \item Добавляем в проектный файл описание лексера
+        \end{itemize}
+        \begin{scriptsize}
+            \begin{minted}{xml}
+<Project Sdk="Microsoft.NET.Sdk">
+
+<PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+</PropertyGroup>
+
+<ItemGroup>
+    <FsLex Include="Lexer.fsl">
+        <OtherFlags>--module Lexer --unicode</OtherFlags>
+    </FsLex>
+    <Compile Include="Program.fs" />
+</ItemGroup>
+
+<ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.0.0" />
+</ItemGroup>
+
+</Project>
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+    
+    \begin{frame}[fragile]
+        \frametitle{FsLex/FsYacc, подготовительная работа (3)}
+        \begin{itemize}
+            \item Компилируем проект и добавляем в проект появившийся Lexer.fs
+            \item Почему так извращённо --- потому что обычно для сборки используют fake
+        \end{itemize}
+        \begin{scriptsize}
+            \begin{minted}{xml}
+<ItemGroup>
+<Compile Include="Lexer.fs" />
+<FsLex Include="Lexer.fsl">
+    <OtherFlags>--module Lexer --unicode</OtherFlags>
+</FsLex>
+<Compile Include="Program.fs" />
+</ItemGroup>
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{FsLex/FsYacc, подготовительная работа (4)}
+        \begin{itemize}
+            \item Пишем точку входа
+        \end{itemize}
+        \begin{minted}{fsharp}
+open FSharp.Text.Lexing
+
+[<EntryPoint>]
+let main argv =
+    let testInput = "9"
+
+    let lexbuf = LexBuffer<char>.FromString testInput
+    let tokens = Lexer.token lexbuf
+
+    printfn "%A" tokens
+    0 
+        \end{minted}
+
+        \begin{exampleblock}{Вывод}
+            \begin{minted}{fsharp}
+9
+            \end{minted}
+        \end{exampleblock}
+    \end{frame}
+
+    \subsection{Минимальный проект, парсер}
+
+    \begin{frame}[fragile]
+        \frametitle{Теперь то же самое с парсером}
+        \begin{itemize}
+            \item Создаём Parser.fsy
+        \end{itemize}
+        \begin{minted}{text}
+%{
+%}
+
+%token <int> INT
+
+%start start
+%type <int> start
+
+%%
+
+start: INT { $1 }
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Добавляем в проектный файл, руками}
+        \framesubtitle{До лексера!}
+        \begin{scriptsize}
+            \begin{minted}{xml}
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <FsYacc Include="Parser.fsy">
+      <OtherFlags>--module Parser</OtherFlags>
+    </FsYacc>
+    <FsLex Include="Lexer.fsl">
+      <OtherFlags>--module Lexer --unicode</OtherFlags>
+    </FsLex>
+    <Compile Include="Lexer.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.0.0" />
+  </ItemGroup>
+</Project>
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Собираем и добавляем Parser.fs}
+        \framesubtitle{Тоже до лексера!}
+        \begin{scriptsize}
+            \begin{minted}{xml}
+<Project Sdk="Microsoft.NET.Sdk">
+  ...
+  <ItemGroup>
+    <FsYacc Include="Parser.fsy">
+      <OtherFlags>--module Parser</OtherFlags>
+    </FsYacc>
+    <Compile Include="Parser.fs" />
+    <FsLex Include="Lexer.fsl">
+      <OtherFlags>--module Lexer --unicode</OtherFlags>
+    </FsLex>
+    <Compile Include="Lexer.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  ...
+</Project>
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Правим лексер}
+        \framesubtitle{Чтобы он генерил лексемы для парсера}
+        \begin{small}
+            \begin{minted}{fsharp}
+{ 
+open FSharp.Text.Lexing
+open System
+open Parser
+
+let lexeme = LexBuffer<_>.LexemeString
+}
+
+let digit = ['0'-'9']
+
+rule token = parse
+| digit+  { INT(Int32.Parse(lexeme lexbuf)) }
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пробуем, что получилось}
+        \framesubtitle{В Program.fs}
+        \begin{small}
+            \begin{minted}{fsharp}
+open FSharp.Text.Lexing
+
+[<EntryPoint>]
+let main argv =
+    let testInput = "9"
+
+    let lexbuf = LexBuffer<char>.FromString testInput
+    let ast = Parser.start Lexer.token lexbuf
+    printfn "%A" ast
+    0 
+            \end{minted}
+        \end{small}
+        \begin{exampleblock}{Вывод}
+            \begin{minted}{fsharp}
+9
+            \end{minted}
+        \end{exampleblock}
+        Теперь наконец можно приступать к делу!
+    \end{frame}
+
+    \subsection{Грамматика}
+
+    \begin{frame}[fragile]
+        \frametitle{Вспомним грамматику}
+        \begin{minted}{bnf}
+E ::= E + E
+    | E - E
+    | E * E
+    | E / E
+    | -E
+    | (E)
+    | NUMBER
+
+NUMBER ::= [0..9]+
+        \end{minted}
+    \end{frame}
+
+    \subsection{AST}
+
+    \begin{frame}[fragile]
+        \frametitle{Позаимствуем из FParsec AST}
+        \framesubtitle{В новый файл Ast.fs, до парсера}
+        \begin{minted}{fsharp}
+module Types
+
+type Expression =
+    | Plus of Expression * Expression
+    | Minus of Expression * Expression
+    | Multiplication of Expression * Expression
+    | Division of Expression * Expression
+    | Negation of Expression
+    | Number of int
+        \end{minted}
+    \end{frame}
+
+    \subsection{Токены}
+
+    \begin{frame}[fragile]
+        \frametitle{Требуемые токены}
+        \framesubtitle{В парсере}
+        \begin{minted}{text}
+%{
+open Types
+%}
+
+%token <int> INT
+%token PLUS
+%token MINUS
+%token MUL
+%token DIV
+%token LPAR
+%token RPAR
+%token EOF
+
+...
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Поддержка в лексере}
+        \begin{minted}{fsharp}
+...
+
+rule token = parse
+| digit+  { INT(Int32.Parse(lexeme lexbuf)) }
+| '+' { PLUS }
+| '-' { MINUS }
+| '*' { MUL }
+| '/' { DIV }
+| '(' { LPAR }
+| ')' { RPAR }
+| eof { EOF }
+        \end{minted}
+    \end{frame}
+
+    \subsection{Парсер}
+
+    \begin{frame}[fragile]
+        \frametitle{Грамматика в парсере}
+        \framesubtitle{Пока просто потестим, разбирается ли}
+        \begin{minted}{text}
+start: expression { 0 }
+
+expression:
+    | INT  {}
+    | expression PLUS expression  {}
+    | expression MINUS expression  {}
+    | expression MUL expression  {}
+    | expression DIV expression  {}
+    | MINUS expression  {}
+    | LPAR expression RPAR  {}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Попробуем}
+        \begin{minted}{text}
+open FSharp.Text.Lexing
+
+[<EntryPoint>]
+let main argv =
+    let testInput = "1+2*3"
+
+    let lexbuf = LexBuffer<char>.FromString testInput
+    let ast = Parser.start Lexer.token lexbuf
+    printfn "%A" ast
+    0 
+        \end{minted}
+        \begin{exampleblock}{Вывод}
+            \begin{minted}{fsharp}
+0
+            \end{minted}
+        \end{exampleblock}
+    \end{frame}
+
+    \subsection{Пробелы}
+
+    \begin{frame}[fragile]
+        \frametitle{Пробелы?}
+        \begin{minted}{fsharp}
+open FSharp.Text.Lexing
+
+[<EntryPoint>]
+let main argv =
+    let testInput = "1 + 2 * 3"
+
+    let lexbuf = LexBuffer<char>.FromString testInput
+    let ast = Parser.start Lexer.token lexbuf
+    printfn "%A" ast
+    0 
+        \end{minted}
+        \begin{exampleblock}{Вывод}
+            \begin{minted}{text}
+Unhandled exception. System.Exception: unrecognized input
+            \end{minted}
+        \end{exampleblock}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Чиним, в лексере}
+        \begin{minted}{fsharp}
+let digit = ['0'-'9']
+let whitespace = [' ' '\t' '\r' '\n']
+
+rule token = parse
+| digit+  { INT(Int32.Parse(lexeme lexbuf)) }
+| '+' { PLUS }
+| '-' { MINUS }
+| '*' { MUL }
+| '/' { DIV }
+| '(' { LPAR }
+| ')' { RPAR }
+| whitespace { token lexbuf }
+| eof { EOF }
+        \end{minted}
+        Теперь всё работает
+    \end{frame}
+
+    \subsection{Построение AST}
+
+    \begin{frame}[fragile]
+        \frametitle{Семантические действия}
+        \framesubtitle{Плюс выкинем start}
+        \begin{minted}{text}
+%start expression
+%type <Expression> expression
+
+%%
+
+expression:
+    | INT  { Number($1) }
+    | expression PLUS expression  { Plus($1, $3) }
+    | expression MINUS expression  { Minus($1, $3) }
+    | expression MUL expression  { Multiplication($1, $3) }
+    | expression DIV expression  { Division($1, $3) }
+    | MINUS expression  { Negation($2) }
+    | LPAR expression RPAR  { $2 }
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Запустим}
+        \begin{minted}{fsharp}
+open FSharp.Text.Lexing
+
+[<EntryPoint>]
+let main argv =
+    let testInput = "1 + 2 * 3"
+
+    let lexbuf = LexBuffer<char>.FromString testInput
+    let ast = Parser.expression Lexer.token lexbuf
+    printfn "%A" ast
+    0 
+        \end{minted}
+        \begin{exampleblock}{Вывод}
+            \begin{minted}{fsharp}
+Plus (Number 1,Multiplication (Number 2,Number 3))
+            \end{minted}
+        \end{exampleblock}
+        Магия LALR-разбора!
+    \end{frame}
+
+    \subsection{Приоритет операций}
+
+    \begin{frame}[fragile]
+        \frametitle{Приоритет операций?}
+        \begin{minted}{fsharp}
+[<EntryPoint>]
+let main argv =
+    let testInput = "1 * 2 + 3"
+
+    let lexbuf = LexBuffer<char>.FromString testInput
+    let ast = Parser.expression Lexer.token lexbuf
+    printfn "%A" ast
+    0 
+        \end{minted}
+        \begin{exampleblock}{Вывод}
+            \begin{minted}{fsharp}
+Multiplication (Number 1,Plus (Number 2,Number 3))
+            \end{minted}
+        \end{exampleblock}
+        Не магия, а неоднозначность вывода :(
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Подправим грамматику}
+        \framesubtitle{Прямо в парсере, благо это просто}
+        \begin{small}
+            \begin{minted}{text}
+expression:
+    | term PLUS term  { Plus($1, $3) }
+    | term MINUS term { Minus($1, $3) }
+    | term { $1 }
+
+term:
+    | factor MUL factor { Multiplication($1, $3) }
+    | factor DIV factor  { Division($1, $3) }
+    | factor { $1 }
+
+factor:
+    | INT  { Number($1) }
+    | MINUS expression  { Negation($2) }
+    | LPAR expression RPAR  { $2 }
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+    \subsection{Что получилось}
+
+    \begin{frame}[fragile]
+        \frametitle{Что получилось}
+        \begin{exampleblock}{Вывод}
+            \begin{minted}{fsharp}
+Plus (Multiplication (Number 1,Number 2),Number 3)
+            \end{minted}
+        \end{exampleblock}
+        \begin{itemize}
+            \item Задание выполнено!
+            \item Некоторое объяснение того, что это было:
+            
+                \url{https://github.com/fsprojects/FsLexYacc/blob/master/docs/content/jsonParserExample.md}
+            \item Ещё пример: \url{https://en.wikibooks.org/wiki/F_Sharp_Programming/Lexing_and_Parsing}
+            \item Внятное описание того, что происходит: D. Syme, A. Granicz, A. Cisternino, Expert F\#, 2007
+            \begin{itemize}
+                \item В более свежих изданиях про FsLex/FsYacc нет, такие дела
+            \end{itemize}
+            \item Жалкое подобие документации на домашней странице проекта: \url{https://fsprojects.github.io/FsLexYacc/}
+        \end{itemize}
+    \end{frame}
+
+    \section{Заключение}
+
+    \begin{frame}
+        \frametitle{Выводы}
+        \begin{itemize}
+            \item FParsec --- встроенный DSL для описания грамматик
+            \begin{itemize}
+                \item Легко интегрируется с кодом
+                \item Не надо отдельных файлов и странных упражнений с проектными файлами
+                \item Нисходящий разбор, боль с грамматикой
+                \item И боль с построением AST
+            \end{itemize}
+            \item FsLex/FsYacc --- внешний DSL
+            \begin{itemize}
+                \item Странный синтаксис (и, соответственно, не очень с поддержкой в редакторе)
+                \item Нужны внешние инструменты
+                \item Восходящий разбор, никакой боли с грамматикой
+                \begin{itemize}
+                    \item Нам просто повезло, у LR-разбора свои проблемы
+                \end{itemize}
+                \item Не очень с сообщениями об ошибках
+            \end{itemize}
+        \end{itemize}
     \end{frame}
 
 \end{document}
