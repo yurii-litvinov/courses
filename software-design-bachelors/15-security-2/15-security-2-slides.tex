@@ -1,0 +1,85 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage[11pt]{moresize}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{1cm}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\title{Практика по сетевой безопасности}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\date{20.05.2020г}
+
+\begin{document}
+
+    \frame{\titlepage}
+
+    \begin{frame}
+        \frametitle{Задача 1}
+        \begin{footnotesize}
+            Прикрутить аутентификацию по X.509-сертификатам к чатам на RabbitMQ с прошлой практики
+            \begin{itemize}
+                \item Подробная инструкция: \url{https://www.rabbitmq.com/ssl.html}
+                \item Аутентификация обоюдная: сервер проверяет клиент, клиент проверяет сервер
+                \item Обратите внимание:
+                \begin{itemize}
+                    \item У JVM своя (довольно удобная вроде) подсистема работы с сертификатами, у .NET тоже
+                    \item Может быть полезно \url{https://www.rabbitmq.com/troubleshooting-ssl.html}
+                    \item В общем случае генерим самоподписанный CA-сертификат и генерим с его помощью сертификат сервера
+                    \item Можно и клиента (или отдельный CA для клиента, но сервер должен ему доверять)
+                    \item См. \url{https://www.rabbitmq.com/ssl.html\#peer-verification-trusted-certificates}
+                \end{itemize}
+            \end{itemize}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Задача 2}
+        Реализовать на ``голом HTTPS'' консольный клиент Google Drive, умеющий показать список файлов и папок в корне Google Drive пользователя
+        \begin{itemize}
+            \item Нельзя использовать библиотеку клиента Google Drive
+            \item Придётся зарегистрировать приложение на \url{https://console.developers.google.com}
+            \item И включить нужный API
+            \item Авторизация: \url{https://developers.google.com/drive/api/v3/about-auth}
+            \begin{itemize}
+                \item Наш случай: \url{https://developers.google.com/identity/protocols/oauth2/native-app}
+            \end{itemize}
+            \item Надо добавить OAuth Client ID и получить Client ID и Client secret
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Задача 2}
+        \framesubtitle{Подсказки}
+        \begin{itemize}
+            \item Запрос access token должен быть обязательно POST-запросом, GET вернёт 404
+            \item Копипастить access token из адресной строки браузера good enough
+            \begin{itemize}
+                \item Да, надо будет программно запустить браузер с правильным URL
+            \end{itemize}
+            \item Некоторые значения возвращаются в BASE64-кодировке, а ожидаются в plain text
+            \item Не надо продлять Access Token, правильно хранить Refresh Token и всё такое
+            \item Значения Client Id и Client Secret можно принимать параметрами командной строки
+        \end{itemize}
+    \end{frame}
+
+\end{document}
