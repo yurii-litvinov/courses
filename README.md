@@ -1,4 +1,4 @@
-Supporting material for some courses of SPbSU SE chair and SPbAU MIT chair.
+Supporting material for some courses of SPbSU SE chair and HSE "Applied Mathematics and Information Science" programme.
 
 We use xetex (from TeXLive distribution) with "minted" package to typeset source code fragments. 
 Minted requires installed Python 3 with "pygments" package and `--shell-escape` option for xelatex.
