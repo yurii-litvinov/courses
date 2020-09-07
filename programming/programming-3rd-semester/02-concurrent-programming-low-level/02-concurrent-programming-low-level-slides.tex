@@ -109,21 +109,21 @@ public void Thread2() {
     \begin{frame}[fragile]
         \frametitle{Ещё один способ прострелить себе ногу}
         \begin{minted}{csharp}
-bool stop = false;
+static void Main(string[] args)
+{
+    var stop = false;
+    var thread = new Thread(() => {
+        stop = true;
+    });
 
-var thread = new Thread(() => {
-    while (!stop)
-    {
-        Console.WriteLine("Goodbye, cruel world!");
-        Thread.Sleep(500);
-    }
-});
+    thread.Start();
 
-thread.Start();
-Thread.Sleep(2000);
-stop = true;
-thread.Join();
-Console.WriteLine("Done.");
+    while (!stop);
+
+    thread.Join();
+
+    Console.WriteLine("Done.");
+}
         \end{minted}
     \end{frame}
 
