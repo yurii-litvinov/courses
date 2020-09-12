@@ -1,0 +1,100 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{pgfplots}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\pgfplotsset{compat=1.16}
+\tabulinesep=0.7mm
+
+\title{Комментарии по домашке}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{15.09.2020}
+
+\begin{document}
+    
+    \frame{\titlepage}
+    
+    \begin{frame}
+        \frametitle{Стайлгайд}
+        \begin{itemize}
+            \item Именование: inputarr -> inputArray
+            \item Пробелы: \mintinline{c}|if(a == 1)| -> \mintinline{c}|if (a == 1)|
+            \item Но \mintinline{c}|balance (str)| -> \mintinline{c}|balance(str)|
+            \item Булевые переменные: \mintinline{c}|if (b == false)| -> \mintinline{c}|if (!b)|
+            \item Сокращённые операторы: \mintinline{c}|a = a - b| -> \mintinline{c}|a -= b|
+            \item Функция, не принимающая параметров: \mintinline{c}|f(void)|
+            \item Скобки: \mintinline{c}|return(x);| -> \mintinline{c}|return x;|
+            \item Тернарный оператор: \mintinline{c}|printf(x == 0 ? "true" :  "false");|
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{if-else и return}
+        \begin{minted}{c}
+void f(int x) {
+    if (x == 0) {
+        ...
+    } else {
+        ...
+    }
+}
+        \end{minted}
+        или
+        \begin{minted}{c}
+void f(int x) {
+    if (x == 0) {
+        ...
+        return;
+    } 
+    ...
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Ещё про if и return}
+        \begin{minted}{c}
+if (x != 0) {
+    return false;
+}
+
+return true;
+        \end{minted}
+        это просто
+        \begin{minted}{c}
+return x == 0;
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Забытое значение при возврате}
+        \begin{minted}{c}
+bool f(int x) {
+    if (x == 0) {
+        return true;
+    }
+}
+
+void main() {
+    printf("%d", f(1));  // ??
+}
+        \end{minted}
+    \end{frame}
+
+\end{document}
+
