@@ -1,0 +1,44 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Практика по проектированию}
+\subtitle{Магазин книг}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{24.11.2020г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задание на пару: Магазин книг}
+		В командах по 2-3 человека выполнить анализ предметной области и построить модель в виде диаграммы классов для интернет-магазина книг по следующему ТЗ:
+		\begin{itemize}
+			\item \url{https://goo.gl/94LyFc}
+		\end{itemize}
+
+		Обратите внимание, что это должна быть модель предметной области в соответствии с принципами DDD, детали реализации наподобие способа хранения информации в базе данных не важны.
+
+		Будет оцениваться точность следования ТЗ, соответствие модели сущностям предметной области и, естественно, пунктуальность в следовании синтаксису UML.
+	\end{frame}
+
+\end{document}
