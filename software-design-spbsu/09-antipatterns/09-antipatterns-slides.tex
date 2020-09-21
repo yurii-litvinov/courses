@@ -350,22 +350,6 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Poltergeists}
-		``I’m not exactly sure what this class does, but it sure is important!''
-		\begin{itemize}
-			\item Классы, которые не нужны архитектуре системы и существуют лишь чтобы выполнить какие-то действия с другими классами
-			\begin{itemize}
-				\item ...Controller, ...Manager и т.д., нужные только для инициализации или вызова других классов
-				\item Время жизни их объектов ограничено (отсюда название)
-				\item Тенденция использовать побочные эффекты
-				\begin{itemize}
-					\item Вся идиома RAII в C++
-				\end{itemize}
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
 		\frametitle{Golden Hammer}
 		``I have a hammer and everything else is a nail.'', ``Our database is our architecture.'', ``Maybe we shouldn’t have used Excel macros for this job after all.''
 		\begin{itemize}
@@ -402,31 +386,6 @@
 			\begin{itemize}
 				\item Квалифицированный программист может хорошо программировать на чём угодно
 			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\section{Design smells}
-
-	\begin{frame}
-		\frametitle{Design smells}
-		\begin{itemize}
-			\item \textbf{Missing abstraction} --- использование примитивных или слишком общих типов данных вместо своих классов
-			\item \textbf{Multifaceted abstraction} --- нарушение единственности ответственности
-			\item \textbf{Duplicate abstraction} --- две абстракции имеют одно предназначение
-			\item \textbf{Deficient encapsulation} --- слишком широкая видимость
-			\item \textbf{Unexploited encapsulation} --- явные проверки типов вместо полиморфизма
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Design smells (2)}
-		\begin{itemize}
-			\item \textbf{Broken modularization} --- неуместное разбиение на классы/пакеты
-			\item \textbf{Insufficient modularization} --- неуместное неразбиение на классы/пакеты
-			\item \textbf{Cyclically-dependent modularization} --- циклические зависимости
-			\item \textbf{Unfactored hierarchy} --- дупликация в иерархии
-			\item \textbf{Broken hierarchy} --- нарушение принципа подстановки и IS-A
-			\item \textbf{Cyclic hierarchy} --- зависимость от потомков
 		\end{itemize}
 	\end{frame}
 
