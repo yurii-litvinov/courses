@@ -1,0 +1,370 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+\usepackage{pgfplots}
+\usepackage{textpos}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\usepackage{forest}
+\usetikzlibrary{arrows}
+
+\tabulinesep=0.7mm
+
+\title{Структуры, модули, файлы}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{29.09.2020}
+
+\begin{document}
+    
+    \frame{\titlepage}
+    
+    \begin{frame}[fragile]
+        \frametitle{Структуры}
+        \begin{itemize}
+            \item Способ группировки родственных по смыслу значений
+            \item Структура --- это тип
+            \begin{itemize}
+                \item В памяти представляется как поля, лежащие друг за другом, возможно, с ``дырками'' (padding)
+                \item Объявляется вне функции
+            \end{itemize}
+            \item Объявление структуры:
+            \begin{minted}{c}
+struct Point {
+    int x;
+    int y;
+};
+            \end{minted}
+            \item Использование:
+            \begin{minted}{c}
+void main() {
+    struct Point p;
+    p.x = 10;
+}
+            \end{minted}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Структуры (2)}
+        \begin{itemize}
+            \item Или, чтобы \mintinline{c}{struct} каждый раз не писать:
+            \begin{minted}{cpp}
+typedef struct {
+    int x;
+    int y;
+} Point;
+            \end{minted}
+            \begin{itemize}
+                \item \mintinline{c}{typedef} --- объявление синонима типа
+            \end{itemize}
+            \item Использование:
+            \begin{minted}{c}
+void main() {
+    Point p = {10, 20};
+    printf("(%d, %d)", p.x, p.y);
+}
+            \end{minted}
+            \item Продвинутая инициализация:
+            \begin{minted}{c}
+Point p = {.x = 10, .y = 20};
+            \end{minted}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Указатели и структуры}
+        \begin{itemize}
+            \item Структуры и указатели настолько часто используются вместе, что есть оператор -> (разыменовать указатель на структуру и обратиться к её полю)
+            \begin{itemize}
+                \item 
+                \begin{footnotesize}
+                    \begin{minted}{c}
+int main() {
+    Point* p = malloc(sizeof(Point));
+    if (p == NULL) {
+        return -1;
+    }
+    p->x = 10;
+    p->y = 20;
+    printf("(%d, %d)", p->x, p->y);
+    free(p);
+
+    return 0;
+}                    \end{minted}
+                \end{footnotesize}
+                \item То же самое, что \mintinline{c}|(*p).x| и \mintinline{c}|(*p).y|
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Операция взятия адреса}
+        \begin{itemize}
+            \item 
+                \begin{minted}{c}
+int main() {
+    Point p1 = { 10, 20 };
+    Point* p = &p1;
+    int *test = &(p1.x);
+    printf("(%d, %d)\n", p->x, p->y);
+    *test = 30;
+    printf("(%d, %d)\n", p->x, p->y);
+    printf("(%d, %d)\n", p1.x, p1.y);
+}
+                \end{minted}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Структуры и строки}
+        \begin{footnotesize}
+            \begin{minted}{c}
+typedef struct {
+    char *name;
+    char phone[30];
+} PhoneBookEntry;
+
+int main() {
+    PhoneBookEntry entry;
+    const char* name = "Ivan Ivanov";
+    entry.name = malloc(sizeof(char) * (strlen(name) + 1));
+    if (entry.name == NULL) {
+        return -1;
+    }
+    strcpy(entry.name, name);
+    strcpy(entry.phone, "+7 (911) 123-45-67");
+    printf("%s - %s", entry.name, entry.phone);
+    free(entry.name);
+    return 0;
+}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Полезные операции со строками}
+        Модуль string.h/cstring:
+        \begin{itemize}
+            \item strcpy --- скопировать строку в буфер
+            \item strcmp --- сравнить две строки
+            \item strcat --- склеить две строки (в буфере должно быть достаточно места!)
+            \item strlen --- узнать длину строки
+            \item strstr --- найти подстроку в строке
+            \item Строки нельзя сравнивать ==
+            \item Строки нельзя присваивать =
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Чтение строки прямо в структуру}
+        \begin{minted}{c}
+int main() {
+    PhoneBookEntry entry;
+    entry.name = malloc(sizeof(char) * 30);
+    if (entry.name == NULL) {
+        return -1;
+    }
+    scanf("%s", entry.name);
+    scanf("%[^\n]", entry.phone);
+
+    printf("%s - %s", entry.name, entry.phone);
+
+    free(entry.name);
+    return 0;
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Структуры могут указывать сами на себя}
+        \begin{footnotesize}
+            \begin{minted}{c}
+typedef struct ListElement {
+    int value;
+    struct ListElement *next;
+} ListElement;
+
+int main() {
+    ListElement* element1 = malloc(sizeof(ListElement));
+    element1->value = 1;
+    ListElement* element2 = malloc(sizeof(ListElement));
+    element2->value = 2;
+    element2->next = NULL;
+    element1->next = element2;
+
+    printf("%i - %i", element1->value, element1->next->value);
+
+    free(element1);
+    free(element2);
+
+    return 0;
+}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Файлы}
+        \begin{itemize}
+            \item Последовательность байтов на диске
+            \begin{itemize}
+                \item Бывают ``сырые'' и ``текстовые''
+                \begin{itemize}
+                    \item Самому файлу всё равно, это лишь способы интерпретации его содержимого
+                \end{itemize}
+                \item Режимы доступа: r, w, a, r+, w+, a+
+                \item Курсор
+                \item EOF
+            \end{itemize}
+            \item Функции для работы с файлами:
+            \begin{itemize}
+                \item fopen, fclose, fprintf, fscanf, fseek, ftell, fgets
+            \end{itemize}
+            \item Файлы надо не забывать закрывать
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример, как писать в файл}
+        \begin{minted}{cpp}
+int main() {
+    FILE* out = fopen("ololo.txt", "w");
+    if (out == NULL) {
+        return -1;
+    }
+    fwrite("Ololo\n", sizeof(char), 6, out);
+    fprintf(out, "%s", "Ololo");
+    fclose(out);
+    return 0;
+}
+        \end{minted}
+        \begin{itemize}
+            \item Файлы нелишне добавлять в проект как <<Файлы ресурсов>>
+            \item stdin/stdout --- это тоже файлы
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример, как читать из файла}
+        \begin{scriptsize}
+            \begin{minted}{cpp}
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("test.txt", "r");
+    if (file == NULL) {
+        printf("file not found!");
+        return 1;
+    }
+    char *data[100] = {};
+    int linesRead = 0;
+    while (!feof(file)) {
+        char *buffer = new char[100];
+        const int readBytes = fscanf(file, "%s", buffer);
+        if (readBytes < 0) {
+            break;
+        }
+        data[linesRead] = buffer;
+        ++linesRead;
+    }
+    fclose(file);
+    ...
+}
+
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Тонкости}
+        \begin{itemize}
+            \item Чтение строки целиком: \mintinline{cpp}|fscanf(file, "|\%\mintinline{cpp}|[^\n]", buffer);|
+            \item Или: \mintinline{cpp}|fgets(buffer, sizeof(buffer), file);|
+            \item Working directory
+            \begin{itemize}
+                \item Свойства проекта -> Отладка -> Рабочая папка
+                \item По умолчанию \$(ProjectDir), папка с .vcxproj
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Модули}
+        \begin{itemize}
+            \item Способ группировки кода в логически обособленные группы
+            \item В C это реализуется с помощью заголовочных файлов и файлов с реализацией
+            \begin{itemize}
+                \item .h и .c
+            \end{itemize}
+            \item В отдельный модуль выносятся объявления типов данных и функции, которые делают одно дело
+            \begin{itemize}
+                \item Например, разные функции сортировки
+                \item Или всё для работы с матрицами
+            \end{itemize}
+            \item В интерфейсную часть модуля выносится только то, что может использовать другой код
+            \begin{itemize}
+                \item Меньше знаешь --- крепче спишь
+            \end{itemize}
+            \item Функции, используемые только для реализации, пишутся только в .c-файле
+            \begin{itemize}
+                \item Например, функция разделения массива для быстрой сортировки или swap
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Модули}
+        \begin{scriptsize}
+            Заголовочный файл:
+            \begin{minted}{c}
+#pragma once
+
+// Комментарий к функции 1
+int function1(int x, int y);
+
+// Комментарий к функции 2
+void function2();
+            \end{minted}
+            .c-файл:
+            \begin{minted}{c}
+#include <имя заголовочного файла.h>
+
+#include <все остальные библиотеки>
+
+int function1(int x, int y)
+{
+    ...
+}
+
+void function2()
+{
+    ...
+}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Тонкости}
+        \begin{itemize}
+            \item Реализации функций в .h-файле писать нельзя
+            \begin{itemize}
+                \item Иначе будет беда, если один .h-ник подключат в два .c-шника
+            \end{itemize}
+            \item Комментарии обязательны
+            \item \#pragma once обязательна
+            \item Подключать <<свой>> заголовочный файл в .c обязательно
+            \item Файлы .h/.c всегда ходят парами, кроме файла с main
+        \end{itemize}
+    \end{frame}
+
+\end{document}
+

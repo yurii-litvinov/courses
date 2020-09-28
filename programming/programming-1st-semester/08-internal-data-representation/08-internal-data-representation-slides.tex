@@ -26,7 +26,7 @@
 \title{Внутреннее представление данных}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{01.10.2019}
+\date{29.09.2020}
 
 \begin{document}
 	
@@ -137,14 +137,14 @@ for (int j = 0; j < 8; ++j)
 			\begin{itemize}
 				\item \mintinline{cpp}|int hexadecimal = 0x35FF;|
 				\item \mintinline{cpp}|int octal = 03567;|
-				\item \mintinline{cpp}|int binary = 0b00100111;| (С++14) 
+				\item \mintinline{cpp}|int binary = 0b00100111;|
 				\item \mintinline{cpp}|0xFF == 255|
 			\end{itemize}
 			\item 
 			\begin{footnotesize}
 				\begin{minted}{cpp}
 int x = 239;
-unsigned char *b = reinterpret_cast<unsigned char*>(&x);
+unsigned char *b = (unsigned char*)(&x);
 printf("0x%02X%02X%02X%02X\n", b[0], b[1], b[2], b[3]);
 				\end{minted}
 			\end{footnotesize}
