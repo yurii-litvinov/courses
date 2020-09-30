@@ -264,10 +264,10 @@ int main() {
         printf("file not found!");
         return 1;
     }
-    char *data[100] = {};
+    char *data[100] = {0};
     int linesRead = 0;
     while (!feof(file)) {
-        char *buffer = new char[100];
+        char *buffer = malloc(sizeof(char) * 100);
         const int readBytes = fscanf(file, "%s", buffer);
         if (readBytes < 0) {
             break;
