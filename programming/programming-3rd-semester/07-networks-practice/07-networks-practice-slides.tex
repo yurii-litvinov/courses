@@ -20,7 +20,7 @@
 \title{Работа с сетью}
 \subtitle{Практика}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{18.10.2019г}
+\date{13.10.2020г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -28,82 +28,82 @@
 
 \begin{document}
 
-	\frame{\titlepage}
+    \frame{\titlepage}
 
-	\section{Клиент ВК}
+    \section{Клиент ВК}
 
-	\begin{frame}
-		\frametitle{Клиент для вконтакта}
-		\begin{itemize}
-			\item Пишем десктопный клиент для VK через VK API
-			\item Документация: \url{https://vk.com/dev/manuals}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Клиент для вконтакта}
+        \begin{itemize}
+            \item Пишем десктопный клиент для VK через VK API
+            \item Документация: \url{https://vk.com/dev/manuals}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Часть 1: получение открытой информации о пользователе}
-		\begin{itemize}
-			\item Метод Users.get
-			\begin{itemize}
-				\item \url{https://vk.com/dev/users.get}
-			\end{itemize}
-			\item Авторизация по сервисному ключу
-			\begin{itemize}
-				\item \url{https://vk.com/dev/access_token}
-			\end{itemize}
-			\item Потребуется зарегистрировать своё приложение
-			\item Десериализация: Json.NET
-			\begin{itemize}
-				\item \url{https://www.newtonsoft.com/json/help/html/DeserializeObject.htm}
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Часть 1: получение открытой информации о пользователе}
+        \begin{itemize}
+            \item Метод Users.get
+            \begin{itemize}
+                \item \url{https://vk.com/dev/users.get}
+            \end{itemize}
+            \item Авторизация по сервисному ключу
+            \begin{itemize}
+                \item \url{https://vk.com/dev/access_token}
+            \end{itemize}
+            \item Потребуется зарегистрировать своё приложение
+            \item Десериализация: Json.NET
+            \begin{itemize}
+                \item \url{https://www.newtonsoft.com/json/help/html/DeserializeObject.htm}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Часть 2: авторизация, список контактов онлайн}
-		\begin{itemize}
-			\item Implicit Flow
-			\begin{itemize}
-				\item \url{https://vk.com/dev/implicit_flow_user}
-			\end{itemize}
-			\item Как запустить браузер из .NET Core:
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Часть 2: авторизация, список контактов онлайн}
+        \begin{itemize}
+            \item Implicit Flow
+            \begin{itemize}
+                \item \url{https://vk.com/dev/implicit_flow_user}
+            \end{itemize}
+            \item Как запустить браузер из .NET Core:
+            \begin{minted}{csharp}
 authString = authString.Replace("&", "^&");
 Process.Start(new ProcessStartInfo(
         "cmd", 
         $"/c start {authString}") 
         { CreateNoWindow = true });
-			\end{minted}
-		\end{itemize}
-	\end{frame}
+            \end{minted}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Часть 3: поменяем аватарку}
-		\begin{itemize}
-			\item В три этапа
-			\begin{itemize}
-				\item Получаем адрес, по которому надо загрузить фото 
-				\begin{itemize}
-					\item \url{https://vk.com/dev/photos.getOwnerPhotoUploadServer}
-				\end{itemize}
-				\item Загружаем фото
-				\begin{itemize}
-					\item \url{https://vk.com/dev/upload_files}
-					\item Как сформировать multipart/form-data:
-					\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Часть 3: поменяем аватарку}
+        \begin{itemize}
+            \item В три этапа
+            \begin{itemize}
+                \item Получаем адрес, по которому надо загрузить фото 
+                \begin{itemize}
+                    \item \url{https://vk.com/dev/photos.getOwnerPhotoUploadServer}
+                \end{itemize}
+                \item Загружаем фото
+                \begin{itemize}
+                    \item \url{https://vk.com/dev/upload_files}
+                    \item Как сформировать multipart/form-data:
+                    \begin{minted}{csharp}
 var form = new MultipartFormDataContent
 {
     { new ByteArrayContent(File.ReadAllBytes("cthulhu.png"))
         , "photo", "cthulhu.png" }
 };
-					\end{minted}
-				\end{itemize}
-				\item Выставляем фото как аватар
-				\begin{itemize}
-					\item \url{https://vk.com/dev/photos.saveOwnerPhoto}
-				\end{itemize}
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+                    \end{minted}
+                \end{itemize}
+                \item Выставляем фото как аватар
+                \begin{itemize}
+                    \item \url{https://vk.com/dev/photos.saveOwnerPhoto}
+                \end{itemize}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
 \end{document}
