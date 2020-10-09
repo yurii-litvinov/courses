@@ -28,7 +28,7 @@
 \subtitle{Что ещё можно делать с указателями}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{15.10.2019}
+\date{13.10.2020}
 
 \begin{document}
 	
@@ -38,17 +38,17 @@
 		\frametitle{Структуры, ссылающиеся сами на себя}
 		\begin{footnotesize}
 			\begin{minted}{cpp}
-struct Element {
+typedef struct Element {
     int value;
-    Element *next;
-};
+    struct Element* next;
+} Element;
 
 void main() {
-    Element *element1 = new Element {1, nullptr};
-    Element *element2 = new Element {2, nullptr};
+    Element* element1 = malloc(sizeof(Element));
+    Element* element2 = malloc(sizeof(Element));
     element1->next = element2;
-    delete element1;
-    delete element2;
+    free(element1);
+    free(element2);
 }
 			\end{minted}
 		\end{footnotesize}
