@@ -25,7 +25,7 @@
 
 \title{Рефлексия}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{25.10.2019г}
+\date{20.10.2020г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -33,64 +33,65 @@
 
 \begin{document}
 
-	\frame{\titlepage}
+    \frame{\titlepage}
 
-	\section{Рефлексия}
+    \section{Рефлексия}
 
-	\begin{frame}
-		\frametitle{Рефлексия}
-		\begin{itemize}
-			\item Позволяет во время выполнения получать информацию о типах
-			\begin{itemize}
-				\item И главное, создавать объекты этих типов и вызывать их методы
-			\end{itemize}
-			\item Зачем:
-			\begin{itemize}
-				\item Плагины
-				\item Анализаторы кода
-				\item Тестовые системы
-				\item Библиотеки сериализации
-				\item Библиотеки для работы с базами данных
-				\item ...
-			\end{itemize}
-			\item Проблемы:
-			\begin{itemize}
-				\item Медленно
-				\item Нет помощи от системы типов
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Рефлексия}
+        \begin{itemize}
+            \item Позволяет во время выполнения получать информацию о типах
+            \begin{itemize}
+                \item И главное, создавать объекты этих типов и вызывать их методы
+            \end{itemize}
+            \item Зачем:
+            \begin{itemize}
+                \item Плагины
+                \item Анализаторы кода
+                \item Тестовые системы
+                \item Библиотеки сериализации
+                \item Библиотеки для работы с базами данных
+                \item Inversion of Control-контейнеры
+                \item ...
+            \end{itemize}
+            \item Проблемы:
+            \begin{itemize}
+                \item Медленно
+                \item Нет помощи от системы типов
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\section{Сборки}
+    \section{Сборки}
 
-	\begin{frame}
-		\frametitle{Рефлексия в .NET}
-		\begin{itemize}
-			\item Пространство имён System.Reflection
-			\item Байт-код хранит всю информацию о типах 
-			\begin{itemize}
-				\item И даже параметрах-типах у генериков, в отличие от Java
-			\end{itemize}
-			\item Самая крупная штука, которой оперирует рефлексия --- \textbf{сборка}
-			\begin{itemize}
-				\item .dll или .exe, единица развёртывания программы
-				\begin{itemize}
-					\item На самом деле это неправда, детали см. в CLR via C\#
-				\end{itemize}
-			\end{itemize}
-			\item Сборка хранит метаинформацию:
-			\begin{itemize}
-				\item Таблицы модулей, типов, методов, полей, параметров, свойств и событий
-			\end{itemize}
-			\item На всё это можно посмотреть в ILDasm
-			\item AppDomain --- логическая группа сборок во время выполнения
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Рефлексия в .NET}
+        \begin{itemize}
+            \item Пространство имён System.Reflection
+            \item Байт-код хранит всю информацию о типах 
+            \begin{itemize}
+                \item И даже параметрах-типах у генериков, в отличие от Java
+            \end{itemize}
+            \item Самая крупная штука, которой оперирует рефлексия --- \textbf{сборка}
+            \begin{itemize}
+                \item .dll или .exe, единица развёртывания программы
+                \begin{itemize}
+                    \item На самом деле это неправда, детали см. в CLR via C\#
+                \end{itemize}
+            \end{itemize}
+            \item Сборка хранит метаинформацию:
+            \begin{itemize}
+                \item Таблицы модулей, типов, методов, полей, параметров, свойств и событий
+            \end{itemize}
+            \item На всё это можно посмотреть в ILDasm
+            \item AppDomain --- логическая группа сборок во время выполнения
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Загрузка сборки}
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Загрузка сборки}
+        \begin{small}
+            \begin{minted}{csharp}
 public class Assembly {
     public static Assembly Load(AssemblyName assemblyRef);
     public static Assembly Load(String assemblyString);
@@ -99,57 +100,57 @@ public class Assembly {
     public static Assembly ReflectionOnlyLoad(String assemblyString);
     public static Assembly ReflectionOnlyLoadFrom(String assemblyFile);
 }
-			\end{minted}
-			например,
-			\begin{minted}{csharp}
+            \end{minted}
+            например,
+            \begin{minted}{csharp}
 var a = Assembly.LoadFrom(@"http://example.com/ExampleAssembly.dll");
-			\end{minted}
-			Такая сборка должна быть ещё не загружена. Выгружать сборки нельзя.
-		\end{small}
-	\end{frame}
+            \end{minted}
+            Такая сборка должна быть ещё не загружена. Выгружать сборки нельзя.
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Сильные и слабые имена сборок (1)}
-		\begin{itemize}
-			\item Сильные сборки подписаны асимметричным шифром
-			\begin{itemize}
-				\item Публичная часть ключа внедряется в саму сборку
-				\item От сборки считается SHA-1-хеш, шифруется приватным ключом и внедряется в сборку
-				\item CLR при загрузке сборки считает от неё SHA-1-хеш и проверяет, что он совпал с подписанным
-				\item Позволяет проверить, что сборка именно такая, какой её собирал автор, но не позволяет проверить идентичность автора
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}[fragile]
+        \frametitle{Сильные и слабые имена сборок (1)}
+        \begin{itemize}
+            \item Сильные сборки подписаны асимметричным шифром
+            \begin{itemize}
+                \item Публичная часть ключа внедряется в саму сборку
+                \item От сборки считается SHA-1-хеш, шифруется приватным ключом и внедряется в сборку
+                \item CLR при загрузке сборки считает от неё SHA-1-хеш и проверяет, что он совпал с подписанным
+                \item Позволяет проверить, что сборка именно такая, какой её собирал автор, но не позволяет проверить идентичность автора
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Сильные и слабые имена сборок (2)}
-		\begin{itemize}
-			\item Пример сильного имени:
-			\begin{scriptsize}
-				\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Сильные и слабые имена сборок (2)}
+        \begin{itemize}
+            \item Пример сильного имени:
+            \begin{scriptsize}
+                \begin{minted}{csharp}
 "MyTypes, Version=1.0.8123.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
-				\end{minted}
-			\end{scriptsize}
-			\begin{itemize}
-				\item Однозначно идентифицирует сборку
-				\item PublicKeyToken --- короткий хеш публичного ключа
-				\begin{itemize}
-					\item Естественно, не криптостоек, поэтому CLR проверяет настоящий ключ при загрузке сборки
-				\end{itemize}
-			\end{itemize}
-			\item Сборка с сильным именем может ссылаться только на сборки с сильными именами
-			\item Сборка с сильным именем может быть установлена в GAC
-			\begin{itemize}
-				\item GACUtil --- утилита для манипуляции GAC, в стандартной поставке
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+                \end{minted}
+            \end{scriptsize}
+            \begin{itemize}
+                \item Однозначно идентифицирует сборку
+                \item PublicKeyToken --- короткий хеш публичного ключа
+                \begin{itemize}
+                    \item Естественно, не криптостоек, поэтому CLR проверяет настоящий ключ при загрузке сборки
+                \end{itemize}
+            \end{itemize}
+            \item Сборка с сильным именем может ссылаться только на сборки с сильными именами
+            \item Сборка с сильным именем может быть установлена в GAC
+            \begin{itemize}
+                \item GACUtil --- утилита для манипуляции GAC, в стандартной поставке
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример}
-		\framesubtitle{Распечатать имена всех типов в сборке}
-		\begin{footnotesize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример}
+        \framesubtitle{Распечатать имена всех типов в сборке}
+        \begin{footnotesize}
+            \begin{minted}{csharp}
 using System;
 using System.Reflection;
 
@@ -167,38 +168,38 @@ public static class Program {
         }
     }
 }
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
 
-	\section{Типы}
+    \section{Типы}
 
-	\begin{frame}[fragile]
-		\frametitle{Создание экземпляра объекта}
-		\begin{itemize}
-			\item System.Activator.CreateInstance --- можно передавать тип или строку с именем типа
-			\begin{itemize}
-				\item Версии со строкой возвращают System.Runtime.Remoting.ObjectHandle, надо вызвать Unwrap()
-			\end{itemize}
-			\item System.Activator.CreateInstanceFrom --- вызывает LoadFrom для сборки
-			\item System.Reflection.ConstructorInfo.Invoke --- просто вызов конструктора (несколько дольше писать, чем предыдущие варианты)
-			\item Рефлексия ничего не знает о синонимах
-			\begin{itemize}
-				\item То есть int везде называется System.Int32
-			\end{itemize}
-		\end{itemize}
-		Пример:
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Создание экземпляра объекта}
+        \begin{itemize}
+            \item System.Activator.CreateInstance --- можно передавать тип или строку с именем типа
+            \begin{itemize}
+                \item Версии со строкой возвращают System.Runtime.Remoting.ObjectHandle, надо вызвать Unwrap()
+            \end{itemize}
+            \item System.Activator.CreateInstanceFrom --- вызывает LoadFrom для сборки
+            \item System.Reflection.ConstructorInfo.Invoke --- просто вызов конструктора (несколько дольше писать, чем предыдущие варианты)
+            \item Рефлексия ничего не знает о синонимах
+            \begin{itemize}
+                \item То есть int везде называется System.Int32
+            \end{itemize}
+        \end{itemize}
+        Пример:
+        \begin{small}
+            \begin{minted}{csharp}
 var zero = Activator.CreateInstance("mscorlib.dll", "System.Int32").Unwrap();
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Создание экземпляра типа-генерика}
-		\begin{footnotesize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Создание экземпляра типа-генерика}
+        \begin{footnotesize}
+            \begin{minted}{csharp}
 using System;
 using System.Reflection;
 
@@ -213,36 +214,36 @@ public static class Program {
         Console.WriteLine(o.GetType());
     }
 }
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Пример: как сделать свою плагинную систему}
-		\begin{itemize}
-			\item Сделать отдельную сборку с описанием интерфейса плагина и типов данных, которые он использует
-			\begin{itemize}
-				\item Менять её будет очень проблематично
-			\end{itemize}
-			\item Сделать ``ядро системы'' --- отдельную сборку, ссылающуюся на сборку с интерфейсом плагина
-			\item Делать набор плагинов, ссылающихся на сборку с интерфейсом плагина и реализующих его
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Пример: как сделать свою плагинную систему}
+        \begin{itemize}
+            \item Сделать отдельную сборку с описанием интерфейса плагина и типов данных, которые он использует
+            \begin{itemize}
+                \item Менять её будет очень проблематично
+            \end{itemize}
+            \item Сделать ``ядро системы'' --- отдельную сборку, ссылающуюся на сборку с интерфейсом плагина
+            \item Делать набор плагинов, ссылающихся на сборку с интерфейсом плагина и реализующих его
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример: интерфейс плагина}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример: интерфейс плагина}
+        \begin{minted}{csharp}
 namespace MyCoolSystem.SDK {
     public interface IAddIn {
         string DoSomething(int x);
     }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример: плагины}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример: плагины}
+        \begin{minted}{csharp}
 using MyCoolSystem.SDK;
 
 public sealed class AddInA : IAddIn {
@@ -256,13 +257,13 @@ public sealed class AddInB : IAddIn {
         return "AddInB: " + (x * 2).ToString();
     }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример: ядро системы}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример: ядро системы}
+        \begin{scriptsize}
+            \begin{minted}{csharp}
 public static class Program
 {
     public static void Main()
@@ -282,39 +283,39 @@ public static class Program
         }
     }
 }
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-	\section{Поля, методы и т.д.}
+    \section{Поля, методы и т.д.}
 
-	\begin{frame}
-		\frametitle{Информация о типах}
-		\begin{center}
-			\begin{tiny}
-				\begin{forest}
-					for tree={rectangle,draw,l sep=1cm,s sep=3mm,edge=open triangle 60-}
-					[Object
-						[Reflection.MemberInfo
-							[TypeInfo]
-							[Reflection.FieldInfo]
-							[Reflection.MethodBase
-								[Reflection.ConstructorInfo]
-								[Reflection.MethodInfo]
-							]
-							[Reflection.PropertyInfo]
-							[Reflection.EventInfo]
-						]
-					]
-				\end{forest}
-			\end{tiny}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Информация о типах}
+        \begin{center}
+            \begin{tiny}
+                \begin{forest}
+                    for tree={rectangle,draw,l sep=1cm,s sep=3mm,edge=open triangle 60-}
+                    [Object
+                        [Reflection.MemberInfo
+                            [Reflection.TypeInfo]
+                            [Reflection.FieldInfo]
+                            [Reflection.MethodBase
+                                [Reflection.ConstructorInfo]
+                                [Reflection.MethodInfo]
+                            ]
+                            [Reflection.PropertyInfo]
+                            [Reflection.EventInfo]
+                        ]
+                    ]
+                \end{forest}
+            \end{tiny}
+        \end{center}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример: распечатать информацию о полях и методах}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример: распечатать информацию о полях и методах}
+        \begin{scriptsize}
+            \begin{minted}{csharp}
 using System;
 using System.Reflection;
 
@@ -326,46 +327,48 @@ public static class Program {
             foreach (Type t in a.ExportedTypes) {
                 Console.WriteLine($"  Type: {t}");
                 foreach (MemberInfo mi in t.GetTypeInfo().DeclaredMembers) {
-                    var typeName = string.Empty;
-                    if (mi is FieldInfo) typeName = "FieldInfo";
-                    if (mi is MethodInfo) typeName = "MethodInfo";
-                    if (mi is ConstructorInfo) typeName = "ConstructorInfo";
+                    var typeName = mi switch {
+                        FieldInfo _ => "FieldInfo",
+                        MethodInfo _ => "MethodInfo",
+                        ConstructorInfo _ => "ConstructorInfo",
+                        _ => ""
+                    };
                     Console.WriteLine($"    {typeName}: {mi}");
                 }
             }
         }
     }
 }
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Полезные свойства MemberInfo}
-		\begin{itemize}
-			\item Name (string) --- имя члена класса
-			\item DeclaringType (Type) --- тип
-			\item Module (Module) --- модуль, в котором он объявлен
-			\item CustomAttributes (IEnumerable<CustomAttributeData>) --- коллекция атрибутов, соответствующих этому члену класса
-			\begin{itemize}
-				\item Пример --- модульные тесты
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Полезные свойства MemberInfo}
+        \begin{itemize}
+            \item Name (string) --- имя члена класса
+            \item DeclaringType (Type) --- тип
+            \item Module (Module) --- модуль, в котором он объявлен
+            \item CustomAttributes (IEnumerable<CustomAttributeData>) --- коллекция атрибутов, соответствующих этому члену класса
+            \begin{itemize}
+                \item Пример --- модульные тесты
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Как что-нибудь сделать с MemberInfo}
-		\begin{itemize}
-			\item GetValue и SetValue для FieldInfo и PropertyInfo
-			\item Invoke для ConstructorInfo и MethodInfo
-			\item AddEventHandler и RemoveEventHandler для EventInfo
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Как что-нибудь сделать с MemberInfo}
+        \begin{itemize}
+            \item GetValue и SetValue для FieldInfo и PropertyInfo
+            \item Invoke для ConstructorInfo и MethodInfo
+            \item AddEventHandler и RemoveEventHandler для EventInfo
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример: создать объект и вызвать его метод}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример: создать объект и вызвать его метод}
+        \begin{scriptsize}
+            \begin{minted}{csharp}
 using System;
 using System.Reflection;
 using System.Linq;
@@ -388,30 +391,30 @@ public static class Program {
         Console.WriteLine($"result = {result}");
     }
 }
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-	\section{Атрибуты}
+    \section{Атрибуты}
 
-	\begin{frame}
-		\frametitle{Атрибуты}
-		\begin{itemize}
-			\item Способ добавить произвольную информацию к коду во время компиляции
-			\item Эта информация может быть использована потом во время компиляции или во время выполнения
-			\begin{itemize}
-				\item Типичный пример --- атрибуты юнит-тестов (Test, ExpectedException, ...)
-			\end{itemize}
-			\item Могут быть применены к сборке, типу, полю, методу, параметру метода, возвращаемому значению, свойству, событию, параметру-типу
-			\item Могут иметь параметры
-			\item На самом деле, экземпляры классов-наследников System.Attribute
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Атрибуты}
+        \begin{itemize}
+            \item Способ добавить произвольную информацию к коду во время компиляции
+            \item Эта информация может быть использована потом во время компиляции или во время выполнения
+            \begin{itemize}
+                \item Типичный пример --- атрибуты юнит-тестов (Test, ExpectedException, ...)
+            \end{itemize}
+            \item Могут быть применены к сборке, типу, полю, методу, параметру метода, возвращаемому значению, свойству, событию, параметру-типу
+            \item Могут иметь параметры
+            \item На самом деле, экземпляры классов-наследников System.Attribute
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Объявление своего атрибута}
-		\begin{footnotesize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Объявление своего атрибута}
+        \begin{footnotesize}
+            \begin{minted}{csharp}
 public enum Animal
 {
     Dog = 1,
@@ -428,14 +431,14 @@ public class AnimalTypeAttribute : Attribute
 
     public Animal Pet { get; set; }
 }
-			\end{minted}
-		\end{footnotesize}
-		\attribution{MSDN}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+        \attribution{MSDN}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Использование атрибута}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Использование атрибута}
+        \begin{minted}{csharp}
 class AnimalTypeTestClass
 {
     [AnimalType(Animal.Dog)]
@@ -447,13 +450,13 @@ class AnimalTypeTestClass
     [AnimalType(Animal.Bird)]
     public void BirdMethod() { }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Получение атрибута рефлексией}
-		\begin{footnotesize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Получение атрибута рефлексией}
+        \begin{footnotesize}
+            \begin{minted}{csharp}
 static void Main(string[] args)
 {
     var testClass = new AnimalTypeTestClass();
@@ -471,13 +474,13 @@ static void Main(string[] args)
         }
     }
 }
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Ограничение области применения атрибута}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Ограничение области применения атрибута}
+        \begin{minted}{csharp}
 namespace System {
     [AttributeUsage(AttributeTargets.Enum, Inherited = false)]
     public class FlagsAttribute : System.Attribute {
@@ -485,31 +488,31 @@ namespace System {
         }
     }
 }
-		\end{minted}
-		Атрибуты у атрибутов!
-	\end{frame}
+        \end{minted}
+        Атрибуты у атрибутов!
+    \end{frame}
 
-	\section{Сериализация}
+    \section{Сериализация}
 
-	\begin{frame}
-		\frametitle{Библиотеки сериализации}
-		\begin{itemize}
-			\item Нужны для передачи объектов по сети или сохранения объектов
-			\item Часто используемые форматы
-			\begin{itemize}
-				\item XML
-				\item JSON
-				\item Protobuf
-			\end{itemize}
-			\item Активно используют рефлексию
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Библиотеки сериализации}
+        \begin{itemize}
+            \item Нужны для передачи объектов по сети или сохранения объектов
+            \item Часто используемые форматы
+            \begin{itemize}
+                \item XML
+                \item JSON
+                \item Protobuf
+            \end{itemize}
+            \item Активно используют рефлексию
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример, сериализация в XML, System.Xml.Serialization}
-		\framesubtitle{Данные}
-		\begin{footnotesize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример, сериализация в XML, System.Xml.Serialization}
+        \framesubtitle{Данные}
+        \begin{footnotesize}
+            \begin{minted}{csharp}
 public class Point
 {
     public Point() { }
@@ -524,14 +527,14 @@ public class SomeData
     public Point Center { get; set; }
     public List<Point> Points { get; } = new List<Point>();
 }
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Сама сериализация}
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Сама сериализация}
+        \begin{small}
+            \begin{minted}{csharp}
 var data = new SomeData { Radius = 10, Center = new Point(5, 5)};
 data.Points.Add(new Point(1, 1));
 data.Points.Add(new Point(2, 2));
@@ -542,14 +545,14 @@ using (var textWriter = new StringWriter())
     serializer.Serialize(textWriter, data);
     Console.WriteLine(textWriter.ToString());
 }
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Результат}
-		\begin{small}
-			\begin{minted}{xml}
+    \begin{frame}[fragile]
+        \frametitle{Результат}
+        \begin{small}
+            \begin{minted}{xml}
 <?xml version="1.0" encoding="utf-16"?>
 <SomeData xmlns:xsi="..." xmlns:xsd="...">
     <Radius>10</Radius>
@@ -568,14 +571,14 @@ using (var textWriter = new StringWriter())
         </Point>
     </Points>
 </SomeData>
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{То же с Newtonsoft.Json}
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{То же с Newtonsoft.Json}
+        \begin{small}
+            \begin{minted}{csharp}
 var data = new SomeData { Radius = 10, Center = new Point(5, 5)};
 data.Points.Add(new Point(1, 1));
 data.Points.Add(new Point(2, 2));
@@ -586,14 +589,14 @@ using (var textWriter = new StringWriter())
     jsonSerializer.Serialize(textWriter, data);
     Console.WriteLine(textWriter.ToString());
 }
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Результат}
-		\begin{small}
-			\begin{minted}{json}
+    \begin{frame}[fragile]
+        \frametitle{Результат}
+        \begin{small}
+            \begin{minted}{json}
 {
   "Radius": 10,
   "Center": {
@@ -611,15 +614,15 @@ using (var textWriter = new StringWriter())
     }
   ]
 }
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Сериализация графа объектов}
-		\framesubtitle{Дьявол в деталях}
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Сериализация графа объектов}
+        \framesubtitle{Дьявол в деталях}
+        \begin{small}
+            \begin{minted}{csharp}
 var center = new Point(5, 5);
 var data = new SomeData { Radius = 10, Center = center };
 data.Points.Add(new Point(1, 1));
@@ -634,14 +637,14 @@ using (var textWriter = new StringWriter())
     jsonSerializer.Serialize(textWriter, data);
     Console.WriteLine(textWriter.ToString());
 }
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Результат}
-		\begin{footnotesize}
-			\begin{minted}{json}
+    \begin{frame}[fragile]
+        \frametitle{Результат}
+        \begin{footnotesize}
+            \begin{minted}{json}
 {
   "$id": "1",
   "Radius": 10,
@@ -661,22 +664,22 @@ using (var textWriter = new StringWriter())
     }
   ]
 }
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Десериализация}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Десериализация}
+        \begin{minted}{csharp}
 var deserializedData = 
     JsonConvert.DeserializeObject<SomeData>(serializedData);
 Console.WriteLine(deserializedData.Radius);
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Управление именами полей}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Управление именами полей}
+        \begin{minted}{csharp}
 public class Videogame
 {
     [JsonProperty("name")]
@@ -685,13 +688,13 @@ public class Videogame
     [JsonProperty("release_date")]
     public DateTime ReleaseDate { get; set; }
 }
-		\end{minted}
-		\attribution{https://www.newtonsoft.com}
-	\end{frame}
+        \end{minted}
+        \attribution{https://www.newtonsoft.com}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Управление тем, что надо сериализовать, а что нет}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Управление тем, что надо сериализовать, а что нет}
+        \begin{minted}{csharp}
 [JsonObject(MemberSerialization.OptIn)]
 public class File
 {
@@ -705,15 +708,15 @@ public class File
     [JsonProperty]
     public int Size { get; set; }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\section{dynamic}
+    \section{dynamic}
 
-	\begin{frame}[fragile]
-		\frametitle{Ключевое слово dynamic}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Ключевое слово dynamic}
+        \begin{scriptsize}
+            \begin{minted}{csharp}
 using System;
 
 internal static class DynamicDemo
@@ -732,16 +735,16 @@ internal static class DynamicDemo
     private static void M(int n) { Console.WriteLine("M(int): " + n); }
     private static void M(string s) { Console.WriteLine("M(string): " + s); }
 }
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-	\section{ILGenerator}
+    \section{ILGenerator}
 
-	\begin{frame}[fragile]
-		\frametitle{Генерация кода ``на лету''}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Генерация кода ``на лету''}
+        \begin{scriptsize}
+            \begin{minted}{csharp}
 public static void Main() {
     AssemblyName assemblyName = new AssemblyName {Name = "HelloEmit"};
     AppDomain appDomain = AppDomain.CurrentDomain;
@@ -766,8 +769,8 @@ public static void Main() {
     assemblyBuilder.SetEntryPoint(methodBuilder, PEFileKinds.ConsoleApplication);
     assemblyBuilder.Save("Hello.exe");
 }
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
 \end{document}
