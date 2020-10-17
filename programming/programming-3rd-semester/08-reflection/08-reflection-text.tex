@@ -1,0 +1,74 @@
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[font=scriptsize]{caption}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\newlength\Colsep
+\setlength\Colsep{10pt}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+\usepackage{xcolor}
+
+\tabulinesep=1.2mm
+
+\newcommand{\attribution}[1] {
+\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Рефлексия}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+
+\date{20.10.2020}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\section*{Введение}
+
+Рефлексия (иногда весьма некрасиво переводимая как <<отражение>>) --- это языковой механизм, позволяющей программе прямо во время выполнения получать информацию о чисто компиляторных вещах, таких как типы объектов, информация об их методах, полях и т.д. и т.п. При этом рефлексия позволяет не просто получать эту информацию, но и пользоваться ей --- создавать объекты типов, которые мы узнали с помощью рефлексии, вызывать методы у объектов, менять значения полей (даже private!) и т.п. 
+
+Разумеется, рефлексия требует поддержки со стороны компилятора и среды времени выполнения, чтобы сохранять после компиляции и предоставлять во время выполнения нужную информацию. Поэтому, например, в Си рефлексии нет вообще, а в C++ она весьма и весьма жалкая (RTTI), в Java она очень развита, но есть типичные для Java проблемы с генериками, в C\# (точнее, в .NET) она хороша, в языках наподобие JavaScript вообще отлична (потому что там компилятора нет вообще, и программа имеет буквально всю информацию о себе во время выполнения).
+
+Зачем рефлексия вообще нужна --- без неё не обходится ни один инструмент, требующий какой-то работы с кодом. Например, тестовые системы используют рефлексию, чтобы найти все тестовые методы, запустить их и посмотреть, что получилось. Так что да, на самом деле мы используем рефлексию уже очень давно. Ещё применения:
+
+\begin{itemize}
+    \item библиотеки сериализации --- Newtonsoft JSON нам уже встречался, в этой лекции ещё будет про System.Xml.Serialization, все остальные библиотеки устроены примерно так же. Они используют рефлексию, чтобы обходить сериализуемый объект и извлекать информацию о типах его полей, или при десереализации, чтобы создать и обойти целевой объект, заполняя его поля значениями.
+    \item Библиотеки для работы с базами данных, примерно для тех же целей --- обойти классы из программы и отобразить их в таблицы из БД или наоборот. Про эту сферу применения рефлексии подробнее в следующей лекции.
+    \item Анализаторы кода могут работать на уже скомпилированных библиотеках, рефлексией обходя код и ища типичные ошибки, либо считая разные метрики. Так может работать, например, FxCop, который теперь встроен в Visual Studio и называется там Run Code Analysis.
+    \item Плагинные системы для приложений быввает удобно реализовывать на рефлексии --- вы качаете откуда-то из интернета плагин, рефлексией узнаёте поддерживаемые им возможности, рефлексией же создаёте экземпляр плагина --- и спокойно работаете с ним. Причём, плагины могут быть написаны задолго после самого приложения.
+    \item Inversion-of-Control-контейнеры, например, \url{http://unitycontainer.org/}, с помощью рефлексии берут на себя всю работу по созданию и инициализации структуры объектов, тем самым позволяя не писать длинных var что-то-там = new Что-то-там в Main-е, не путаться с порядком инициализации и не думать о том, кому, кого и куда надо передавать, в конструктор или в свойство. Такие штуки очень распространены в веб-приложениях и вообще в enterprise-системах.
+\end{itemize}
+
+\end{document}
