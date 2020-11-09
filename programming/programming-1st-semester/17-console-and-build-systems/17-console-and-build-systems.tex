@@ -22,7 +22,7 @@
 \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
 \newcommand{\attribution}[1] {
-	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
 }
 
 \tabulinesep=0.7mm
@@ -30,141 +30,141 @@
 \title{Консоль и системы сборки}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{12.11.2019}
+\date{10.11.2020}
 
 \begin{document}
-	
-	\frame{\titlepage}
+    
+    \frame{\titlepage}
 
-	\begin{frame}
-		\frametitle{Консоль, зачем}
-		\begin{itemize}
-			\item Программы с интерфейсом командной строки
-			\begin{itemize}
-				\item В Linux-подобных системах очень многие программы имеют только интерфейс командной строки
-			\end{itemize}
-			\item Пакетный режим и автоматизация
-			\item Удалённое управление
-			\item Не везде есть графический интерфейс
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Консоль, зачем}
+        \begin{itemize}
+            \item Программы с интерфейсом командной строки
+            \begin{itemize}
+                \item В Linux-подобных системах очень многие программы имеют только интерфейс командной строки
+            \end{itemize}
+            \item Пакетный режим и автоматизация
+            \item Удалённое управление
+            \item Не везде есть графический интерфейс
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Интерпретаторы командной строки, терминалы}
-		Командные интерпретаторы
-		\begin{itemize}
-			\item Windows
-			\begin{itemize}
-				\item cmd
-				\item Windows Power Shell
-			\end{itemize}
-			\item Linux
-			\begin{itemize}
-				\item bash, zsh, csh, …
-			\end{itemize}
-		\end{itemize}
-		Терминалы
-		\begin{itemize}
-			\item Windows --- cmd, far, cmder
-			\item Linux --- terminal, xterm, konsole, yaquake, ...
-			\item Удалённое управление --- PuTTY, ssh
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Интерпретаторы командной строки, терминалы}
+        Командные интерпретаторы
+        \begin{itemize}
+            \item Windows
+            \begin{itemize}
+                \item cmd
+                \item Windows Power Shell
+            \end{itemize}
+            \item Linux
+            \begin{itemize}
+                \item bash, zsh, csh, …
+            \end{itemize}
+        \end{itemize}
+        Терминалы
+        \begin{itemize}
+            \item Windows --- cmd, far, cmder
+            \item Linux --- terminal, xterm, konsole, yaquake, ...
+            \item Удалённое управление --- PuTTY, ssh
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{cmd}
-		\begin{itemize}
-			\item Есть в любой Windows из коробки, но лучше поставить Far
-			\begin{itemize}
-				\item Win-R, Cmd
-			\end{itemize}
-			\item Команды
-			\begin{itemize}
-				\item dir, cd, xcopy, mkdir, del, …
-				\item ключ /?
-			\end{itemize}
-			\item Пути
-			\begin{itemize}
-				\item ./ololo.exe = ololo.exe
-				\item ../ololo.exe
-				\item относительный путь: ../myProgram/bin/ololo.exe
-				\item абсолютный путь: C:/myProgram/bin/ololo.exe
-			\end{itemize}
-			\item Потоки --- stdout, stderr
-			\begin{itemize}
-				\item echo ``test'' > someFile.txt 2> errors.txt
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{cmd}
+        \begin{itemize}
+            \item Есть в любой Windows из коробки, но лучше поставить Far
+            \begin{itemize}
+                \item Win-R, Cmd
+            \end{itemize}
+            \item Команды
+            \begin{itemize}
+                \item dir, cd, xcopy, mkdir, del, …
+                \item ключ /?
+            \end{itemize}
+            \item Пути
+            \begin{itemize}
+                \item ./ololo.exe = ololo.exe
+                \item ../ololo.exe
+                \item относительный путь: ../myProgram/bin/ololo.exe
+                \item абсолютный путь: C:/myProgram/bin/ololo.exe
+            \end{itemize}
+            \item Потоки --- stdout, stderr
+            \begin{itemize}
+                \item echo ``test'' > someFile.txt 2> errors.txt
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{.bat-файлы}
-		\begin{itemize}
-			\item echo ``Hello, world''
-			\item Параметры командной строки
-			\begin{itemize}
-				\item  \%1, \%2, …, \%*
-			\end{itemize}
-			\item Циклы, условия, goto и т.д.
-			\begin{itemize}
-				\item 
-					\begin{footnotesize}
-						\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{.bat-файлы}
+        \begin{itemize}
+            \item echo ``Hello, world''
+            \item Параметры командной строки
+            \begin{itemize}
+                \item  \%1, \%2, …, \%*
+            \end{itemize}
+            \item Циклы, условия, goto и т.д.
+            \begin{itemize}
+                \item 
+                    \begin{footnotesize}
+                        \begin{minted}{text}
 for /l %x in (1, 1, 100) do echo %x
-						\end{minted}
-					\end{footnotesize}
-			\end{itemize}
-			\item rem Это комментарий
-			\item @echo off
-			\item call --- вызов другого скрипта
-			\item cmd /C --- создание нового командного интерпретатора
-		\end{itemize}
-		Ctrl-C --- прервать выполнение скрипта (если что-то пошло не так), Ctrl-D --- конец входного потока
-	\end{frame}
+                        \end{minted}
+                    \end{footnotesize}
+            \end{itemize}
+            \item rem Это комментарий
+            \item @echo off
+            \item call --- вызов другого скрипта
+            \item cmd /C --- создание нового командного интерпретатора
+        \end{itemize}
+        Ctrl-C --- прервать выполнение скрипта (если что-то пошло не так), Ctrl-D --- конец входного потока
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{.sh-файлы}
-		\begin{itemize}
-			\item Сильно зависят от интерпретатора (bash, zsh, csh, …)
-			\begin{itemize}
-				\item \#!/bin/bash --- ``shebang''
-			\end{itemize}
-			\item echo ``Hello, world''
-			\item Параметры командной строки
-			\begin{itemize}
-				\item \$0, \$1, …, \$\#, \$@
-			\end{itemize}
-			\item Циклы, условия и т.д.
-			\begin{itemize}
-				\item 
-				\begin{footnotesize}
-					\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{.sh-файлы}
+        \begin{itemize}
+            \item Сильно зависят от интерпретатора (bash, zsh, csh, …)
+            \begin{itemize}
+                \item \#!/bin/bash --- ``shebang''
+            \end{itemize}
+            \item echo ``Hello, world''
+            \item Параметры командной строки
+            \begin{itemize}
+                \item \$0, \$1, …, \$\#, \$@
+            \end{itemize}
+            \item Циклы, условия и т.д.
+            \begin{itemize}
+                \item 
+                \begin{footnotesize}
+                    \begin{minted}{text}
 if ! [ -f "ololo.txt" ]; then
     echo "File not found"
     exit 1
 fi
-					\end{minted}
-				\end{footnotesize}
-				\item 
-				\begin{footnotesize}
-					\begin{minted}{text}
+                    \end{minted}
+                \end{footnotesize}
+                \item 
+                \begin{footnotesize}
+                    \begin{minted}{text}
 for i in $@; do
     echo $i
 done
-					\end{minted}
-				\end{footnotesize}
-			\end{itemize}
-			\item chmod +x ./test.sh
-		\end{itemize}
-	\end{frame}
+                    \end{minted}
+                \end{footnotesize}
+            \end{itemize}
+            \item chmod +x ./test.sh
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Код возврата}
-		\framesubtitle{cmd}
-		\begin{itemize}
-			\item Можно проверить тот самый return -1 из main-а и в зависимости от него сделать или не сделать что-нибудь
-		\end{itemize}
-		\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Код возврата}
+        \framesubtitle{cmd}
+        \begin{itemize}
+            \item Можно проверить тот самый return -1 из main-а и в зависимости от него сделать или не сделать что-нибудь
+        \end{itemize}
+        \begin{minted}{text}
 test.exe
 
 if not errorlevel 0 (
@@ -172,228 +172,224 @@ if not errorlevel 0 (
 ) else (
      echo Everything is good
 )
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Переменные окружения (Windows)}
-		\begin{itemize}
-			\item \%<имя переменной>\%
-			\item echo \%path\%
-			\item set OLOLO=ololo
-			\item Глобальный контекст
-			\begin{itemize}
-				\item ``Панель управления'' -> ``Система'' -> ``Дополнительные параметры системы'' -> ``Переменные среды''
-				\item setx --- требует админских прав
-			\end{itemize}
-			\item PATH
-		\end{itemize}
+    \begin{frame}
+        \frametitle{Переменные окружения (Windows)}
+        \begin{itemize}
+            \item \%<имя переменной>\%
+            \item echo \%path\%
+            \item set OLOLO=ololo
+            \item Глобальный контекст
+            \begin{itemize}
+                \item ``Панель управления'' -> ``Система'' -> ``Дополнительные параметры системы'' -> ``Переменные среды''
+                \item setx --- требует админских прав
+            \end{itemize}
+            \item PATH
+        \end{itemize}
 
-		У каждого процесса свой контекст
-		\begin{itemize}
-			\item Working Directory
-			\item Своя копия переменных окружения на момент запуска
-			\item Контекст наследуется от процесса-родителя
-		\end{itemize}
-	\end{frame}
+        У каждого процесса свой контекст
+        \begin{itemize}
+            \item Working Directory
+            \item Своя копия переменных окружения на момент запуска
+            \item Контекст наследуется от процесса-родителя
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Переменные окружения (Linux)}
-		\begin{itemize}
-			\item \$<имя переменной>
-			\item echo \$PATH
-			\item export OLOLO=ololo
-			\item Глобальный контекст
-			\begin{itemize}
-				\item \textasciitilde/.bashrc --- скрипт, исполняющийся при старте командного интерпретатора
-				\item Туда можно писать что угодно
-				\begin{itemize}
-					\item И сломать себе всё
-				\end{itemize}
-			\end{itemize}
-			\item PATH
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Переменные окружения (Linux)}
+        \begin{itemize}
+            \item \$<имя переменной>
+            \item echo \$PATH
+            \item export OLOLO=ololo
+            \item Глобальный контекст
+            \begin{itemize}
+                \item \textasciitilde/.bashrc --- скрипт, исполняющийся при старте командного интерпретатора
+                \item Туда можно писать что угодно
+                \begin{itemize}
+                    \item И сломать себе всё
+                \end{itemize}
+            \end{itemize}
+            \item PATH
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Системы сборки}
-		\begin{itemize}
-			\item Среда разработки не всегда доступна
-			\begin{itemize}
-				\item Continuous Integration-сервера автоматически выполняют сборку после каждого коммита, там некому открыть Visual Studio и нажать на кнопку ``запустить''
-			\end{itemize}
-			\item Воспроизводимость сборки
-			\begin{itemize}
-				\item Если чтобы собрать программу надо открыть проект, скопировать пару десятков файлов, поправить кое-какие пути и делать это в полнолуние, то возможны ошибки
-			\end{itemize}
-			\item Автоматизация сборки
-			\begin{itemize}
-				\item git clone
-				\item одна консольная команда, которая всё делает за нас
-				\item ...
-				\item готовое к работе приложение
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Системы сборки}
+        \begin{itemize}
+            \item Среда разработки не всегда доступна
+            \begin{itemize}
+                \item Continuous Integration-сервера автоматически выполняют сборку после каждого коммита, там некому открыть Visual Studio и нажать на кнопку ``запустить''
+            \end{itemize}
+            \item Воспроизводимость сборки
+            \begin{itemize}
+                \item Если чтобы собрать программу надо открыть проект, скопировать пару десятков файлов, поправить кое-какие пути и делать это в полнолуние, то возможны ошибки
+            \end{itemize}
+            \item Автоматизация сборки
+            \begin{itemize}
+                \item git clone
+                \item одна консольная команда, которая всё делает за нас
+                \item ...
+                \item готовое к работе приложение
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Сборка вручную без IDE}
-		\begin{itemize}
-			\item Visual Studio:
-			\begin{footnotesize}
-				\begin{minted}{text}
-cl <имя .cpp-файла>
-				\end{minted}
-			\end{footnotesize}
-			или, например,
-			\begin{footnotesize}
-				\begin{minted}{text}
-cl /W4 /EHsc file1.cpp file2.cpp file3.cpp /link /out:program1.exe
-				\end{minted}
-			\end{footnotesize}
-			\item gcc
-			\begin{footnotesize}
-				\begin{minted}{text}
-g++ <имя .cpp-файла>
-				\end{minted}
-			\end{footnotesize}
-			или, например,
-			\begin{footnotesize}
-				\begin{minted}{text}
-g++ -Wall -o helloworld helloworld.cpp
-				\end{minted}
-			\end{footnotesize}
-			\item Если проект большой, это быстро становится грустно
-			\begin{itemize}
-				\item Десятки тысяч файлов --- не редкость
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}[fragile]
+        \frametitle{Сборка вручную без IDE}
+        \begin{itemize}
+            \item Visual Studio:
+            \begin{footnotesize}
+                \begin{minted}{text}
+cl <имя .c-файла>
+                \end{minted}
+            \end{footnotesize}
+            или, например,
+            \begin{footnotesize}
+                \begin{minted}{text}
+cl /W4 /EHsc file1.c file2.c file3.c /link /out:program1.exe
+                \end{minted}
+            \end{footnotesize}
+            \item gcc
+            \begin{footnotesize}
+                \begin{minted}{text}
+g++ <имя .c-файла>
+                \end{minted}
+            \end{footnotesize}
+            или, например,
+            \begin{footnotesize}
+                \begin{minted}{text}
+g++ -Wall -o helloworld helloworld.c
+                \end{minted}
+            \end{footnotesize}
+            \item Если проект большой, это быстро становится грустно
+            \begin{itemize}
+                \item Десятки тысяч файлов --- не редкость
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{make}
-		\begin{itemize}
-			\item Стандарт де-факто по ``низкоуровневым'' правилам сборки
-			\item Сама ничего не знает про языки программирования, компиляторы и прочие подобные штуки
-			\item Знает про цели, зависимости, временные штампы и правила
-			\begin{itemize}
-				\item Смотрит на зависимости цели, если у хоть одной временной штамп свежее цели, запускается правило для цели
-				\item В процессе цель может обновить свой временной штамп, что приведёт к исполнению правил для зависящих от неё целей
-				\item Цели и зависимости образуют направленный ациклический граф (DAG)
-				\item make выполняет топологическую сортировку графа зависимостей
-				\item Правила применяются в порядке от листьев к корню
-			\end{itemize}
-			\item Правила сборки описываются в Makefile
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{make}
+        \begin{itemize}
+            \item Стандарт де-факто по ``низкоуровневым'' правилам сборки
+            \item Сама ничего не знает про языки программирования, компиляторы и прочие подобные штуки
+            \item Знает про цели, зависимости, временные штампы и правила
+            \begin{itemize}
+                \item Смотрит на зависимости цели, если у хоть одной временной штамп свежее цели, запускается правило для цели
+                \item В процессе цель может обновить свой временной штамп, что приведёт к исполнению правил для зависящих от неё целей
+                \item Цели и зависимости образуют направленный ациклический граф (DAG)
+                \item make выполняет топологическую сортировку графа зависимостей
+                \item Правила применяются в порядке от листьев к корню
+            \end{itemize}
+            \item Правила сборки описываются в Makefile
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример}
-		\begin{footnotesize}
-			\begin{minted}{make}
+    \begin{frame}[fragile]
+        \frametitle{Пример}
+        \begin{footnotesize}
+            \begin{minted}{make}
 target [target ...]: [component ...]
     [command 1]
     .
     .
     .
     [command n]
-			\end{minted}
-		\end{footnotesize}
-		Пример:
-		\begin{footnotesize}
-			\begin{minted}{text}
+            \end{minted}
+        \end{footnotesize}
+        Пример:
+        \begin{footnotesize}
+            \begin{minted}{text}
 hello: ; @echo "hello"
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Продвинутые штуки}
-		\begin{itemize}
-			\item Переменные
-			\begin{itemize}
-				\item MACRO = definition
-				\item NEW\_MACRO = \$(MACRO) - \$(MACRO2)
-				\item Переопределение из командной строки
-				\begin{itemize}
-					\item make MACRO=ololo
-				\end{itemize}
-			\end{itemize}
-			\item Суффиксные правила
-			\begin{footnotesize}
-				\begin{minted}{make}
+    \begin{frame}[fragile]
+        \frametitle{Продвинутые штуки}
+        \begin{itemize}
+            \item Переменные
+            \begin{itemize}
+                \item MACRO = definition
+                \item NEW\_MACRO = \$(MACRO) - \$(MACRO2)
+                \item Переопределение из командной строки
+                \begin{itemize}
+                    \item make MACRO=ololo
+                \end{itemize}
+            \end{itemize}
+            \item Суффиксные правила
+            \begin{footnotesize}
+                \begin{minted}{make}
 .SUFFIXES: .txt .html
 # From .html to .txt
 .html.txt:
 lynx -dump $<   >   $@
-				\end{minted}
-			\end{footnotesize}
-			\item Параллельная сборка
-			\begin{itemize}
-				\item make -j8
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+                \end{minted}
+            \end{footnotesize}
+            \item Параллельная сборка
+            \begin{itemize}
+                \item make -j8
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Под Windows}
-		\begin{itemize}
-			\item mingw32-make
-			\begin{itemize}
-				\item Используется в mingw (``Minimalist GNU for Windows'')
-				\begin{itemize}
-					\item Порт gcc на Windows
-					\item Можно поставить отдельно, можно в составе Qt SDK
-				\end{itemize}
-			\end{itemize}
-			\item nmake
-			\begin{itemize}
-				\item Реализация от Microsoft, в комплекте с Visual Studio
-				\begin{itemize}
-					\item Запускается из Developer Command Prompt
-					\item На самом деле, это просто консоль с правильно выставленными переменными окружения
-				\end{itemize}
-			\end{itemize}
-		\end{itemize}
-		Мейкфайлы зависят от операционной системы и даже от конкретной реализации make (Makefile от mingw32-make может не собраться nmake-ом)
-	\end{frame}
+    \begin{frame}
+        \frametitle{Под Windows}
+        \begin{itemize}
+            \item mingw32-make
+            \begin{itemize}
+                \item Используется в mingw (``Minimalist GNU for Windows'')
+                \begin{itemize}
+                    \item Порт gcc на Windows
+                    \item Можно поставить отдельно, можно в составе Qt SDK
+                \end{itemize}
+            \end{itemize}
+            \item nmake
+            \begin{itemize}
+                \item Реализация от Microsoft, в комплекте с Visual Studio
+                \begin{itemize}
+                    \item Запускается из Developer Command Prompt
+                    \item На самом деле, это просто консоль с правильно выставленными переменными окружения
+                \end{itemize}
+            \end{itemize}
+        \end{itemize}
+        Мейкфайлы зависят от операционной системы и даже от конкретной реализации make (Makefile от mingw32-make может не собраться nmake-ом)
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Высокоуровневые системы сборки}
-		\begin{itemize}
-			\item Либо сами вызывают необходимые инструменты, либо генерируют мейкфайлы
-			\item MSBuild
-			\begin{itemize}
-				\item Собирает из консоли .sln, .vcxproj, .csproj и т.д. -файлы
-				\item Тоже запускается из Developer Command Prompt
-			\end{itemize}
-			\item CMake
-			\begin{itemize}
-				\item Кроссплатформенная система сборки, очень популярна в C++ open source-сообществе
-			\end{itemize}
-			\item qmake
-			\begin{itemize}
-				\item Qt-specific
-			\end{itemize}
-		\end{itemize}
-		Написание скриптов сборки для большого проекта – отдельная и довольно трудоёмкая задача
-	\end{frame}
+    \begin{frame}
+        \frametitle{Высокоуровневые системы сборки}
+        \begin{itemize}
+            \item Либо сами вызывают необходимые инструменты, либо генерируют мейкфайлы
+            \item MSBuild
+            \begin{itemize}
+                \item Собирает из консоли .sln, .vcxproj, .csproj и т.д. -файлы
+                \item Тоже запускается из Developer Command Prompt
+            \end{itemize}
+            \item CMake
+            \begin{itemize}
+                \item Кроссплатформенная система сборки, очень популярна в C++ open source-сообществе
+            \end{itemize}
+        \end{itemize}
+        Написание скриптов сборки для большого проекта --- отдельная и довольно трудоёмкая задача
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Continuous Integration}
-		\begin{itemize}
-			\item Эталонное и единое для проекта окружение, в котором выполняется сборка
-			\begin{itemize}
-				\item Сборка выполняется очень часто, иногда --- после каждого коммита
-			\end{itemize}
-			\item Там же запускаются юнит-тесты
-			\item \url{https://travis-ci.org/} --- пример бесплатной для open source-проектов облачной CI-системы
-			\begin{itemize}
-				\item Интегрируется с GitHub-ом
-				\item Собирает на чистой виртуальной машине под Ubuntu 18.04 (или более старыми версиями) или macOS 10.14 или Windows Server 1803
-				\item Окружение и правила сборки настраиваются конфигурационным файлом, который должен лежать в корне репозитория
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Continuous Integration}
+        \begin{itemize}
+            \item Эталонное и единое для проекта окружение, в котором выполняется сборка
+            \begin{itemize}
+                \item Сборка выполняется очень часто, иногда --- после каждого коммита
+            \end{itemize}
+            \item Там же запускаются юнит-тесты
+            \item \url{https://travis-ci.org/} --- пример бесплатной для open source-проектов облачной CI-системы
+            \begin{itemize}
+                \item Интегрируется с GitHub-ом
+                \item Собирает на чистой виртуальной машине под Ubuntu 20.04 (или более старыми версиями), macOS 10.15 или Windows Server 1809
+                \item Окружение и правила сборки настраиваются конфигурационным файлом, который должен лежать в корне репозитория
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
 \end{document}
