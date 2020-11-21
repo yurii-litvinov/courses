@@ -24,7 +24,7 @@
 \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
 \newcommand{\attribution}[1] {
-	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
 }
 
 \tabulinesep=0.7mm
@@ -32,117 +32,117 @@
 \title{Обзор парадигм программирования}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{26.11.2019}
+\date{24.11.2020}
 
 \begin{document}
-	
-	\frame{\titlepage}
+    
+    \frame{\titlepage}
 
-	\begin{frame}
-		\frametitle{Математические модели вычислений}
-		\begin{itemize}
-			\item Что можно посчитать имея вычислительную машину неограниченной мощности?
-			\item Формальные модели вычислений:
-			\begin{itemize}
-				\item Машина Тьюринга
-				\item $\lambda$-исчисление Чёрча
-				\item Нормальные алгорифмы Маркова
-			\end{itemize}
-			\item Тезис Чёрча: <<Любая функция, которая может быть вычислена физическим устройством, может быть вычислена машиной Тьюринга.>>
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Математические модели вычислений}
+        \begin{itemize}
+            \item Что можно посчитать имея вычислительную машину неограниченной мощности?
+            \item Формальные модели вычислений:
+            \begin{itemize}
+                \item Машина Тьюринга
+                \item $\lambda$-исчисление Чёрча
+                \item Нормальные алгорифмы Маркова
+            \end{itemize}
+            \item Тезис Чёрча: <<Любая функция, которая может быть вычислена физическим устройством, может быть вычислена машиной Тьюринга.>>
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Машина Тьюринга}
-		\begin{columns}
-			\begin{column}{0.6\textwidth}
-				\begin{itemize}
-					\item Формально,
-						$$M = (Q, \Gamma, b, \Sigma, \delta, q_0, F)$$
-						$$\delta : (Q / F) × \Gamma \rightarrow Q × \Gamma × \{L, R\}$$
-					\item Неформально:
-					\begin{itemize}
-						\item Бесконечная лента с символами из $\Sigma$ и $b$
-						\item Считывающая головка
-						\item Внутренняя память $Q$
-						\item Таблица переходов $\delta$, которая по текущему состоянию из $Q$ и текущему символу на ленте из $\Gamma$ говорит машине, что делать:
-						\begin{itemize}
-							\item перейти в состояние
-							\item записать символ на ленту
-							\item сместиться влево/вправо
-						\end{itemize}
-					\end{itemize}
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.4\textwidth}
-				\begin{center}
-					\includegraphics[width=\textwidth]{turingMachine.png}
-				\end{center}
-			\end{column}
-		\end{columns}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Машина Тьюринга}
+        \begin{columns}
+            \begin{column}{0.6\textwidth}
+                \begin{itemize}
+                    \item Формально,
+                        $$M = (Q, \Gamma, b, \Sigma, \delta, q_0, F)$$
+                        $$\delta : (Q / F) × \Gamma \rightarrow Q × \Gamma × \{L, R\}$$
+                    \item Неформально:
+                    \begin{itemize}
+                        \item Бесконечная лента с символами из $\Sigma$ и $b$
+                        \item Считывающая головка
+                        \item Внутренняя память $Q$
+                        \item Таблица переходов $\delta$, которая по текущему состоянию из $Q$ и текущему символу на ленте из $\Gamma$ говорит машине, что делать:
+                        \begin{itemize}
+                            \item перейти в состояние
+                            \item записать символ на ленту
+                            \item сместиться влево/вправо
+                        \end{itemize}
+                    \end{itemize}
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.4\textwidth}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{turingMachine.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Архитектура фон Неймана}
-		\begin{columns}
-			\begin{column}{0.6\textwidth}
-				\begin{itemize}
-					\item Принцип последовательного программного управления
-					\item Принцип однородности памяти
-					\item Принцип адресуемости памяти
-					\item Принцип двоичного кодирования
-					\item Принцип жесткости архитектуры
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.4\textwidth}
-				\begin{center}
-					\includegraphics[width=\textwidth]{vonNeumannArchitecture.png}
-				\end{center}
-			\end{column}
-		\end{columns}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Архитектура фон Неймана}
+        \begin{columns}
+            \begin{column}{0.6\textwidth}
+                \begin{itemize}
+                    \item Принцип последовательного программного управления
+                    \item Принцип однородности памяти
+                    \item Принцип адресуемости памяти
+                    \item Принцип двоичного кодирования
+                    \item Принцип жесткости архитектуры
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.4\textwidth}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{vonNeumannArchitecture.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Структурное программирование}
-		\begin{itemize}
-			\item Пришло на смену неструктурированному программированию в начале 70-х
-			\begin{itemize}
-				\item FORTRAN --- 1957 год, язык высокого уровня, но не структурный
-			\end{itemize}
-			\item Любая программа может быть представлена как комбинация
-			\begin{itemize}
-				\item последовательно исполняемых операторов
-				\item ветвлений
-				\item итераций
-			\end{itemize}
-			\item Статья Дейкстры <<Go To Statement Considered Harmful>> (1968г)
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Структурное программирование}
+        \begin{itemize}
+            \item Пришло на смену неструктурированному программированию в начале 70-х
+            \begin{itemize}
+                \item FORTRAN --- 1957 год, язык высокого уровня, но не структурный
+            \end{itemize}
+            \item Любая программа может быть представлена как комбинация
+            \begin{itemize}
+                \item последовательно исполняемых операторов
+                \item ветвлений
+                \item итераций
+            \end{itemize}
+            \item Статья Дейкстры <<Go To Statement Considered Harmful>> (1968г)
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Языки-представители}
-		\begin{itemize}
-			\item Алгол
-			\item Паскаль
-			\item C
-			\item Модула-2
-			\item Ада
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Языки-представители}
+        \begin{itemize}
+            \item Алгол
+            \item Паскаль
+            \item C
+            \item Модула-2
+            \item Ада
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Подробнее: Ада}
-		\begin{itemize}
-			\item Разработан в начале 80-х по заказу минобороны США
-			\item Особенности:
-			\begin{itemize}
-				\item Строгая типизация
-				\item Минимум автоматических преобразований типов
-				\item Встроенная поддержка параллелизма
-			\end{itemize}
-			\item Реализация: GNAT (\url{https://www.adacore.com/community})
-		\end{itemize}
-		\begin{minted}{ada}
+    \begin{frame}[fragile]
+        \frametitle{Подробнее: Ада}
+        \begin{itemize}
+            \item Разработан в начале 80-х по заказу минобороны США
+            \item Особенности:
+            \begin{itemize}
+                \item Строгая типизация
+                \item Минимум автоматических преобразований типов
+                \item Встроенная поддержка параллелизма
+            \end{itemize}
+            \item Реализация: GNAT (\url{https://www.adacore.com/community})
+        \end{itemize}
+        \begin{minted}{ada}
     with Ada.Text_IO;
     use Ada.Text_IO;
 
@@ -150,12 +150,12 @@
     begin
         Put_Line ("Hello World");
     end Main;
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Ада, модульная система}
-		\begin{minted}{ada}
+    \begin{frame}[fragile]
+        \frametitle{Ада, модульная система}
+        \begin{minted}{ada}
 package types is
     type Type_1 is private;
     type Type_2 is private;
@@ -170,13 +170,13 @@ private
         A, B: Integer;
     end record;
 end Types;
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Ада, многопоточность и рандеву}
-		\begin{small}
-			\begin{minted}{ada}
+    \begin{frame}[fragile]
+        \frametitle{Ада, многопоточность и рандеву}
+        \begin{small}
+            \begin{minted}{ada}
 with Ada.Text_IO; use Ada.Text_IO;
 
 procedure Main is
@@ -194,13 +194,13 @@ begin
     Put_Line("Before");
     After.Go("Main");
 end;
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Ада, ограничения и контракты}
-		\begin{minted}{ada}
+    \begin{frame}[fragile]
+        \frametitle{Ада, ограничения и контракты}
+        \begin{minted}{ada}
 type Not_Null is new Integer
     with Dynamic_Predicate => Not_Null /= 0;
 
@@ -211,59 +211,59 @@ function Divide (Left, Right : Float) return Float
     with Pre => Right /= 0.0,
          Post => Divide'Result * Right < Left + 0.0001
                  and then Divide'Result * Right > Left - 0.0001;
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Объектно-ориентированное программирование}
-		\begin{itemize}
-			\item Первый ОО-язык --- Симула-67, были и более ранние разработки
-			\item Популярной методология стала только в середине 90-х
-			\item Развитие связано с широким распространением графических интерфейсов и компьютерных игр
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Объектно-ориентированное программирование}
+        \begin{itemize}
+            \item Первый ОО-язык --- Симула-67, были и более ранние разработки
+            \item Популярной методология стала только в середине 90-х
+            \item Развитие связано с широким распространением графических интерфейсов и компьютерных игр
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Основные концепции}
-		\begin{itemize}
-			\item Программа представляет собой набор объектов
-			\item Объекты взаимодействуют путём посылки сообщений по строго определённым интерфейсам
-			\item Объекты имеют своё состояние и поведение
-			\item Каждый объект является экземпляром некоего класса
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Основные концепции}
+        \begin{itemize}
+            \item Программа представляет собой набор объектов
+            \item Объекты взаимодействуют путём посылки сообщений по строго определённым интерфейсам
+            \item Объекты имеют своё состояние и поведение
+            \item Каждый объект является экземпляром некоего класса
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Основные концепции (инкапсуляция)}
-		\begin{itemize}
-			\item Инкапсуляция --- сокрытие реализации от пользователя
-			\item Пользователь может взаимодействовать с объектом только через интерфейс
-			\item Позволяет менять реализацию объекта, не модифицируя код, который этот объект использует
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Основные концепции (инкапсуляция)}
+        \begin{itemize}
+            \item Инкапсуляция --- сокрытие реализации от пользователя
+            \item Пользователь может взаимодействовать с объектом только через интерфейс
+            \item Позволяет менять реализацию объекта, не модифицируя код, который этот объект использует
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Основные концепции (наследование)}
-		\begin{itemize}
-			\item Наследование позволяет описать новый класс на основе существующего, наследуя его свойства и функциональность
-			\item Наследование --- отношение <<является>> между классами, с классом-наследником можно обращаться так же, как с классом-предком
-			\begin{itemize}
-				\item Принцип подстановки Барбары Лисков
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Основные концепции (наследование)}
+        \begin{itemize}
+            \item Наследование позволяет описать новый класс на основе существующего, наследуя его свойства и функциональность
+            \item Наследование --- отношение <<является>> между классами, с классом-наследником можно обращаться так же, как с классом-предком
+            \begin{itemize}
+                \item Принцип подстановки Барбары Лисков
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Основные концепции (полиморфизм)}
-		\begin{itemize}
-			\item Полиморфизм --- классы-потомки могут изменять реализацию методов класса-предка, сохраняя их сигнатуру
-			\item Клиенты могут работать с объектами класса-родителя, но вызываться будут методы класса-потомка (позднее связывание)
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Основные концепции (полиморфизм)}
+        \begin{itemize}
+            \item Полиморфизм --- классы-потомки могут изменять реализацию методов класса-предка, сохраняя их сигнатуру
+            \item Клиенты могут работать с объектами класса-родителя, но вызываться будут методы класса-потомка (позднее связывание)
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример кода}
-		\begin{minted}{cpp}
+    \begin{frame}[fragile]
+        \frametitle{Пример кода}
+        \begin{minted}{cpp}
 class Animal
 {
     public:
@@ -280,12 +280,12 @@ class Animal
     private:
         string name;
 };
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример кода (2)}
-		\begin{minted}{cpp}
+    \begin{frame}[fragile]
+        \frametitle{Пример кода (2)}
+        \begin{minted}{cpp}
 class Cat : public Animal
 {
     public:
@@ -299,12 +299,12 @@ class Dog : public Animal
         Dog(const string& name) : Animal(name) {}
         string talk() override { return "Arf! Arf!"; }
 };
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример кода (3)}
-		\begin{minted}{cpp}
+    \begin{frame}[fragile]
+        \frametitle{Пример кода (3)}
+        \begin{minted}{cpp}
 ...
 Cat *cat1 = new Cat("Барсик");
 Animal *cat2 = new Cat("Шаверма");
@@ -316,95 +316,95 @@ for (Animal *animal : animals) {
     std::cout << animal->talk();
 }
 ...
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Языки-представители}
-		\begin{itemize}
-			\item Java
-			\item C\#
-			\item C++
-			\item Object Pascal / Delphi Language
-			\item Smalltalk
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Языки-представители}
+        \begin{itemize}
+            \item Java
+            \item C\#
+            \item C++
+            \item Object Pascal / Delphi Language
+            \item Smalltalk
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Функциональное программирование}
-		\begin{itemize}
-			\item Вычисления рассматриваются как вычисления значения функций в математическом понимании (без побочных эффектов)
-			\item Основано на $\lambda$-исчислении
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Функциональное программирование}
+        \begin{itemize}
+            \item Вычисления рассматриваются как вычисления значения функций в математическом понимании (без побочных эффектов)
+            \item Основано на $\lambda$-исчислении
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{$\lambda$-исчисление}
-		\begin{itemize}
-			\item $\lambda$-исчисление --- формальный способ описать математические функции
-			\begin{itemize}
-				\item $\lambda{x}.2 * x + 1$ --- функция $x \rightarrow 2 * x + 1$
-			\end{itemize}
-			\item Функции могут принимать функции в качестве параметров и возвращать функции в качестве результата
-			\item Функция от n переменных может быть представлена, как функция от одной переменной, возвращающая функцию от n - 1 переменной (карринг)
-			\item Формальная система, не требующая математических оснований
-			\begin{itemize}
-				\item На самом деле, математика может быть построена на $\lambda$-исчислении
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{$\lambda$-исчисление}
+        \begin{itemize}
+            \item $\lambda$-исчисление --- формальный способ описать математические функции
+            \begin{itemize}
+                \item $\lambda{x}.2 * x + 1$ --- функция $x \rightarrow 2 * x + 1$
+            \end{itemize}
+            \item Функции могут принимать функции в качестве параметров и возвращать функции в качестве результата
+            \item Функция от n переменных может быть представлена, как функция от одной переменной, возвращающая функцию от n - 1 переменной (карринг)
+            \item Формальная система, не требующая математических оснований
+            \begin{itemize}
+                \item На самом деле, математика может быть построена на $\lambda$-исчислении
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Языки-представители}
-		\begin{itemize}
-			\item Лисп (LIst PRocessing)
-			\item ML (OCaml)
-			\begin{itemize}
-				\item F\#
-			\end{itemize}
-			\item Haskell
-			\item Erlang
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Языки-представители}
+        \begin{itemize}
+            \item Лисп (LIst PRocessing)
+            \item ML (OCaml)
+            \begin{itemize}
+                \item F\#
+            \end{itemize}
+            \item Haskell
+            \item Erlang
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Особенности}
-		\begin{itemize}
-			\item Программы не имеют состояния и не имеют побочных эффектов
-			\begin{itemize}
-				\item Нет переменных
-				\item Нет оператора присваивания
-			\end{itemize}
-			\item Порядок вычислений не важен
-			\item Циклы выражаются через рекурсию
-			\item Ленивые вычисления
-			\item Формальные преобразования программ по математическим законам
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Особенности}
+        \begin{itemize}
+            \item Программы не имеют состояния и не имеют побочных эффектов
+            \begin{itemize}
+                \item Нет переменных
+                \item Нет оператора присваивания
+            \end{itemize}
+            \item Порядок вычислений не важен
+            \item Циклы выражаются через рекурсию
+            \item Ленивые вычисления
+            \item Формальные преобразования программ по математическим законам
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример на языке Haskell}
-		Факториал:
-		\begin{minted}{haskell}
+    \begin{frame}[fragile]
+        \frametitle{Пример на языке Haskell}
+        Факториал:
+        \begin{minted}{haskell}
 fact :: Integer -> Integer 
 fact 0 = 1 
 fact n | n > 0 = n * fact (n - 1) 
-		\end{minted}
+        \end{minted}
 
-		QSort:
-		\begin{minted}{haskell}
+        QSort:
+        \begin{minted}{haskell}
 sort [] = [] 
 sort (pivot:rest) = sort [y | y <- rest, y < pivot] 
                     ++ [pivot]
                     ++ sort [y | y <- rest, y >=pivot] 
 
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{F\#, мерджсорт}
-		\begin{small}
-			\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{F\#, мерджсорт}
+        \begin{small}
+            \begin{minted}{fsharp}
 let rec merge l r =
     match (l, r) with
     | ([], r) -> r
@@ -420,13 +420,13 @@ let rec mergesort l =
           let ls = mergesort left
           let rs = mergesort right
           merge ls rs
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{F\#, бесконечная последовательность простых чисел}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{F\#, бесконечная последовательность простых чисел}
+        \begin{minted}{fsharp}
 let isPrime number =
      seq {2 .. sqrt(double number)}
      |> Seq.exists (fun x -> number % x = 0) 
@@ -435,7 +435,7 @@ let isPrime number =
 let primeNumbers =
      Seq.initInfinite (fun i -> i + 2)
      |> Seq.filter isPrime
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
 \end{document}
