@@ -91,9 +91,7 @@ namespace ConferenceRegistration.Controllers
     public class HomeController : Controller
     {
         public IActionResult Index()
-        {
-            return View("MyView");
-        }
+            => View("MyView");
     }
 }
 \end{minted}
@@ -196,15 +194,10 @@ namespace ConferenceRegistration.Controllers
     public class HomeController : Controller
     {
         public IActionResult Index()
-        {
-            ViewBag.Time = DateTime.Now;
-            return View("MyView");
-        }
+            => View("MyView");
 
         public IActionResult Register()
-        {
-            return View();
-        }
+            => View();
     }
 }
 \end{minted}
@@ -219,10 +212,6 @@ namespace ConferenceRegistration.Controllers
 Теперь добавим на главную страницу (MyView.cshtml) ссылку на страницу с регистрацией (которая пока пустая) и заодно больше контента:
 
 \begin{minted}{html}
-@{
-    Layout = null;
-}
-
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
@@ -230,11 +219,11 @@ namespace ConferenceRegistration.Controllers
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>MyView</title>
+    <title>Welcome!</title>
 </head>
 <body>
     <div>
-        <p>SEIM-2020 conference will be held on 11th April in St. Petersburg.</p>
+        <p>SEIM-2021 conference will be held in April in St. Petersburg.</p>
         <a asp-action="Register">Register now!</a>
     </div>
 </body>
@@ -251,10 +240,6 @@ Views/\_ViewImports.cshtml --- чтобы быть доступными по в�
 @model ConferenceRegistration.Models.Participant
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-@{
-    Layout = null;
-}
 
 <!DOCTYPE html>
 
@@ -298,16 +283,11 @@ HTML-атрибуты, которые позволяют идентифицир�
 public class HomeController : Controller
 {
     public IActionResult Index()
-    {
-        ViewBag.Time = DateTime.Now;
-        return View("MyView");
-    }
+        => View("MyView");
 
     [HttpGet]
     public IActionResult Register()
-    {
-        return View();
-    }
+        => View();
 
     [HttpPost]
     public IActionResult Register(Participant participant)
@@ -345,16 +325,11 @@ namespace ConferenceRegistration.Models
 public class HomeController : Controller
 {
     public IActionResult Index()
-    {
-        ViewBag.Time = DateTime.Now;
-        return View("MyView");
-    }
+        => View("MyView");
 
     [HttpGet]
     public IActionResult Register()
-    {
-        return View();
-    }
+        => View();
 
     [HttpPost]
     public IActionResult Register(Participant participant)
@@ -372,10 +347,6 @@ public class HomeController : Controller
 
 \begin{minted}{html}
 @model ConferenceRegistration.Models.Participant
-
-@{
-    Layout = null;
-}
 
 <!DOCTYPE html>
 
@@ -410,10 +381,6 @@ public IActionResult ListParticipants()
 
 \begin{minted}{html}
 @model IEnumerable<ConferenceRegistration.Models.Participant>
-
-@{
-    Layout = null;
-}
 
 <!DOCTYPE html>
 
@@ -572,7 +539,7 @@ public IActionResult Register(Participant participant)
 </head>
 <body>
     <div class="text-center">
-        <h3>SEIM-2018 conference will be held on 14th April in St. Petersburg.</h3>
+        <h3>SEIM-2021 conference will be held in April in St. Petersburg.</h3>
         <a class="btn btn-primary" asp-action="Register">Register now!</a>
     </div>
 </body>
@@ -702,9 +669,8 @@ public class Repository : DbContext
     public DbSet<Participant> Participants { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=ConferenceRegistration;Trusted_Connection=True;");
-    }
+        => optionsBuilder.UseSqlServer(
+                @"Server=(localdb)\mssqllocaldb;Database=ConferenceRegistration;Trusted_Connection=True;");
 }
     \end{minted}
 \end{scriptsize}
@@ -721,27 +687,20 @@ public class Repository : DbContext
 public class HomeController : Controller
 {
     public IActionResult Index()
-    {
-        ViewBag.Time = DateTime.Now;
-        return View("MyView");
-    }
+        => View("MyView");
 
     [HttpGet]
     public IActionResult Register()
-    {
-        return View();
-    }
+        => View();
 
     [HttpPost]
     public IActionResult Register(Participant participant)
     {
         if (ModelState.IsValid)
         {
-            using (var repository = new Repository())
-            {
-                repository.Participants.Add(participant);
-                repository.SaveChanges();
-            }
+            using var repository = new Repository();
+            repository.Participants.Add(participant);
+            repository.SaveChanges();
             return View("Thanks", participant);
         }
 
@@ -750,10 +709,8 @@ public class HomeController : Controller
 
     public IActionResult ListParticipants()
     {
-        using (var repository = new Repository())
-        {
-            return View(repository.Participants.ToList());
-        }
+        using var repository = new Repository();
+        return View(repository.Participants.ToList());
     }
 }
 \end{minted}

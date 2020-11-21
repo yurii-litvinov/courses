@@ -24,7 +24,7 @@
 \title{Веб-программирование}
 \subtitle{Часть 2}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{06.12.2019г}
+\date{01.12.2020г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -32,76 +32,106 @@
 
 \begin{document}
 
-	\frame{\titlepage}
+    \frame{\titlepage}
 
-	\begin{frame}
-		\frametitle{Попробуем написать что-нибудь ``настоящее''}
-		\begin{itemize}
-			\item Приложение для регистрации на конференцию
-			\item Титульная страница конференции со ссылкой на форму регистрации
-			\item Форма регистрации
-			\begin{itemize}
-				\item Как слушатель или как докладчик
-			\end{itemize}
-			\item Страница, на которой можно просмотреть всех зарегистрировавшихся
-		\end{itemize}
-	\end{frame}
+    \section{Введение}
 
-	\begin{frame}[fragile]
-		\frametitle{Моделирование предметной области}
-		\begin{minted}{csharp}
-public class Participant
+    \begin{frame}
+        \frametitle{Попробуем написать что-нибудь ``настоящее''}
+        \begin{itemize}
+            \item Приложение для регистрации на конференцию
+            \item Титульная страница конференции со ссылкой на форму регистрации
+            \item Форма регистрации
+            \begin{itemize}
+                \item Как слушатель или как докладчик
+            \end{itemize}
+            \item Страница, на которой можно просмотреть всех зарегистрировавшихся
+        \end{itemize}
+    \end{frame}
+
+    \section{Заглушка проекта}
+
+    \begin{frame}[fragile]
+        \frametitle{Контроллер}
+        \begin{minted}{csharp}
+using Microsoft.AspNetCore.Mvc;
+
+namespace ConferenceRegistration.Controllers
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public bool? Speaker { get; set; }
+    public class HomeController : Controller
+    {
+        public IActionResult Index()
+            => View("MyView");
+    }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Титульная страница}
-		\begin{minted}{html}
-@page
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+    \begin{frame}[fragile]
+        \frametitle{Вид}
+        \begin{minted}{html}
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
 
 <html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>MyView</title>
+</head>
 <body>
-    <h1>SEIM-2019</h1>
-    <p>Coolest conference ever</p>
-    <p>Please register:</p>
-    <a asp-page="Register">Register</a>
+Hello, world!
 </body>
 </html>
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Страница регистрации}
-		\begin{ssmall}
-			\begin{minted}{html}
-@page
-@model WebApplication1.Pages.RegisterModel
+    \section{Регистрация}
+
+    \begin{frame}[fragile]
+        \frametitle{Моделирование предметной области}
+        \begin{minted}{csharp}
+namespace ConferenceRegistration.Models
+{
+    public class Participant
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public bool? Speaker { get; set; }
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Страница регистрации}
+        \begin{ssmall}
+            \begin{minted}{html}
+@model ConferenceRegistration.Models.Participant
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+</head>
 <body>
     <form asp-action="Register" method="post">
         <p>
-            <label asp-for="Participant.Name">Your name:</label>
-            <input asp-for="Participant.Name" />
+            <label asp-for="Name">Your name:</label>
+            <input asp-for="Name" />
         </p>
         <p>
-            <label asp-for="Participant.Email">Your email:</label>
-            <input asp-for="Participant.Email" />
+            <label asp-for="Email">Your email:</label>
+            <input asp-for="Email" />
         </p>
         <p>
             <label>Are you a speaker?</label>
-            <select asp-for="Participant.Speaker">
+            <select asp-for="Speaker">
                 <option value="">Choose an option</option>
                 <option value="true">Yes</option>
-                7
                 <option value="false">No</option>
             </select>
         </p>
@@ -109,320 +139,459 @@ public class Participant
     </form>
 </body>
 </html>
-			\end{minted}
-		\end{ssmall}
-	\end{frame}
+            \end{minted}
+        \end{ssmall}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Code behind}
-		\begin{footnotesize}
-			\begin{minted}{csharp}
-public class RegisterModel : PageModel
-{
-    public void OnGet()
-    {
-    }
-
-    [BindProperty]
-    public Data.Participant Participant { get; set; }
-
-    public IActionResult OnPost()
-    {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
-        return RedirectToPage($"/Thanks", new { name = Participant.Name });
-    }
-}
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Страница благодарности}
-		\begin{small}
-			\begin{minted}{html}
-@page "{name}"
-
-<html>
-<body>
-    <h1>Thanks for registration, @RouteData.Values["name"]!</h1>
-</body>
-</html>
-			\end{minted}
-		\end{small}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Добавим немного СУБД}
-		\framesubtitle{Класс Data.AppDbContext}
-		\begin{small}
-			\begin{minted}{csharp}
-public class AppDbContext: DbContext
-{
-    public AppDbContext(DbContextOptions options)
-        : base(options)
-    {
-    }
-
-    public DbSet<Participant> Participants { get; set; }
-}
-			\end{minted}
-		\end{small}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Но где же Connection String?}
-		\begin{itemize}
-			\item Dependency Injection --- архитектурный паттерн, отделяющий создание и конфигурирование объектов от их логики
-			\item За создание и конфигурирование/переконфигурирование отвечает DI-контейнер, обычно отдельная подсистема
-			\item Мы лишь описываем ограничения на то, что должно получиться
-			\item Конкретно в нашем случае:
-			\begin{itemize} 
-				\item Подключаем пакет Microsoft.EntityFrameworkCore.Sqlite
-				\item Пишем в Startup.ConfigureServices:
-				\begin{minted}{csharp}
-services.AddDbContext<Data.AppDbContext>(
-    options => options.UseSqlite(@"Data source=Test.db;"));
-				\end{minted}
-			\end{itemize}
-			\item DI-контейнер создаёт и регистрирует контекст, передавая ему в конструктор опции
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Инициализация базы данных}
-		\begin{itemize}
-			\item Идём ВНЕЗАПНО в Tools -> Nuget Package Manager -> Package Manager Console
-			\item Набираем в консоли Add-Migration Initial
-			\begin{itemize}
-				\item Создаётся \textit{миграция}, которая создаст базу
-			\end{itemize}
-			\item Набираем в консоли Update-Database
-			\begin{itemize}
-				\item Миграция применяется, в папке с проектом создаётся Test.db
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Пришла пора воспользоваться СУБД}
-		\begin{ssmall}
-			\begin{minted}{csharp}
-public class RegisterModel : PageModel
-{
-    private readonly AppDbContext db;
-
-    public RegisterModel(AppDbContext db)
-    {
-        this.db = db;
-    }
-
-    [BindProperty]
-    public Participant Participant { get; set; }
-
-    public async Task<IActionResult> OnPostAsync()
-    {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
-        db.Participants.Add(Participant);
-        await db.SaveChangesAsync();
-
-        return RedirectToPage($"/Thanks", new { name = Participant.Name });
-    }
-}
-			\end{minted}
-		\end{ssmall}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Ну и последняя страница, просмотр участников}
-		\framesubtitle{Code Behind}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
-public class ViewModel : PageModel
-{
-    private readonly AppDbContext db;
-
-    public ViewModel(AppDbContext db)
-    {
-        this.db = db;
-    }
-
-    public IList<Participant> Participants { get; private set; }
-
-    public async Task OnGetAsync()
-    {
-        Participants = await db.Participants.AsNoTracking().ToListAsync();
-    }
-}
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{.cshtml}
-		\begin{ssmall}
-			\begin{minted}{html}
-@page
-@model WebApplication1.Pages.ViewModel
-
-<html>
-<body>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Is Speaker</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var participant in Model.Participants)
-            {
-            <tr>
-                <td>@participant.Id</td>
-                <td>@participant.Name</td>
-                <td>@participant.Email</td>
-                <td>@(participant.Speaker == true ? "Yes" : "No")</td>
-            </tr>
-            }
-        </tbody>
-    </table>
-</body>
-</html>
-			\end{minted}
-		\end{ssmall}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Но так даже в 90-е не верстали!}
-		\framesubtitle{Добавим Bootstrap}
-		\begin{tiny}
-			\begin{minted}{html}
-@page
-@model WebApplication1.Pages.ViewModel
+    \begin{frame}[fragile]
+        \frametitle{Титульная страница}
+        \begin{minted}{html}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <html>
 <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SEIM-2021 registration</title>
+</head>
+<body>
+    <div>
+        <p>SEIM-2021 conference will be held in April in St. Petersburg.</p>
+        <a asp-action="Register">Register now!</a>
+    </div>
+</body>
+</html>
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Подправим контроллер}
+        \begin{minted}{csharp}
+public class HomeController : Controller
+{
+    public IActionResult Index()
+        => View("MyView");
+
+    public IActionResult Register()
+        => View();
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Подправим контроллер ещё раз}
+        \begin{footnotesize}
+            \begin{minted}{csharp}
+public class HomeController : Controller
+{
+    public IActionResult Index()
+        => View("MyView");
+
+    [HttpGet]
+    public IActionResult Register() 
+        => View();
+
+    [HttpPost]
+    public IActionResult Register(Participant participant)
+    {
+        // TODO: Do something with registration info
+        return View();
+    }
+}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
+
+    \section{Репозиторий}
+
+    \begin{frame}[fragile]
+        \frametitle{Репозиторий}
+        \begin{minted}{csharp}
+namespace ConferenceRegistration.Models
+{
+    public static class Repository
+    {
+        private static readonly IList<Participant> participants 
+            = new List<Participant>();
+
+        public static IEnumerable<Participant> Participants 
+            => participants;
+
+        public static void AddParticipant(Participant participant) 
+            => participants.Add(participant);
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Контроллер с репозиторием}
+        \begin{minted}{csharp}
+public class HomeController : Controller
+{
+    public IActionResult Index()
+        => View("MyView");
+
+    [HttpGet]
+    public IActionResult Register()
+        => View();
+
+    [HttpPost]
+    public IActionResult Register(Participant participant)
+    {
+        Repository.AddParticipant(participant);
+        return View();
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \section{Подтверждение регистрации}
+
+    \begin{frame}[fragile]
+        \frametitle{Страница подтверждения регистрации}
+        \begin{scriptsize}
+            \begin{minted}{html}
+@model ConferenceRegistration.Models.Participant
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Thanks</title>
+</head>
+<body>
+<p>
+    <h1>Thank you, @Model.Name</h1>
+</p>
+<p>
+    @if (Model.Speaker == true)
+    {
+        @:Please don't forget to submit your article!
+    }
+</p>
+</body>
+</html>
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \section{Список участников}
+
+    \begin{frame}[fragile]
+        \frametitle{Страница со списком участников}
+        \begin{ssmall}
+            \begin{minted}{html}
+@model IEnumerable<ConferenceRegistration.Models.Participant>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ListParticipants</title>
+</head>
+<body>
+<h2>List of conference participants:</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Is speaker</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (ConferenceRegistration.Models.Participant p in Model) {
+        <tr>
+            <td>@p.Name</td>
+            <td>@p.Email</td>
+            <td>@(p.Speaker == true ? "Yes" : "No")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+</body>
+</html>
+            \end{minted}
+        \end{ssmall}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Обновим контроллер}
+        \begin{footnotesize}
+            \begin{minted}{csharp}
+public class HomeController : Controller
+{
+    public IActionResult Index()
+        => View("MyView");
+
+    [HttpGet]
+    public IActionResult Register()
+        => View();
+
+    [HttpPost]
+    public IActionResult Register(Participant participant)
+    {
+        Repository.AddParticipant(participant);
+        return View();
+    }
+
+    public IActionResult ListParticipants()
+        => View(Repository.Participants);
+}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
+
+    \section{Валидация}
+
+    \begin{frame}
+        \frametitle{Валидация}
+        \begin{itemize}
+            \item Клиентская
+            \begin{itemize}
+                \item Работает с помощью jquery-validation
+                \item Только в браузере у клиента, без нужды связи с сервером
+                \item Только если там включён JavaScript
+            \end{itemize}
+            \item Серверная
+            \begin{itemize}
+                \item Проверка модели при Model Binding-е в контроллере
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Добавим server-side-валидацию}
+        \begin{minted}{csharp}
+public class Participant
+{
+    [Required(ErrorMessage = "Please enter your name")]
+    public string Name { get; set; }
+
+    [Required(ErrorMessage = "Please enter your email")]
+    [RegularExpression(".+\\@.+\\..+", 
+        ErrorMessage = "Please enter a valid email address")]
+    public string Email { get; set; }
+
+    [Required(ErrorMessage = 
+        "Please specify whether you'll be a speaker or just attending")]
+    public bool? Speaker { get; set; }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Что ещё бывает}
+        \begin{itemize}
+            \item Required --- для nullable-типов требует значение, для не-nullable не имеет смысла, они обязательны всегда
+            \item StringLength --- задаёт максимальную и минимальную длину строки
+            \item RegularExpression
+            \item Range --- ограничивает значение заданным атрибутом
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{И снова обновим контроллер}
+        \begin{minted}{csharp}
+public class HomeController : Controller
+{
+    ...
+    [HttpPost]
+    public IActionResult Register(Participant participant)
+    {
+        if (ModelState.IsValid)
+        {
+            Repository.AddParticipant(participant);
+            return View("Thanks", participant);
+        }
+    
+        return View();
+    }
+    ...
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{А теперь и вид}
+        \begin{minted}{html}
+<form asp-action="Register" method="post">
+    <div asp-validation-summary="All"></div>
+    ...
+</form>
+        \end{minted}
+    \end{frame}
+
+    \section{Стили}
+
+    \begin{frame}[fragile]
+        \frametitle{Добавим немного CSS}
+        \begin{scriptsize}
+            \begin{minted}{css}
+.field-validation-error {
+    color: #f00;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    border: 1px solid #f00;
+    background-color: #fee;
+}
+
+.validation-summary-errors {
+    font-weight: bold;
+    color: #f00;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{И вставим .css-ку в форму}
+        \begin{small}
+            \begin{minted}{html}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
 </head>
 <body>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Is Speaker</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var participant in Model.Participants)
-            {
-            <tr>
-                <td>@participant.Id</td>
-                <td>@participant.Name</td>
-                <td>@participant.Email</td>
-                <td>@(participant.Speaker == true ? "Yes" : "No")</td>
-            </tr>
-            }
-        </tbody>
-    </table>
+    <div class="text-center">
+        <h3>SEIM-2021 conference will be held in April in St. Petersburg.</h3>
+        <a class="btn btn-primary" asp-action="Register">Register now!</a>
+    </div>
 </body>
 </html>
-			\end{minted}
-		\end{tiny}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Валидация}
-		\begin{itemize}
-			\item Клиентская
-			\begin{itemize}
-				\item Работает с помощью jquery-validation
-				\item Только в браузере у клиента, без нужды связи с сервером
-				\item Только если там включён JavaScript
-			\end{itemize}
-			\item Серверная
-			\begin{itemize}
-				\item Проверка модели при Model Binding-е в контроллере
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{То же с...}
+        \begin{itemize}
+            \item формой регистрации
+            \item страницей со списком участников
+            \item страницей подтверждения регистрации
+            \begin{itemize}
+                \item см. конспект
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Атрибуты валидации}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
+    \section{Персистентность}
+
+    \begin{frame}[fragile]
+        \frametitle{Добавим персистентность}
+        \begin{itemize}
+            \item Добавим Microsoft.EntityFrameworkCore, Microsoft.EntityFrameworkCore.SqlServer
+        \end{itemize}
+        \begin{small}
+            \begin{minted}{csharp}
+public class Repository : DbContext
+{
+    public DbSet<Participant> Participants { get; set; }
+
+    protected override void OnConfiguring(
+        DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(
+            @"Server=(localdb)\mssqllocaldb;"
+            + @"Database=ConferenceRegistration;Trusted_Connection=True;");
+    }
+}
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{И модифицируем контроллер}
+        \begin{scriptsize}
+            \begin{minted}{csharp}
+public class HomeController : Controller
+{
+    ...
+    [HttpPost]
+    public IActionResult Register(Participant participant)
+    {
+        if (ModelState.IsValid)
+        {
+            using var repository = new Repository();
+            repository.Participants.Add(participant);
+            repository.SaveChanges();
+            return View("Thanks", participant);
+        }
+
+        return View();
+    }
+
+    public IActionResult ListParticipants()
+    {
+        using var repository = new Repository();
+        return View(repository.Participants.ToList());
+    }
+}  
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{И модель}
+        \framesubtitle{Добавим первичный ключ}
+        \begin{small}
+            \begin{minted}{csharp}
 public class Participant
 {
-    public int Id { get; set; }
-
-    [Required]
+    [Required(ErrorMessage = "Please enter your name")]
     public string Name { get; set; }
 
-    [Required]
-    [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)"
-        + @"@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")]
+    [Required(ErrorMessage = "Please enter your email")]
+    [RegularExpression(".+\\@.+\\..+", 
+        ErrorMessage = "Please enter a valid email address")]
+    [Key]
     public string Email { get; set; }
 
-    [Required(ErrorMessage = "Укажите Вашу роль")]
+    [Required(ErrorMessage = 
+        "Please specify whether you'll be a speaker or just attending")]
     public bool? Speaker { get; set; }
 }
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Что ещё бывает}
-		\begin{itemize}
-			\item Required --- для nullable-типов требует значение, для не-nullable не имеет смысла, они обязательны всегда
-			\item StringLength --- задаёт максимальную и минимальную длину строки
-			\item RegularExpression
-			\item Range --- ограничивает значение заданным атрибутом
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{А теперь магически поднимем базу данных}
+        \framesubtitle{EF Migrations}
+        \begin{itemize}
+            \item Поставим Microsoft.EntityFrameworkCore.Tools
+            \item Откроем NuGet Manager Console
+            \item Напишем Add-Migration InitialCreate
+            \item Напишем Update-Database
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Что надо сделать на клиенте}
-		\begin{tiny}
-			\begin{minted}{html}
-<form asp-action="Register" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <p>
-        <label asp-for="Participant.Name">Your name:</label>
-        <input asp-for="Participant.Name" />
-        <span asp-validation-for="Participant.Name" class="text-danger" />
-    </p>
-    <p>
-        <label asp-for="Participant.Email">Your email:</label>
-        <input asp-for="Participant.Email" />
-        <span asp-validation-for="Participant.Email" class="text-danger" />
-    </p>
-    <p>
-        <label>Are you a speaker?</label>
-        <select asp-for="Participant.Speaker">
-            <option value="">Choose an option</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-        </select>
-        <span asp-validation-for="Participant.Speaker" class="text-danger" />
-    </p>
-    <button type="submit">Register!</button>
-</form>
-...
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-}
-			\end{minted}
-		\end{tiny}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Проверим, что всё работает}
+        \begin{itemize}
+            \item Запустим приложение, зарегистрируем пару участников
+            \item Откроем Server Explorer
+            \item Connect to Database -> Microsoft SQL Server
+            \item Имя сервера -> \mintinline{text}{(localdb)\mssqllocaldb}
+            \item Имя файла -> ConferenceRegistration
+            \begin{itemize}
+                \item Как в Connection String
+            \end{itemize}
+            \item Проверяем, что база имеет таблицу Participants
+            \item Просматриваем данные
+            \item Перезапускаем сервер, перезапускаем приложение, смотрим список участников
+        \end{itemize}
+    \end{frame}
 
 \end{document}
