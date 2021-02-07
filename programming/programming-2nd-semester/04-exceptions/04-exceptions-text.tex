@@ -49,7 +49,7 @@
 \title{Исключения и обработка ошибок}
 \author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
 
-\date{06.03.2020г}
+\date{05.03.2021г}
 
 \begin{document}
 
@@ -428,6 +428,8 @@ public static class Program
 
 \section{Особенности современного C\#}
 
+\subsection{C\# 7 и старее}
+
 Дальше будет не относящаяся к теме исключений демонстрация разных возможностей языка, про которые неплохо бы знать любому C\#-программисту. Первая такая возможность --- кортежи и работа с кортежами, которая есть в любом нормальном функциональном языке (в том числе F\#), и которой, видимо, уже никогда не будет в Java. Кортеж --- это пара, тройка и т.д. значений, потенциально разного типа, на уровне библиотеки они были в языке очень давно (класс Tuple), с .NET 4.7 и C\# 7.0 появилась их удобная синтаксическая поддержка и, в отличие от класса Tuple, кортежи стали типами-значениями, что существенно улучшило их в плане скорости работы и нагрузки на кучу. Вот так это примерно выглядит:
 
 \begin{minted}{csharp}
@@ -577,5 +579,284 @@ UseParams(1, 2, 3, 4);
 \end{minted}
 
 Ключевое слово params говорит, что метод может принимать параметры через запятую, и они должны складываться в массив, объявленный с params. Аргументов у метода может быть много, но параметр с params должен быть один и он должен быть объявлен в самом конце. Так, например, работает Console.WriteLine, которым все пользовались.
+
+\subsection{C\# 8}
+
+В C\# 8 появилось много приятного синтаксического сахара (что по моему мнению неоправданно усложнило язык, зато ещё приблизило синтаксис C\# к современным функционаольно-объектно-ориентированным языкам, в частности, F\#). Первый --- это switch-выражение.
+
+Сравните
+
+\begin{minted}{csharp}
+public static RgbColor FromRainbow(Rainbow colorBand)
+{ 
+    switch (colorBand)
+    {
+        case Rainbow.Red: 
+            return new RGBColor(0xFF, 0x00, 0x00);
+        case Rainbow.Orange => 
+            return new RGBColor(0xFF, 0x7F, 0x00);
+        case Rainbow.Yellow => 
+            return new RGBColor(0xFF, 0xFF, 0x00);
+        case Rainbow.Blue => 
+            return new RGBColor(0x00, 0x00, 0xFF);
+        case Rainbow.Indigo => 
+            return new RGBColor(0x4B, 0x00, 0x82);
+        case Rainbow.Violet => 
+            return new RGBColor(0x94, 0x00, 0xD3);
+        default:
+            throw new ArgumentException(
+                message: "invalid enum value",
+                paramName: nameof(colorBand));
+    };
+}
+\end{minted}
+
+И
+
+\begin{minted}{csharp}
+public static RGBColor FromRainbow(Rainbow colorBand) =>
+    colorBand switch
+    {
+        Rainbow.Red    => new RGBColor(0xFF, 0x00, 0x00),
+        Rainbow.Orange => new RGBColor(0xFF, 0x7F, 0x00),
+        Rainbow.Yellow => new RGBColor(0xFF, 0xFF, 0x00),
+        Rainbow.Blue   => new RGBColor(0x00, 0x00, 0xFF),
+        Rainbow.Indigo => new RGBColor(0x4B, 0x00, 0x82),
+        Rainbow.Violet => new RGBColor(0x94, 0x00, 0xD3),
+        _ => throw new ArgumentException(
+                message: "invalid enum value", 
+                paramName: nameof(colorBand)),
+    };
+\end{minted}
+
+Второй вариант в полтора раза короче сам по себе, но его главное достоинство в том, что обычный switch --- это оператор, так что внутри тела case-оы надо писать тоже операторы (например, return) и его нельзя использовать в выражениях. Switch expression --- это именно выражение, так что может использоваться в других выражениях (этакое обобщение тернарного оператора). Все ветки должны возвращать выражение одного типа (или кидать исключение), никаких case и return писать не надо. На самом деле, это давно известный и любимый в функциональных языках (в частности, в F\#) оператор match, просто его переименовали в switch, чтобы хомячкам было привычней.
+
+Как и в функциональных языках, слева от => может стоять не просто какое-то значение, а \textit{шаблон}, что позволяет делать довольно интересные вещи. Например, switch по значению какого-нибудь свойства:
+
+\begin{minted}{csharp}
+public static decimal ComputeSalesTax(Address location, decimal salePrice) =>
+    location switch
+    {
+        { State: "WA" } => salePrice * 0.06M,
+        { State: "MN" } => salePrice * 0.75M,
+        { State: "MI" } => salePrice * 0.05M,
+        // ...
+        _ => 0M
+    };
+\end{minted}
+
+Или даже по кортежу:
+
+\begin{minted}{csharp}
+public static string RockPaperScissors(string first, string second)
+    => (first, second) switch
+    {
+        ("rock", "paper") => "rock is covered by paper. Paper wins.",
+        ("rock", "scissors") => "rock breaks scissors. Rock wins.",
+        ("paper", "rock") => "paper covers rock. Paper wins.",
+        ("paper", "scissors") => "paper is cut by scissors. Scissors wins.",
+        ("scissors", "rock") => "scissors is broken by rock. Rock wins.",
+        ("scissors", "paper") => "scissors cuts paper. Scissors wins.",
+        (_, _) => "tie"
+    };
+\end{minted}
+
+Как видим, кортеж мы собираем прямо тут, но могли бы и принимать сразу пару. А потом в каждом из случаев switch-а мы разбираем кортеж по составным частям и сравниваем с константами. <<\_>>, как обычно, означает <<не важно>>, матчится со всем и никуда не присваивает поматченное значение.
+
+На самом деле, шаблоны можно использовать и при объявлении переменных:
+
+\begin{minted}{csharp}
+    var (x, y) = (1, 2);
+\end{minted}
+
+И даже управлять для произвольных типов, как значение этого типа разбирается шаблонами:
+
+\begin{minted}{csharp}
+public class Point
+{
+    public int X { get; }
+    public int Y { get; }
+
+    public Point(int x, int y) => (X, Y) = (x, y);
+
+    public void Deconstruct(out int x, out int y) =>
+        (x, y) = (X, Y);
+}
+\end{minted}
+
+Теперь можно писать
+
+\begin{minted}{csharp}
+var point = new Point(10, 20);
+var (a, b) = point;
+\end{minted}
+
+Метод Deconstruct с out-параметрами ищется компилятором по имени, и если у типа он есть (и с подходящим числом параметров), используется при сопоставлении шаблонов (out-параметры, видимо, чтобы избежать коллизий с <<нормальными>> методами, которые просто называются Deconstruct --- нормальные методы возвращали бы кортеж).
+
+Деконструкция, естественно, работает и в expression switch, и можно даже давать имена частям шаблона, чтобы потом их использовать после стрелки:
+
+\begin{minted}{csharp}
+static string Quadrant(Point p) => p switch
+{
+    (0, 0) => "origin",
+    (var x, var y) when x > 0 && y > 0 => "Quadrant 1",
+    (var x, var y) when x < 0 && y > 0 => "Quadrant 2",
+    (var x, var y) when x < 0 && y < 0 => "Quadrant 3",
+    (var x, var y) when x > 0 && y < 0 => "Quadrant 4",
+    (var x, var y) => "on a border",
+    _ => "unknown"
+};
+\end{minted}
+
+Опять-таки, прямо как в F\#, но если вы никогда не программировали на F\# (не удивлюсь), просто будьте в курсе, что это не какие-то новые крутые фичи, это просто постепенное перетаскивание в C\# синтаксиса и языковых особенностей более продвинутых с теоретической точки зрения <<языков-родственников>>.
+
+Ещё одна штука, которая была в F\# сколько себя помню, и появилась в C\# 8 --- using var, синтаксический сахар, чтобы не писать using (var ...) и фигурные скобки. Вот так это выглядит:
+
+\begin{minted}{csharp}
+static void WriteLinesToFile(IEnumerable<string> lines)
+{
+    using var file = new System.IO.StreamWriter("WriteLines2.txt");
+    foreach (string line in lines)
+    {
+        // If the line doesn't contain the word 'Second', 
+        // write the line to the file.
+        if (!line.Contains("Second"))
+        {
+            file.WriteLine(line);
+        }
+    }
+// file is disposed here
+}
+\end{minted}
+
+Это то же самое, что и
+
+\begin{minted}{csharp}
+static void WriteLinesToFile(IEnumerable<string> lines)
+{
+    using (var file = new System.IO.StreamWriter("WriteLines2.txt")) 
+    {
+        foreach (string line in lines)
+        {
+            // If the line doesn't contain the word 'Second', 
+            // write the line to the file.
+            if (!line.Contains("Second"))
+            {
+                file.WriteLine(line);
+            }
+        }
+    }
+// file is disposed here
+}
+\end{minted}
+
+Особенно хорошо, когда у вас несколько файлов, которыре надо открыть одновременно (в старом синтаксисе код бы сполз вправо). Но опасайтесь, если вам надо закрыть файл в какой-то определённый момент (например, вы закончили в него писать, закрыли и хотите начать читать), using var может не подойти (он закроет файл только в конце функции).
+
+А вот Nullable reference-типы, поддержка которых появилась в C\# 8, это не синтаксический сахар, а реально крутая новая фича языка (ну как, в F\# оно встроено в язык с самого начала...). Можно сказать компилятору, что ни одна ссылочная переменная не может иметь значение null. Зачем? Как говорил Tony Hoare (автор кусорта и значительного куска теории параллельных вычислений), изобретение null был его ошибкой, стоившей миллиарды долларов. Без nullability-анализа \textbf{любая} ссылочная переменная могла иметь значение null, поэтому формально при \textbf{каждом} разыменовании (будь то обращение к полю, вызов метода и т.п.) мы должны быть уверены, что переменная не null. Однако так, конечно, никто не делал, потэтому в любой сколько-нибудь сложной программе всегда есть куча багов, приводящих к Null Reference/Pointer Exception.
+
+Nullability-анализ во время компиляции пытается доказать про каждую ссылочную переменную, что она не null. Например, запрещает явное присвоение null, запрещает использование неинициализированной ссылочной переменной, запрещает присвоение ссылочной переменной значения, которое каким-то образом может быть null. Как с этим жить, если даже чтобы реализовать список, обязательно нужен null, которому было бы равно свойство Next последнего элемента? Некоторые переменные помечаются как nullable --- им можно иметь значение null, в таком случае они ведут себя как обычно, но в не-nullable-переменную их так просто не присвоить. И выполнять разыменование таких переменных можно только явно сказав, что вы знаете, что делаете. 
+
+Например, \mintinline{csharp}{string name;} --- это не nullable-переменная, использование её без инициализации или \mintinline{csharp}{name = null;} вызовет ошибку компиляции. 
+
+\mintinline{csharp}{string? name;} --- это nullable-переменная, она может быть null, так что \mintinline{csharp}{name = null;} писать можно, но теперь \mintinline{csharp}{name.Length} вызовет ошибку компиляции (мы не можем доказать, что вправе обратиться к свойству). Если мы знаем, что делаем, мы можем использовать <<null-forgiving operator>>, <<!.>>: \mintinline{csharp}{name!.Length;} работать будет. На самом деле, если все переменные сделать nullable и всегда использовать !., всё будет работать по-старому, но зачем.
+
+Интересно, что по умолчанию nullability-анализ выключен и его даже нельзя включить через GUI Visual Studio. Почему --- почти весь существующий код был написан до появления nullability-анализа, так что если его просто взять и включить, всё перестанет компилироваться. И вряд ли кто-то захочет быстренько зарефакторить пару миллионов строк кода, чтобы расставить там nullable-типы и null-forgiving-операторы. Поэтому, чтобы включить поддержку nullability-анализа для проекта, надо в проектный файл дописать
+
+\begin{minted}{xml}
+<Nullable>enable</Nullable>
+\end{minted}
+
+Например,
+
+\begin{minted}{xml}
+<Project Sdk="Microsoft.NET.Sdk">
+
+<PropertyGroup>
+  <OutputType>Exe</OutputType>
+  <TargetFramework>net5.0</TargetFramework>
+  <Nullable>enable</Nullable>
+</PropertyGroup>
+
+</Project>
+\end{minted}
+
+Анализом можно управлять и пофайлово, и включать-выключать его по месту, директивами \mintinline{csharp}{#nullable disable} и \mintinline{csharp}{#nullable enable}. Однако учтите, что не null-овость ссылочной переменной во всех случаях доказать во время компиляции невозможно теоретически, так что исключения, связанные с разыменованием нулевого указателя, всё-таки возможны, но вероятность их существенно меньше.
+
+Вообще, можно утверждать, что любой современный код должен использовать nullability-анализ, чтобы Хоар в конце концов мог быть прощён за свою ошибку. Поэтому вот подробности про nullability в C\#: \url{https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references}, и начиная с этой пары она должна быть обязательно включена во всех новых домашках.
+
+\subsection{C\# 9}
+
+Самую интересную фичу C\# 9 мы уже видели аж на первой паре --- это top-level statement-ы, возможность писать программу без всякого boilerplate-кода типа объявления классов. Это сделано для того, чтобы на C\# можно было легко писать небольшие программы и скрипты, и проще было учиться (и был хоть какой-то шанс против засилья Питона для решения небольших задач). Для сколько-нибудь больших проектов это ничего не даёт, впрочем.
+
+Остальные изменения направлены на то, чтобы улучшить уже существующие фичи и сделать язык более консистентным (как внутри, так и более согласованным с F\#, как обычно). Во-первых, несколько улучшен синтаксис сопоставления шаблонов, теперь это целый полноценный подъязык:
+
+\begin{minted}{csharp}
+public static bool IsLetterOrSeparator(char c) =>
+    c is (>= 'a' and <= 'z') or (>= 'A' and <= 'Z') or '.' or ',';
+\end{minted}
+
+Чаще всего, однако, это используется в простых шаблонах, например, \mintinline{csharp}{if (e is not null) ...}. Так более человечно, чем всякие !=.
+
+Что ещё стало приятнее, это продвинутый локальный вывод типов. Теперь можно использовать не только var, но и не писать явно тип справа от присваивания, если понятно, о чём идёт речь. Сравните:
+
+\begin{minted}{csharp}
+    private List<WeatherObservation> observations = new List<WeatherObservation>();
+\end{minted}
+
+Тут var вам ничем не поможет, потому что var нельзя использовать при объявлении полей. Поможет C\# 9, где можно писать вот так:
+
+\begin{minted}{csharp}
+    private List<WeatherObservation> observations = new();
+\end{minted}
+
+Тип может быть понятен не только при объявлении поля, но и при вызове метода, так что можно писать так:
+
+\begin{minted}{csharp}
+public WeatherForecast ForecastFor(
+        DateTime forecastDate, WeatherForecastOptions options)
+...
+var forecast = station.ForecastFor(DateTime.Now.AddDays(2), new());
+\end{minted}
+
+
+Ещё это хорошо работает с init-only-свойствами, ещё одной новой фичей C\# 9. init-only свойство --- это свойство, из которого можно только читать, кроме момента создания объекта, объявляется так:
+
+\begin{minted}{csharp}
+public struct WeatherObservation
+{
+    public DateTime RecordedAt { get; init; }
+    public decimal TemperatureInCelsius { get; init; }
+    public decimal PressureInMillibars { get; init; }
+
+    public override string ToString() =>
+        $"At {RecordedAt:h:mm tt} on {RecordedAt:M/d/yyyy}: " +
+        $"Temp = {TemperatureInCelsius}, with {PressureInMillibars} pressure";
+}
+\end{minted}
+
+Обратите внимание на init; вместо set;. Такие свойства можно использовать в синтаксисе инициализации так:
+
+\begin{minted}{csharp}
+WeatherStation station = new() { Location = "Seattle, WA" };
+\end{minted}
+
+Дальше поменять значение такого свойства будет нельзя (что хорошо и правильно, всё, что может не меняться, должно быть немутабельным, const ваш лучший друг).
+
+Ну и последняя штука, которую обычно ставят на первое место по значимости, это record-ы. Record --- это по сути ссылочная структура, либо же класс, который ведёт себя как структура с точки зрения оператора сравнения и хеш-кода. Кроме того, record-ы неизменяемы. Объявляются так:
+
+\begin{minted}{csharp}
+public record Person
+{
+    public string LastName { get; }
+    public string FirstName { get; }
+
+    public Person(string first, string last) 
+        => (FirstName, LastName) = (first, last);
+}
+\end{minted}
+
+Это буквально record-ы из F\#, причём там они были такими изначально и F\# долгое время вообще не поддерживал C\#-овые структуры, что создавало массу неудобств при написании <<кроссязыковых>> приложений и интеграции (да-да, писать половину кода программы на C\# и половину на F\# вполне нормально). Сначала в F\# добавили struct record-ы (то есть record-ы, но размещаемые на стеке, как в C\# struct-ы), а затем, через три года, и в C\# добавили F\#-овые record-ы.
+
+Зачем они нужны в обычном коде --- как обычно, чтобы компилятор гарантировал немутабельность, что всегда приятно. Ну и для оптимизации --- если вы хотите семантику передачи по значению, но структура просто физически большая по размеру (не знаю, 150 полей типа Int64), передавать её повсюду как struct заставит постоянно копировать данные на стеке вызовов, что медленно. При передаче record-а по ссылке копируется только указатель, всего 8 байт.
 
 \end{document}

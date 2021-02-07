@@ -22,22 +22,22 @@
 \tabulinesep=1.2mm
 
 \newcommand{\attribution}[1] {
-	\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+    \begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
 }
 
 \title{Исключения и обработка ошибок}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
-\date{06.03.2020г}
+\date{05.03.2021г}
 
 \begin{document}
-	
-	\frame{\titlepage}
+    
+    \frame{\titlepage}
 
-	\section{Data-driven testing}
+    \section{Data-driven testing}
 
-	\begin{frame}[fragile]
-		\frametitle{TestCaseData (NUnit)}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{TestCaseData (NUnit)}
+        \begin{minted}{csharp}
 public class StackTest
 {
     [TestCaseSource(nameof(Stacks))]
@@ -54,26 +54,26 @@ public class StackTest
             new TestCaseData(new ListStack()),
         };
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\section{Исключения}
+    \section{Исключения}
 
-	\begin{frame}[fragile]
-		\frametitle{Бросание исключений}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Бросание исключений}
+        \begin{minted}{csharp}
 if (t == null)
 {
     throw new NullReferenceException();
 }
 
 throw new NullReferenceException("Hello!");
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Обработка исключений}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Обработка исключений}
+        \begin{minted}{csharp}
 try {
     // Код, который может бросать исключения
 } catch (Type1 id1) {
@@ -85,23 +85,23 @@ try {
 } finally {
     // Код, выполняющийся в любом случае
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Что делается}
-		\begin{itemize}
-			\item На куче создаётся объект-исключение
-			\item Исполнение метода прерывается
-			\item Если в вызывающем методе есть обработчик этого исключения, вызывается он, иначе исполнение вызывающего тоже прерывается
-			\item И т.д., пока не найдём обработчик или прервём Main
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Что делается}
+        \begin{itemize}
+            \item На куче создаётся объект-исключение
+            \item Исполнение метода прерывается
+            \item Если в вызывающем методе есть обработчик этого исключения, вызывается он, иначе исполнение вызывающего тоже прерывается
+            \item И т.д., пока не найдём обработчик или прервём Main
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример}
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример}
+        \begin{small}
+            \begin{minted}{csharp}
 private void ReadData(String pathName) 
 {
     FileStream fs = null;
@@ -120,14 +120,14 @@ private void ReadData(String pathName)
         }
     }
 }
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Фильтры исключений}
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Фильтры исключений}
+        \begin{small}
+            \begin{minted}{csharp}
 public static string MakeRequest()
 {
     try
@@ -145,50 +145,50 @@ public static string MakeRequest()
         return "Connection failed";
     }
 }
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Иерархия классов-исключений}
-		\begin{tiny}
-			\begin{forest}
-				for tree={rectangle,draw,l sep=1cm,s sep=3mm,edge=open triangle 60-}
-				[Object
-					[Exception
-						[SystemException
-							[IndexOutOfRangeException]
-							[NullReferenceException]
-							[StackOverflowException]
-							[ArgumentException
-								[ArgumentNullException]
-								[ArgumentOutOfRangeException]
-								[\dots]
-							]
-						]
-						[ApplicationException]
-					]
-				]
-			\end{forest}
-		\end{tiny}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Иерархия классов-исключений}
+        \begin{tiny}
+            \begin{forest}
+                for tree={rectangle,draw,l sep=1cm,s sep=3mm,edge=open triangle 60-}
+                [Object
+                    [Exception
+                        [SystemException
+                            [IndexOutOfRangeException]
+                            [NullReferenceException]
+                            [StackOverflowException]
+                            [ArgumentException
+                                [ArgumentNullException]
+                                [ArgumentOutOfRangeException]
+                                [\dots]
+                            ]
+                        ]
+                        [ApplicationException]
+                    ]
+                ]
+            \end{forest}
+        \end{tiny}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Свойства класса Exception}
-		\begin{itemize}
-			\item Data
-			\item HelpLink
-			\item InnerException
-			\item Message
-			\item Source
-			\item StackTrace
-			\item HResult
-		\end{itemize}
-	\end{frame}
+    \begin{frame}[fragile]
+        \frametitle{Свойства класса Exception}
+        \begin{itemize}
+            \item Data
+            \item HelpLink
+            \item InnerException
+            \item Message
+            \item Source
+            \item StackTrace
+            \item HResult
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример (плохой)}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Пример (плохой)}
+        \begin{minted}{csharp}
 try
 {
     throw new Exception("Something is very wrong");
@@ -200,13 +200,13 @@ catch (Exception e)
     Console.WriteLine("e.ToString(): " + e.ToString());
     Console.WriteLine("e.StackTrace:\n" + e.StackTrace);
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Что выведется}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Что выведется}
+        \begin{scriptsize}
+            \begin{minted}{csharp}
 Caught Exception
 e.Message: Something is very wrong
 e.ToString(): System.Exception: Something is very wrong
@@ -216,13 +216,13 @@ e.StackTrace:
    в CSharpConsoleApplication.Program.Main(String[] args) в 
        c:\Projects\CSharpConsoleApplication\CSharpConsoleApplication\Program.cs:строка 15
 Для продолжения нажмите любую клавишу . . .
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Перебрасывание исключений}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Перебрасывание исключений}
+        \begin{minted}{csharp}
 try
 {
     throw new Exception("Something is wrong");
@@ -232,17 +232,17 @@ catch (Exception e)
     Console.WriteLine("Caught Exception");
     throw;  // "throw e;" тоже работает, но сбросит stack trace
 }
-		\end{minted}
+        \end{minted}
 
-		Или
-		\begin{minted}{csharp}
+        Или
+        \begin{minted}{csharp}
 throw new Exception("Outer exception", e);
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Свои классы-исключения}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Свои классы-исключения}
+        \begin{minted}{csharp}
 public class MyException : Exception
 {
     public MyException() 
@@ -254,12 +254,12 @@ public class MyException : Exception
     {
     }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Идеологически правильное объявление исключения}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Идеологически правильное объявление исключения}
+        \begin{minted}{csharp}
 [Serializable]
 public class MyException : Exception
 {
@@ -272,30 +272,30 @@ public class MyException : Exception
         System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{``Интересные'' классы-исключения}
-		\begin{itemize}
-			\item Corrupted state exceptions (CSE) --- не ловятся catch-ем
-			\begin{itemize}
-				\item StackOverflowException
-				\item AccessViolationException
-				\item System.Runtime.InteropServices.SEHException
-			\end{itemize}
-			\item FileLoadException, BadImageFormatException, InvalidProgramException, ...
-			\item ThreadAbortException
-			\item TypeInitializationException
-			\item TargetInvocationException
-			\item OutOfMemoryException
-			\item Можно кидать null. При этом рантайм сам кидает NullReferenceException.
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{``Интересные'' классы-исключения}
+        \begin{itemize}
+            \item Corrupted state exceptions (CSE) --- не ловятся catch-ем
+            \begin{itemize}
+                \item StackOverflowException
+                \item AccessViolationException
+                \item System.Runtime.InteropServices.SEHException
+            \end{itemize}
+            \item FileLoadException, BadImageFormatException, InvalidProgramException, ...
+            \item ThreadAbortException
+            \item TypeInitializationException
+            \item TargetInvocationException
+            \item OutOfMemoryException
+            \item Можно кидать null. При этом рантайм сам кидает NullReferenceException.
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Environment.FailFast}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Environment.FailFast}
+        \begin{minted}{csharp}
 try 
 {
      // Делать что-то полезное
@@ -306,13 +306,13 @@ catch (OutOfMemoryException e)
     Environment.FailFast(
         String.Format($"Out of Memory: {e.Message}"));
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Исключения и тесты}
-		\begin{footnotesize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Исключения и тесты}
+        \begin{footnotesize}
+            \begin{minted}{csharp}
 [TestMethod]
 [ExpectedException(typeof(DivideByZeroException))]
 public void DivideTest()
@@ -322,11 +322,11 @@ public void DivideTest()
     int denominator = 0;
     int actual = target.Divide(numerator, denominator);
 }
-			\end{minted}
-		\end{footnotesize}
-		или (более правильно)
-		\begin{footnotesize}
-			\begin{minted}{csharp}
+            \end{minted}
+        \end{footnotesize}
+        или (более правильно)
+        \begin{footnotesize}
+            \begin{minted}{csharp}
 [TestMethod]
 public void DivideTest()
 {
@@ -335,41 +335,41 @@ public void DivideTest()
     int denominator = 0;
     Assert.Throws<DivideByZeroException>(target.Divide(numerator, denominator);
 }
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Исключения, best practices}
-		\begin{itemize}
-			\item Не бросать исключения без нужды
-			\begin{itemize}
-				\item В нормальном режиме работы исключения бросаться не должны вообще
-			\end{itemize}
-			\item Свои исключения наследовать от System.Exception
-			\item Документировать все свои исключения, бросаемые методом
-			\item Не ловить Exception, SystemException
-			\begin{itemize}
-				\item Исключения, указывающие на ошибку в коде (например, NullReferenceException) уж точно не ловить
-			\end{itemize}
-			\item По возможности кидать библиотечные исключения или их наследников:
-			\begin{itemize}
-				\item InvalidOperationException
-				\item ArgumentException
-			\end{itemize}
-			\item Имя класса должно заканчиваться на ``Exception''
-			\item Код должен быть безопасным с точки зрения исключений
-			\begin{itemize}
-				\item Не забывать про finally 
-				\item Или using, lock, foreach, которые тоже генерят finally
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Исключения, best practices}
+        \begin{itemize}
+            \item Не бросать исключения без нужды
+            \begin{itemize}
+                \item В нормальном режиме работы исключения бросаться не должны вообще
+            \end{itemize}
+            \item Свои исключения наследовать от System.Exception
+            \item Документировать все свои исключения, бросаемые методом
+            \item Не ловить Exception, SystemException
+            \begin{itemize}
+                \item Исключения, указывающие на ошибку в коде (например, NullReferenceException) уж точно не ловить
+            \end{itemize}
+            \item По возможности кидать библиотечные исключения или их наследников:
+            \begin{itemize}
+                \item InvalidOperationException
+                \item ArgumentException
+            \end{itemize}
+            \item Имя класса должно заканчиваться на ``Exception''
+            \item Код должен быть безопасным с точки зрения исключений
+            \begin{itemize}
+                \item Не забывать про finally 
+                \item Или using, lock, foreach, которые тоже генерят finally
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{using, IDisposable}
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{using, IDisposable}
+        \begin{small}
+            \begin{minted}{csharp}
 public static class Program {
     public static void Main() {
         // Create the bytes to write to the temporary file.
@@ -383,16 +383,16 @@ public static class Program {
         File.Delete("Temp.dat");
     }
 }
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\section{Особенности современного C\#}
+    \section{Особенности современного C\#}
 
-	\begin{frame}[fragile]
-		\frametitle{Особенности современного C\#}
-		\framesubtitle{Кортежи и деконструкция}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Особенности современного C\#}
+        \framesubtitle{Кортежи и деконструкция}
+        \begin{minted}{csharp}
 static (int prev, int cur) Fibonacci(int n)
 {
     var (prevPrev, prev) = n <= 2 ? (0, 1) : Fibonacci(n - 1);
@@ -404,12 +404,12 @@ private static void Main(string[] args)
     var (_, result) = Fibonacci(7);
     Console.WriteLine(result);
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Именованные поля кортежей}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Именованные поля кортежей}
+        \begin{minted}{csharp}
 int count = 5;
 string label = "Colors used in the map";
 var pair = (count: count, label: label);
@@ -417,23 +417,23 @@ var pair = (count: count, label: label);
 int count = 5;
 string label = "Colors used in the map";
 var pair = (count, label); // element names are "count" and "label"
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Инициализация свойств}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Инициализация свойств}
+        \begin{minted}{csharp}
 public class Person
 {
     public int Age { get; set; } = 0;
     public string Name { get; set; } = "Anonymous";
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Null propagation}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Null propagation}
+        \begin{minted}{csharp}
 var first = person?.FirstName;
 
 int? age = person?.Age;
@@ -444,13 +444,13 @@ if (age.HasValue)
 
 
 var otherFirst = person?.FirstName ?? "Unspecified";
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Локальные функции}
-		\begin{small}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Локальные функции}
+        \begin{small}
+            \begin{minted}{csharp}
 public int Fibonacci(int x)
 {
     if (x < 0) 
@@ -464,13 +464,13 @@ public int Fibonacci(int x)
         return (p + pp, p);
     }
 }
-			\end{minted}
-		\end{small}
-	\end{frame}
+            \end{minted}
+        \end{small}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Индексеры}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Индексеры}
+        \begin{minted}{csharp}
 class SampleCollection {
     private int[] arr = new int[100];
     public int this[int i]
@@ -485,24 +485,24 @@ class SampleCollection {
         }
     }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Индексовая инициализация}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Индексовая инициализация}
+        \begin{minted}{csharp}
 private Dictionary<int, string> webErrors = new Dictionary<int, string>
 {
     [404] = "Page not Found",
     [302] = "Page moved, but left a forwarding address.",
     [500] = "The web server can't come out to play today."
 };
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Именованные и необязательные аргументы}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Именованные и необязательные аргументы}
+        \begin{minted}{csharp}
 PrintOrderDetails(productName: "Red Mug", 31, "Gift Shop");
 
 public void ExampleMethod(int required, 
@@ -510,12 +510,12 @@ public void ExampleMethod(int required,
     int optionalInt = 10)
 
 anExample.ExampleMethod(3, optionalInt: 4);
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{params}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{params}
+        \begin{minted}{csharp}
 public static void UseParams(params int[] list)
 {
     for (int i = 0; i < list.Length; i++)
@@ -526,13 +526,13 @@ public static void UseParams(params int[] list)
 }
 ...
 UseParams(1, 2, 3, 4);
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{switch expression (C\# 8)}
-		\framesubtitle{\url{https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-8}}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{switch expression (C\# 8)}
+        \framesubtitle{\url{https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-8}}
+        \begin{minted}{csharp}
 public static RGBColor FromRainbow(Rainbow colorBand) =>
     colorBand switch
     {
@@ -546,12 +546,12 @@ public static RGBColor FromRainbow(Rainbow colorBand) =>
                 message: "invalid enum value", 
                 paramName: nameof(colorBand)),
     };
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{switch по свойствам (C\# 8)}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{switch по свойствам (C\# 8)}
+        \begin{minted}{csharp}
 public static decimal ComputeSalesTax(Address location, 
         decimal salePrice) =>
     location switch
@@ -562,12 +562,12 @@ public static decimal ComputeSalesTax(Address location,
         // ...
         _ => 0M
     };
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{switch по кортежам (C\# 8)}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{switch по кортежам (C\# 8)}
+        \begin{minted}{csharp}
 public static string RockPaperScissors(string first, string second)
     => (first, second) switch
     {
@@ -579,12 +579,12 @@ public static string RockPaperScissors(string first, string second)
         ("scissors", "paper") => "scissors cuts paper. Scissors wins.",
         (_, _) => "tie"
     };
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Deconstruct (C\# 8)}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Deconstruct (C\# 8)}
+        \begin{minted}{csharp}
 public class Point
 {
     public int X { get; }
@@ -595,12 +595,12 @@ public class Point
     public void Deconstruct(out int x, out int y) =>
         (x, y) = (X, Y);
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Позиционные шаблоны (C\# 8)}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Позиционные шаблоны (C\# 8)}
+        \begin{minted}{csharp}
 static string Quadrant(Point p) => p switch
 {
     (0, 0) => "origin",
@@ -611,12 +611,12 @@ static string Quadrant(Point p) => p switch
     (var x, var y) => "on a border",
     _ => "unknown"
 };
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{using var (C\# 8)}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{using var (C\# 8)}
+        \begin{minted}{csharp}
 static void WriteLinesToFile(IEnumerable<string> lines)
 {
     using var file = new System.IO.StreamWriter("WriteLines2.txt");
@@ -631,29 +631,70 @@ static void WriteLinesToFile(IEnumerable<string> lines)
     }
 // file is disposed here
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-		\begin{frame}[fragile]
-		\frametitle{Nullable reference-типы (C\# 8)}
-		\begin{itemize}
-			\item \mintinline{csharp}|string? name;| --- переменная может быть \mintinline{csharp}|null|
-			\item \mintinline{csharp}|string name;| --- переменная не может быть \mintinline{csharp}|null|
-			\begin{itemize}
-				\item Попытки присвоить \mintinline{csharp}|null| или что-то, что может быть \mintinline{csharp}|null|, вызовут предупреждения компилятора
-			\end{itemize}
-			\item \mintinline{csharp}|name!.Length| --- null-forgiving operator
-			\item Как включить: 
-				\begin{minted}{xml}
+    \begin{frame}[fragile]
+        \frametitle{Nullable reference-типы (C\# 8)}
+        \begin{itemize}
+            \item \mintinline{csharp}|string? name;| --- переменная может быть \mintinline{csharp}|null|
+            \item \mintinline{csharp}|string name;| --- переменная не может быть \mintinline{csharp}|null|
+            \begin{itemize}
+                \item Попытки присвоить \mintinline{csharp}|null| или что-то, что может быть \mintinline{csharp}|null|, вызовут предупреждения компилятора
+            \end{itemize}
+            \item \mintinline{csharp}|name!.Length| --- null-forgiving operator
+            \item Как включить: 
+                \begin{minted}{xml}
 <PropertyGroup>
     <Nullable>enable</Nullable>
 </PropertyGroup>
-				\end{minted}
-				в проектный файл
-			\item Управляется директивами \mintinline{csharp}|#nullable disable| и \mintinline{csharp}|#nullable enable|
-			\item Подробности: \url{https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references}
-			\item Более-менее обязательно к применению
-		\end{itemize}
-	\end{frame}
+                \end{minted}
+                в проектный файл
+            \item Управляется директивами \mintinline{csharp}|#nullable disable| и \mintinline{csharp}|#nullable enable|
+            \item Подробности: \url{https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references}
+            \item Более-менее обязательно к применению
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Продвинутое сопоставление шаблонов (C\# 9)}
+        \begin{minted}{csharp}
+public static bool IsLetterOrSeparator(char c) =>
+    c is (>= 'a' and <= 'z') or (>= 'A' and <= 'Z') or '.' or ',';
+
+if (e is not null)
+{
+    // ...
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Продвинутый вывод типов (C\# 9)}
+        \begin{minted}{csharp}
+private List<WeatherObservation> observations = new();
+
+public WeatherForecast ForecastFor(
+    DateTime forecastDate, WeatherForecastOptions options)
+...
+var forecast = station.ForecastFor(DateTime.Now.AddDays(2), new());
+
+WeatherStation station = new() { Location = "Seattle, WA" };
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Record-ы (C\# 9)}
+        \begin{minted}{csharp}
+public record Person
+{
+    public string LastName { get; }
+    public string FirstName { get; }
+
+    public Person(string first, string last) 
+        => (FirstName, LastName) = (first, last);
+}
+        \end{minted}
+    \end{frame}
 
 \end{document}
