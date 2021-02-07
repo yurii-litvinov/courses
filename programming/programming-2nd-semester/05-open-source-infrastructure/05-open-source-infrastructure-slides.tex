@@ -23,7 +23,7 @@
 \title{Экосистема open source проектов}
 \subtitle{Полезные инструменты и сервисы}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{13.03.2020г}
+\date{12.03.2021г}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -31,106 +31,122 @@
 
 \begin{document}
 
-	\frame{\titlepage}
+    \frame{\titlepage}
 
-	\section{CI}
+    \section{CI}
 
-	\subsection{Работа с консолью}
+    \subsection{Работа с консолью}
 
-	\begin{frame}
-		\frametitle{Небольшое отступление про сборку из консоли}
-		\framesubtitle{В Windows, остальные и так умеют}
-		\begin{itemize}
-			\item Основные консольные команды: cd, dir
-			\item Переменные окружения, PATH
-			\item .NET Core
-			\item NuGet Command Line
-			\item Как сделать жизнь более удобной
-			\begin{itemize}
-				\item FAR (\url{https://www.farmanager.com/})
-				\item Chocolatey (\url{https://chocolatey.org/})
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Небольшое отступление про сборку из консоли}
+        \framesubtitle{В Windows, остальные и так умеют}
+        \begin{itemize}
+            \item Основные консольные команды: cd, dir
+            \item Переменные окружения, PATH
+            \item .NET Core (точнее уже просто .NET)
+            \item NuGet Command Line
+            \item Как сделать жизнь более удобной
+            \begin{itemize}
+                \item FAR (\url{https://www.farmanager.com/})
+                \item Chocolatey (\url{https://chocolatey.org/})
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\subsection{Continuous Integration}
+    \begin{frame}
+        \frametitle{Основные команды .NET Command-Line Interface}
+        \begin{itemize}
+            \item dotnet new --- создать новый проект
+            \begin{itemize}
+                \item dotnet new console
+            \end{itemize}
+            \item dotnet restore --- получить NuGet-пакеты для текущего проекта
+            \item dotnet build --- собрать проект в текущей папке
+            \item dotnet run --- запустить проект в текущей папке
+            \begin{itemize}
+                \item dotnet run -- моиАргументы
+            \end{itemize}
+            \item dotnet test --- запустить юнит-тесты для проекта в текущей папке
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Continuous Integration}
-		Непрерывная интеграция --- практика слияния всех изменений по нескольку раз в день, сборки их в известном окружении и запуска юнит-тестов.
-		\begin{itemize}
-			\item Автоматический билд
-			\begin{itemize}
-				\item Всё, что нужно для сборки, есть в репозитории, может быть получено на чистую (ну, практически) машину и собрано одной консольной командой
-			\end{itemize}
-			\item Большое количество юнит-тестов, запускаемых автоматически
-			\item Выделенная машина, слушающая репозиторий и выполняющая билд
-			\begin{itemize}
-				\item Чаще всего каждый билд запускается на заранее настроенной виртуалке
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \subsection{Continuous Integration}
 
-	\begin{frame}
-		\frametitle{Continuous Integration}
-		\begin{itemize}
-			\item Извещение всех разработчиков о статусе
-			\begin{itemize}
-				\item Если билд не прошёл, разработка приостанавливается до его починки
-			\end{itemize}
-			\item Автоматическое выкладывание
-			\item Пока билд не прошёл, задача не считается сделанной
-			\begin{itemize}
-				\item Короткие билды (<10 мин.)
-				\item deployment pipeline
-				\begin{itemize}
-					\item Отдельная машина для сборки, для коротких тестов, для длинных тестов, для выкладывания
-				\end{itemize}
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Continuous Integration}
+        Непрерывная интеграция --- практика слияния всех изменений по нескольку раз в день, сборки их в известном окружении и запуска юнит-тестов.
+        \begin{itemize}
+            \item Автоматический билд
+            \begin{itemize}
+                \item Всё, что нужно для сборки, есть в репозитории, может быть получено на чистую (ну, практически) машину и собрано одной консольной командой
+            \end{itemize}
+            \item Большое количество юнит-тестов, запускаемых автоматически
+            \item Выделенная машина, слушающая репозиторий и выполняющая билд
+            \begin{itemize}
+                \item Чаще всего каждый билд запускается на заранее настроенной виртуалке
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\subsection{AppVeyor}
+    \begin{frame}
+        \frametitle{Continuous Integration}
+        \begin{itemize}
+            \item Извещение всех разработчиков о статусе
+            \begin{itemize}
+                \item Если билд не прошёл, разработка приостанавливается до его починки
+            \end{itemize}
+            \item Автоматическое выкладывание
+            \item Пока билд не прошёл, задача не считается сделанной
+            \begin{itemize}
+                \item Короткие билды (<10 мин.)
+                \item deployment pipeline
+                \begin{itemize}
+                    \item Отдельная машина для сборки, для коротких тестов, для длинных тестов, для выкладывания
+                \end{itemize}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{AppVeyor}
-		\begin{itemize}
-			\item \url{https://www.appveyor.com/} --- пример бесплатной для open source-проектов облачной CI-системы
-			\item Виртуальная машина с ОС Windows и настроенными инструментами сборки .NET-приложений
-			\begin{itemize}
-				\item Windows Server 2019 + VS 2019 или более старые
-				\item Умеет Linux Ubuntu 18.04 и macOS 10.15
-			\end{itemize}
-			\item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
-			\item Собирает по умолчанию системой сборки MSBuild
-			\begin{itemize}
-				\item Можно переубедить и собирать хоть C++-приложения
-			\end{itemize}
-			\item Окружение настраивается конфигурационным файлом или ``вручную'' из скрипта сборки
-		\end{itemize}
-	\end{frame}
+    \subsection{AppVeyor}
 
-	\begin{frame}
-		\frametitle{AppVeyor, настройка сборки}
-		\begin{itemize}
-			\item Зайти на \url{https://www.appveyor.com/} по GitHub-аккаунту
-			\item Добавить проект (разрешив AppVeyor просматривать список репозиториев на гитхабе)
-			\item Положить в корень репозитория файл appveyor.yml с конфигурацией сборки
-			\begin{itemize}
-				\item Пустой тоже ок, это конфигурация по умолчанию, ищет .sln в корне репозитория и пытается его собрать
-			\end{itemize}
-			\item Закоммитить и запушить, это инициирует процесс сборки
-			\item Результаты будут видны прямо на гитхабе, у каждого коммита и в пуллреквесте:
-		\end{itemize}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{appVeyorSuccess.png}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{AppVeyor}
+        \begin{itemize}
+            \item \url{https://www.appveyor.com/} --- пример бесплатной для open source-проектов облачной CI-системы
+            \item Виртуальная машина с ОС Windows и настроенными инструментами сборки .NET-приложений
+            \begin{itemize}
+                \item Windows Server 2019 + VS 2019 или более старые
+                \item Умеет Linux Ubuntu 20.04 и macOS 10.15
+            \end{itemize}
+            \item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
+            \item Собирает по умолчанию системой сборки MSBuild
+            \begin{itemize}
+                \item Можно переубедить и собирать хоть C++-приложения
+            \end{itemize}
+            \item Окружение настраивается конфигурационным файлом или <<вручную>> из скрипта сборки
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{AppVeyor, пример файла конфигурации}
-		\framesubtitle{AppVeyor, .NET Core}
-		\begin{minted}{yaml}
+    \begin{frame}
+        \frametitle{AppVeyor, настройка сборки}
+        \begin{itemize}
+            \item Зайти на \url{https://www.appveyor.com/} по GitHub-аккаунту
+            \item Добавить проект (разрешив AppVeyor просматривать список репозиториев на гитхабе)
+            \item Положить в корень репозитория файл appveyor.yml с конфигурацией сборки
+            \begin{itemize}
+                \item Пустой тоже ок, это конфигурация по умолчанию, ищет .sln в корне репозитория и пытается его собрать
+            \end{itemize}
+            \item Закоммитить и запушить, это инициирует процесс сборки
+            \item Результаты будут видны прямо на гитхабе, у каждого коммита и в пуллреквесте:
+        \end{itemize}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{appVeyorSuccess.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{AppVeyor, пример файла конфигурации}
+        \begin{minted}{yaml}
 image: Visual Studio 2019
 
 before_build: 
@@ -141,79 +157,65 @@ build:
 
 test_script: 
     - dotnet test myCoolHomework/Homework.sln
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример файла конфигурации}
-		\framesubtitle{AppVeyor, .NET Framework}
-		\begin{minted}{yaml}
-image: Visual Studio 2019
+    \begin{frame}
+        \frametitle{На что обратить внимание}
+        \begin{itemize}
+            \item Файл должен называться именно appveyor.yml (или .appveyor.yml)
+            \item И лежать именно в корне репозитория
+            \item Отступы и минусы критически важны
+            \item \url{https://www.appveyor.com/docs/appveyor-yml/}
+            \item Выкладывается обычно в master, потом вмердживается в остальные ветки
+            \begin{itemize}
+                \item При этом возможны конфликты, которые надо не забывать разрешать
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-before_build: 
-    - nuget restore myCoolHomework/Homework.sln
+    \begin{frame}
+        \frametitle{При этом, чтобы работали тесты}
+        \begin{itemize}
+            \item Нужно добавить Reference на
+            \begin{itemize}
+                \item Microsoft.NET.Test.Sdk
+                \item NUnit3TestAdapter
+                \item NUnit
+            \end{itemize}
+            \item Или другие библиотеки, которыми пользуетесь, но не забыть SDK и раннер.
+        \end{itemize}
+    \end{frame}
 
-build: 
-    project: myCoolHomework/Homework.sln
-		\end{minted}
-	\end{frame}
+    \begin{frame}
+        \frametitle{AppVeyor, жизненный цикл сборки}
+        \begin{itemize}
+            \item Запуск скриптов из раздела init
+            \item Клонирование репозитория, переход в его корень
+            \item Запуск скриптов из раздела install
+            \item Запуск скриптов из раздела before\_build
+            \item Запуск msbuild (или скрипта из раздела build\_script)
+            \item Запуск скриптов из раздела after\_build 
+            \item Поиск и запуск тестов (перед --- before\_test, после --- after\_test)
+            \item Упаковка и выкладывание собранного
+            \item Финализация (on\_success/on\_failure и on\_finish)
+        \end{itemize}
+        Билд ограничен 60 минутами
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{На что обратить внимание}
-		\begin{itemize}
-			\item Файл должен называться именно appveyor.yml (или .appveyor.yml)
-			\item И лежать именно в корне репозитория
-			\item Отступы и минусы критически важны
-			\item \url{https://www.appveyor.com/docs/appveyor-yml/}
-			\item Выкладывается обычно в master, потом вмердживается в остальные ветки
-			\begin{itemize}
-				\item При этом возможны конфликты, которые надо не забывать разрешать
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{При этом, чтобы работали тесты}
-		\begin{itemize}
-			\item Нужно добавить Reference на
-			\begin{itemize}
-				\item Microsoft.NET.Test.Sdk
-				\item NUnit3TestAdapter
-				\item NUnit
-			\end{itemize}
-			\item Или другие библиотеки, которыми пользуетесь, но не забыть SDK и раннер.
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{AppVeyor, жизненный цикл сборки}
-		\begin{itemize}
-			\item Запуск скриптов из раздела init
-			\item Клонирование репозитория, переход в его корень
-			\item Запуск скриптов из раздела install
-			\item Запуск скриптов из раздела before\_build
-			\item Запуск msbuild (или скрипта из раздела build\_script)
-			\item Запуск скриптов из раздела after\_build 
-			\item Поиск и запуск тестов (перед --- before\_test, после --- after\_test)
-			\item Упаковка и выкладывание собранного
-			\item Финализация (on\_success/on\_failure и on\_finish)
-		\end{itemize}
-		Билд ограничен 60 минутами
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{AppVeyor, Build matrix}
-		\begin{itemize}
-			\item Предназначена для сборки проекта в разном окружении
-			\begin{itemize}
-				\item Операционная система
-				\item Платформа
-				\item Конфигурация
-				\item Переменные окружения
-			\end{itemize}
-		\end{itemize}
-		Пример:
-		\begin{minted}{yaml}
+    \begin{frame}[fragile]
+        \frametitle{AppVeyor, Build matrix}
+        \begin{itemize}
+            \item Предназначена для сборки проекта в разном окружении
+            \begin{itemize}
+                \item Операционная система
+                \item Платформа
+                \item Конфигурация
+                \item Переменные окружения
+            \end{itemize}
+        \end{itemize}
+        Пример:
+        \begin{minted}{yaml}
 configuration:
 - Debug
 - Release
@@ -222,12 +224,12 @@ environment:
   matrix:
     - MY_VAR: A
     - MY_VAR: B
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Способ эксплуатировать матрицу для сборки домашек}
-		\begin{minted}{yaml}
+    \begin{frame}[fragile]
+        \frametitle{Способ эксплуатировать матрицу для сборки домашек}
+        \begin{minted}{yaml}
 environment:
   matrix:
   - solution_name: <путь от корня репозитория>/solution1.sln
@@ -235,46 +237,56 @@ environment:
 
 build_script:
   - msbuild %solution_name%
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\subsection{Travis}
+    \begin{frame}[fragile]
+        \frametitle{Или более хитрый способ}
+        \framesubtitle{Без матрицы, но с консольными скриптами}
+        \begin{minted}{yaml}
+build_script:
+  - For /R %%I in (*.sln) do dotnet test %%I
+test: off
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Travis}
-		\begin{itemize}
-			\item \url{https://travis-ci.org/} --- ещё одна бесплатная для Open Source CI-система
-			\item Linux и OS X
-			\begin{itemize}
-				\item Умеет и Windows, но плохо
-			\end{itemize}
-			\item Умеет всё, что и AppVeyor
-			\item Собирать проект двумя разными CI-системами вполне ок
-			\begin{itemize}
-				\item AppVeyor под винду, Travis под линукс
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \subsection{Travis}
 
-	\begin{frame}
-		\frametitle{Travis, настройка сборки}
-		\begin{itemize}
-			\item Установить commit hook на гитхабе
-			\begin{itemize}
-				\item Travis умеет это делать сам, надо залогиниться под своим GitHub-аккаунтом на Travis и выбрать нужный репозиторий в профиле
-			\end{itemize}
-			\item Добавить .travis.yml в корень репозитория
-			\item Закоммитить и запушить, это инициирует процесс сборки
-			\begin{itemize}
-				\item Коммит, где в комментарии есть подстрока ``[ci skip]'', игнорируется Travis-ом, остальные он собирает
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Travis}
+        \begin{itemize}
+            \item \url{https://travis-ci.org/} --- ещё одна бесплатная для Open Source CI-система
+            \item Linux и OS X
+            \begin{itemize}
+                \item Умеет и Windows, но плохо
+            \end{itemize}
+            \item Умеет всё, что и AppVeyor
+            \item Собирать проект двумя разными CI-системами вполне ок
+            \begin{itemize}
+                \item AppVeyor под винду, Travis под линукс
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример}
-		\framesubtitle{Travis, .NET Core}
-		\begin{minted}{yaml}
+    \begin{frame}
+        \frametitle{Travis, настройка сборки}
+        \begin{itemize}
+            \item Установить commit hook на гитхабе
+            \begin{itemize}
+                \item Travis умеет это делать сам, надо залогиниться под своим GitHub-аккаунтом на Travis и выбрать нужный репозиторий в профиле
+            \end{itemize}
+            \item Добавить .travis.yml в корень репозитория
+            \item Закоммитить и запушить, это инициирует процесс сборки
+            \begin{itemize}
+                \item Коммит, где в комментарии есть подстрока ``[ci skip]'', игнорируется Travis-ом, остальные он собирает
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример}
+        \framesubtitle{Travis, .NET Core}
+        \begin{minted}{yaml}
 language: csharp
 
 mono: none
@@ -288,182 +300,163 @@ build:
 
 test_script: 
     - dotnet test myCoolHomework/Homework.sln
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример}
-		\framesubtitle{Travis, .NET Framework}
-		\begin{small}
-			\begin{minted}{yaml}
-language: csharp
+    \section{CodeCov}
 
-install:
-  - nuget restore myCoolHomework/Homework.sln
-  - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
+    \begin{frame}
+        \frametitle{Анализ тестового покрытия, CodeCov}
+        \begin{itemize}
+            \item \url{https://codecov.io/}
+            \item Визуализатор для функциональности компиляторов или специальных инструментов по слежению за исполнявшимися строчками
+            \item Чем больше операторов было исполнено во время тестового прогона, тем меньше вероятность пропустить баг
+            \begin{itemize}
+                \item 100\% покрытие не гарантирует работоспособность программы
+            \end{itemize}
+            \item Интегрируется с гитхабом (комментит пуллреквесты информацией о тестовом покрытии)
+            \item Пример конфигурации для .NET, AppVeyor и Travis:
+            \begin{itemize}
+                \item \url{https://github.com/codecov/example-csharp}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-script:
-  - msbuild /p:Configuration=Release myCoolHomework/Homework.sln
-  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe \
-        .myCoolHomework/Homework.sln
-			\end{minted}
-		\end{small}
-	\end{frame}
+    \section{Codacy}
 
-	\section{CodeCov}
+    \begin{frame}
+        \frametitle{Статический анализ, Codacy}
+        \begin{itemize}
+            \item \url{https://www.codacy.com/}
+            \item Ищет типичные ошибки: потенциальные баги, стайлгайд, мёртвый код, производительность и т.д.
+            \item Поддерживает много языков (в том числе C\#, C++, Java, Kotlin, Python, Scala)
+            \item Не требует дополнительных манипуляций с репозиторием
+            \item Очень настраиваема
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Анализ тестового покрытия, CodeCov}
-		\begin{itemize}
-			\item \url{https://codecov.io/}
-			\item Визуализатор для функциональности компиляторов или специальных инструментов по слежению за исполнявшимися строчками
-			\item Чем больше операторов было исполнено во время тестового прогона, тем меньше вероятность пропустить баг
-			\begin{itemize}
-				\item 100\% покрытие не гарантирует работоспособность программы
-			\end{itemize}
-			\item Интегрируется с гитхабом (комментит пуллреквесты информацией о тестовом покрытии)
-			\item Пример конфигурации для .NET, AppVeyor и Travis:
-			\begin{itemize}
-				\item \url{https://github.com/codecov/example-csharp}
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \section{Trello}
 
-	\section{Codacy}
+    \begin{frame}
+        \frametitle{Инструменты планирования, Trello}
+        \begin{itemize}
+            \item \url{https://trello.com/}
+            \item Интерактивная доска с карточками, организованными в списки
+            \item Карточки легко редактируются и перетаскиваются между списками
+            \begin{itemize}
+                \item Типичные списки: TODO, In Progress, Done (возможны варианты)
+            \end{itemize}
+            \item Поддерживает дедлайны, чеклисты, вложения, комментарии, голосования, метки
+            \item Легковесный инструмент планирования, подходящий, тем не менее, и для больших проектов
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Статический анализ, Codacy}
-		\begin{itemize}
-			\item \url{https://www.codacy.com/}
-			\item Ищет типичные ошибки: потенциальные баги, стайлгайд, мёртвый код, производительность и т.д.
-			\item Поддерживает много языков (в том числе C\#, C++, Java, Kotlin, Python, Scala)
-			\item Не требует дополнительных манипуляций с репозиторием
-			\item Очень настраиваема
-		\end{itemize}
-	\end{frame}
+    \section{Pivotal Tracker}
 
-	\section{Trello}
+    \begin{frame}
+        \frametitle{Инструменты планирования, Pivotal Tracker}
+        \begin{itemize}
+            \item \url{https://www.pivotaltracker.com}
+            \item Более ``тяжеловесный'' инструмент, ориентированный на Scrum
+            \item Всего три списка
+            \begin{itemize}
+                \item Icebox --- что было бы неплохо сделать
+                \item Backlog --- запланированные задачи
+                \item Current --- задачи на текущую итерацию
+            \end{itemize}
+            \item Задачи можно оценивать, задачи имеют тип и статус
+            \begin{itemize}
+                \item По оценкам задач и статистике работы команды считается team velocity, позволяющая предсказать линейные сроки
+            \end{itemize}
+            \item Есть релизы с дедлайнами, метки, epic-и, чеклисты, вложения, комментарии
+            \item Умеет считать статистику, рисовать графики (burndown charts)
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Инструменты планирования, Trello}
-		\begin{itemize}
-			\item \url{https://trello.com/}
-			\item Интерактивная доска с карточками, организованными в списки
-			\item Карточки легко редактируются и перетаскиваются между списками
-			\begin{itemize}
-				\item Типичные списки: TODO, In Progress, Done (возможны варианты)
-			\end{itemize}
-			\item Поддерживает дедлайны, чеклисты, вложения, комментарии, голосования, метки
-			\item Легковесный инструмент планирования, подходящий, тем не менее, и для больших проектов
-		\end{itemize}
-	\end{frame}
+    \section{Slack и Gitter}
 
-	\section{Pivotal Tracker}
+    \begin{frame}
+        \frametitle{Средства коммуникации, Slack и Gitter}
+        \begin{itemize}
+            \item Instant messenger-ы, ориентированные на команды и интегрированные со средствами разработки
+            \begin{itemize}
+                \item Информация о коммитах и пуллреквестах
+                \item Статус CI
+                \item Другие тулы
+            \end{itemize}
+            \item Синтаксическая подсветка (markdown), вложения, отображение картинок, ...
+            \item Gitter интегрирован с гитхабом и ``более открыт'' (предназначается прежде всего для общения сообщества)
+            \item Slack интегрирован с чем угодно, предназначается прежде всего для общения внутри команды
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Инструменты планирования, Pivotal Tracker}
-		\begin{itemize}
-			\item \url{https://www.pivotaltracker.com}
-			\item Более ``тяжеловесный'' инструмент, ориентированный на Scrum
-			\item Всего три списка
-			\begin{itemize}
-				\item Icebox --- что было бы неплохо сделать
-				\item Backlog --- запланированные задачи
-				\item Current --- задачи на текущую итерацию
-			\end{itemize}
-			\item Задачи можно оценивать, задачи имеют тип и статус
-			\begin{itemize}
-				\item По оценкам задач и статистике работы команды считается team velocity, позволяющая предсказать линейные сроки
-			\end{itemize}
-			\item Есть релизы с дедлайнами, метки, epic-и, чеклисты, вложения, комментарии
-			\item Умеет считать статистику, рисовать графики (burndown charts)
-		\end{itemize}
-	\end{frame}
+    \section{GitHub}
 
-	\section{Slack и Gitter}
+    \begin{frame}
+        \frametitle{GitHub: Issues, Projects, Wiki, Pages}
+        \begin{itemize}
+            \item GitHub сам многое умеет
+            \item Issues --- довольно удобный багтрекер
+            \begin{itemize}
+                \item Майлстоуны, дедлайны, метки на багах, возможность закрывать баги автоматически (если в сообщении коммита есть ``close'' или ``fix'' и \#<номер бага>)
+                \item Пуллреквест тоже считается Issue
+            \end{itemize}
+            \item Projects --- представляет Issues в виде набора списков, между которыми их можно перетаскивать в духе Trello
+            \item Wiki --- викистраницы, куда можно выкладывать полезную информацию о проекте
+            \begin{itemize}
+                \item Тоже git-репозиторий
+            \end{itemize}
+            \item Pages --- хостинг для статических сайтов <имя проекта>.github.io
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Средства коммуникации, Slack и Gitter}
-		\begin{itemize}
-			\item Instant messenger-ы, ориентированные на команды и интегрированные со средствами разработки
-			\begin{itemize}
-				\item Информация о коммитах и пуллреквестах
-				\item Статус CI
-				\item Другие тулы
-			\end{itemize}
-			\item Синтаксическая подсветка (markdown), вложения, отображение картинок, ...
-			\item Gitter интегрирован с гитхабом и ``более открыт'' (предназначается прежде всего для общения сообщества)
-			\item Slack интегрирован с чем угодно, предназначается прежде всего для общения внутри команды
-		\end{itemize}
-	\end{frame}
+    \section{Авторское право}
 
-	\section{GitHub}
+    \begin{frame}
+        \frametitle{Авторское право}
+        \begin{itemize}
+            \item Open source-кодом можно пользоваться, только если автор явно это разрешил, так что просто код на GitHub --- не совсем open source
+            \item Бывают исключительные и личные неимущественные права
+            \begin{itemize}
+                \item Личные неимущественные права неотчуждаемы
+                \item Исключительные права можно передать
+                \item Права появляются в момент создания произведения и принадлежат автору
+                \begin{itemize}
+                    \item Если произведение создано по служебному заданию --- работодателю
+                    \item Знак копирайта служит только для информирования, регистрация прав не требуется
+                \end{itemize}
+                \item Соавторы владеют произведением в равной степени
+            \end{itemize}
+            \item Идея не охраняется, охраняется её физическое выражение
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{GitHub: Issues, Projects, Wiki, Pages}
-		\begin{itemize}
-			\item GitHub сам многое умеет
-			\item Issues --- довольно удобный багтрекер
-			\begin{itemize}
-				\item Майлстоуны, дедлайны, метки на багах, возможность закрывать баги автоматически (если в сообщении коммита есть ``close'' или ``fix'' и \#<номер бага>)
-				\item Пуллреквест тоже считается Issue
-			\end{itemize}
-			\item Projects --- представляет Issues в виде набора списков, между которыми их можно перетаскивать в духе Trello
-			\item Wiki --- викистраницы, куда можно выкладывать полезную информацию о проекте
-			\begin{itemize}
-				\item Тоже git-репозиторий
-			\end{itemize}
-			\item Pages --- хостинг для статических сайтов <имя проекта>.github.io
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Open source-лицензии}
+        \begin{itemize}
+            \item Лицензия --- способ передачи части прав на произведение
+            \item Пример --- ``Do what the **** you want to public license''
+            \begin{itemize}
+                \item ``Want to'' может включать в себя патентование произведения и подачу в суд на автора за нарушение патента, поэтому обычно лицензии более длинны и унылы
+                \item В России и Европе программы не патентуют, в США --- да
+            \end{itemize}
+            \item Каждый нормальный open source-проект должен иметь лицензию
+        \end{itemize}
+    \end{frame}
 
-	\section{Авторское право}
-
-	\begin{frame}
-		\frametitle{Авторское право}
-		\begin{itemize}
-			\item Open source-кодом можно пользоваться, только если автор явно это разрешил, так что просто код на GitHub --- не совсем open source
-			\item Бывают исключительные и личные неимущественные права
-			\begin{itemize}
-				\item Личные неимущественные права неотчуждаемы
-				\item Исключительные права можно передать
-				\item Права появляются в момент создания произведения и принадлежат автору
-				\begin{itemize}
-					\item Если произведение создано по служебному заданию --- работодателю
-					\item Знак копирайта служит только для информирования, регистрация прав не требуется
-				\end{itemize}
-				\item Соавторы владеют произведением в равной степени
-			\end{itemize}
-			\item Идея не охраняется, охраняется её физическое выражение
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Open source-лицензии}
-		\begin{itemize}
-			\item Лицензия --- способ передачи части прав на произведение
-			\item Пример --- ``Do what the **** you want to public license''
-			\begin{itemize}
-				\item ``Want to'' может включать в себя патентование произведения и подачу в суд на автора за нарушение патента, поэтому обычно лицензии более длинны и унылы
-				\item В России и Европе программы не патентуют, в США --- да
-			\end{itemize}
-			\item Каждый нормальный open source-проект должен иметь лицензию
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Open source-лицензии}
-		\begin{itemize}
-			\item Часто используемые open source-лицензии:
-			\begin{itemize}
-				\item GPL, LGPL (GPL вирусная, поэтому использовать её, внезапно, плохая практика)
-				\item MIT License
-				\item Apache License 2.0 (может применяться пофайлово)
-				\item BSD License (в разных вариантах)
-				\item The Unlicense --- явная передача произведения в Public Domain
-				\item Семейство лицензий Creative Commons --- не для софта, но хорошо подходит для ресурсов (картинок, текстов и т.д.)
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Open source-лицензии}
+        \begin{itemize}
+            \item Часто используемые open source-лицензии:
+            \begin{itemize}
+                \item GPL, LGPL (GPL вирусная, поэтому использовать её, внезапно, плохая практика)
+                \item MIT License
+                \item Apache License 2.0 (может применяться пофайлово)
+                \item BSD License (в разных вариантах)
+                \item The Unlicense --- явная передача произведения в Public Domain
+                \item Семейство лицензий Creative Commons --- не для софта, но хорошо подходит для ресурсов (картинок, текстов и т.д.)
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
 \end{document}
