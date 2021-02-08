@@ -20,10 +20,10 @@
 \title{Пользовательский интерфейс}
 \subtitle{Windows Forms}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{27.03.2020г}
+\date{26.03.2021г}
 
 \newcommand{\todo}[1] {
-	\begin{center}\textcolor{red}{TODO: #1}\end{center}
+    \begin{center}\textcolor{red}{TODO: #1}\end{center}
 }
 
 \newcommand{\attribution}[1] {
@@ -32,26 +32,26 @@
 
 \begin{document}
 
-	\frame{\titlepage}
+    \frame{\titlepage}
 
-	\begin{frame}
-		\frametitle{Windows Forms}
-		\begin{itemize}
-			\item Самая старая из GUI-библиотек для .NET
-			\item Событийно-ориентированная
-			\item Простая
-			\item Хорошо работает под Mono
-			\item Давно не развивается, но поддерживается и используется до сих пор
-			\begin{itemize}
-				\item Например, в .NET Framework 4.7 добавилась поддержка High DPI
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Windows Forms}
+        \begin{itemize}
+            \item Самая старая из GUI-библиотек для .NET
+            \item Событийно-ориентированная
+            \item Простая
+            \item Хорошо работает под Mono
+            \item Давно не развивается, но поддерживается и используется до сих пор
+            \begin{itemize}
+                \item Например, в .NET Framework 4.7 добавилась поддержка High DPI
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Простой пример}
-		\begin{scriptsize}
-			\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Простой пример}
+        \begin{scriptsize}
+            \begin{minted}{csharp}
 public class MyForm : Form {
     public Button button1;
     public MyForm() {
@@ -75,36 +75,36 @@ public class MyForm : Form {
         Application.Run(new MyForm());
     }
 }
-			\end{minted}
-		\end{scriptsize}
-	\end{frame}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Control}
-		\begin{itemize}
-			\item Корень иерархии элементов управления
-			\item Отвечает за пользовательский ввод, события, позицию на экране
-			\begin{itemize}
-				\item В том числе, информацию для лейаутов
-			\end{itemize}
-			\item Ambient property --- свойство, наследуемое от родителя
-			\begin{itemize}
-				\item Cursor, Font, BackColor, ForeColor и RightToLeft
-			\end{itemize}
-			\item Controls --- коллекция дочерних контролов
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Control}
+        \begin{itemize}
+            \item Корень иерархии элементов управления
+            \item Отвечает за пользовательский ввод, события, позицию на экране
+            \begin{itemize}
+                \item В том числе, информацию для лейаутов
+            \end{itemize}
+            \item Ambient property --- свойство, наследуемое от родителя
+            \begin{itemize}
+                \item Cursor, Font, BackColor, ForeColor и RightToLeft
+            \end{itemize}
+            \item Controls --- коллекция дочерних контролов
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Обработка пользовательского ввода}
-		\begin{itemize}
-			\item События с клавиатуры
-			\begin{itemize}
-				\item KeyDown, KeyPress, KeyUp
-				\item PreProcessMessage, WndProc
-			\end{itemize}
-			\begin{scriptsize}
-				\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Обработка пользовательского ввода}
+        \begin{itemize}
+            \item События с клавиатуры
+            \begin{itemize}
+                \item KeyDown, KeyPress, KeyUp
+                \item PreProcessMessage, WndProc
+            \end{itemize}
+            \begin{scriptsize}
+                \begin{minted}{csharp}
 private void textBox1_KeyDown(object sender, KeyEventArgs e)
 {
     if (e.KeyCode == Keys.F1 && (e.Alt || e.Control || e.Shift))
@@ -113,33 +113,33 @@ private void textBox1_KeyDown(object sender, KeyEventArgs e)
             new Point(textBox1.Bottom, textBox1.Right));
     }
 }
-				\end{minted}
-			\end{scriptsize}
-			\item События мыши
-			\begin{itemize}
-				\item MouseDown, Click, MouseClick, MouseUp
-				\item Или MouseDown, Click, MouseClick, MouseUp, MouseDown, DoubleClick, MouseDoubleClick, MouseUp
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+                \end{minted}
+            \end{scriptsize}
+            \item События мыши
+            \begin{itemize}
+                \item MouseDown, Click, MouseClick, MouseUp
+                \item Или MouseDown, Click, MouseClick, MouseUp, MouseDown, DoubleClick, MouseDoubleClick, MouseUp
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Валидация ввода}
-		\begin{itemize}
-			\item Простой способ --- MaskedTextBox
-			\item ``Правильный'' способ --- событие \textit{Validating}
-			\begin{itemize}
-				\item CancelEventArgs, свойство Cancel
-				\item Последовательность событий при потере фокуса: Leave, Validating, Validated, LostFocus
-				\item Свойство AutoValidate
-				\item Можно инициировать вручную, методом Validate или ValidateChildren
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Валидация ввода}
+        \begin{itemize}
+            \item Простой способ --- MaskedTextBox
+            \item ``Правильный'' способ --- событие \textit{Validating}
+            \begin{itemize}
+                \item CancelEventArgs, свойство Cancel
+                \item Последовательность событий при потере фокуса: Leave, Validating, Validated, LostFocus
+                \item Свойство AutoValidate
+                \item Можно инициировать вручную, методом Validate или ValidateChildren
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Data binding}
-		\begin{minted}{csharp}
+    \begin{frame}[fragile]
+        \frametitle{Data binding}
+        \begin{minted}{csharp}
 public partial class Form1 : Form
 {
     public string MyText { get; set; } = "Click me";
@@ -150,31 +150,31 @@ public partial class Form1 : Form
         button1.DataBindings.Add("Text", this, "MyText");
     }
 }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Best practices}
-		\begin{itemize}
-			\item Отделяйте логику работы программы от представления
-			\begin{itemize}
-				\item Писать логику прямо в обработчиках совсем плохо
-				\item Уровневая архитектура
-				\item Model-View-Presenter
-				\begin{itemize}
-					\item Может быть overkill-ом для небольших проектов
-				\end{itemize}
-			\end{itemize}
-			\item Форма должна адекватно вести себя при ресайзе
-			\item Пользовательский интерфейс не должен ломать привычек пользователя
-			\item Самые часто используемые элементы интерфейса должны находиться ближе всего к рабочей области
-			\item Не следует думать, что пользователи будут читать документацию
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Best practices}
+        \begin{itemize}
+            \item Отделяйте логику работы программы от представления
+            \begin{itemize}
+                \item Писать логику прямо в обработчиках совсем плохо
+                \item Уровневая архитектура
+                \item Model-View-Presenter
+                \begin{itemize}
+                    \item Может быть overkill-ом для небольших проектов
+                \end{itemize}
+            \end{itemize}
+            \item Форма должна адекватно вести себя при ресайзе
+            \item Пользовательский интерфейс не должен ломать привычек пользователя
+            \item Самые часто используемые элементы интерфейса должны находиться ближе всего к рабочей области
+            \item Не следует думать, что пользователи будут читать документацию
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Демонстрация}
-		\begin{Huge}\begin{center}Демонстрация\end{center}\end{Huge}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Демонстрация}
+        \begin{Huge}\begin{center}Демонстрация\end{center}\end{Huge}
+    \end{frame}
 
 \end{document}
