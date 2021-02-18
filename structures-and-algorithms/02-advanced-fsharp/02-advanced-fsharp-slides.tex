@@ -33,6 +33,7 @@
             \item Есть чисто F\#-овские штуки: FsCheck, Unquote 
             \begin{itemize}
                 \item на самом деле, не совсем F\#-овские, но в C\# такого нет
+                \item на самом деле, есть, это называется property-based testing и считается передовой техникой тестирования, в F\# было всегда
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -132,6 +133,7 @@ Check.Quick revIsOrig
 // Shrunk:
 // [1; 0]
         \end{minted}
+        Для интеграции с FsUnit используйте Check.QuickThrowOnFailure
     \end{frame}
 
     \begin{frame}[fragile]
