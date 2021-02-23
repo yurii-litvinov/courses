@@ -1,0 +1,360 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+
+\useoutertheme{infolines}
+
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\title{ВКР}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+\date{24.02.2021г}
+
+\begin{document}
+
+    \frame{\titlepage}
+
+    \section{Регламент}
+
+    \begin{frame}
+        \frametitle{Формальности}
+        \begin{itemize}
+            \item Курс <<Преддипломная практика>>:
+            \begin{itemize}
+                \item Отзыв научника на \textbf{преддипломную практику}
+                \item Черновик текста ВКР, либо одобрение Д.В. Кознова на курсе <<Практика разработки документации>>, либо рецензирование силами кафедры
+                \begin{itemize}
+                    \item Титульник, на котором написано <<Отчёт по преддипломной практике>>
+                \end{itemize}
+            \end{itemize}
+            \item Курс <<Подготовка ВКР>> --- предпредзащита
+            \begin{itemize}
+                \item То есть выступление на этой паре начиная с 10 марта
+            \end{itemize}
+            \item Предзащита --- за две недели до защиты, генеральная репетиция
+            \begin{itemize}
+                \item Возможно, с членами ГЭК
+            \end{itemize}
+            \item Защита --- с 25 мая по 15 июня, формат неизвестен
+            \begin{itemize}
+                \item Ваши пожелания по дате важны, но не приоритетны
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Документы для защиты}
+        \begin{itemize}
+            \item Сданная весенняя сессия
+            \begin{itemize}
+                \item С долгами (любыми) к защите не допускают
+                \item Надо будет сдать зачётку
+            \end{itemize}
+            \item Текст диплома --- за две недели до защиты (строго, но включительно), в Blackboard
+            \item Аннотация --- абзац текста, про что ВКР, в Blackboard
+            \item Отзыв научного руководителя --- за пять дней до защиты
+            \item Отзыв рецензента --- за пять дней до защиты
+            \begin{itemize}
+                \item Они не так строго, потому что формально это не ваше дело
+                \item Формально можно защищаться без отзыва и/или рецензии, но...
+            \end{itemize}
+            \item Научник должен быть на защите, рецензент не обязательно
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Кто такой ГЭК}
+        \begin{itemize}
+            \item ГЭК --- Государственная Экзаменационная Комиссия
+            \item Формируется из ведущих специалистов в отрасли (не менее 75\%) и преподавателей СПбГУ (Андрей Николаевич)
+            \begin{itemize}
+                \item У нас это обычно директора или начальники отделов уважаемых компаний (JetBrains, Dell-EMC, SAP Labs, Газпром нефть, ...)
+                \item Есть и молодые специалисты, понимающие в технологиях и не стесняющиеся задавать вопросы
+            \end{itemize}
+            \item Обычно 6-7 человек
+            \item ГЭК формируется для направления, то есть бакалавры матобеса могут защищаться только в ГЭК для СВ.5006
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Как проходит защита}
+        \framesubtitle{И как ставятся оценки}
+        \begin{footnotesize}
+            \begin{itemize}
+                \item За одно заседание защищается максимум 8 человек, максимум 2 заседания в день
+                \item Порядок защиты фиксируется (когда вас распределяют по датам)
+                \begin{itemize}
+                    \item \footnotesize{Приказ о допуске к защите --- где-то в начале-середине мая}
+                \end{itemize}
+                \item Выступление защищающегося, вопросы от членов ГЭК и аудитории, отзыв научника, рецензия (зачитывается научником, если рецензента нет), вопросы по отзыву/рецензии, ответное слово (если надо)
+                \item ГЭК совещается (по окончании заседания)
+                \item Члены ГЭК выставляют оценки по критериям, каждый независимо
+                \begin{itemize}
+                    \item \footnotesize{См. \url{https://edu.spbu.ru/gia.html}}
+                \end{itemize}
+                \item Каждый член ГЭК ставит итоговую оценку (при этом критерии --- это только рекомендации), оценки всех членов ГЭК усредняются и ставится итоговая
+                \begin{itemize}
+                    \item \footnotesize{Оценки научника и рецензента непосредственно не учитываются! Они имеют рекомендательное значение для ГЭК.}
+                \end{itemize}
+                \item Итоговая оценка заносится в протокол защиты и выставляется на Blackboard
+                \item Защищающихся приглашают, оглашают результаты, поздравляют с присвоением квалификации (или нет)
+            \end{itemize}
+        \end{footnotesize}
+    \end{frame}
+
+    \section{Отчёт}
+
+    \begin{frame}
+        \frametitle{Отчёт, структура}
+        \begin{itemize}
+            \item Титульный лист
+            \item Оглавление
+            \item Введение в предметную область, постановка задачи
+            \item Обзор литературы и существующих решений
+            \item Описание предлагаемого решения
+            \begin{itemize}
+                \item Отдельно архитектура и детали реализации
+            \end{itemize}
+            \item Апробация и/или эксперименты
+            \item Заключение
+            \item Список литературы
+            \item Не более 40 страниц (60 для магистров)
+            \item Требования к оформлению: \url{https://edu.spbu.ru/gia.html}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Введение}
+        \begin{columns}
+            \begin{column}{0.6\textwidth}
+                \begin{itemize}
+                    \item Известная информация, <<Background>>
+                    \item Неизвестная информация, <<Gap>>
+                    \begin{itemize}
+                        \item Актуальность темы
+                        \item Практическая значимость
+                        \item Кому конкретно это надо
+                    \end{itemize}
+                    \item Кратко про ваш подход к решению задачи, почему он приведёт к успеху (<<Гипотеза>> и <<Подход>>)
+                    \item Этот раздел заслуживает особого внимания!
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.4\textwidth}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{introductionCone.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Постановка задачи}
+        \begin{itemize}
+            \item Цель работы
+            \begin{itemize}
+                \item Одним предложением --- что конкретно надо сделать
+            \end{itemize}
+            \item Задачи
+            \begin{itemize}
+                \item Отчуждаемые
+                \item Специфичные
+                \item Решение которых приведёт к цели
+                \item Выполнить обзор, спроектировать, реализовать, выполнить апробацию/эксперименты
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Обзор}
+        \begin{itemize}
+            \item Обзор существующих решений
+            \begin{itemize}
+                \item Цель обзора, критерии отбора материалов
+                \item Критерии сравнения
+                \item Таблица с результатами
+                \item Выводы
+            \end{itemize}
+            \item Обзор используемых чужих результатов
+            \begin{itemize}
+                \item  Всё, написанное и придуманное не вами --- в обзор
+            \end{itemize}
+            \item Должен соотноситься с темой и целью
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Описание решения}
+        \begin{itemize}
+            \item Разделы должны соответствовать списку задач
+            \item Аргументированное обоснование принятых решений и отказа от альтернатив
+            \item Выбор инструментария
+            \item Описание архитектуры, алгоритмов и т.п.
+            \item Описание того, над чем <<пришлось подумать больше пяти минут>>
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Описание решения (2)}
+        \begin{itemize}
+            \item Рисунки и диаграммы
+            \begin{itemize}
+                \item Лучше использовать UML
+                \item Подписи
+                \begin{itemize}
+                    \item Чужие рисунки --- со ссылкой на источник
+                \end{itemize}
+                \item Ссылки из текста
+                \item Сквозная нумерация
+            \end{itemize}
+            \item Таблицы
+            \begin{itemize}
+                \item Чтобы было всё видно даже в напечатанном варианте
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Заключение}
+        \begin{itemize}
+            \item Перечисление результатов, выносимых на защиту
+            \item Должно быть согласовано с постановкой задачи (вплоть до полного её повторения, но с уточнением по полученным результатам)
+            \item Должно быть согласовано с текстом
+            \begin{itemize}
+                \item Никаких результатов из ниоткуда
+            \end{itemize}
+            \item Ссылка на репозиторий или пара слов про то, почему её нет и что вы можете показать взамен
+            \begin{itemize}
+                \item ...Было внедрено, отзыв о внедрении прилагается
+            \end{itemize}
+            \item Этот раздел также заслуживает особого внимания!
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Литература}
+        \begin{itemize}
+            \item Cсылок примерно как страниц в работе
+            \item Обязательно на каждый пункт ссылаться из текста
+            \item Лучше ссылаться на научные статьи
+            \begin{itemize}
+                \item Ещё лучше --- на книги, но по предметной области
+                \item Смотрите на индекс Хирша и число цитирований
+            \end{itemize}
+            \item Реально прочитанные работы
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Литература (2)}
+        \begin{itemize}
+            \item ГОСТ Р 7.0.5-2008
+            \begin{itemize}
+                \item А.Н. Терехов, Т.А. Брыксин, Ю.В. Литвинов и др., Архитектура среды визуального моделирования QReal. // Системное программирование. Вып. 4. СПб.: Изд-во СПбГУ. 2009, С. 171-196
+                \item Порядок --- алфавитный (по авторам), в порядке упоминания в тексте, в хронологическом порядке (если это важно)
+                \item Ссылки в тексте --- номер в квадратных скобках: <<блаблабла [1]>> (с пробелом)
+            \end{itemize}
+            \item В литературу --- только, гм, литературу
+            \begin{itemize}
+                \item Подстраничные сноски для ссылок на сайты, статьи на Хабре и т.д.
+                \item Электронные источники в списке литературы допустимы (надо указывать дату обращения)
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \section{Презентация}
+
+    \begin{frame}
+        \frametitle{Презентация, структура}
+        \begin{itemize}
+            \item Титульный слайд
+            \item Введение (примерно 1-2 слайда)
+            \item Постановка задачи (1 слайд)
+            \item Обзор (примерно 1 слайд)
+            \item Предлагаемое решение (примерно 1 слайд)
+            \item Апробация/эксперименты (примерно 1 слайд)
+            \item Результаты, выносимые на защиту (1 слайд) --- обязательно, последним слайдом
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Тактические соображения}
+        \begin{itemize}
+            \item Укладывайтесь в 7 минут
+            \item Стоит порепетировать самим и перед научником
+            \item По протоколу положены вопросы
+            \begin{itemize}
+                \item Если не хотите неожиданных, можно намеренно оставить некую недосказанность
+                \item И подготовить скрытые слайды
+                \item Тем не менее, неожиданные вопросы будут!
+            \end{itemize}
+            \item Не увлекайтесь техническими подробностями
+            \item Не увлекайтесь их отсутствием
+            \item Избегайте больших формул на слайдах
+        \end{itemize}
+    \end{frame}
+
+    \section{Общие рекомендации}
+
+    \begin{frame}
+        \frametitle{Общие рекомендации}
+        \begin{itemize}
+            \item Никакого заимствования 
+            \begin{itemize}
+                \item Сдача чужой работы --- отчисление без права восстановления сразу
+                \item Копипаст даже одного предложения без указания источника --- незачёт
+                \item Правильно оформленный копипаст --- нехорошо
+            \end{itemize}
+            \item Обязательно показать и текст, и презентацию научнику перед отсылкой рецензенту
+            \begin{itemize}
+                \item Порепетировать выступление!
+            \end{itemize}
+            \item Код --- CI, юнит-тесты, README, лицензия
+            \begin{itemize}
+                \item Рецензент может (и должен!) смотреть на код
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Полезные ресурсы}
+        \begin{itemize}
+            \item Сайт кафедры --- \url{http://oops.math.spbu.ru/SE}
+            \begin{itemize}
+                \item Раздел <<Студенту>> --- рекомендации, архив работ
+            \end{itemize}
+            \item Титульники --- \url{https://github.com/Kakadu/matmex-diploma-template}
+            \item Презентация --- \url{https://github.com/gsvgit/SECS_presentation_template}
+            \item Онлайн-редакторы TeX --- \url{https://papeeria.com/}, \url{https://www.overleaf.com/}
+            \item Чеклист по презентациям --- \url{https://goo.gl/UeDRff}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{FAQ}
+        \begin{itemize}
+            \item Можно ли поменять научника/тему диплома?
+            \begin{itemize}
+                \item Да, до приказа о допуске к защите
+                \item По заявлению в учебный отдел за подписью старого и нового научника 
+                \item Форма заявления: \url{https://drive.google.com/file/d/1UHKY38aSwUEYiVRG_oeXprzwa_uOHKbJ/view}
+            \end{itemize}
+            \item Можно ли поменять рецензента?
+            \begin{itemize}
+                \item Формально рецензента вам назначают, так что студент инициировать смену рецензента не может
+                \item Неформально, написать мне, и \textit{возможно}, УОП поправит приказ
+            \end{itemize}
+            \item Можно ли перенести защиту?
+            \begin{itemize}
+                \item Нет. Либо вы защищаетесь, либо отчисляетесь по незащите ВКР с правом восстановиться для защиты
+                \item Теоретически можно закрыть справкой весь июнь, тогда защиту перенесут на осень
+                \item Никто не помешает вам до закрытия сессии уйти в академ
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+\end{document}
