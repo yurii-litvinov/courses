@@ -140,7 +140,7 @@
         Имя связанной переменной можно менять:
         $$\int_{0}^{x}2y + a\ dy = x^2 + ax \longrightarrow \int_{0}^{x}2z + a\ dz = x^2 + ax$$
         но
-        $$\int_{0}^{x}2a + a\ da \neq x^2 + ax$$				
+        $$\int_{0}^{x}2a + a\ da \neq x^2 + ax$$
     \end{frame}
 
     \begin{frame}
@@ -158,7 +158,7 @@
             \item $BV(\lambda x.S) = BV(S) \cup \{x\}$
         \end{itemize}
         Примеры:
-        $$S = (\lambda x\ y.x) (\lambda x.z\ x) \Rightarrow FV(S) = {z}, BV(S) = \{x,y\}$$
+        $$S = (\lambda x\ y.x) (\lambda x.z\ x) \Rightarrow FV(S) = \{z\}, BV(S) = \{x,y\}$$
     \end{frame}
     
     \begin{frame}
@@ -174,7 +174,7 @@
             \item Запретить свободным переменным иметь одинаковые имена и называться так же, 
                     как связанные (соглашение Барендрегта)
             \item Переименовывать связанные переменные <<на лету>> перед выполнением подстановки
-        \end{itemize}		
+        \end{itemize}
     \end{frame}
     
     \begin{frame}
@@ -187,7 +187,7 @@
             \item $(\lambda y.S)[x := T] = \lambda y.(S[x := T])$, если $y \notin FV(T)$ или $x \notin FV(S)$
             \item $(\lambda y.S)[x := T] = \lambda z.(S[y := z][x := T])$, иначе ($z$ при этом выбирается так, 
                     что $z \notin FV(S) \cup FV(T)$
-        \end{itemize}		
+        \end{itemize}
     \end{frame}
         
     \begin{frame}
@@ -303,6 +303,7 @@
             Если терм $M$ $\beta$-редукцией редуцируется к термам $N$ и $K$, то существует терм $L$ такой, что
             к нему редуцируются и $N$, и $K$.
         \end{rustheorem}
+        \vspace{1cm}
         То есть нормальная форма не всегда есть (см. пример про $(\lambda x.x\ x\ x)\ (\lambda x.x\ x\ x)$), но
         если она есть, её можно получить нормальной стратегией, причём нормальная форма единственная.
     \end{frame}
@@ -321,15 +322,15 @@
         $$K \equiv \lambda x\ y.x \mbox{ --- канцеллятор (первый элемент пары)}$$
         $$K_\ast \equiv \lambda x\ y.y \mbox{ --- второй элемент пары}$$
         $$S \equiv \lambda x\ y\ z. x\ z\ (y\ z) \mbox{ --- коннектор}$$
-        $$B \equiv \lambda f\ g\ x. f\ (g\ x) \mbox{ --- композиция}$$		
+        $$B \equiv \lambda f\ g\ x. f\ (g\ x) \mbox{ --- композиция}$$
     \end{frame}
     
     \begin{frame}
         \frametitle{Комбинаторы, примеры}
-        $$I\ I \equiv (\lambda x.x) (\lambda x.x) \rightarrow_\beta \lambda x.x \equiv I$$		
+        $$I\ I \equiv (\lambda x.x) (\lambda x.x) \rightarrow_\beta \lambda x.x \equiv I$$
                 
-        $$K\ I \equiv (\lambda x.\lambda y.x) (\lambda x.x) \rightarrow_\beta $$		
-        $$\rightarrow_\beta \lambda y.(\lambda x.x) \rightarrow_\alpha \lambda x.\lambda y.y \equiv K_\ast$$		
+        $$K\ I \equiv (\lambda x.\lambda y.x) (\lambda x.x) \rightarrow_\beta $$
+        $$\rightarrow_\beta \lambda y.(\lambda x.x) \rightarrow_\alpha \lambda x.\lambda y.y \equiv K_\ast$$
     \end{frame}
 
     \begin{frame}
@@ -350,7 +351,7 @@
         \begin{proof}
             \vspace{-7mm}
             $$Y\ F \equiv (\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) 
-                = F\ (\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) = F(Y\ F)$$
+                = F\ ((\lambda x.F\ (x\ x))(\lambda x.F\ (x\ x)) = F(Y\ F))$$
             \vspace{-10mm}
         \end{proof}
     \end{frame}
@@ -429,16 +430,16 @@
 
     \begin{frame}
         \frametitle{Арифметические операции}
-        $$S \equiv \lambda n.\lambda f.\lambda x.f\ ((n\ f)\ x)$$
+        $$S \equiv \lambda n.\lambda f.\lambda x.f\ (n\ f\ x)$$
         то есть
         $$S\ n = (\lambda n\ f\ x.f\ (n\ f\ x))\ n$$
         $$\rightarrow_\beta \lambda f\ x.f\ (n\ f\ x)$$
         $$= n + 1$$
         
         Сложение:
-        $$ADD \equiv \lambda m\ n.\lambda f\ x.(m\ f)\ ((n\ f)\ x))$$
-        или
         $$ADD \equiv \lambda m\ n.(m\ S)\ n$$
+        или
+        $$ADD \equiv \lambda m\ n.\lambda f\ x.(m\ f)\ (n\ f\ x))$$
     \end{frame}
 
     \begin{frame}
@@ -516,7 +517,17 @@
         Стандартные функции:
         $$EMPTY \equiv \lambda l.l\ (\lambda h\ t.FALSE)\ TRUE$$
         $$HEAD \equiv \lambda l.l\ (\lambda h\ t.h)\ 0$$
-        $$TAIL \equiv \lambda l.FST\ (l\ (\lambda a\ b.PAIR\ (SND\ b)\ (CONS\ a\ (SND\ b)))\ (PAIR\ NIL\ NIL))$$
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Например}
+        $$HEAD\ (CONS\ 2\ NIL) \equiv \lambda l.l\ (\lambda h\ t.h)\ 0\ (CONS\ 2\ NIL) \rightarrow_\beta$$
+        $$    (CONS\ 2\ NIL)\ (\lambda h\ t.h)\ 0 \equiv$$
+        $$    ((\lambda e\ l\ c\ n.c\ e\ (l\ c\ n))\ 2\ NIL)\ (\lambda h\ t.h)\ 0 \rightarrow_\beta$$
+        $$    (\lambda c\ n.c\ 2\ (NIL\ c\ n))\ (\lambda h\ t.h)\ 0 \rightarrow_\beta$$
+        $$    (\lambda c\ n.c\ 2\ n)\ (\lambda h\ t.h)\ 0 \rightarrow_\beta$$
+        $$    (\lambda h\ t.h)\ 2\ 0 \rightarrow_\beta$$
+        $$    2$$
     \end{frame}
 
 \end{document}
