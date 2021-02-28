@@ -2,6 +2,7 @@
 \usepackage{polyglossia}
 \setdefaultlanguage[babelshorthands=true]{russian}
 \usepackage{listings}
+\usepackage{minted}
 
 \useoutertheme{infolines}
 
@@ -325,13 +326,23 @@
         $$B \equiv \lambda f\ g\ x. f\ (g\ x) \mbox{ --- композиция}$$
     \end{frame}
     
-    \begin{frame}
+    \begin{frame}[fragile]
         \frametitle{Комбинаторы, примеры}
         $$I\ I \equiv (\lambda x.x) (\lambda x.x) \rightarrow_\beta \lambda x.x \equiv I$$
                 
         $$K\ I \equiv (\lambda x.\lambda y.x) (\lambda x.x) \rightarrow_\beta $$
         $$\rightarrow_\beta \lambda y.(\lambda x.x) \rightarrow_\alpha \lambda x.\lambda y.y \equiv K_\ast$$
+
+        \vspace{1cm}
+        Или на F\#:
+        \begin{minted}{fsharp}
+            let K x y = x
+            let K_star x y = y
+            
+            Check.Quick (fun a1 a2 -> (K id) a1 a2 = K_star a1 a2)
+        \end{minted}
     \end{frame}
+
 
     \begin{frame}
         \frametitle{Комбинатор неподвижной точки}
