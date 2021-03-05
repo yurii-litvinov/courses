@@ -57,6 +57,28 @@ public class StackTest
         \end{minted}
     \end{frame}
 
+    \begin{frame}[fragile]
+        \frametitle{Автоматизация}
+        \begin{minted}{csharp}
+[TestCase(12, 3, 4)]
+[TestCase(12, 2, 6)]
+public void DivideTest(int n, int d, int q)
+{
+    Assert.AreEqual(q, n / d);
+}
+        \end{minted}
+        \vspace{3mm}
+        Или даже
+        \begin{minted}{csharp}
+[TestCase(12, 3, ExpectedResult=4)]
+[TestCase(12, 2, ExpectedResult=6)]
+public int DivideTest(int n, int d)
+{
+    return n / d;
+}
+        \end{minted}
+    \end{frame}
+
     \section{Исключения}
 
     \begin{frame}[fragile]
@@ -333,7 +355,7 @@ public void DivideTest()
     var target = new DivisionClass();
     int numerator = 4;
     int denominator = 0;
-    Assert.Throws<DivideByZeroException>(target.Divide(numerator, denominator);
+    Assert.Throws<DivideByZeroException>(() => target.Divide(numerator, denominator));
 }
             \end{minted}
         \end{footnotesize}
@@ -372,19 +394,16 @@ public void DivideTest()
             \begin{minted}{csharp}
 public static class Program {
     public static void Main() {
-        // Create the bytes to write to the temporary file.
         var bytesToWrite = new Byte[] { 1, 2, 3, 4, 5 };
-        // Create the temporary file.
         using (var fs = new FileStream("Temp.dat", FileMode.Create)) {
-            // Write the bytes to the temporary file.
             fs.Write(bytesToWrite, 0, bytesToWrite.Length);
         }
-        // Delete the temporary file.
         File.Delete("Temp.dat");
     }
 }
             \end{minted}
         \end{small}
+        Если есть хоть одно поле IDisposable, сам класс должен быть IDisposable!
     \end{frame}
 
     \section{Особенности современного C\#}
@@ -475,14 +494,8 @@ class SampleCollection {
     private int[] arr = new int[100];
     public int this[int i]
     {
-        get
-        {
-            return arr[i];
-        }
-        set
-        {
-            arr[i] = value;
-        }
+        get => arr[i];
+        set => arr[i] = value;
     }
 }
         \end{minted}
