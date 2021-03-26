@@ -1,0 +1,45 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Практика 3: Практика по рисованию диаграмм}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{10.03.2020г}
+
+\begin{document}
+	
+	\frame{\titlepage}
+
+	\begin{frame}
+		\frametitle{Задачи на пару}
+		\begin{itemize}
+			\item Вспомнить запрос \url{https://goo.gl/MiyH8c}
+			\item Задача 1: Построить модель данных разрабатываемого приложения в виде диаграммы классов
+			\item Задача 2: Нарисовать диаграмму компонентов разрабатываемого приложения
+			\begin{itemize}
+				\item По сути, первое приближение архитектуры
+			\end{itemize}
+			\item Задача 3: Нарисовать диаграмму развёртывания разрабатываемого приложения
+			\item Отчуждаемый результат --- ссылка на проект с диаграммой на HwProj, либо пара <<исходник диаграммы --- картинка>>
+		\end{itemize}
+	\end{frame}
+
+\end{document}

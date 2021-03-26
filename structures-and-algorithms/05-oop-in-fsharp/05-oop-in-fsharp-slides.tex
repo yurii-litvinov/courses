@@ -15,35 +15,35 @@
 
 \title{Объектно-ориентированное программирование в F\#}
 \author{Юрий Литвинов}
-\date{13.03.2020г}
+\date{12.03.2021г}
 
 \begin{document}
-	
-	\frame{\titlepage}
-	
-	\section{Введение}
+    
+    \frame{\titlepage}
+    
+    \section{Введение}
 
-	\begin{frame}
-		\frametitle{``За'' и ``против'' ООП в функциональных языках}
-		За:
-		\begin{itemize}
-			\item Портирование существующего кода
-			\item Интеграция с другими языками
-			\item Использование в основном для ООП с возможностью писать красивый код
-		\end{itemize}
-		
-		Против:
-		\begin{itemize}
-			\item Не очень дружит с системой вывода типов
-			\item Нет встроенной поддержки печати, сравнения и т.д.
-		\end{itemize}
-	\end{frame}
-	
-	\section{Методы}
-	
-	\begin{frame}[fragile]
-		\frametitle{Методы у типов}
-		\begin{minted}{fsharp}
+    \begin{frame}
+        \frametitle{``За'' и ``против'' ООП в функциональных языках}
+        За:
+        \begin{itemize}
+            \item Портирование существующего кода
+            \item Интеграция с другими языками
+            \item Использование в основном для ООП с возможностью писать красивый код
+        \end{itemize}
+        
+        Против:
+        \begin{itemize}
+            \item Не очень дружит с системой вывода типов
+            \item Нет встроенной поддержки печати, сравнения и т.д.
+        \end{itemize}
+    \end{frame}
+    
+    \section{Методы}
+    
+    \begin{frame}[fragile]
+        \frametitle{Методы у типов}
+        \begin{minted}{fsharp}
 type Vector = {x : float; y : float} with
     member v.Length = sqrt(v.x * v.x + v.y * v.y)
 
@@ -54,12 +54,12 @@ type Vector with
     member v.Scale k = {x = v.x * k; y = v.y * k}
 
 let scaled = vector.Scale 2.0
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Методы у Discriminated Union-ов}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Методы у Discriminated Union-ов}
+        \begin{minted}{fsharp}
 type Tree<'a> =
     | Tree of 'a * Tree<'a> * Tree<'a>
     | Tip of 'a
@@ -68,12 +68,12 @@ type Tree<'a> =
             match t with
             | Tree(_, l, r) -> 1 + l.Size + r.Size
             | Tip _ -> 1
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Расширения}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Расширения}
+        \begin{minted}{fsharp}
 type System.Int32 with
     member i.IsPrime = 
         let limit = i |> float |> sqrt |> int
@@ -83,12 +83,12 @@ type System.Int32 with
 
 printfn "%b" (5).IsPrime
 printfn "%b" (8).IsPrime
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Статические методы}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Статические методы}
+        \begin{minted}{fsharp}
 type Vector = {x : float; y : float} with
     static member Create x y = {x = x; y = y}
 
@@ -98,12 +98,12 @@ type System.Int32 with
     static member IsEven x = x % 2 = 0
 
 printfn "%b" <| System.Int32.IsEven 10
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Методы и существующие функции}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Методы и существующие функции}
+        \begin{minted}{fsharp}
 type Vector = {x : float; y : float} with
     static member Create x y = {x = x; y = y}
 
@@ -114,12 +114,12 @@ type Vector with
 
 printfn "%f" <| (Vector.Create 1.0 1.0).Length
 printfn "%f" <| (length (Vector.Create 1.0 1.0))
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Методы и каррирование}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Методы и каррирование}
+        \begin{minted}{fsharp}
 open Operators
 
 type Vector = {x : float; y : float} with
@@ -134,12 +134,12 @@ type Vector with
     member v.Transform = transform v
 
 printfn "%A" <| (Vector.Create 1.0 1.0).Transform 45.0 2.0
-		\end{minted}
-	\end{frame}
-	
-	\begin{frame}[fragile]
-		\frametitle{Каррирование против кортежей}
-		\begin{minted}{fsharp}
+        \end{minted}
+    \end{frame}
+    
+    \begin{frame}[fragile]
+        \frametitle{Каррирование против кортежей}
+        \begin{minted}{fsharp}
 type Vector with
     member v.TupledTransform (r, s) = transform v r s
     member v.CurriedTransform r s = transform v r s
@@ -147,12 +147,12 @@ type Vector with
 let v = Vector.Create 1.0 1.0
 printfn "%A" <| v.TupledTransform (45.0, 2.0)
 printfn "%A" <| v.CurriedTransform 45.0 2.0
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Кортежи: именованные аргументы}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Кортежи: именованные аргументы}
+        \begin{minted}{fsharp}
 type Vector with
     member v.TupledTransform (r, s) = 
        transform v r s
@@ -160,12 +160,12 @@ type Vector with
 let v = Vector.Create 1.0 1.0
 printfn "%A" <| v.TupledTransform (r = 45.0, s = 2.0)
 printfn "%A" <| v.TupledTransform (s = 2.0, r = 45.0)
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Кортежи: опциональные параметры}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Кортежи: опциональные параметры}
+        \begin{minted}{fsharp}
 type Vector with
     member v.TupledTransform (r, ?s) = 
         match s with
@@ -175,12 +175,12 @@ type Vector with
 let v = Vector.Create 1.0 1.0
 printfn "%A" <| v.TupledTransform (45.0, 2.0)
 printfn "%A" <| v.TupledTransform (90.0)
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{defaultArg}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{defaultArg}
+        \begin{minted}{fsharp}
 type Vector with
     member v.TupledTransform (r, ?s) = 
        transform v r <| defaultArg s 1.0
@@ -188,12 +188,12 @@ type Vector with
 let v = Vector.Create 1.0 1.0
 printfn "%A" <| v.TupledTransform (45.0, 2.0)
 printfn "%A" <| v.TupledTransform (90.0)
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Кортежи: перегрузка}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Кортежи: перегрузка}
+        \begin{minted}{fsharp}
 type Vector with
     member v.TupledTransform (r, s) = 
        transform v r s
@@ -203,27 +203,27 @@ type Vector with
 let v = Vector.Create 1.0 1.0
 printfn "%A" <| v.TupledTransform (45.0, 2.0)
 printfn "%A" <| v.TupledTransform (90.0)
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Кортежи против каррирования}
-		За:
-		\begin{itemize}
-			\item Можно вызывать из .NET-кода
-			\item Опциональные и именованные аргументы, перегрузки
-		\end{itemize}
-		Против:
-		\begin{itemize}
-			\item Не поддерживают частичное применение
-			\item Не дружат с функциями высших порядков
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Кортежи против каррирования}
+        За:
+        \begin{itemize}
+            \item Можно вызывать из .NET-кода
+            \item Опциональные и именованные аргументы, перегрузки
+        \end{itemize}
+        Против:
+        \begin{itemize}
+            \item Не поддерживают частичное применение
+            \item Не дружат с функциями высших порядков
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Методы против свободных функций}
-		\framesubtitle{Вывод типов}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Методы против свободных функций}
+        \framesubtitle{Вывод типов}
+        \begin{minted}{fsharp}
 type Vector = {x : float; y : float} with
     member v.Length = v.x * v.x + v.y * v.y |> sqrt
    
@@ -234,13 +234,13 @@ let compareWrong v1 v2 =
 
 let compareRight v1 v2 =
     length v1 < length v2
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Методы против свободных функций}
-		\framesubtitle{Функции высших порядков}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Методы против свободных функций}
+        \framesubtitle{Функции высших порядков}
+        \begin{minted}{fsharp}
 type Vector = {x : float; y : float} with
     member v.Length = v.x * v.x + v.y * v.y |> sqrt
 
@@ -251,22 +251,22 @@ let lengths1 = [{x = 1.0; y = 1.0}; {x = 2.0; y = 2.0}]
 
 let lengths2 = [{x = 1.0; y = 1.0}; {x = 2.0; y = 2.0}]
                |> List.map length
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\section{Классы}
+    \section{Классы}
  
-	\begin{frame}[fragile]
-		\frametitle{Классы, основной конструктор}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Классы, основной конструктор}
+        \begin{minted}{fsharp}
 type Vector(x, y) = 
     member v.Length = x * x + y * y |> sqrt
 
 printfn "%A" <| Vector (1.0, 1.0)
-		\end{minted}
+        \end{minted}
 
-		\begin{alertblock}{F\# Interactive}
-			\begin{minted}{fsharp}
+        \begin{alertblock}{F\# Interactive}
+            \begin{minted}{fsharp}
 FSI_0003+Vector
 type Vector =
   class
@@ -274,21 +274,21 @@ type Vector =
     member Length : float
   end
 val it : unit = ()
-			\end{minted}
-		\end{alertblock}
-	\end{frame}
+            \end{minted}
+        \end{alertblock}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Методы и свойства}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Методы и свойства}
+        \begin{minted}{fsharp}
 type Vector(x : float, y : float) = 
     member v.Scale s = Vector(x * s, y * s)
     member v.X = x
     member v.Y = y
-		\end{minted}
+        \end{minted}
 
-		\begin{alertblock}{F\# Interactive}
-			\begin{minted}{fsharp}
+        \begin{alertblock}{F\# Interactive}
+            \begin{minted}{fsharp}
 type Vector =
   class
     new : x:float * y:float -> Vector
@@ -296,13 +296,13 @@ type Vector =
     member X : float
     member Y : float
   end
-			\end{minted}
-		\end{alertblock}
-	\end{frame}
+            \end{minted}
+        \end{alertblock}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Private-поля и private-методы}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Private-поля и private-методы}
+        \begin{minted}{fsharp}
 type Vector(x : float, y : float) = 
     let mutable mX = x
     let mutable mY = y
@@ -312,12 +312,12 @@ type Vector(x : float, y : float) =
     member v.Y = mY
     member v.SetX x = mX <- x
     member v.SetY y = mY <- y
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Мутабельные свойства}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Мутабельные свойства}
+        \begin{minted}{fsharp}
 type Vector(x, y) = 
     let mutable mX = x
     let mutable mY = y
@@ -327,24 +327,24 @@ type Vector(x, y) =
     member v.Y
         with get () = mY
         and set y = mY <- y
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Автоматические свойства}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Автоматические свойства}
+        \begin{minted}{fsharp}
 type Vector(x, y) = 
     member val X = x with get,set
     member val Y = y with get,set
 
 let v = Vector(1.0, 1.0)
 v.X <- 2.0
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Индексеры}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Индексеры}
+        \begin{minted}{fsharp}
 open System.Collections.Generic
 
 type SparseVector(items : seq<int * float>) =
@@ -358,12 +358,12 @@ type SparseVector(items : seq<int * float>) =
 
 let v = SparseVector [(3, 547.0)]
 printfn "%f" v.[4]
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Операторы}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Операторы}
+        \begin{minted}{fsharp}
 type Vector(x : float, y : float) =
     member v.X = x
     member v.Y = y
@@ -375,13 +375,13 @@ type Vector(x : float, y : float) =
             Vector (v1.X - v2.X, v1.Y - v2.Y)
 
 let v = Vector (1.0, 1.0) + Vector (2.0, 2.0)
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Вернёмся к конструкторам}
-		\framesubtitle{Дополнительное поведение}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Вернёмся к конструкторам}
+        \framesubtitle{Дополнительное поведение}
+        \begin{minted}{fsharp}
 type Vector(x : float, y : float) = 
     let length () = x * x + y * y |> sqrt
     do 
@@ -392,12 +392,12 @@ type Vector(x : float, y : float) =
     let mutable y = y
 
 let v = Vector(1.0, 1.0)
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{let-функции и методы}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{let-функции и методы}
+        \begin{minted}{fsharp}
 type Vector(x : float, y : float) = 
     let length () = x * x + y * y |> sqrt
     let normalize () = Vector(x / length(), y / length())
@@ -407,12 +407,12 @@ type Vector(x : float, y : float) =
 
 let v = Vector(2.0, 2.0)
 let v' = v.Normalize ()
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Рекурсивные методы}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Рекурсивные методы}
+        \begin{minted}{fsharp}
 type Math() = 
     member this.Fibonacci x = 
         match x with
@@ -422,12 +422,12 @@ type Math() =
 
 let math = new Math()
 printfn "%i" <| math.Fibonacci 10
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Много конструкторов}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Много конструкторов}
+        \begin{minted}{fsharp}
 type Vector(x : float, y : float) = 
     member this.X = x
     member this.Y = y
@@ -437,12 +437,12 @@ type Vector(x : float, y : float) =
 
 let v = Vector(2.0, 2.0)
 let v' = Vector()
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Модификаторы видимости}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Модификаторы видимости}
+        \begin{minted}{fsharp}
 type Example() = 
     let mutable privateValue = 42
 
@@ -455,14 +455,14 @@ type Example() =
             privateValue 
         and private set(value) = 
             privateValue <- value
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\section{Наследование}
+    \section{Наследование}
 
-	\begin{frame}[fragile]
-		\frametitle{Наследование}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Наследование}
+        \begin{minted}{fsharp}
 type Shape() =
     class
     end
@@ -470,12 +470,12 @@ type Shape() =
 type Circle(r) =
     inherit Shape()
     member this.R = r
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Абстрактные классы}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Абстрактные классы}
+        \begin{minted}{fsharp}
 [<AbstractClass>]
 type Shape() =
     abstract member Draw : unit -> unit
@@ -487,12 +487,12 @@ type Circle(r) =
     override this.Draw () = 
         printfn "Drawing circle"
     override this.Name = "Circle"
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Реализация по умолчанию}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Реализация по умолчанию}
+        \begin{minted}{fsharp}
 type Shape() =
     abstract member Draw : unit -> unit
     abstract member Name : string
@@ -500,12 +500,12 @@ type Shape() =
         printfn "Drawing shape"
     default this.Name =
         "Shape"
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Вызов метода родителя}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Вызов метода родителя}
+        \begin{minted}{fsharp}
 type Shape() =
     abstract member Draw : unit -> unit
     abstract member Name : string
@@ -519,12 +519,12 @@ type Circle(r) =
         base.Draw ()
         printfn "Drawing circle"
     override this.Name = "Circle"
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Интерфейсы}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Интерфейсы}
+        \begin{minted}{fsharp}
 type Shape =
     abstract member Draw : unit -> unit
     abstract member Name : string
@@ -535,12 +535,12 @@ type Circle(r) =
         member this.Draw () = 
             printfn "Drawing circle"
         member this.Name = "Circle"
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Явное приведение типов}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Явное приведение типов}
+        \begin{minted}{fsharp}
 let c = Circle 10
 c.Draw ()  // Ошибка
 (c :> Shape).Draw ()  // Ок
@@ -548,12 +548,12 @@ c.Draw ()  // Ошибка
 let draw (s : Shape) = s.Draw ()
 
 draw c  // Ок
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Наследование интерфейсов}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Наследование интерфейсов}
+        \begin{minted}{fsharp}
 type IEnumerable<'a> =
     abstract GetEnumerator : unit -> IEnumerator<'a>
 
@@ -566,15 +566,15 @@ type ICollection<'a> =
     abstract Contains : 'a -> bool
     abstract CopyTo : 'a[] * int -> unit
     abstract Remove : 'a -> unit
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\section{Объектные выражения}
+    \section{Объектные выражения}
 
-	\begin{frame}[fragile]
-		\frametitle{Объектные выражения}
-		\framesubtitle{Реализация интерфейсов на лету}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Объектные выражения}
+        \framesubtitle{Реализация интерфейсов на лету}
+        \begin{minted}{fsharp}
 type Shape =
     abstract member Draw : unit -> unit
     abstract member Name : string
@@ -587,12 +587,12 @@ let rect w h =
     }
 
 (rect 10 10).Draw ()
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Частичная реализация интерфейса}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Частичная реализация интерфейса}
+        \begin{minted}{fsharp}
 type Shape =
     abstract member Draw : unit -> unit
     abstract member Name : string
@@ -605,12 +605,12 @@ let simpleShape nameFunc =
     }
 
 (simpleShape (fun () ->"Star")).Draw ()
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Делегация вложенному классу}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Делегация вложенному классу}
+        \begin{minted}{fsharp}
 type Printer =
     abstract member WriteString : string -> unit
 
@@ -625,14 +625,14 @@ type HtmlWriter() =
     member x.Header () = printer.WriteString "<html>"
     member x.Footer () = printer.WriteString "</html>"
     member x.WriteString s = printer.WriteString s
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\section{Структурирование кода}
+    \section{Структурирование кода}
 
-	\begin{frame}[fragile]
-		\frametitle{Модули}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Модули}
+        \begin{minted}{fsharp}
 type Vector =
     { x : float; y : float }
 
@@ -645,12 +645,12 @@ module VectorOps =
     let zero = { x = 0.0; y = 0.0 }
     let constX dx = { x = dx; y = 0.0 }
     let constY dy = { x = 0.0; y = dy }
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Расширения модулей}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Расширения модулей}
+        \begin{minted}{fsharp}
 module List =
     let rec pairwise l =
         match l with
@@ -658,12 +658,12 @@ module List =
         | h1 :: (h2 :: _ as t) -> (h1, h2) :: pairwise t
 
 let x = List.pairwise [1; 2; 3; 4]
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Дотнетовские структуры}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Дотнетовские структуры}
+        \begin{minted}{fsharp}
 [<Struct>]
 type VectorStruct =
     val x : float
@@ -678,12 +678,12 @@ type VectorStruct' =
         val x: float
         val y: float
     end
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пространства имён}
-		\begin{minted}{fsharp}
+    \begin{frame}[fragile]
+        \frametitle{Пространства имён}
+        \begin{minted}{fsharp}
 namespace Vectors
 
 type Vector =
@@ -691,7 +691,7 @@ type Vector =
 
 module VectorOps =
     let length v = sqrt(v.x * v.x + v.y * v.y)
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
 \end{document}
