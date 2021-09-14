@@ -32,18 +32,34 @@
     \begin{frame}[fragile]
         \frametitle{Стайлгайд}
         \begin{itemize}
-            \item Именование: inputarr -> inputArray
-            \item Пробелы: \mintinline{c}|if(a == 1)| -> \mintinline{c}|if (a == 1)|, но \mintinline{c}|balance (str)| -> \mintinline{c}|balance(str)|
-            \item Булевые переменные: \mintinline{c}|if (b == false)| -> \mintinline{c}|if (!b)|
-            \item Сокращённые операторы: \mintinline{c}|a = a - b| -> \mintinline{c}|a -= b|
-            \item Функция, не принимающая параметров: \mintinline{c}|f(void)|
-            \item Скобки: \mintinline{c}|return(x);| -> \mintinline{c}|return x;|
+            \item Именование: input\_arr -> inputArray
+            \item Школьник-стайл!
             \item Тернарный оператор: \mintinline{c}|printf(x == 0 ? "true" :  "false");|
-            \item Арифметика указателей (\mintinline{c}|array + 3|)--- хорошо или плохо?
+            \item Инициализация массивов: \mintinline{c}|int array[10] = { 0 };|
+            \item Инициализация переменных:
+                \begin{minted}{c}
+int a = 0;
+a = (b + c) / 2;
+                \end{minted}
+            \item \mintinline{c}|printf("%s %d", "Ответ: ", x);| vs \mintinline{c}|printf("Ответ:  %d", x);|
             \item Именованные константы: 
                 \begin{minted}{c}
 #define SIZE 10
                 \end{minted}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Ещё рекомендации}
+        \begin{itemize}
+            \item Сравнение знаковых и беззнаковых целых: \mintinline{c}{for (int i = 0; i < strlen(s); ++i)}
+            \item Булевые переменные --- stdbool.h, bool, true, false
+            \item Переиспользуемость функций
+            \begin{itemize}
+                \item Вообще, обособленность логически отдельных кусков программы
+            \end{itemize}
+            \item Кроссплатформенность
+            \item Культура деловой переписки?
         \end{itemize}
     \end{frame}
 
@@ -66,37 +82,6 @@ void f(int x) {
         return;
     } 
     ...
-}
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Ещё про if и return}
-        \begin{minted}{c}
-if (x != 0) {
-    return false;
-}
-
-return true;
-        \end{minted}
-        \vspace{1cm}
-        это просто
-        \begin{minted}{c}
-return x == 0;
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Забытое значение при возврате}
-        \begin{minted}{c}
-bool f(int x) {
-    if (x == 0) {
-        return true;
-    }
-}
-
-void main() {
-    printf("%d", f(1));  // ??
 }
         \end{minted}
     \end{frame}
