@@ -170,105 +170,10 @@
         \end{itemize}
     \end{frame}
 
-    \section{Lunar lander}
-
-    \begin{frame}
-        \frametitle{Игра ``Посадка на луну''}
-        \framesubtitle{Lunar Lander}
-        \begin{columns}
-            \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item Игрок управляет двигателем спускаемого аппарата
-                    \item Топливо ограничено
-                    \item Заданы начальная высота и скорость
-                    \item Победа засчитывается, если скорость при касании грунта меньше заданной
-                    \item Продвинутая версия позволяет управлять горизонтальным движением
-                \end{itemize}
-            \end{column}
-            \begin{column}{0.5\textwidth}
-                \begin{center}
-                    \includegraphics[width=0.9\textwidth]{lunarLander.png}
-                    \attribution{N. Medvidovic}
-                \end{center}
-            \end{column}
-        \end{columns}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Sense-Compute-Control-реализация}
-        \begin{center}
-            \includegraphics[width=0.7\textwidth]{senseComputeControlLunarLander.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
-    \section{Архитектурные стили}
-
-    \begin{frame}
-        \frametitle{Некоторые известные стили}
-        \begin{columns}
-            \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item ``Традиционные'', связанные с языком
-                    \begin{itemize}
-                        \item Главная программа/подпрограммы
-                        \item Объектно-ориентированный
-                    \end{itemize}
-                    \item Уровневый стиль
-                    \begin{itemize}
-                        \item Виртуальные машины
-                        \item Клиент-сервер
-                    \end{itemize}
-                    \item Стили, ориентированные на поток данных
-                    \begin{itemize}
-                        \item Пакетное исполнение
-                        \item Каналы и фильтры
-                    \end{itemize}
-                    \item Peer-to-peer
-                \end{itemize}
-            \end{column}
-            \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item Общая память
-                    \begin{itemize}
-                        \item Blackboard
-                        \item Ориентированные на правила
-                    \end{itemize}
-                    \item Интерпретаторы
-                    \begin{itemize}
-                        \item Интерпретатор
-                        \item Мобильный код
-                    \end{itemize}
-                    \item Неявный вызов
-                    \begin{itemize}
-                        \item Событийно-ориентированный
-                        \item Издатель-подписчик
-                    \end{itemize}
-                    \item ``Производные'' стили
-                    \begin{itemize}
-                        \item Распределённые объекты
-                        \item REST
-                        \item C2
-                    \end{itemize}
-                \end{itemize}
-            \end{column}
-        \end{columns}
-    \end{frame}
-
-    \section{Главная программа и подпрограммы}
-
-    \begin{frame}
-        \frametitle{Главная программа/подпрограммы}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{mainProgramAndSubroutinesLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
     \section{Объектно-ориентированный стиль}
 
     \begin{frame}
-        \frametitle{Объектно-ориентированный стиль}
+        \frametitle{``Сырой'' объектно-ориентированный стиль}
         \begin{itemize}
             \item Компоненты --- объекты
             \item Соединители --- сообщения и вызовы методов
@@ -291,50 +196,25 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Объектно-ориентированный стиль, Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.7\textwidth]{objectOrientedLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Или то же на UML}
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{objectOrientedLLUML.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
     \section{Слоистый стиль}
 
     \begin{frame}
         \frametitle{Слоистый стиль}
         \framesubtitle{Layered style}
-        \begin{columns}
-            \begin{column}{0.85\textwidth}
-                \begin{itemize}
-                    \item Иерархическая организация системы
-                    \begin{itemize}
-                        \item ``Многоуровневый клиент-сервер''
-                        \item Каждый слой предоставляет интерфейс для использования слоями выше
-                    \end{itemize}
-                    \item Каждый слой работает как:
-                    \begin{itemize}
-                        \item Сервер --- предоставляет функциональность слоям выше
-                        \item Клиент --- использует функциональность слоёв ниже
-                    \end{itemize}
-                    \item Соединители --- протоколы взаимодействия слоёв
-                    \item Пример --- операционные системы, сетевые стеки протоколов
-                \end{itemize}
-            \end{column}
-            \begin{column}{0.19\textwidth}
-                \begin{center}
-                    \includegraphics[width=0.8\textwidth]{layeredLL.png}
-                \end{center}
-            \end{column}
-        \end{columns}
+        \begin{itemize}
+            \item Иерархическая организация системы
+            \begin{itemize}
+                \item ``Многоуровневый клиент-сервер''
+                \item Каждый слой предоставляет интерфейс для использования слоями выше
+            \end{itemize}
+            \item Каждый слой работает как:
+            \begin{itemize}
+                \item Сервер --- предоставляет функциональность слоям выше
+                \item Клиент --- использует функциональность слоёв ниже
+            \end{itemize}
+            \item Соединители --- протоколы взаимодействия слоёв
+            \item Пример --- операционные системы, сетевые стеки протоколов
+        \end{itemize}
     \end{frame}
 
     \begin{frame}
@@ -365,6 +245,17 @@
         \end{columns}
     \end{frame}
 
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Стандартные слои в Domain-Driven Design}
+        \begin{center}
+            \includegraphics[width=0.35\textwidth]{dddLayers.png}
+            \begin{scriptsize}
+                \attribution{\url{http://uniknow.github.io/AgileDev/site/0.1.8-SNAPSHOT/parent/ddd/core/layered_architecture.html}}
+            \end{scriptsize}
+        \end{center}
+    \end{frame}
+
     \section{Клиент-сервер}
 
     \begin{frame}
@@ -377,11 +268,104 @@
         \end{itemize}
     \end{frame}
 
+    \section{Гексагональная архитектура}
+
     \begin{frame}
-        \frametitle{``Клиент-сервер'', Lunar Lander}
+        \frametitle{Гексагональная архитектура}
+        \framesubtitle{``Порты и адаптеры''}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{itemize}
+                    \item Другая точка зрения на уровни: самый нижний --- уровень предметной области
+                    \item Всё остальное поставляется ему как внешние зависимости
+                    \item Активно используется Dependency Inversion
+                    \item Порт --- по сути, интерфейс, предоставляемый или потребляемый
+                    \item Адаптер --- паттерн ``Адаптер'' для ``подгонки'' интерфейсов
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.8\textwidth]{hexagonalArchitecture.png}
+                    \attribution{B Butzin et al, Microservices Approach for the Internet of Things}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Подробности}
         \begin{center}
-            \includegraphics[width=0.6\textwidth]{clientServerLL.png}
-            \attribution{N. Medvidovic}
+            \includegraphics[width=0.8\textwidth]{hexagonalArchitectureDetails.png}
+            \attribution{\url{https://herbertograca.com/2017/09/14/ports-adapters-architecture/}}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Плюсы и минусы}
+        Плюсы:
+        \begin{itemize}
+            \item Изоляция механизмов доставки
+            \item Изоляция вспомогательных механизмов
+            \item Лёгкость тестирования, моки
+            \item Чистая бизнес-логика и модель предметной области
+        \end{itemize}
+        \vspace{5mm}
+        Минусы:
+        \begin{itemize}
+            \item Довольно тяжеловесна
+            \item Непонятно, что делать с фреймворками
+            \item Не очень подробна
+        \end{itemize}
+    \end{frame}
+
+    \section{Луковая архитектура}
+
+    \begin{frame}
+        \frametitle{Луковая архитектура}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{itemize}
+                    \item Дальнейшее развитие гексагональной --- определяет внутреннюю структуру ядра
+                    \item Внутренние слои не знают о внешних, доменная модель вообще ни о ком не знает
+                    \item Внутренние слои определяют интерфейсы, внешние их реализуют
+                    \item Уровневость нестрогая --- слой может использовать все слои под ним
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.8\textwidth]{onionArchitecture.png}
+                    \attribution{https://dev.to/barrymcauley/onion-architecture-3fgl}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Подробности}
+        \begin{center}
+            \includegraphics[width=0.75\textwidth]{onionArchitectureDetails.png}
+            \attribution{\url{https://herbertograca.com/2017/09/21/onion-architecture/}}
+        \end{center}
+    \end{frame}
+
+    \section{Чистая архитектура}
+
+    \begin{frame}
+        \frametitle{Чистая архитектура}
+        \begin{center}
+            \includegraphics[width=0.6\textwidth]{cleanArchitecture.png}
+            \attribution{https://herbertograca.com/2017/09/28/clean-architecture-standing-on-the-shoulders-of-giants/}
+        \end{center}
+        \begin{itemize}
+            \item Дальнейшее развитие луковой --- определяет поток управления
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Чистая архитектура, обработка запроса}
+        \begin{center}
+            \includegraphics[width=0.8\textwidth]{cleanArchitectureControlFlow.png}
+            \attribution{https://herbertograca.com/2017/09/28/clean-architecture-standing-on-the-shoulders-of-giants/}
         \end{center}
     \end{frame}
 
@@ -402,15 +386,6 @@
             \includegraphics[width=0.7\textwidth]{batch.png}
             \attribution{N. Medvidovic}
         \end{center}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Пакетная обработка, Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.95\textwidth]{batchLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-        Play-by-email?
     \end{frame}
 
     \section{Каналы и фильтры}
@@ -460,14 +435,6 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Каналы и фильтры, Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.85\textwidth]{pipesAndFiltersLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
     \section{Blackboard}
 
     \begin{frame}
@@ -483,22 +450,14 @@
                 \item Управление системой осуществляется только через состояние доски
                 \item Компоненты не знают друг о друге и не имеют своего состояния
             \end{itemize}
-            \item Часто применяется в системах искусственного интеллекта
+            \item Системы переписывающих правил --- некоторые задачи ИИ, трансляторы, графовые грамматики, алгорифмы Маркова
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Blackboard, Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.6\textwidth]{blackboardLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
-    \section{Стили с неявным вызовом}
+    \section{Событийный стиль}
 
     \begin{frame}
-        \frametitle{Стили с неявным вызовом}
+        \frametitle{Событийный стиль}
         \begin{itemize}
             \item Оповещение о событии вместо явного вызова метода
             \begin{itemize}
@@ -520,7 +479,7 @@
     \end{frame}
 
     \begin{frame}
-        \frametitle{Стили с неявным вызовом, преимущества и недостатки}
+        \frametitle{Событийный стиль, преимущества и недостатки}
         \begin{itemize}
             \item Преимущества:
             \begin{itemize}
@@ -559,35 +518,20 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Издатель-подписчик, Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.6\textwidth]{pubSubLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
-    \section{Событийно-ориентированный стиль}
+    \section{Событийная шина}
 
     \begin{frame}
-        \frametitle{Событийно-ориентированный стиль с шиной}
+        \frametitle{Событийная шина}
         \begin{itemize}
             \item Независимые компоненты посылают и принимают события, передаваемые по шинам
             \item Компоненты: независимые генераторы или потребители событий
             \item Соединители: шины событий (хотя бы одна)
-            \item Данные: события и связаные с ними данные, посылаемые по шине
+            \item Данные: события и связанные с ними данные, посылаемые по шине
             \item Топология: компоненты общаются только с шинами событий, не друг с другом
             \item Варианты: push- и pull-режимы работы с шиной
             \item Преимущества: лёгкость масштабирования и добавления новой функциональности, эффективно для распределённых приложений
+            \item Event Sourcing
         \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Событийно-ориентированный Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.45\textwidth]{eventBasedLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
     \end{frame}
 
     \section{Peer-to-peer}
@@ -607,82 +551,6 @@
                 \item Если протокол взаимодействия позволяет, легко масштабируется
             \end{itemize}
         \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Peer-to-peer Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.7\textwidth]{peerToPeerLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
-    \section{Гетерогенные стили}
-
-    \begin{frame}
-        \frametitle{Гетерогенные стили}
-        \begin{itemize}
-            \item Более сложные стили, полученные соединением простых стилей
-            \begin{itemize}
-                \item REST
-                \item C2
-                \item Распределённые объекты
-                \begin{itemize}
-                    \item ОО + клиент-сервер
-                    \item CORBA
-                \end{itemize}
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \section{C2}
-
-    \begin{frame}
-        \frametitle{C2}
-        \begin{itemize}
-            \item Стиль с неявным вызовом, где компоненты общаются только через коннекторы, маршрутизирующие сообщения
-            \item Компоненты: независимые, потенциально параллельные производители или потребители
-            \item Соединители: маршрутизаторы сообщений, которые могут фильтровать, преобразовывать и рассылать сообщения двух видов: нотификации и запросы
-            \item Элементы данных: сообщения, содержащие данные
-            \begin{itemize}
-                \item Нотификации анонсируют изменения в состоянии
-                \item Запросы --- запрашивают выполнение действия
-            \end{itemize}
-            \item Топология: слои компонентов и соединителей с определённым ``верхом'' и ``низом'', где нотификации шлются ``вниз'', а запросы --- ``вверх''
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{С2 Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.6\textwidth]{c2LL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
-    \end{frame}
-
-    \section{CORBA}
-
-    \begin{frame}
-        \frametitle{CORBA}
-        \begin{itemize}
-            \item ``Объекты'' работают на гетерогенных хостах, реализованные на разных языках программирования 
-            \item Объекты предоставляют сервисы через чётко определённые интерфейсы и вызывают методы через RPC-протоколы
-            \item Топология: граф объектов в самом общем смысле
-            \item Дополнительные ограничения:
-            \begin{itemize}
-                \item Передаваемые при вызове метода данные должны быть сериализуемы
-                \item Вызывающие должны обрабатывать ошибки, связанные с работой сети
-            \end{itemize}
-            \item Преимущества: независимость от платформы, языка и местоположения сервиса
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{СORBA Lunar Lander}
-        \begin{center}
-            \includegraphics[width=0.9\textwidth]{corbaLL.png}
-            \attribution{N. Medvidovic}
-        \end{center}
     \end{frame}
 
 \end{document}
