@@ -36,6 +36,8 @@
 
     \frame{\titlepage}
 
+    \section{Введение}
+
     \begin{frame}
         \frametitle{Проблема}
         \begin{itemize}
@@ -62,6 +64,8 @@
             \includegraphics[width=0.5\textwidth]{balancing.png}
         \end{center}
     \end{frame}
+
+    \section{АВЛ-дерево}
 
     \begin{frame}
         \frametitle{АВЛ-дерево}
@@ -117,8 +121,119 @@
                 \end{center}
             \end{column}
         \end{columns}
-        Балансировка выполняется на обратном проходе рекурсии при вставке и удалении, если есть потребность
     \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Вставка 1 и 2}
+        \begin{center}
+            \includegraphics[width=0.4\textwidth]{avl12.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Вставка 3}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{avl3.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Вставка 4}
+        \begin{center}
+            \includegraphics[width=0.4\textwidth]{avl4.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Вставка 5}
+        \begin{center}
+            \includegraphics[width=0.9\textwidth]{avl5.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Псевдокод}
+        \framesubtitle{Малое левое вращение}
+        \begin{center}
+            \includegraphics[width=0.4\textwidth]{small-left-rotation.png}
+        \end{center}
+        \begin{minted}{c}
+Node* rotateLeft(Node *a)
+{
+    Node *b = a->right;
+    Node *c = b->right;
+    b->left = a;
+    a->right = c;
+    return b;
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Псевдокод}
+        \framesubtitle{Балансировка}
+        \begin{minted}{c}
+Node* balance(Node *node) {
+    if (node->balance == 2) {
+        if (node->right->balance <= 0)
+            return rotateLeft(node);
+        return bigRotateLeft(node);
+    }
+    if (node->balance == -2) {
+        if (node->left->balance <= 0)
+            return rotateRight(node);
+        return bigRotateRight(node);
+    }
+    return node;
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Псевдокод}
+        \framesubtitle{Вставка}
+        \begin{minted}{c}
+Node* insert(Node *node, int value) {
+    if (node == NULL) {
+        Node *newNode = calloc(1, sizeof(Node));
+        newNode->value = value;
+        return newNode;
+    }
+    if (value < node->value) {
+        node->left = insert(node->left, value);
+        --node->balance;
+    } else {
+        node->right = insert(node->right, value);
+        ++node->balance;
+    }
+    return balance(node);
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Замечания по реализации}
+        \begin{itemize}
+            \item Балансировка выполняется на обратном проходе рекурсии при вставке и удалении
+            \item Принцип ``поменяли-вернули-присвоили''
+            \item Не делайте указатель на родителя, запутаетесь
+            \item Не храните высоту, храните баланс
+            \item Большой поворот --- это на самом деле два маленьких, но эффективнее реализовать его отдельно
+            \begin{itemize}
+                \item Впрочем, сопровождаемость кода обычно важнее эффективности
+            \end{itemize}
+            \item Не читайте статью про АВЛ-деревья на Хабре
+            \begin{itemize}
+                \item То есть прочитать можно, но код там очень небрежный
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \section{Красно-чёрные деревья}
 
     \begin{frame}
         \frametitle{Красно-чёрные деревья}
@@ -165,7 +280,7 @@
     \end{frame}
 
     \begin{frame}
-        \frametitle{Красно-чёрное дерево, добавление(2)}
+        \frametitle{Красно-чёрное дерево, добавление (2)}
         \begin{enumerate}
             \setcounter{enumi}{3}
             \item Родитель красный, дядя чёрный, узел справа от родителя. Выполняем поворот пары ``родитель-сын''.
@@ -256,6 +371,8 @@
         \end{enumerate}
     \end{frame}
 
+    \section{Splay-деревья}
+
     \begin{frame}
         \frametitle{Splay-деревья}
         \begin{itemize}
@@ -306,6 +423,138 @@
             \end{itemize}
         \end{itemize}
     \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Вставка 1}
+        \begin{center}
+            \includegraphics[width=0.1\textwidth]{splay1.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Вставка 2}
+        \begin{center}
+            \includegraphics[width=0.4\textwidth]{splay2.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Вставка 3}
+        \begin{center}
+            \includegraphics[width=0.6\textwidth]{splay3.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Вставка 4}
+        \begin{center}
+            \includegraphics[width=0.8\textwidth]{splay4.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример}
+        \framesubtitle{Поиск 2}
+        \begin{center}
+            \includegraphics[width=0.8\textwidth]{splaySearch.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Псевдокод}
+        \framesubtitle{Вставка}
+        \begin{minted}{c}
+Node* add(Node* node, int value)
+{
+    if (value < node->value) {
+        вставляем как обычно
+        return splay(node->left);
+    }
+    else if (value > node->value) {
+        вставляем как обычно
+        return splay(node->right);
+    }
+    return splay(node);
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Псевдокод}
+        \framesubtitle{Процедура перевешивания узла}
+        \begin{minted}{c}
+typedef enum Direction
+{
+    left,
+    right
+} Direction;
+
+void attach(Node* parent, Node* child, Direction direction)
+{
+    if (direction == left)
+        parent->left = child;
+    else
+        parent->right = child;
+    if (child != NULL)
+        child->parent = parent;
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Псевдокод}
+        \framesubtitle{Zig}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{minted}{c}
+void zig(Node* x)
+{
+    Node* p = x->parent;
+    if (x == p->left) {
+        Node* b = x->right;
+        attach(x, p, right);
+        attach(p, b, left);
+    }
+    else {
+        Node* b = x->left;
+        attach(x, p, left);
+        attach(p, b, right);
+    }
+    x->parent = NULL;
+}
+                \end{minted}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{zig.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Замечания по реализации}
+        \begin{itemize}
+            \item Тут уже нужен родитель
+            \begin{itemize}
+                \item Можно и без него, на прямом проходе, но концептуально сложнее
+            \end{itemize}
+            \item Родитель добавляет инвариант (какой?), за ним надо следить
+            \item Принцип ``локализации нарушения инварианта''
+            \item enum-ы для более человекочитаемого кода
+            \begin{itemize}
+                \item Вообще, читаемость тут критична
+            \end{itemize}
+            \item Сильно помогает рисовать картинки
+            \item Есть известный вариант реализации со split/merge
+        \end{itemize}
+    \end{frame}
+
+    \section{Декартовы деревья}
 
     \begin{frame}
         \frametitle{Декартовы деревья}
