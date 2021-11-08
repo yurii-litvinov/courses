@@ -81,10 +81,9 @@
             \end{itemize}
             \item Неявное взаимодействие
             \begin{itemize}
-                \item Групповое взаимодействие
-                \item Модель ``издатель-подписчик''
-                \item Очереди сообщений
                 \item Распределённая общая память
+                \item Очереди сообщений
+                \item Модель ``издатель-подписчик''
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -95,9 +94,9 @@
             \begin{column}{0.6\textwidth}
                 \begin{itemize}
                     \item Разбиение сервисов по нескольким серверам
-                    \item Кэширование
                     \item Мобильный код
                     \item Мобильный агент
+                    \item Кеширование
                 \end{itemize}
             \end{column}
             \begin{column}{0.4\textwidth}
@@ -242,6 +241,7 @@ service RouteGuide {
   rpc RouteChat(stream RouteNote) returns (stream RouteNote) {}
 }
         \end{minted}
+        \attribution{\url{https://grpc.io/docs/languages/java/basics/}}
         \begin{itemize}
             \item Сборка --- плагином grpc к protoc
         \end{itemize}
@@ -271,6 +271,7 @@ private static class RouteGuideService extends RouteGuideGrpc.RouteGuideImplBase
       }
       responseObserver.onCompleted();
     }
+}
             \end{minted}
         \end{scriptsize}
     \end{frame}
@@ -468,6 +469,7 @@ public void getFeature(int lat, int lon) {
 
     \begin{frame}
         \frametitle{Пример: WCF}
+        \frametitle{Windows Communication Foundation}
         \begin{itemize}
             \item Платформа для создания веб-сервисов
             \item Часть .NET Framework, начиная с 3.0
@@ -476,12 +478,7 @@ public void getFeature(int lat, int lon) {
             \end{itemize}
             \item Умеет WSDL, SOAP и т.д., очень конфигурируема
             \item Автоматическая генерация заглушек на стороне клиента
-            \item ABCs of WCF:
-            \begin{itemize}
-                \item Address
-                \item Binding
-                \item Contract
-            \end{itemize}
+            \item ABCs of WCF: Address, Binding, Contract
         \end{itemize}
         \begin{center}
             \includegraphics[width=0.6\textwidth]{wcf.png}
@@ -675,20 +672,16 @@ class Send
     public static void Main()
     {
         var factory = new ConnectionFactory() { HostName = "localhost" };
-        using (var connection = factory.CreateConnection())
-        {
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "hello", durable: false, exclusive: false,
-                                     autoDelete: false, arguments: null);
+        using var connection = factory.CreateConnection();
+        using var channel = connection.CreateModel();
+        channel.QueueDeclare(queue: "hello", durable: false, exclusive: false,
+                autoDelete: false, arguments: null);
 
-                string message = "Hello World!";
-                var body = Encoding.UTF8.GetBytes(message);
+        string message = "Hello World!";
+        var body = Encoding.UTF8.GetBytes(message);
 
-                channel.BasicPublish(exchange: "", routingKey: "hello",
-                                     basicProperties: null, body: body);
-            }
-        }
+        channel.BasicPublish(exchange: "", routingKey: "hello",
+                basicProperties: null, body: body);
     }
 }
             \end{minted}
@@ -709,20 +702,18 @@ class Receive
     public static void Main()
     {
         var factory = new ConnectionFactory() { HostName = "localhost" };
-        using (var connection = factory.CreateConnection())
-        using (var channel = connection.CreateModel())
-        {
-            channel.QueueDeclare(queue: "hello", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        using var connection = factory.CreateConnection();
+        using var channel = connection.CreateModel();
+        channel.QueueDeclare(queue: "hello", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
-            {
-                var body = ea.Body;
-                var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine(" [x] Received {0}", message);
-            };
-            channel.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
-        }
+        var consumer = new EventingBasicConsumer(channel);
+        consumer.Received += (model, ea) =>
+        {
+            var body = ea.Body;
+            var message = Encoding.UTF8.GetString(body);
+            Console.WriteLine(" [x] Received {0}", message);
+        };
+        channel.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
     }
 }
             \end{minted}
