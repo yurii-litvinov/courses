@@ -383,11 +383,38 @@ lynx -dump $<   >   $@
                 \item Сборка выполняется очень часто, иногда --- после каждого коммита
             \end{itemize}
             \item Там же запускаются юнит-тесты
-            \item \url{https://travis-ci.org/} --- пример бесплатной для open source-проектов облачной CI-системы
+            \item \url{https://www.appveyor.com/} --- пример бесплатной для open source-проектов облачной CI-системы
+            \item Виртуальная машина с ОС Windows
             \begin{itemize}
-                \item Интегрируется с GitHub-ом
-                \item Собирает на чистой виртуальной машине под Ubuntu 20.04 (или более старыми версиями), macOS 10.15 или Windows Server 1809
-                \item Окружение и правила сборки настраиваются конфигурационным файлом, который должен лежать в корне репозитория
+                \item Windows Server 2019 + VS 2019 или более старые
+                \item Умеет Linux Ubuntu 20.04 и macOS 10.15
+            \end{itemize}
+            \item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
+            \item Собирает по умолчанию системой сборки MSBuild
+            \begin{itemize}
+                \item Инструкция по настройке билда для C/C++ под VS: \url{https://www.appveyor.com/docs/lang/cpp/}
+            \end{itemize}
+            \item Окружение настраивается конфигурационным файлом или <<вручную>> из скрипта сборки
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{GitHub Actions}
+        \begin{itemize}
+            \item Бесплатная система облачной сборки для проектов на GitHub
+            \item \url{https://docs.github.com/en/actions}
+            \item Как настроить:
+            \begin{itemize}
+                \item В репозитории на GitHub Settings -> Actions -> Allow all actions
+                \item Создаём в корне репозитория папку .github/workflows/
+                \item В нём создаём файл <имя действия>.yml (например, ci.yml)
+                \item Описываем процесс сборки согласно \url{https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions}
+                \begin{itemize}
+                    \item Пример и описание линуксовой сборки: \url{https://www.incredibuild.com/blog/using-github-actions-with-your-c-project}
+                    \item Пример .NET-сборки: \url{https://github.com/yurii-litvinov/DocUtils/blob/master/.github/workflows/ci.yml}
+                \end{itemize}
+                \item Коммитим-пушим
+                \item Смотрим статус коммита и пуллреквеста
             \end{itemize}
         \end{itemize}
     \end{frame}
