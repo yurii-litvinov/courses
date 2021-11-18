@@ -46,9 +46,9 @@
     % 			\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/fixed-statement}
     % 			\item \url{https://docs.microsoft.com/ru-ru/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke}
     % 		\end{itemize}
-    % 		\item Интернирование строк
+    % 		\item Xamarin
     % 		\begin{itemize}
-    % 			\item \url{https://habr.com/post/224281/}
+    % 			\item \url{https://dotnet.microsoft.com/apps/xamarin}
     % 		\end{itemize}
     % 		\item Rx.NET
     % 		\begin{itemize}
@@ -72,11 +72,11 @@
             \begin{itemize}
                 \item На самом деле, выполняя HTTP GET-запрос на порт 80 или 443 (обычно)
             \end{itemize}
-            \item ОС сервера перенаправляет запрос запущенному там \textit{веб-серверу}
+            \item ОС сервера перенаправляет запрос запущенному там \emph{веб-серверу}
             \begin{itemize}
-                \item Например, Apache, IIS
+                \item Например, Apache, IIS, нынче популярны \emph{self-hosted} сервисы, например, Kestrel
             \end{itemize}
-            \item Веб-сервер --- отдельный процесс, в рамках которого запущено несколько \textit{веб-приложений}, веб-сервер по URL запроса определяет, какому веб-приложению он адресован, и передаёт запрос ему
+            \item Веб-сервер --- отдельный процесс, в рамках которого запущено несколько \emph{веб-приложений}, веб-сервер по URL запроса определяет, какому веб-приложению он адресован, и передаёт запрос ему
             \item Веб-приложение формирует ответ и отправляет его обратно по HTTP в виде HTML-страницы
             \item Эта страница и показывается пользователю в браузере
         \end{itemize}
@@ -89,16 +89,18 @@
             \item Нужны для создания распределённых приложений
             \item Общаются не с помощью HTML, а посредством специализированных протоколов
             \begin{itemize}
-                \item Например, SOAP 
+                \item Например, SOAP
                 \begin{itemize}
                     \item Использует синтаксис XML, может использовать HTTP как транспорт
                 \end{itemize}
+                \item Также популярны REST (это, правда, не протокол), gRPC
             \end{itemize}
-            \item Как правило, содержат механизм публикации метаинформации
+            \item Содержат механизм публикации метаинформации
             \begin{itemize}
-                \item Например, WSDL
+                \item Например, WSDL для SOAP
+                \item OpenAPI (Swagger) для REST
             \end{itemize}
-            \item Реализуются посредством технологий, например, Windows Communication Foundation
+            \item Реализуются посредством технологий, например, ASP.NET Web APIs
         \end{itemize}
     \end{frame}
 
@@ -108,15 +110,13 @@
             \item Веб-сервер --- IIS (Internet Information Services), IIS Express, Kestrel
             \begin{itemize}
                 \item Есть ``из коробки'' в Windows, IIS Express поставляется с Visual Studio и используется для отладки
+                \item Kestrel поставляется как часть ASP.NET
             \end{itemize}
-            \item Технология для разработки веб-приложений --- ASP.NET MVC
-            \begin{itemize}
-                \item ASP.NET MVC 5
-                \item ASP.NET MVC Core 3.0
-            \end{itemize}
-            \item Технология для разработки веб-сервисов --- WCF
+            \item Технология для разработки веб-приложений и веб-сервисов --- ASP.NET
             \item Работа с базами данных --- MS SQL Server (SQL Server Express)
             \item ORM --- Entity Framework (Entity Framework Core)
+            \item Фронтенд --- TypeScript
+            \item Контейнеризация --- Docker под WSL
             \item Облачный хостинг --- Azure
         \end{itemize}
     \end{frame}
@@ -202,17 +202,17 @@
         \begin{minted}{html}
 <!DOCTYPE html>
 <html>
-<head>
-<style>
-  body {background-color: powderblue;}
-  h1   {color: blue;}
-  p    {color: red;}
-</style>
-</head>
-<body>
-<h1>This is a heading</h1>
-<p>This is a paragraph.</p>
-</body>
+    <head>
+        <style>
+            body {background-color: powderblue;}
+            h1   {color: blue;}
+            p    {color: red;}
+        </style>
+    </head>
+    <body>
+        <h1>This is a heading</h1>
+        <p>This is a paragraph.</p>
+    </body>
 </html>
         \end{minted}
         \attribution{https://www.w3schools.com}
@@ -310,6 +310,7 @@ function doSomething() {
         \begin{center}
             \includegraphics[width=0.7\textwidth]{ajax.png}
         \end{center}
+        \attribution{https://www.w3schools.com}
     \end{frame}
 
     \begin{frame}[fragile]
@@ -343,19 +344,33 @@ function loadDoc() {
         \attribution{https://www.w3schools.com}
     \end{frame}
 
-    \section{Бэкенд}
+    \begin{frame}[fragile]
+        \frametitle{Fetch API}
+        \begin{scriptsize}
+            \begin{minted}{js}
+const data = { username: 'example' };
 
-    \begin{frame}
-        \frametitle{Бэкенд}
-        \framesubtitle{Обработка веб-запроса в Windows}
-        \begin{center}
-            \includegraphics[width=0.65\textwidth]{requestProcessing.png}
-            \vspace{-5mm}
-            \attribution{MSDN}
-        \end{center}
+fetch('https://example.com/profile', {
+  method: 'POST', // or 'PUT'
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(data),
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Success:', data);
+})
+.catch((error) => {
+  console.error('Error:', error);
+});
+            \end{minted}
+        \end{scriptsize}
+        \vspace{-3mm}
+        \attribution{https://developer.mozilla.org/}
     \end{frame}
 
-    \section{Архитектура ASP.NET MVC}
+    \section{Бэкенд, ASP.NET}
 
     \begin{frame}
         \frametitle{ASP.NET MVC, основные понятия}
