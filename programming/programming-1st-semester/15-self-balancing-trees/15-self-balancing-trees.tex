@@ -165,7 +165,7 @@
 Node* rotateLeft(Node *a)
 {
     Node *b = a->right;
-    Node *c = b->right;
+    Node *c = b->left;
     b->left = a;
     a->right = c;
     return b;
