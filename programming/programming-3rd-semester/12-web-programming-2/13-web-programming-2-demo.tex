@@ -35,7 +35,7 @@
 \sloppy
 \pagestyle{plain}
 
-\title{ASP.NET Core, демонстрация}
+\title{ASP.NET, демонстрация}
 \author{Юрий Литвинов\\\small{y.litvinov@spbu.ru}}
 
 \date{30.11.2021}
@@ -45,504 +45,567 @@
 \maketitle
 \thispagestyle{empty}
 
-\section{Создание проекта}
+\section{Введение}
 
-Напишем в качестве демонстрации небольшое приложение, которое позволяет, например, регистрироваться на конференцию. Показывать я буду на примере Visual Studio. Надо, чтобы была установлена ``рабочая нагрузка'' ``ASP.NET и разработка веб-приложений''.
+Напишем в качестве демонстрации небольшое приложение, которое позволяет, например, регистрироваться на конференцию (следуя какому-то туториалу, ссылка на который навсегда забыта, впрочем с тех пор всё пару раз полностью переделано). Показывать я буду на примере Visual Studio. Надо, чтобы была установлена <<рабочая нагрузка>> <<ASP.NET и разработка веб-приложений>>.
 
-Начнём с создания нового проекта. Create a new project -> ASP.NET Core Web Application (можно облегчить поиск, выбрав в фильтрах сверху C\#, Windows, Web).
-Указываем имя и расположение проекта как обычно (назовём проект ConferenceRegistration, потому что на самом деле будем писать сайт для регистрации на конференцию), жмём на Create, открывается окно, позволяющее указать тип проекта. Тут мы выбираем в выпадающих списках сверху .NET Core и ASP.NET Core 5.0, в списке типов приложений выбираем ASP.NET Core Web Application (Model-View-Controller), остальные настройки оставляем по умолчанию:
+Для начала требования:
 
-\begin{center}
-    \includegraphics[width=0.7\textwidth]{projectCreation.png}
-\end{center}
-
-Стоит отметить, что рекомендованный способ создания веб-приложений под ASP.NET Core --- это Razor Pages (в этом диалоге --- просто ASP.NET Core Web App), более ``легковесная'' архитектура. Здесь показано полноценное MVC-приложение,
-прежде всего потому, что так же точно выглядели приложения в библиотеке MVC 5 под .NET Framework (которая всё ещё очень популярна в индустрии) и потому, что основные принципы библиотеки в MVC-варианте проще проиллюстрировать.
-Ещё стоит отметить, что есть шаблоны для веб-сервиса (там вообще не генерируется представлений), шаблоны, включающие в себя Angular, React.js и Redux (это не так важно, потому что при необходимости нужные библиотеки можно доставить, но приятно). А ещё можно сразу подрубить аутентификацию, но мы пока так делать не будем, это технически не очень просто, посему неуместно при первой демонстрации. Снова жмём на Create.
-
-Сгенерированный из шаблона проект имеет следующую структуру.
 \begin{itemize}
-    \item \textbf{wwwroot} --- папка со \textit{статическими ресурсами}, то есть файлами, которые можно использовать в своих HTML-страницах, и которые будут отправлены на клиент как они есть.
-    \item \textbf{Controllers} --- папка с \textit{контроллерами}, то есть кодом на C\#, обрабатывающим входящие запросы. Обычно один контроллер отвечает сразу за несколько связанных по смыслу запросов,
-        в нашем приложении сейчас всего один контроллер с тремя методами, каждый из которых на самом деле вызывается самой MVC, когда приходит запрос на URL, содержащий имя метода контроллера.
-    \item \textbf{Models} --- сюда кладутся классы View Model, которые контроллеры будут заполнять и отправлять во View. Сюда же иногда кладут классы Domain Model, классы, обеспечивающие сохранение модели в базу и т.д., и для небольших приложений это даже хорошо работает.
-    \item \textbf{Views} --- сюда кладутся .cshtml-файлы, которые представляют собой шаблоны HTML-страниц, используемые Razor-ом для того, чтобы сгенерить представление, которое контроллер потом пошлёт браузеру ответом на запрос. В .cshtml-файлах можно использовать
-        данные из моделей, что позволяет параметризовать их полезной информацией в рантайме.
-    \item \textbf{appsettings.json} --- конфигурация приложения.
-    \item \textbf{Program.cs} --- метод Main, который инициализирует и хостит приложение.
-    \item \textbf{Startup.cs} --- конфигурирует MVC-часть приложения --- сервисы и роутинг. Именно тут написано, что если мы просто запустили приложение, то должен вызваться метод Index у контроллера HomeController (обратите внимание, что в роуте он пишется как просто Home, 
-        это одно из многих соглашений об именовании, которые используются повсюду в MVC)
+    \item титульная страница конференции со ссылкой на форму регистрации;
+    \item форма регистрации, позволяющая зарегистрироваться на конференцию как слушатель или как докладчик --- при регистрации указывается ФИО и почта, и есть чекбокс <<хочу ли выступить с докладом>>.
+    \item страница, на которой можно просмотреть всех уже зарегистрировавшихся; поскольку авторизацию мы за пару не сделаем, она будет доступна всем, но ссылки с главной страницы на неё не будет, надо будет заходить по <<правильному>> URL.
 \end{itemize}
 
-Запустим и посмотрим, что получилось. Для этого достаточно просто нажать на ``Запустить'', но можно посмотреть на кнопку запуска внимательнее и выяснить, что она позволяет выбрать \textit{хостинг} для нашего приложения и браузер, в котором мы хотим наше приложение посмотреть.
-Под виндой для отладки обычно используется IIS Express, который запускается самой Visual Studio, но можно сказать приложению хостить самого себя, тогда будет использоваться веб-сервер Kestrel, запускаемый внутри процесса самого приложения. Приложение запустится в выбранном браузере
-по адресу localhost (потому что отладочные серверы по умолчанию извне локального компьютера не видны) и случайному порту, определяемому при запуске (впрочем, это можно перенастроить в свойствах проекта, во вкладке Debug). Ещё обратите внимание, что, в отличие от десктопных приложений,
-закрытие окна браузера не всегда означает остановку приложения --- Visual Studio старается делать это сама, следя за процессом браузера, но у неё не всегда получается, и иногда надо останавливать процесс с веб-приложением вручную.
+Из требований понятно, что взаимодействие с пользователем минимально (по сути, просто показать информацию и получить пользовательский ввод), бизнес-логика сводится к работе с базой данных, поэтому выбираем в качестве архитектуры проекта многостраничное приложение на Razor Pages.
+
+\section{Создание проекта}
+
+Начнём с создания нового проекта. Create a new project -> ASP.NET Core Web App (можно облегчить поиск, выбрав в фильтрах сверху C\#, All Platforms, Web). Указываем имя и расположение проекта как обычно (назовём проект ConferenceRegistration), оставляем в следующем окне всё по умолчанию.
+
+Запустим и посмотрим, что получилось. Для этого достаточно просто нажать на <<Запустить>>, но можно посмотреть на кнопку запуска внимательнее и выяснить, что она позволяет выбрать \textit{хостинг} для нашего приложения и браузер, в котором мы хотим наше приложение посмотреть. По умолчанию приложение запускается в self-hosted-режиме --- внутри процесса приложения запускается веб-сервер Kestrel. Можно выбрать IIS Express, а можно WSL (тогда приложение запустится на линуксовой виртуальной машине, тоже в self-hosted-режиме --- это полезно, чтобы более-менее реалистично посмотреть, как оно будет работать в реальном линуксовом окружении, но требует длительной настройки, поэтому мы не будем). 
+
+Приложение запустится в выбранном браузере по адресу localhost (потому что отладочные серверы по умолчанию извне локального компьютера не видны) и случайному порту, определяемому при запуске (впрочем, это можно перенастроить в Properties/launchSettings.json, свойство <<applicationUrl>>). Ещё обратите внимание, что, в отличие от десктопных приложений, закрытие окна браузера не всегда означает остановку приложения, и наоборот, если вы остановите приложение, окно браузера не обязано закрыться --- Visual Studio старается делать это сама, но у неё не всегда получается (в частности, когда в браузере открыто несколько вкладок).
+
+При первом запуске Visual Studio попросит добавить самоподписанный отладочный сертификат в список доверенных, поскольку мы, как все нормальные люди, сразу делаем приложение с поддержкой HTTPS. Соглашаемся. В реальном окружении потребуется настоящий сертификат, но мы не будем на демо этим заморачиваться.
 
 \section{Hello, world}
 
-Начнём с того, что удалим всё, что нагенерилось. Добавим новый контроллер, назовём его так же HomeController, добавим в него метод Index (методы в контроллере, кстати, называются Action --- и, кстати, при добавлении пустого контроллера почти пустой Index сгенерируется сам), который будет возвращать вид MyView, как-то так:
+Начнём с того, что удалим всё содержимое папки Pages, поскольку мы хотим всё сделать своими руками (опять-таки, в реальной жизни сгенерированный шаблон на самом деле может быть полезен). Кликаем правой кнопкой на папку Pages, говорим <<Add Razor Page>>, выбираем <<Razor Page --- Empty>> (это будет главная страница, там ничего интересного не нужно), жмём <<Add>>. Оставляем название по умолчанию <<Index.cshtml>>. Получаем вот такой View:
+
+\begin{minted}{html}
+@page
+@model ConferenceRegistration.Pages.IndexModel
+@{
+}
+\end{minted}
+
+И вот такой код, его поддерживающий
 
 \begin{minted}{csharp}
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ConferenceRegistration.Controllers
+namespace ConferenceRegistration.Pages
 {
-    public class HomeController : Controller
+    public class IndexModel : PageModel
     {
-        public IActionResult Index()
-            => View("MyView");
+        public void OnGet()
+        {
+        }
     }
 }
 \end{minted}
 
-Visual Studio справедливо отмечает, что такого вида не существует. Создадим его, Views -> Add -> View -> Razor View - Empty, называем его MyView, говорим, что он должет быть пустой и не использовать лейаут (пока что). Visual Studio всё равно говорит в контроллере, что вида не существует ---
-потому что используются умолчания, контроллер ищет все виды, относящиеся к нему, в подпапке папки Views, которая называется так же, как контроллер. Должно получиться как-то так:
+Давайте сразу же перейдём на C\# 10 (если нет желания, можно этого не делать и не сражаться с IDE, где всё ещё старые шаблоны):
 
-\begin{center}
-    \includegraphics[width=0.45\textwidth]{projectStructure.png}
-\end{center}
+\begin{minted}{csharp}
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.RazorPages;
+\end{minted}
 
-Ещё раз обратите внимание, что папка называется не HomeController, а Home.
+вставим первыми строчками в Program.cs, а код страницы сделаем с file-scoped namespace:
 
-Теперь пойдём в MyView.cshtml, увидим там заглушку с пустой HTML-страницей и начнём верстать HTML как настоящие веб-разработчики:
+\begin{minted}{csharp}
+namespace ConferenceRegistration.Pages;
+
+public class IndexModel : PageModel
+{
+    public void OnGet()
+    {
+    }
+}
+\end{minted}
+
+Теперь давайте напишем что-нибудь содержательное во View:
 
 \begin{minted}{html}
-@{
-    Layout = null;
-}
+@page
 
 <!DOCTYPE html>
 
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>MyView</title>
-</head>
-<body>
-Hello, world!
-</body>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Hello</title>
+    </head>
+    <body>
+        Hello, world!
+    </body>
 </html>
 \end{minted}
 
-Получилось хорошо, но для этого не нужен никакой MVC, одной HTML-страницы было бы вполне достаточно. Чтобы было чуть более интересно, давайте показывать текущее время на сервере (на момент запроса, естественно). Для этого надо сначала слегка модифицировать контроллер, чтобы он отправлял
-клиенту текущее время:
+Запускаем, проверяем, что всё работает. И действительно, должна выводиться убогая надпись <<Hello, world!>> в браузере.
+
+\section{Регистрация}
+
+Чтобы написать <<Hello, world!>>, никакого ASP.NET не нужно, это могла бы быть статическая HTML-страница. Давайте пойдём дальше и сделаем форму регистрации. Для этого добавим новую Razor-страницу, Registration.cshtml, тоже типа <<Razor Page --- Empty>> (мы сами потом сможем прикрутить к ней БД). Начнём с моделирования предметной области. Поскольку она предельно проста, мы можем сделать это прямиком в коде поддержки страницы. В более суровых случаях нам надо было бы сделать отдельно доменную модель, отдельно View Model-ы, и держать их отдельно от контроллеров, но в более суровых случаях нам бы потребовались и настоящие контроллеры, и полноценный MVC, и даже отдельный проект с доменной моделью. Но это всё не лезет в ознакомительный кусочек про веб-программирование в этом курсе. Итак:
 
 \begin{minted}{csharp}
-public IActionResult Index()
+namespace ConferenceRegistration.Pages;
+
+[BindProperties]
+namespace ConferenceRegistration.Pages;
+
+[BindProperties]
+public class RegistrationModel : PageModel
 {
-    ViewBag.Time = DateTime.Now;
-    return View("MyView");
+    public string Name { get; set; } = "";
+
+    public string Email { get; set; } = "";
+
+    public bool IsSpeaker { get; set; }
 }
 \end{minted}
 
-И View:
+Обратите внимание на атрибут \mintinline{csharp}{[BindProperties]} над классом --- он говорит ASP.NET, что при получении запроса с параметрами, совпадающими по именам со свойствами (в нашем случае Name и Email), надо их содержимое положить в соответствующие свойства модели. Теперь у нас RegistrationModel --- это не просто поддерживающий страницу код, а суть доменный класс <<участник конференции>> плюс примешанные к нему средства доставки (наследование от PageModel), а потом ещё тут же будут и средства обеспечения персистентности (работа с базой), что для больших проектов нельзя смешивать, но для маленьких вполне ок.
+
+Ещё обратите внимание на то, что свойства проинициализированы пустыми строками --- в C\# 10 Nullability-анализ включён по умолчанию, так что строки (как ссылочный тип) должны быть не \mintinline{csharp}{null} сразу же. А IsSpeaker имеет тип-значение, поэтому он \mintinline{csharp}{null} и так быть не может.
+
+Теперь добавим HTML-разметку для нашей страницы:
 
 \begin{minted}{html}
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>MyView</title>
-</head>
-<body>
-Hello, world! Time is @ViewBag.Time
-</body>
-</html>
-\end{minted}
-
-Выглядит как чёрная магия, но на самом деле довольно просто и удобно. ViewBag --- это dynamic-свойство класса Controller, поэтому в него можно присваивать что угодно и как угодно. Он всегда передаётся View, где Razor может использовать его для генерации HTML-страницы 
-(обратите внимание, на клиент отправляется уже готовая HTML-страница, никаких ViewBag-ов там нет). ``@'' в тексте HTML как раз и означает подстановку данных из модели в шаблон (на самом деле, любое выражение на C\#, для него делается ToString() и печатается в HTML). В роли модели у нас тут
-выступает ViewBag, что обладает очевидным недостатком --- если мы не угадали с именем полей в контроллере или виде, то узнаем мы об этом только во время выполнения. Поэтому придумали типизированные модели, о которых как раз дальше.
-
-\section{Демо-приложение, базовая функциональность}
-
-Итак, мы хотим приложение, позволяющее регистрироваться на конференции. Для этого надо:
-\begin{itemize}
-    \item Титульную страницу с информацией о конференции и ссылкой на форму регистрации
-    \item Саму форму регистрации, которая бы спрашивала имя-фамилию, электронную почту и с докладом/без доклада мы хотим участвовать
-    \item Страницу, на которой можно просмотреть всех зарегистрировавшихся
-\end{itemize}
-
-Не будем делать авторизацию и подобные вещи, хотя ASP.NET это, конечно умеет. Однако с валидацией на стороне сервера и с оформлением страницы попробуем повозиться.
-
-Начать следует, как и обычно при разработке информационных систем, с модели предметной области. Для больших приложений применяются UML-диаграммы, методы анализа предметной области\footnote{Рекомендую Эрик Эванс, ``Предметно-ориентированное проектирование'' как очень неплохую книжку по этому вопросу},
-но для маленьких приложений проще и быстрее выразить свою мысль прямо в коде на C\#. Создадим новый класс в папке Models (Add -> New Item -> Class просто) с вот таким содержимым:
-
-\begin{minted}{csharp}
-namespace ConferenceRegistration.Models
-{
-    public class Participant
-    {
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public bool? Speaker { get; set; }
-    }
-}
-\end{minted}
-
-Теперь модифицируем контроллер, добавив в него action, который будет возвращать вид со страницей регистрации, где и можно будет заполнить нашу модель:
-
-\begin{minted}{csharp}
-namespace ConferenceRegistration.Controllers
-{
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-            => View("MyView");
-
-        public IActionResult Register()
-            => View();
-    }
-}
-\end{minted}
-
-Обратите внимание, что тут мы не передаём в метод View параметр с именем View --- применяется умолчание, которое говорит View искать .cshtml-файл с именем, соответствующим имени метода контроллера (в папке с именем, соответствующем имени самого контроллера).
-Соответственно, надо создать этот View:
-
-\begin{center}
-    \includegraphics[width=0.4\textwidth]{secondView.png}
-\end{center}
-
-Теперь добавим на главную страницу (MyView.cshtml) ссылку на страницу с регистрацией (которая пока пустая) и заодно больше контента:
-
-\begin{minted}{html}
+@page
+@model ConferenceRegistration.Pages.RegistrationModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<!DOCTYPE html>
-
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Welcome!</title>
-</head>
-<body>
-    <div>
-        <p>SEIM-2021 conference will be held in April in St. Petersburg.</p>
-        <a asp-action="Register">Register now!</a>
-    </div>
-</body>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Register</title>
+    </head>
+    <body>
+        <form asp-action="Register" method="post">
+            <p>
+                <label asp-for="Name">Your name:</label>
+                <input asp-for="Name" />
+            </p>
+            <p>
+                <label asp-for="Email">Your email:</label>
+                <input asp-for="Email" />
+            </p>
+            <p>
+                <label>Are you a speaker?</label>
+                <select asp-for="IsSpeaker">
+                    <option value="">Choose an option</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </p>
+            <button type="submit">Register!</button>
+        </form>
+    </body>
 </html>
 \end{minted}
 
-Здесь появилась новая концепция, важная для Razor --- так называемый tag helper. Выглядит оно как атрибут тэга HTML, но на самом деле это код на C\#, который может что-то делать с HTML-кодом. В данном случае мы используем библиотечный хелпер asp-action, который
-генерирует правильную ссылку на вид, указанный ему в качестве параметра. Это позволяет не хардкодить ссылки на страницы внутри приложения, что облегчает рефакторинг. Существует ещё куча хелперов, подключаются они директивой @addTagHelper и обычно не здесь, а в файле
-Views/\_ViewImports.cshtml --- чтобы быть доступными по всему проекту.
+Тут используются \emph{тэг-хелперы} для описания HTML-формы и её содержимого (про них рассказывалось в предыдущей лекции). Тут тэг-хелперы используются для задания соответствия полей формы и модели (с помощью атрибута asp-for, который заставляет компилятор проверить, что такое свойство у модели действительно есть и правильного типа, и потом ещё отображать результат серверной валидации --- когда мы до неё дойдём).
 
-Теперь можно наконец накодить форму регистрации:
+Уже можно запустить приложение и посмотреть, что получилось. По умолчанию откроется титульная страница, но мы можем вручную перейти на форму регистрации по URL \url{https://localhost:7207/Registration}. Пока что по клику на Submit, впрочем, ничего не произойдёт. Но пока что давайте поправим титульную страницу, чтобы отлаживаться было удобнее:
 
 \begin{minted}{html}
-@model ConferenceRegistration.Models.Participant
+@page
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<!DOCTYPE html>
-
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Register</title>
-</head>
-<body>
-    <form asp-action="Register" method="post">
-        <p>
-            <label asp-for="Name">Your name:</label>
-            <input asp-for="Name" />
-        </p>
-        <p>
-            <label asp-for="Email">Your email:</label>
-            <input asp-for="Email" />
-        </p>
-        <p>
-            <label>Are you a speaker?</label>
-            <select asp-for="Speaker">
-                <option value="">Choose an option</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-            </select>
-        </p>
-        <button type="submit">Register!</button>
-    </form>
-</body>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>SEIM-2022 registration</title>
+    </head>
+    <body>
+        <div>
+            <p>SEIM-2022 conference will be held in April in St. Petersburg.</p>
+            <a asp-page="Registration">Register now!</a>
+        </div>
+    </body>
 </html>
 \end{minted}
 
-Здесь используется обычная для HTML штука для ввода данных --- форма. Когда пользователь заполняет поля и жмёт на кнопку, помеченную атрибутом \verb|type="submit"|, браузер выполянет POST-запрос, в теле которого на сервер передаются данные из полей формы. Хелпер asp-for генерит дополнительные
-HTML-атрибуты, которые позволяют идентифицировать данные и сопоставить их свойствам объекта, указанного в тэге @model. Пока что по клику на Register поля просто очищаются и ничего больше не происходит. 
-Дело в том, что запрос шлётся всё к тому же нашему методу Register, который возвращает View с формой, разумеется, пустой.
+Это в Index.cshtml. Обратите внимание на атрибут тэг-хелпера asp-page --- он генерирует корректную ссылку на страницу приложения.
 
-Чтобы это исправить, возвращаемся в контроллер и используем тот факт, что просто открытие браузером страницы --- это GET-запрос, а отправка заполненной формы --- это POST-запрос, даже если они идут на один адрес. Пишем ещё одно действие в контроллере, которое будет реагировать конкретно
-на POST:
+Теперь вернёмся к форме регистрации и добавим в Registration.cshtml.cs обработчик POST-запроса, в котором мы скоро будем сохранять в базу присланные данные:
 
 \begin{minted}{csharp}
-public class HomeController : Controller
+namespace ConferenceRegistration.Pages;
+
+[BindProperties]
+public class RegistrationModel : PageModel
 {
-    public IActionResult Index()
-        => View("MyView");
+    public string Name { get; set; } = "";
 
-    [HttpGet]
-    public IActionResult Register()
-        => View();
+    public string Email { get; set; } = "";
 
-    [HttpPost]
-    public IActionResult Register(Participant participant)
+    public bool IsSpeaker { get; set; }
+
+    public void OnPost()
     {
-        // TODO: Do something with registration info
-        return View();
+        // TODO: Do something with registration info.
     }
 }
 \end{minted}
 
-Пока что внешне ничего не изменилось, но теперь хотя бы понятно, куда писать содержательную логику. Этим мы сейчас и займёмся. 
+И, наконец, перейдём к работе с базой данных.
 
-Заведём в Models ещё один класс, назовём его Repository. Он будет просто хранить список зарегистрированных пользователей в памяти, что, конечно, не очень хорошо, потому что при перезапуске приложения информация потеряется, но работой с БД мы займёмся чуть позже.
-Класс мы сделаем static, потому что, казалось бы, идеологически правильно эту информацию хранить в HomeController, но контроллер создаётся каждый раз заново при обработке запроса, так что там ничего хранить не получится.
-Выглядеть наш репозиторий будет так:
+\section{Персистентность}
 
-\begin{minted}{csharp}
-namespace ConferenceRegistration.Models
-{
-    public static class Repository
-    {
-        private static readonly IList<Participant> participants = new List<Participant>();
+\subsection{Модель данных}
 
-        public static IEnumerable<Participant> Participants => participants;
+Напомним, что хранить данные в памяти в веб-приложениях нельзя, потому что если веб-приложение по тем или иным причинам будет выгружено из памяти, данные потеряются (а для веб-приложений причин может быть масса, и это абсолютно нормально). Так что давайте прикрутим поддержку базы. 
 
-        public static void AddParticipant(Participant participant) 
-            => participants.Add(participant);
-    }
-}
-\end{minted}
+За общение с базой отвечает ORM-система, в .NET это почти всегда Entity Framework Core. EF Core позволяет по уже готовой БД сгенерировать код соответствующих классов, но поскольку модель данных у нас очень простая, а приложение не то чтобы высоконагруженное, мы используем подход Code First --- сначала опишем классы в коде, затем позволим EF Core создать по ним схему БД.
 
-Теперь модифицируем контроллер, чтобы он добавлял в него информацию по мере получения её от пользователя:
+Итак, для начала опишем то, в каком виде мы хотим хранить данные. У нас, вообще говоря, уже есть модель участника конференции, но давайте сделаем по-человечески и вынесем эту модель явно, в отдельный класс. Создадим в корне проекта папку Data, в ней класс Participant, перенесём в него данные из модели:
 
 \begin{minted}{csharp}
-public class HomeController : Controller
-{
-    public IActionResult Index()
-        => View("MyView");
+namespace ConferenceRegistration.Data;
 
-    [HttpGet]
-    public IActionResult Register()
-        => View();
-
-    [HttpPost]
-    public IActionResult Register(Participant participant)
-    {
-        Repository.AddParticipant(participant);
-        return View();
-    }
-}
-\end{minted}
-
-Тут, кстати, должен возникнуть вопрос, почему Register --- это метод, обрабатывающий POST-запрос от браузера, но он принимает параметр типа Participant --- браузер же ничего не знает про C\#-классы. На самом деле парсит информацию от браузера сам ASP.NET Core, создаёт объект и заполняет его данными
-из запроса. Этот механизм называется Model binding, и он достаточно умён, чтобы парсить POST-запросы и даже параметры, передаваемые в адресной строке в GET-запросах.
-
-Давайте ещё сделаем страницу подтверждения регистрации, добавив новый .cshtml (назовём его Thanks.cshtml) в Views/Home:
-
-\begin{minted}{html}
-@model ConferenceRegistration.Models.Participant
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Thanks</title>
-</head>
-<body>
-<p>
-    <h1>Thank you, @Model.Name</h1>
-</p>
-<p>
-    @if (Model.Speaker == true)
-    {
-        @:Please don't forget to submit your article!
-    }
-</p>
-</body>
-</html>
-\end{minted}
-
-Тут мы видим, как модель может быть использована даже для условной генерации HTML-кода. Razor интересен тем, что можно просто писать C\#-код, помечая его начало символом ``@'', и он сам догадается, где он заканчивается и начинается HTML.
-
-Ну и последнее, что нам нужно сделать --- это страницу со списком зарегистрировавшихся на конференцию. Начнём с модификации контроллера. Допишем в HomeController метод ListParticipants:
-\begin{minted}{csharp}
-public IActionResult ListParticipants()
-    => View(Repository.Participants);
-\end{minted}
-
-А теперь сделаем для него View --- ListParticipants.cshtml:
-
-\begin{minted}{html}
-@model IEnumerable<ConferenceRegistration.Models.Participant>
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ListParticipants</title>
-</head>
-<body>
-
-<h2>List of conference participants:</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Is speaker</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (ConferenceRegistration.Models.Participant p in Model) {
-        <tr>
-            <td>@p.Name</td>
-            <td>@p.Email</td>
-            <td>@(p.Speaker == true ? "Yes" : "No")</td>
-        </tr>
-    }
-    </tbody>
-</table>
-
-</body>
-</html>
-\end{minted}
-
-Было бы логично предоставлять эту информацию только организаторам, поэтому мы не будем делать ссылок на эту страницу (хотя должны были бы сделать авторизацию, но нам слишком лень). Попасть на неё можно, написав в браузере что-то вроде ``http://localhost:49510/Home/ListParticipants''.
-Предполагается, что про эту ссылку знают только организаторы.
-
-Запускаем, регистрируем пару участников, открываем страницу со списком, видим, что что-то произошло.
-
-\section{Валидация}
-
-Сейчас зарегистрироваться на конференцию можно, просто тыкнув на Register и ничего не вводя. Давайте добавим валидацию, благо это совсем несложно. Просто модифицируем модель:
-
-\begin{minted}{csharp}
 public class Participant
 {
-    [Required(ErrorMessage = "Please enter your name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 
-    [Required(ErrorMessage = "Please enter your email")]
-    [RegularExpression(".+\\@.+\\..+", ErrorMessage = "Please enter a valid email address")]
-    public string Email { get; set; }
+    public string Email { get; set; } = "";
 
-    [Required(ErrorMessage = "Please specify whether you'll be a speaker or just attending")]
-    public bool? Speaker { get; set; }
+    public bool IsSpeaker { get; set; }
 }
 \end{minted}
 
-Так выглядит декларативное описание правил корректности данных в модели, которое MVC будет применять каждый раз, когда делает model binding при приёме запроса (кстати, обратите внимание, мы специально сделали Speaker nullable, так что если пользователь ничего не ввёл, там будет null). 
-Но само по себе оно ничего интересного не делает, кроме выставления флага IsValid в поле ModelState контроллера, поэтому надо ещё модифицировать контроллер:
+И подправим саму модель, чтобы она работала с этим классом:
 
 \begin{minted}{csharp}
-[HttpPost]
-public IActionResult Register(Participant participant)
+using ConferenceRegistration.Data;
+
+namespace ConferenceRegistration.Pages;
+
+[BindProperties]
+public class RegistrationModel : PageModel
 {
-    if (ModelState.IsValid)
+    public Participant Participant { get; set; } = new();
+
+    public void OnPost()
     {
-        Repository.AddParticipant(participant);
-        return View("Thanks", participant);
+        // TODO: Do something with registration info.
+    }
+}
+\end{minted}
+
+И представление, чтобы оно знало про отрефакторенную модель:
+
+\begin{minted}{html}
+@page
+
+@model ConferenceRegistration.Pages.RegistrationModel
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Register</title>
+    </head>
+    <body>
+        <form asp-action="Register" method="post">
+            <p>
+                <label asp-for="Participant.Name">Your name:</label>
+                <input asp-for="Participant.Name" />
+            </p>
+            <p>
+                <label asp-for="Participant.Email">Your email:</label>
+                <input asp-for="Participant.Email" />
+            </p>
+            <p>
+                <label>Are you a speaker?</label>
+                <select asp-for="Participant.IsSpeaker">
+                    <option value="">Choose an option</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </p>
+            <button type="submit">Register!</button>
+        </form>
+    </body>
+</html>
+\end{minted}
+
+\subsection{DbContext}
+
+Теперь нам потребуется EF-специфичная штука: DbContext, класс для доступа к базе. Создаём в папке Data класс ConferenceRegistrationDbContext такого содержания:
+
+\begin{minted}{csharp}
+using Microsoft.EntityFrameworkCore;
+
+namespace ConferenceRegistration.Data;
+
+public class ConferenceRegistrationDbContext: DbContext
+{
+    public ConferenceRegistrationDbContext(
+        DbContextOptions<ConferenceRegistrationDbContext> options)
+        : base(options)
+    {
     }
 
-    return View();
+    public DbSet<Participant> Participants => Set<Participant>();
 }
 \end{minted}
 
-Так оно не даёт зарегистрироваться пользователю, не смогшему пройти валидацию, но никакой обратной связи не предоставляет, просто возвращая форму регистрации ещё раз. Модифицируем вид:
+Тут нас в какой-то момент (например, после того, как вы напечатаете DbContext и нажмёте в Visual Studio Ctrl+.) попросят ещё поставить Nuget-пакет Entity Framework Core, соглашайтесь.
+
+Теперь добавим поддержку нашего нового DbContext-а в страницу, используя магию Dependency Injection:
+
+\begin{minted}{csharp}
+using ConferenceRegistration.Data;
+
+namespace ConferenceRegistration.Pages;
+
+[BindProperties]
+public class RegistrationModel : PageModel
+{
+    private readonly ConferenceRegistrationDbContext _context;
+
+    public RegistrationModel(ConferenceRegistrationDbContext context)
+        => _context = context;
+
+    public Participant Participant { get; set; } = new();
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        _context.Participants.Add(Participant);
+        await _context.SaveChangesAsync();
+
+        return RedirectToPage("./Index");
+    }
+}
+\end{minted}
+
+Тут мы декларируем, что для работы нашему классу нужен экземпляр ConferenceRegistrationDbContext, который мы принимаем в конструктор и сохраняем себе. Дальше мы переписали OnPost на OnPostAsync, возвращающий Task<IActionResult> --- чтобы иметь возможность отправить на фронт результат действия, в нашем случае это пока будет редирект на начальную страницу.
+
+\subsection{Конфигурирование БД}
+
+Теперь, собственно, конфигурация базы. Поскольку данных немного и нужны они только нашему сервису, воспользуемся локальной базой и СУБД внутри процесса приложения. Хороший вариант для этого --- СУБД SQLite, она не требует установки, подключается как библиотека, хранит данные просто в файле на диске, но вместе с тем поддерживает полноценный SQL и внешне ведёт себя как любая другая реляционная база данных, так что перейти на что-нибудь взрослое можно будет просто заменой конфига (по идее).
+
+Для начала установим Nuget-пакет Microsoft.EntityFrameworkCore.Sqlite. Дальше сконфигурируем в Program.cs базу и добавим её в список сервисов, доступных Dependency Injection:
+
+\begin{minted}{csharp}
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ConferenceRegistration.Data;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+
+builder.Services.AddDbContext<ConferenceRegistrationDbContext>(options =>
+    options.UseSqlite("Data Source=conferenceRegistration.db"));
+
+var app = builder.Build();
+\end{minted}
+
+Тут используется connection string, которая говорит, что собственно данные хранятся в файле conferenceRegistration.db, лежащем в рабочей папке приложения. Не делайте так в продакшн-коде --- connection string по-хорошему надо вынести в конфиг, но всему своё время. Метод AddDbContext создаёт экземпляр ConferenceRegistrationDbContext (вызывая тот самый загадочный конструктор с DbContextOptions из примера выше) и запоминает его в DI-контейнере приложения. Теперь, когда ASP.NET будет создавать класс модели страницы, он увидит рефлексией, что ему в конструктор надо передать экземпляр ConferenceRegistrationDbContext и пойдёт искать его в контейнере. Всем остальным страницам, которым нужен доступ к базе, передастся этот же экземпляр, без всяких усилий со стороны разработчика. На самом деле, в DI-контейнере ASP.NET можно регистрировать и свои собственные сервисы, тем самым избегая хлопотного ручного создания объектов и передачи зависимостей туда-сюда (а с учётом того, что в ASP.NET временем жизни классов управляет сам фреймворк, без DI очень просто с ума сойти).
+
+Попробуем это дело запустить (хотя ещё не должно работать, базы-то нет). Пробуем зарегистрироваться, получаем 
+
+\begin{minted}{text}
+System.InvalidOperationException: The entity type 'Participant' requires 
+    a primary key to be defined.
+\end{minted}
+
+Да, нам надо дополнить нашу модель данных реляционными штуками, такими как первичный ключ (поскольку ключ не часть доменной модели, в больших приложениях нам потребуется иметь отдельный набор классов для хранения в базе и отдельный --- для бизнес-логики, которые <<persistense-agnostic>>, чтобы не загромождать доменную модель; но мы тут выпендриваться не будем):
+
+\begin{minted}{csharp}
+namespace ConferenceRegistration.Data;
+
+public class Participant
+{
+    public int ParticipantId { get; set; }
+
+    public string Name { get; set; } = "";
+
+    public string Email { get; set; } = "";
+
+    public bool IsSpeaker { get; set; }
+}
+\end{minted}
+
+Опять-таки, применяется подход Convention over configuration, так что EF Core сама догадывается, что ParticipantId --- это первичный ключ для будущей таблицы в базе.
+
+\subsection{Миграции}
+
+Запускаем приложение снова, пытаемся зарегистрироваться, и получаем теперь вот такое:
+
+\begin{minted}{text}
+SqliteException: SQLite Error 1: 'no such table: Participants'.
+\end{minted}
+
+Это потому, что мы всё со стороны приложения сконфигурировали и подготовили, но самой базы пока нет. Открываем HeidiSQL и начинаем вручную создавать схему базы? Нет, EF Core все сделает сама --- мы ведь используем подход Code First, схема БД (из одной таблички) описана у нас в коде в папке Data. Для того, чтобы нам создали базу, надо:
+
+\begin{enumerate}
+    \item Поставить инструмент .NET CLI, который называется dotnet-ef. По умолчанию он не установлен, поэтому открываем Package Manager Console (Tools -> NuGet Package Manager -> Package Manager Console) и пишем там \mintinline{text}{dotnet tool install --global dotnet-ef}.
+    \item Дальше надо добавить пакет Microsoft.EntityFrameworkCore.Design, можно там же, в консоли: \mintinline{text}{dotnet add package Microsoft.EntityFrameworkCore.Design} (единственное что убедитесь, что команда запускается из директории с .csproj, при необходимости сделайте cd). Это штука, которая поддерживает генерацию \emph{миграций} по коду.
+    \item Дальше генерируем \emph{миграцию}: \mintinline{text}{dotnet ef migrations add InitialCreate}. У нас в проекте появилась папка Migrations, в которой есть сгенерированный класс <<InitialCreate>> с методами Up и Down. Up, собственно, создаёт схему БД (используя connection string, который мы сконфигурировали в Program).
+    \item И последнее, миграцию надо применить: \mintinline{text}{dotnet ef database update}.
+\end{enumerate}
+
+Сгенерированный код миграций коммитится в репозиторий как часть проекта, а вот сама БД --- нет, поэтому последний шаг надо применять после каждого git clone и git clean. Что легко забыть, но ошибка об отсутствии таблицы напомнит.
+
+Теперь запускаем-проверяем, оказывается, что регистрация правда работает теперь, но мы не можем посмотреть, реально ли данные о регистрации записались в базу. Но мы можем открыть базу уже знакомым нам HeidiSQL, просто указав как вид базы SQLite и выбрав путь до файла .db. 
+
+\section{Список участников}
+
+Давайте сделаем отдельную страницу, где показывались бы зарегистрированные участники, чтобы не надо было вручную лезть в базу. Создадим новую Razor Page ListParticipants.cshtml, с вот такой Razor-разметкой:
 
 \begin{minted}{html}
-<form asp-action="Register" method="post">
-    <div asp-validation-summary="All"></div>
+@page
+
+@model ConferenceRegistration.Pages.ListParticipantsModel
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>ListParticipants</title>
+    </head>
+    <body>
+    <h2>List of conference participants:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Is speaker</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ConferenceRegistration.Data.Participant p in Model.Participants) {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.Email</td>
+                    <td>@(p.Speaker ? "Yes" : "No")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </body>
+</html>
+\end{minted}
+
+Тут создаётся HTMLная таблица, в которой просто подряд как строки выводятся все зарегистрированные участники из модели. Соответственно, надо создать модель:
+
+\begin{minted}{csharp}
+using ConferenceRegistration.Data;
+
+namespace ConferenceRegistration.Pages;
+
+public class ListParticipantsModel : PageModel
+{
+    private readonly ConferenceRegistrationDbContext context;
+
+    public ListParticipantsModel(ConferenceRegistrationDbContext context)
+        => this.context = context;
+
+    public IList<Participant> Participants { get; private set; } = new List<Participant>();
+
+    public void OnGet()
+    {
+        Participants = context.Participants.OrderBy(p => p.ParticipantId).ToList();
+    }
+}
+\end{minted}
+
+Тут мы, как и раньше, получаем как зависимость контекст базы данных, и просто читаем из него список участников, сортируя по Id-шникам (просто на всякий случай).
+
+Запускаем, идём на \url{https://localhost:порт/ListParticipants}, проверяем, что всё работает.
+
+\section{Страница подтверждения регистрации}
+
+Теперь давайте добавим ещё одну маленькую страницу, которая бы показывалась, когда мы успешно зарегистрировались на конференцию: Thanks.cshtml. View очень простой:
+
+\begin{minted}{html}
+@page
+
+@model ConferenceRegistration.Pages.ThanksModel
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Thanks</title>
+    </head>
+    <body>
+        <p>
+            <h1>Thank you, @Model.Participant.Name</h1>
+        </p>
+        <p>
+            @if (Model.Participant.IsSpeaker)
+            {
+                @:Please don't forget to submit your article!
+            }
+        </p>
+    </body>
+</html>
+\end{minted}
+
+И модель: 
+
+\begin{minted}{csharp}
+using ConferenceRegistration.Data;
+
+namespace ConferenceRegistration.Pages;
+
+public class ThanksModel : PageModel
+{
+    public Participant Participant { get; set; } = new();
+
+    public void OnGet(Participant participant)
+    {
+        Participant = participant;
+    }
+}
+\end{minted}
+
+И теперь надо поправить Registration.cshtml.cs, чтобы она отправляла участника на новую страницу:
+
+\begin{minted}{csharp}
+...
+public class RegistrationModel : PageModel
+{
     ...
-</form>
-\end{minted}
+    public async Task<IActionResult> OnPostAsync()
+    {
+        context.Participants.Add(Participant);
+        await context.SaveChangesAsync();
 
-Теперь получается что-то такое:
-
-\begin{center}
-    \includegraphics[width=0.6\textwidth]{validationError.png}
-\end{center}
-
-Тут мы использовали слишком уж высокоуровневую функциональность для этого туториала (если уж так, то можно было сгенерить форму ввода по модели и вообще ни строчки HTML не писать). И кроме того, такие сообщения об ошибках верификации даже в 90-е годы представить себе трудно, надо 
-сделать посимпатичнее. В этом нам поможет тот факт, что хелпер asp-for вставит атрибут class="input-validation-error" в выходной HTML, и мы можем этот класс использовать, чтобы связать с ним стиль отображения элемента, который мы опишем в отдельном .css-файле.
-
-Создаём в папке wwwroot/css новый Style Sheet (например, style.css), пишем туда CSS, который будет управлять внешним видом полей, которые не прошли валидацию:
-
-\begin{minted}{css}
-.field-validation-error {
-    color: #f00;
-}
-
-.field-validation-valid {
-    display: none;
-}
-
-.input-validation-error {
-    border: 1px solid #f00;
-    background-color: #fee;
-}
-
-.validation-summary-errors {
-    font-weight: bold;
-    color: #f00;
-}
-
-.validation-summary-valid {
-    display: none;
+        return RedirectToPage("./Thanks", Participant);
+    }
 }
 \end{minted}
 
-Прописываем ссылку на эту .css-ку в форму регистрации:
-
-\begin{minted}{html}
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Register</title>
-    <link rel="stylesheet" href="/css/style.css" />
-</head>
-\end{minted}
-
-Запускаем, получаем форму гораздо симпатичнее:
-
-\begin{center}
-    \includegraphics[width=0.6\textwidth]{validationErrorWithCss.png}
-\end{center}
+Тут используется перегрузка RedirectToPage, принимающая вторым аргументом route values --- значения, которые дописываются как параметр у URL. При редиректе Participant честно сериализуется и мы получаем URL в духе \url{https://localhost:7207/Thanks?ParticipantId=3&Name=yurii&Email=123&IsSpeaker=True}. Что вполне ок для наших целей, но если бы мы хотели, чтобы URL не содержал в себе вообще все данные модели, мы могли бы передавать сюда только id-шник, и грузить Participant из базы. Пытаться как-то по-хитрому передавать данные между страницами, держа их в памяти, в веб-приложениях может быть плохой идеей.
 
 \section{Оформление}
 
-Раз уж дело дошло до CSS, можно навести порядок и с оформлением всего сайта. Сейчас он выглядит так, как даже школьники сайты не верстают, поэтому воспользуемся одной из библиотек, доступных в проекте ``из коробки'' --- Bootstrap. Это третьесторонняя опенсорсная библиотека 
-(\url{http://getbootstrap.com/}), очень известная в мире веб-разработки, она поставляется вместе с ASP.NET и даже включена в стандартный шаблон MVC-приложения. Bootstrap много чего умеет, но мы воспользуемся некоторыми CSS-стилями, которые она определяет. Например, модифицируем
+Базовая функциональность готова, теперь можно заняться внешним видом сайта. Сейчас сделано без какого-либо оформления вообще, а так даже школьники нынче не верстают. 
+
+Поэтому воспользуемся одной из библиотек, доступных в проекте <<из коробки>> --- Bootstrap. Это третьесторонняя опенсорсная библиотека 
+(\url{http://getbootstrap.com/}), очень известная в мире веб-разработки, она поставляется вместе с ASP.NET и даже включена в стандартный шаблон приложения (версии 5.1, это важно --- в интернетах полно туториалов по более старому Bootstrap, и они не поддерживают обратную совместимость). Bootstrap много чего умеет, но мы воспользуемся некоторыми CSS-стилями, которые она определяет. Например, модифицируем
 стартовую страницу так:
 
 \begin{minted}{html}
-@{
-    Layout = null;
-}
+@page
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<!DOCTYPE html>
-
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
-</head>
-<body>
-    <div class="text-center">
-        <h3>SEIM-2021 conference will be held in April in St. Petersburg.</h3>
-        <a class="btn btn-primary" asp-action="Register">Register now!</a>
-    </div>
-</body>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>SEIM-2022 registration</title>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+    </head>
+    <body>
+        <div class="text-center">
+            <h3>SEIM-2022 conference will be held in April in St. Petersburg.</h3>
+            <a class="btn btn-primary" asp-page="Registration">Register now!</a>
+        </div>
+    </body>
 </html>
 \end{minted}
 
@@ -551,173 +614,126 @@ public IActionResult Register(Participant participant)
 Форма регистрации:
 
 \begin{minted}{html}
-@model ConferenceRegistration.Models.Participant
+@page
+
+@model ConferenceRegistration.Pages.RegistrationModel
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Register</title>
-    <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
-</head>
-<body>
-<div class="panel panel-success">
-    <div class="panel-heading text-center"><h4>Registration form</h4></div>
-    <div class="panel-body">
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Register</title>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+    </head>
+    <body>
+        <div class="row mb-3 text-center"><h4 class="col-sm-6">Registration form</h4></div>
         <form asp-action="Register" method="post">
-            <div asp-validation-summary="All"></div>
-            <div class="form-group">
-                <label asp-for="Name">Your name:</label>
-                <input asp-for="Name"/>
+            <div class="row mb-3">
+                <label class="col-sm-1 col-form-label col-form-label-lg" 
+                    asp-for="Participant.Name">Your name:</label>
+                <div class="col-sm-4">
+                    <input class="form-control form-control-lg" 
+                        asp-for="Participant.Name" />
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Email">Your email:</label>
-                <input asp-for="Email"/>
+            <div class="row mb-3">
+                <label class="col-sm-1 col-form-label col-form-label-lg" 
+                    asp-for="Participant.Email">Your email:</label>
+                <div class="col-sm-4">
+                    <input class="form-control form-control-lg" 
+                        asp-for="Participant.Email" />
+                </div>
             </div>
-            <div class="form-group">
-                <label>Are you a speaker?</label>
-                <select class="form-control" asp-for="Speaker">
-                    <option value="">Choose an option</option>
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
+            <div class="row mb-3">
+                <label class="col-sm-1 col-form-label col-form-label-lg">
+                    Are you a speaker?
+                </label>
+                <div class="col-sm-4">
+                    <select class="form-select form-select-lg" 
+                        asp-for="Participant.IsSpeaker">
+                        <option value="">Choose an option</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
             </div>
-            <div class="text-center">
-                <button class="btn bg-primary" type="submit">Register!</button>
+            <div class="row mb-3 mx-auto">
+                <div class="col-sm-5 d-grid gap-2">
+                    <button class="btn btn-primary btn-lg" type="submit">
+                        Register!
+                    </button>
+                </div>
             </div>
         </form>
-    </div>
-</div>
-</body>
+    </body>
 </html>
 \end{minted}
 
-Каждому контролу на форме добавились атрибуты class="form-group" и парочка новых div-ов, чтобы повесить на них классы, которые bootstrap будет использовать, чтобы применить стили. Вот что должно было получиться:
+Каждому контролу на форме добавились атрибуты управления лейаутом (col-что-то-размер), form-label и form-control, и несколько новых div-ов, чтобы повесить на них классы, которые bootstrap будет использовать, чтобы применить стили. Запускаем-проверяем, должно было получиться что-то такое:
 
 \begin{center}
-    \includegraphics[width=0.6\textwidth]{styledRegisterForm.png}
+    \includegraphics[width=0.55\textwidth]{styledRegisterForm.png}
 \end{center}
 
 В целом, наверное, неплохо выглядит на мобильниках. Теперь займёмся страницей со списком участников:
 
 \begin{minted}{html}
-@model IEnumerable<ConferenceRegistration.Models.Participant>
-@{
-    Layout = null;
-}
-<!DOCTYPE html>
+@page
+
+@model ConferenceRegistration.Pages.ListParticipantsModel
+
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ListParticipants</title>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
-</head>
-<body>
-    <div class="panel-body">
-        <h2>List of conference participants:</h2>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>ListParticipants</title>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+    </head>
+    <body>
+        <div class="row mb-3 text-center">
+            <h2 class="col-sm-6">List of conference participants</h2>
+        </div>
         <table class="table table-striped table-bordered">
             <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Is speaker</th>
-                </tr>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Is speaker</th>
+            </tr>
             </thead>
             <tbody>
-                @foreach (ConferenceRegistration.Models.Participant p in Model)
-                {
-                    <tr>
-                        <td>@p.Name</td>
-                        <td>@p.Email</td>
-                        <td>@(p.Speaker == true ? "Yes" : "No")</td>
-                    </tr>
-                }
+            @foreach (ConferenceRegistration.Data.Participant p in Model.Participants) {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.Email</td>
+                    <td>@(p.IsSpeaker ? "Yes" : "No")</td>
+                </tr>
+            }
             </tbody>
         </table>
-    </div>
-</body>
+    </body>
 </html>
 \end{minted}
 
-Получилось вот так:
+Должно было получиться что-то такое:
 
 \begin{center}
     \includegraphics[width=0.55\textwidth]{styledListParticipants.png}
 \end{center}
 
+Выглядит это всё как написание каких-то заклинаний, но на самом деле на сайте Bootstrap есть подробная документация с примерами, так что найти нужные классы несложно. Сложно на самом деле придумать и придерживаться какого-то стандарта по вёрстке, как пример такого стандарта мору рекомендовать \url{https://guides.kontur.ru/}.
+
 Оформление страницы с подтверждением регистрации оставляется как упражнение.
 
-\section{Добавим персистентность}
+\section{Валидация}
 
-Сейчас перезапуск приложения приводит к полной потере данных, что, наверное, не очень, особенно с учётом того, что когда именно приложение решит закрыться --- решать не вам (сервер может решить, что давно не было к нему обращений и прекратить работать). Поэтому воспользуемся
-Entity Framework + LocalDB.
-
-Для начала добавим через NuGet пакеты Microsoft.EntityFrameworkCore и Microsoft.EntityFrameworkCore.SqlServer. Дальше модифицируем наш репозиторий, унаследовав его от DbContext (базового класса из библиотеки Entity Framework Core, вспомните лекцию про базы данных):
-
-\begin{scriptsize}
-    \begin{minted}{csharp}
-public class Repository : DbContext
-{
-    public DbSet<Participant> Participants { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(
-                @"Server=(localdb)\mssqllocaldb;Database=ConferenceRegistration;Trusted_Connection=True;");
-}
-    \end{minted}
-\end{scriptsize}
-
-Тут мы захардкодили Connection String, которая содержит информацию о том, как программе связаться с базой. В любом нормальном приложении connection string выносится в конфиг, но для демонстрации сгодится и так. Собственно, 
-\begin{verbatim}
-    "Server=(localdb)\\\\MSSQLLocalDB;"
-\end{verbatim} 
---- это имя драйвера базы данных плюс имя экземпляра сервера, дальше имя базы, которая будет создана на сервере, когда мы начнём работать, дальше настройки подключения. Для каждой СУБД connection string своя, так что надо гуглить, как подключаться к вашей любимой базе.
-
-Дальше модифицируем контроллер, чтобы он работал с новым репозиторием:
+Сейчас зарегистрироваться на конференцию можно, просто тыкнув на Register и ничего не вводя. Давайте добавим валидацию, благо это совсем несложно. Просто модифицируем модель Participant в папке Data:
 
 \begin{minted}{csharp}
-public class HomeController : Controller
-{
-    public IActionResult Index()
-        => View("MyView");
+using System.ComponentModel.DataAnnotations;
 
-    [HttpGet]
-    public IActionResult Register()
-        => View();
+namespace ConferenceRegistration.Data;
 
-    [HttpPost]
-    public IActionResult Register(Participant participant)
-    {
-        if (ModelState.IsValid)
-        {
-            using var repository = new Repository();
-            repository.Participants.Add(participant);
-            repository.SaveChanges();
-            return View("Thanks", participant);
-        }
-
-        return View();
-    }
-
-    public IActionResult ListParticipants()
-    {
-        using var repository = new Repository();
-        return View(repository.Participants.ToList());
-    }
-}
-\end{minted}
-
-Теперь надо модифицировать модель, добавив атрибут Key свойству, которое мы хотели бы использовать как primary key в базе данных:
-
-\begin{minted}{csharp}
 public class Participant
 {
     [Required(ErrorMessage = "Please enter your name")]
@@ -725,7 +741,6 @@ public class Participant
 
     [Required(ErrorMessage = "Please enter your email")]
     [RegularExpression(".+\\@.+\\..+", ErrorMessage = "Please enter a valid email address")]
-    [Key]
     public string Email { get; set; }
 
     [Required(ErrorMessage = "Please specify whether you'll be a speaker or just attending")]
@@ -733,39 +748,191 @@ public class Participant
 }
 \end{minted}
 
-А дальше нам надо поднять экземпляр сервера, создать на нём базу данных, создать в ней таблицу, но... Entity Framework всё сделает за нас с использованием механизма, который называется Migrations. 
+Так выглядит декларативное описание правил корректности данных в модели, которое ASP.NET будет применять каждый раз, когда делает model binding при приёме запроса. Кстати, обратите внимание, мы специально сделали Speaker nullable, так что если пользователь ничего не ввёл, там будет null. Из-за этого нам теперь надо найти все \mintinline{csharp}{if (IsSpeaker)} и заменить на \mintinline{csharp}{if (IsSpeaker == true)}, но оно того стоит.
 
-Сначала надо поставить инструмент генерации миграции, он живёт в NuGet-пакете Microsoft.EntityFrameworkCore.Tools. Дальше надо открыть NuGet Manager Console (меню Tools -> NuGet Package Manager -> Package Manager Console) и
-написать там Add-Migration InitialCreate. Оно немного подумает и сгенерит папку Migrations в проекте, где будет написано, что надо сделать с базой. А теперь применим миграцию командой Update-Database. Оно ещё немного подумает и напишет, что всё ок, даже ни разу не спросив нас Connection String 
-или что-нибудь ещё.
+Само по себе оно ничего интересного не делает, кроме выставления флага IsValid в поле ModelState модели страницы, поэтому надо ещё модифицировать модель:
 
-Проверим, что реально что-то произошло. Идём во вкладку Server Explorer, жмём Connect to Database:
+\begin{minted}{csharp}
+...
+public class RegistrationModel : PageModel
+{
+    ...
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        context.Participants.Add(Participant);
+        await context.SaveChangesAsync();
+
+        return RedirectToPage("./Thanks", Participant);
+    }
+}
+\end{minted}
+
+Так оно не даёт зарегистрироваться пользователю, не смогшему пройти валидацию, но никакой обратной связи не предоставляет, просто возвращая форму регистрации ещё раз. Модифицируем вид:
+
+\begin{minted}{html}
+@page
+
+@model ConferenceRegistration.Pages.RegistrationModel
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Register</title>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+    </head>
+    <body>
+        <div class="row mb-3 text-center"><h4 class="col-sm-6">Registration form</h4></div>
+        <form asp-action="Register" method="post">
+            <div class="row mb-3">
+                <span asp-validation-for="Participant.Name" class="text-danger"></span>
+                <label class="col-sm-1 col-form-label col-form-label-lg" 
+                    asp-for="Participant.Name">Your name:</label>
+                <div class="col-sm-4">
+                    <input class="form-control form-control-lg" 
+                        asp-for="Participant.Name" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <span asp-validation-for="Participant.Email" class="text-danger"></span>
+                <label class="col-sm-1 col-form-label col-form-label-lg" 
+                    asp-for="Participant.Email">Your email:</label>
+                <div class="col-sm-4">
+                    <input class="form-control form-control-lg" 
+                        asp-for="Participant.Email" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <span asp-validation-for="Participant.IsSpeaker" class="text-danger"></span>
+                <label class="col-sm-1 col-form-label col-form-label-lg">
+                    Are you a speaker?</label>
+                <div class="col-sm-4">
+                    <select class="form-select form-select-lg" 
+                        asp-for="Participant.IsSpeaker">
+                        <option value="">Choose an option</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3 mx-auto">
+                <div class="col-sm-5 d-grid gap-2">
+                    <button class="btn btn-primary btn-lg" type="submit">
+                        Register!
+                    </button>
+                </div>
+            </div>
+        </form>
+    </body>
+</html>
+\end{minted}
+
+Теперь получается что-то такое:
 
 \begin{center}
-    \includegraphics[width=0.45\textwidth]{serverExplorer.png}
+    \includegraphics[width=0.8\textwidth]{validationError.png}
 \end{center}
 
-В появившемся окне выбираем Microsoft SQL Server:
+Тут мы использовали очередной тэг-хелпер, Validation Message (который выглядит как тэг span). Есть ещё Validation Summary, который печатает вообще все ошибки, найденные при валидации, но тут мы решили его не использовать.
 
-\begin{center}
-    \includegraphics[width=0.65\textwidth]{chooseDataSource.png}
-\end{center}
+Валидация на самом деле выполняется на сервере при Model binding-е. Если она закончилась провалом, сервер отвечает страницей, где у <<плохих>> полей формы проставлен класс, обозначающий ошибку валидации, благодаря которому и можно показать сообщение об ошибке. Но на самом деле валидацию можно силами JavaScript выполнять и на стороне клиента, и опять-таки, ASP.NET всё сделает за вас, достаточно подключить библиотеку jquery-validation, поставляемую в стандартном шаблоне:
 
-Жмём Continue, появляется окно, где нас спрашивают Data Source (оставляем как есть), Server name (указываем как в Connection String, \mintinline{text}{(localdb)\mssqllocaldb}) и имя файла (указываем ConferenceRegistration):
+\begin{minted}{html}
+...
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" />
+    </script>
+</head>
+...
+\end{minted}
 
-\begin{center}
-    \includegraphics[width=0.65\textwidth]{addConnection.png}
-\end{center}
+Теперь можно открыть консоль браузера (во всех нормальных браузерах это F12) и посмотреть, что при ошибке валидации сетевые запросы даже не посылаются. Что, естественно, существенно улучшает отзывчивость интерфейса и не приводит к перезагрузке страницы, то есть хорошо и правильно. Однако это не означает, что серверная валидация не нужна --- никто не мешает дёргать методы вашего веб-приложения не из его фронтенда а, например, из Fiddler, ну или, более часто, из другого веб-сервиса. Ну и вообще, у клиента может быть отключён JavaScript или он сам нагло вырезал его исполнение. Если при этом данные портятся или ваш бэкенд начинает творить что-то не то, это совсем не очень.
 
-Жмём на Test Connection, если всё ок, жмём на Ок. Теперь содержимое базы можно просмотреть прямо в самой Visual Studio через Server Explorer, как-то так:
+\section{Docker}
 
-\begin{center}
-    \includegraphics[width=\textwidth]{databaseView.png}
-\end{center}
+А теперь давайте обернём приложение в Docker-контейнер, чтобы его можно было запускать где угодно, даже там, где нет никакого .NET. Концептуально Docker --- это легковесная виртуальная машина, которая виртуализирует не машинные команды, как обычные виртуалки, а системные вызовы, то есть ядро операционной системы используется машины-хоста. Что хуже в плане изоляции, чем обычные виртуалки (например, вирусы в Docker-контейнерах запускать может быть плохой идеей), но гораздо быстрее. Ещё Docker-контейнеры отличаются от виртуалок тем, что в них работает один процесс (ну, это легко обойти, но концептуально контейнер --- это виртуализированный процесс, а не виртуализированная машина). И Docker-образы (то есть то, из чего запускаются контейнеры) только для чтения, то есть чтобы хранить в контейнере какие-то данные, надо отобразить его файловую систему на файловую систему хостовой машины. Тем не менее, Docker --- это стандарт де-факто по деплою веб-приложений, потому что позволяет запустить готовое к работе приложение буквально одной командой. 
 
-Видим, что там действительно то, что нужно.
+Причём ещё есть Docker Hub, который что-то вроде GitHub для Docker-образов --- туда можно загрузить собранный Docker-образ, чтобы потом скачать на другой машине и запустить. Современные облачные провайдеры, чтобы задеплоить ваше приложение, могут попросить просто имя образа, сами укачают его с Docker Hub и запустят. Docker и Docker Hub, как и GitHub, бесплатны. Под Linux Docker поставить и настроить очень просто, под Windows, возможно, придётся повозиться --- если сделать это неправильно, он будет запускать VirtualBox, то есть настоящую виртуалку. Если сделать это правильно, придётся ставить WSL2 (к счастью, в Windows 11 она уже установлена) и терпеть исчезновение 35 Гб места на диске. И ещё, возможно, включить HyperV в настройках BIOS (который давно уже называется UEFI, но традиции сильны), но это уж как повезёт.
 
-Теперь можно запустить приложение, попробовать зарегистрироваться в базе, выключить приложение, выключить сервер (с помощью иконки в трее), заново запустить приложение, и открыв ссылку localhost:<номер порта>/Home/ListParticipants убедиться, что оно реально работает.
-Ну а потом грохнуть базу через Server Explorer, если она больше не нужна.
+Итак, чтобы наше приложение запускалось в контейнере, кликаем правой кнопкой по проекту, выбираем Add Docker Support, выбираем Target OS --- Linux (даже если у вас Windows, не пугайтесь, современная Windows умеет притворяться Linux-ом) --- потому что большинство реальных хостингов работают под Linux (точнее, чем-то UNIX-подобным), и хочется, чтобы на них контейнеры работали без проблем. В проекте появится файл Dockerfile --- это конфиг сборки контейнера, типа Makefile или Docker (если вы знаете, что такое Makefile, конечно). Выглядит он примерно вот так:
+
+\begin{minted}{docker}
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["ConferenceRegistration/ConferenceRegistration.csproj", "ConferenceRegistration/"]
+RUN dotnet restore "ConferenceRegistration/ConferenceRegistration.csproj"
+COPY . .
+WORKDIR "/src/ConferenceRegistration"
+RUN dotnet build "ConferenceRegistration.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "ConferenceRegistration.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ConferenceRegistration.dll"]
+\end{minted}
+
+Команда FROM задаёт, на базе какого образа строится новый образ. Docker собирает образы слоями --- при сборке поверх базового образа просто кладутся файлы и конфигурация собираемого образа. Поскольку образы read-only, это позволяет выстраивать образы в целые стеки, и при скачивании образа качать не весь его, а только те слои, которых не хватает на вашей машине. Если бы для деплоя использовались полноценные виртуалки, при каждом обновлении вашего приложения пришлось бы качать файл с виртуальной машиной, размером в несколько гигабайт. Docker в этом случае скачает только слой с вашим приложением, не перекачивая слой с инфраструктурой, это единицы мегабайт (или даже сотни килобайт) и в сотни раз быстрее.
+
+WORKDIR --- это папка в файловой системе контейнера, которая будет рабочей для запускаемого процесса. EXPOSE открывает порт в контейнере (открываем порты 80 и 443, HTTP и HTTPS соответственно). Kestrel по умолчанию запускается на порту 5000, но базовый образ (mcr.microsoft.com/dotnet/aspnet:6.0) определяет переменные окружения, говорящие Kestrel использовать стандартные порты.
+
+Дальше происходит самое интересное --- базовый образ сбрасывается и выполняется копирование .csproj-файла в файловую систему контейнера, дальше \emph{внутри} контейнера запускается dotnet restore, потом командой COPY . . в контейнер копируются все остальные исходники нашего проекта, и делается dotnet build. А затем (в новом слое) dotnet publish. Зачем --- чтобы даже процесс сборки не зависел от окружения. mcr.microsoft.com/dotnet/sdk:6.0 содержит .NET SDK со всеми необходимыми инструментами, так что этот Dockerfile можно будет собрать даже на машине, на которой вообще нет .NET! Если кто работал с C++, сравните это с болью, когда у вас обновился компилятор или системные библиотеки,и теперь ваш код не компилируется с дурацкими ошибками, а завтра релиз. Наш проект будет компилироваться в точно таком окружении, в котором мы его скомпилируем сейчас, до тех пор, пока Docker может найти все нужные базовые образы (возможно, даже после того, как на Земле вымрет всё живое).
+
+Дальше базовый образ сбрасывается в base (mcr.microsoft.com/dotnet/aspnet:6.0) и в него копируется содержимое /app/publish из предыдущей фазы билда. То есть, на самом деле, создаётся чистый образ, где есть рантайм ASP.NET и бинарники нашего собранного приложения, все исходники и промежуточные результаты в финальный образ не попадают.
+
+Ну и последняя команда --- ENTRYPOINT, определяет, что надо запускать при старте контейнера. Думаю, что тут всё понятно --- это тот самый процесс, который мы контейнеризуем.
+
+То, что вы тут видели --- это так называемый two-stage build, то есть сначала сборка внутри контейнера, а затем запуск уже самого приложения. Это нынче модно, но, вообще говоря, опционально --- можно было собрать проект на вашей машине и командой COPY скопировать уже бинарники в образ. Приеров такого билда много в интернетах, но двухступенчатый билд лучше, и генерируется по умолчанию.
+
+Дальше, если у вас есть Docker, можно запустить проект в Docker-контейнере через меню запуска (там, где можно выбрать хостиг и браузер). Оно соберёт образ (при этом написав в консоль, что оно делает, что приятно) и запустит контейнер из этого образа. По идее должно запуститься и работать как обычно.
+
+А теперь давайте попробуем выложить получившийся образ на Docker Hub. Для этого там, естественно, надо завести аккаунт. Далее, кликаем правой кнопкой по проекту, выбираем Publish, выбираем Docker Container Registry, Docker Hub, вводим свои логин-пароль, жмём Publish. Оно снова соберёт образ и, по идее, зальёт его на Docker Hub. Но может и не зальёт, там какие-то проблемы с <<Current context "desktop-linux" is not found on the file system>>. Но это не беда, Docker вообще по сути своей консольная утилита. Идём в консоль, набираем там docker images ls (отобразить спискок всех образов, что есть на машине), находим наш (например, conferenceregistration latest 2fdfa15fbf59 10 minutes ago 239MB). Сначала его надо переименовать в формат <имя пользователя>/<имя образа>, чтобы Docker Hub разрешил вам его пушить:
+
+\begin{minted}{text}
+docker image tag conferenceregistration:latest 
+    <ваш юзернейм на Docker Hub>/conferenceregistration:latest
+\end{minted}
+
+(в одну строчку). Дальше, собственно, пушим на Docker Hub (перед этим по идее надо авторизоваться через Docker Desktop, но могут и при пуше попросить логин/пароль, я не помню):
+
+\begin{minted}{text}
+docker push <ваш юзернейм на Docker Hub>/conferenceregistration:latest
+\end{minted}
+
+И всё, через некоторое время образ зальётся, можно зайти на Docker Hub и проверить, что образ появился. Теперь вы можете пойти на другую машину, где есть Docker (например, одногруппника) и скачать/запустить ваш образ:
+
+\begin{minted}{text}
+docker run -d -p 80:80 <ваш юзернейм на Docker Hub>/conferenceregistration:latest
+\end{minted}
+
+Теперь можно просто в адресной строке браузера набрать localhost, и попасть в наше приложение (либо в Docker Desktop найти запущенный контейнер, посмотреть его логи и нажать на <<открыть в браузере>>). Собственно ключ -p у команды docker run прокидывает порт 80 контейнера на 80 порт вашей машины (а ключ -d (detach) говорит, что надо вернуть управление в консоль после старта контейнера). Прокидывание портов делается при запуске, чтобы если у вас на машине надо запустить 20 контейнеров, каждый из которых работает на порту 80, вы могли бы их раскидать сами по портам, не пересобирая контейнер.
+
+\section{Azure}
+
+И наконец, выложим наше барахло на облачный хостинг, в нашем случае на Azure (вообще, Amazon был бы выбором по умолчанию, но раз уж .NET, надо уважать Microsoft). 
+
+Идём на \url{https://azure.microsoft.com/} и регистрируем себе аккаунт. Дальше логинимся и идём на \url{https://portal.azure.com/}. Выбираете там App Services -> Create. В появившейся форме выбираете Pay-As-You-Go, Resource Group -> Create New, вводите имя группы ресурсов. Ниже вводите имя приложения, например, conference-registration, оно же будет частью его доменного имени. Publish --- Docker Container, Operating System --- Linux (мы ведь собирали линуксовый образ), Region --- например, East US (от региона зависит физическое местонахождение сервера, и, главное, доступные ценовые планы), App Service Plan --- создастся новый по идее сам, Sku and size --- бесплатный (F1 вроде) --- невероятно медленно и плохо, но бесплатно. Жмём next.
+
+Дальше выбираем Single container, Image Source -> Docker Hub, Access Type -> Public, Image and Tag --- имя образа на Docker Hub, тот самый <ваш юзернейм на Docker Hub>/conferenceregistration:latest), и этого достаточно. Жмём на Review + create. Жмём на create. Оно некоторое (долгое, мы ведь нищеброды) время думает и показывает Deployment is in progress, после чего появляется Your deployment is complete, и можно пойти на домашнюю страницу, там наше приложение появится в списке ресурсов. Жмём на него, появляются детали приложения, жмём на Browse, и приложение начнёт медленно открываться в браузере (по ссылке в духе \url{https://conference-registration.azurewebsites.net/}). Всё, приложение запустилось, теперь эту ссылку можно использовать, чтобы зайти на него вообще откуда угодно, хоть с телефона. 
+
+Этот радостный факт и завершает этот туториал.
 
 \end{document}
