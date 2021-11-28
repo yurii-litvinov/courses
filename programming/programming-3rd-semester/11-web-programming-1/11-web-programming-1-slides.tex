@@ -373,6 +373,32 @@ fetch('https://example.com/profile', {
     \section{Бэкенд, ASP.NET}
 
     \begin{frame}
+        \frametitle{ASP.NET}
+        \begin{itemize}
+            \item Появился в 2002 году (вместе с самим .NET), переписан под .NET Core в 2016
+            \begin{itemize}
+                \item Вообще говоря, правильно говорить ``ASP.NET Core''
+            \end{itemize}
+            \item Кроссплатформенный, open-source, лицензия MIT
+            \item Предполагает несколько моделей разработки:
+            \begin{itemize}
+                \item многостраничное приложение
+                \begin{itemize}
+                    \item с использованием паттерна MVC
+                    \item с использованием Razor Pages (по сути, паттерна, Model-View)
+                    \item на Server-side Blazor
+                \end{itemize}
+                \item одностраничное приложение (SPA)
+                \begin{itemize}
+                    \item на клиентских JS-библиотеках и Web APIs
+                    \item на Client-side Blazor и Web APIs
+                \end{itemize}
+            \end{itemize}
+            \item На самом деле, ``внутренности'' одинаковы, отличаются шаблоны и подходы
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
         \frametitle{ASP.NET MVC, основные понятия}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{mvc.png}
@@ -396,6 +422,15 @@ fetch('https://example.com/profile', {
     \end{frame}
 
     \begin{frame}
+        \frametitle{Конвейер обработки запроса}
+        \begin{center}
+            \includegraphics[width=0.85\textwidth]{requestLifecycle.png}
+            \vspace{-5mm}
+            \attribution{MSDN}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
         \frametitle{Типичная структура проекта ASP.NET}
         \begin{itemize}
             \item На самом деле, два шаблона проекта:
@@ -407,7 +442,16 @@ fetch('https://example.com/profile', {
             \begin{itemize}
                 \item favicon.ico --- картинка, показывающаяся в заголовке вкладки
             \end{itemize}
-            \item \textbf{Pages} --- папка с Razor-разметкой, по которой будут генериться html-страницы
+            \item \textbf{Controllers} --- контроллеры, что неудивительно
+            \begin{itemize}
+                \item Принцип Convention-over-configuration
+            \end{itemize}
+            \item \textbf{Models} --- доменные и view-модели
+            \item \textbf{Views} --- шаблонамы HTML-страниц для представлений
+            \begin{itemize}
+                \item Подпапки должны соответствовать контроллерам
+                \item Частичные представления
+            \end{itemize}
             \item \textbf{appsettings.json} --- конфигурация приложения
             \item \textbf{Program.cs} --- конфигурирует хост и запускает приложение
             \item \textbf{Startup.cs} --- конфигурирует сервисы и конвейер обработки запроса
@@ -471,7 +515,7 @@ fetch('https://example.com/profile', {
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}[fragile]
         \frametitle{Хелперы}
         \begin{itemize}
             \item Функции, которые генерируют HTML-код
@@ -487,6 +531,15 @@ fetch('https://example.com/profile', {
             
             \mintinline{text}|@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers|
         \end{itemize}
+        Пример: 
+        \begin{minted}{html}
+<img src="~/images/asplogo.png" asp-append-version="true">
+        \end{minted}
+        Сгенерится вот такое:
+        \begin{minted}{html}
+<img src="/images/asplogo.png?
+    v=Kl_dqr9NVtnMdsM2MUg4qthUnWZm5T1fCEimBPWDNgM">
+        \end{minted}
     \end{frame}
 
     \section{Модели}
@@ -533,15 +586,47 @@ namespace RazorPagesIntro.Pages
         \attribution{MSDN}
     \end{frame}
 
-    \section{Routing}
+    \begin{frame}[fragile]
+        \frametitle{Модель в MVC}
+        \begin{minted}{csharp}
+public IActionResult Error()
+{
+    return View(new ErrorViewModel { 
+        RequestId = Activity.Current?.Id 
+            ?? HttpContext.TraceIdentifier 
+    });
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{И View}
+        \begin{minted}{html}
+@model ErrorViewModel
+
+<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">An error occurred 
+    while processing your request.</h2>
+
+@if (Model?.ShowRequestId ?? false)
+{
+    <p>
+        <strong>Request ID:</strong> 
+        <code>@Model?.RequestId</code>
+    </p>
+}
+        \end{minted}
+    \end{frame}
+
+    \section{Роутинг}
 
     \begin{frame}
-        \frametitle{Routing}
+        \frametitle{Роутинг}
         \framesubtitle{Или как ASP.NET находит по запросу страницу}
         \begin{itemize}
             \item Convention over configuration --- пока вы выполняете соглашения об именовании, по умолчанию всё происходит за вас
             \item Есть возможность конфигурировать роутинг вручную
-            \item Соглашения:
+            \item Соглашения Razor Pages:
             \begin{itemize}
                 \item URL вида ``адрес сайта/'' или ``адрес сайта/Index'' отображаются в /Pages/Index.cshtml
                 \item /Pages/Contact.cshtml --- URL вида ``адрес сайта/Contact''
@@ -551,13 +636,41 @@ namespace RazorPagesIntro.Pages
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Как всё вообще обрабатывается}
-        \begin{center}
-            \includegraphics[width=0.85\textwidth]{requestLifecycle.png}
-            \vspace{-5mm}
-            \attribution{MSDN}
-        \end{center}
+    \begin{frame}[fragile]
+        \frametitle{Глобальное переопределение роутов}
+        Razor Pages:
+        \begin{minted}{csharp}
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorPages(
+    options => options.Conventions.AddPageRoute("/Index", "/Ololo"));
+        \end{minted}
+        \vspace{5mm}
+        MVC:
+        \begin{minted}{csharp}
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Локальное переопределение роутов}
+        \framesubtitle{Только для MVC}
+        \begin{minted}{csharp}
+[Route("Ololo")]
+public class HomeController : Controller
+{
+    [Route("")] // Прибавляется к роуту до контроллера, 
+                // чтобы получилось /Ololo
+    [Route("Ololo")] // Прибавляется к роуту, чтобы 
+                // получилось "Ololo/Ololo"
+    [Route("/")] // Никуда не прибавляется,
+                // определяет роут ""
+    public IActionResult Index() {}
+}
+        \end{minted}
     \end{frame}
 
     \section{Model binding}

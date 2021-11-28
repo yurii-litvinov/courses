@@ -179,7 +179,7 @@ Node* rotateLeft(Node *a)
         \begin{minted}{c}
 Node* balance(Node *node) {
     if (node->balance == 2) {
-        if (node->right->balance <= 0)
+        if (node->right->balance >= 0)
             return rotateLeft(node);
         return bigRotateLeft(node);
     }
