@@ -78,13 +78,13 @@
     \begin{frame}
         \frametitle{Формальные языки, определения}
         \begin{itemize}
-            \item Алфавит --- произвольное множество. Элементы множества называются \textit{символами} алфавита.
-            \item Строка (она же \textit{цепочка}) --- конечная последовательность символов из алфавита.
-            \item Длина строки $s$ (обозначается как $\lvert{s}\rvert$) --- количество символов в строке.
-            \item Пустая строка ($\epsilon$) --- строка, которая не содержит символов.
-            \item Конкатенация строк --- две строки, записанные друг за другом.
+            \item Алфавит --- произвольное множество. Элементы множества называются \textit{символами} алфавита
+            \item Строка (она же \textit{цепочка}) --- конечная последовательность символов из алфавита
+            \item Длина строки $s$ (обозначается как $\lvert{s}\rvert$) --- количество символов в строке
+            \item Пустая строка ($\epsilon$) --- строка, которая не содержит символов
+            \item Конкатенация строк --- две строки, записанные друг за другом
             \item Язык --- множество строк. Например, пустой язык (обозначается $\{\}$), множество всех корректных 
-                программ на С++, множество всех грамматически корректных предложений русского языка.
+                программ на С++, множество всех грамматически корректных предложений русского языка
         \end{itemize}
     \end{frame}
 
@@ -117,7 +117,7 @@
             \item Регулярное выражение $a$ задаёт язык $\{a\}$ (язык из одного символа)
             \item Пусть $r$ и $s$ --- регулярные выражения, задающие языки $L(r)$ и $L(s)$. Тогда
             \begin{itemize}
-                \item Регулярное выражение $(r) \mid (s)$ задаёт объедиение, $L(r) \cup L(s)$
+                \item Регулярное выражение $(r) \mid (s)$ задаёт объединение, $L(r) \cup L(s)$
                 \item Регулярное выражение $(r)(s)$ задаёт конкатенацию, $L(r)L(s)$
             \end{itemize}
             \item Регулярное выражение $(r)^*$ задаёт замыкание Клини, $(L(r))^*$
@@ -290,11 +290,27 @@ return (s in F);
     \end{frame}
 
     \begin{frame}
-        \frametitle{Книжка}
-        А. Ахо, Р. Сети, Дж. Ульман, М. Лам. Компиляторы. Принципы, технологии, инструменты.
-        \begin{center}
-            \includegraphics[width=0.25\textwidth]{compilersCover.png}
-        \end{center}
+        \frametitle{Материалы}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                Книжка:
+
+                А. Ахо, Р. Сети, Дж. Ульман, М. Лам. Компиляторы. Принципы, технологии, инструменты.
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.38\textwidth]{compilersCover.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+
+        Конструктор автоматов:
+        \begin{itemize}
+            \item Веб-версия: \url{https://spbu-se.github.io/WebAutomataConstructor}
+            \item GitHub: \url{https://github.com/spbu-se/WebAutomataConstructor}
+            \item Десктопная версия: \url{https://github.com/spbu-se/DesktopAutomataConstructor}
+            \item Экспериментальная десктопная версия: \url{https://github.com/IlyaMuravjov/automaton-constructor/tree/develop}
+        \end{itemize}
     \end{frame}
 
 
