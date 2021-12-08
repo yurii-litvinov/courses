@@ -535,27 +535,24 @@ public class CalculatorService : ICalculator
         \frametitle{Пример, self-hosted service}
         \begin{scriptsize}
             \begin{minted}{csharp}
-static void Main(string[] args) 
-{
-    Uri baseAddress = new Uri("http://localhost:8000/ServiceModelSamples/Service");
-    ServiceHost selfHost = new ServiceHost(typeof(CalculatorService), baseAddress);
+Uri baseAddress = new Uri("http://localhost:8000/ServiceModelSamples/Service");
+ServiceHost selfHost = new ServiceHost(typeof(CalculatorService), baseAddress);
 
-    try {
-        selfHost.AddServiceEndpoint(typeof(ICalculator), new WSHttpBinding(), "CalculatorService");
+try {
+    selfHost.AddServiceEndpoint(typeof(ICalculator), new WSHttpBinding(), "CalculatorService");
 
-        ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-        smb.HttpGetEnabled = true;
-        selfHost.Description.Behaviors.Add(smb);
+    ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+    smb.HttpGetEnabled = true;
+    selfHost.Description.Behaviors.Add(smb);
 
-        selfHost.Open();
-        Console.WriteLine("The service is ready. Press <ENTER> to terminate service.");
-        Console.ReadLine();
+    selfHost.Open();
+    Console.WriteLine("The service is ready. Press <ENTER> to terminate service.");
+    Console.ReadLine();
 
-        selfHost.Close();  
-    } catch (CommunicationException ce) {
-        Console.WriteLine($"An exception occurred: {ce.Message}");
-        selfHost.Abort();
-    }
+    selfHost.Close();  
+} catch (CommunicationException ce) {
+    Console.WriteLine($"An exception occurred: {ce.Message}");
+    selfHost.Abort();
 }
             \end{minted}
         \end{scriptsize}
@@ -574,17 +571,15 @@ svcutil.exe /language:cs /out:generatedProxy.cs /config:app.config^
             \item Клиент:
                 \begin{footnotesize}
                     \begin{minted}{csharp}
-static void Main(string[] args)
-{
-    CalculatorClient client = new CalculatorClient();
 
-    double value1 = 100.00D;
-    double value2 = 15.99D;
-    double result = client.Add(value1, value2);
-    Console.WriteLine($"Add({value1},{value2}) = {result}");
+var client = new CalculatorClient();
 
-    client.Close();
-}
+double value1 = 100.00D;
+double value2 = 15.99D;
+double result = client.Add(value1, value2);
+Console.WriteLine($"Add({value1},{value2}) = {result}");
+
+client.Close();
                     \end{minted}
                 \end{footnotesize}
         \end{itemize}
@@ -667,23 +662,17 @@ using System;
 using RabbitMQ.Client;
 using System.Text;
 
-class Send
-{
-    public static void Main()
-    {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
-        using var connection = factory.CreateConnection();
-        using var channel = connection.CreateModel();
-        channel.QueueDeclare(queue: "hello", durable: false, exclusive: false,
-                autoDelete: false, arguments: null);
+var factory = new ConnectionFactory() { HostName = "localhost" };
+using var connection = factory.CreateConnection();
+using var channel = connection.CreateModel();
+channel.QueueDeclare(queue: "hello", durable: false, exclusive: false,
+        autoDelete: false, arguments: null);
 
-        string message = "Hello World!";
-        var body = Encoding.UTF8.GetBytes(message);
+string message = "Hello World!";
+var body = Encoding.UTF8.GetBytes(message);
 
-        channel.BasicPublish(exchange: "", routingKey: "hello",
-                basicProperties: null, body: body);
-    }
-}
+channel.BasicPublish(exchange: "", routingKey: "hello",
+        basicProperties: null, body: body);
             \end{minted}
         \end{ssmall}
     \end{frame}
@@ -697,24 +686,108 @@ using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 
-class Receive
-{
-    public static void Main()
-    {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
-        using var connection = factory.CreateConnection();
-        using var channel = connection.CreateModel();
-        channel.QueueDeclare(queue: "hello", durable: false, exclusive: false, autoDelete: false, arguments: null);
+var factory = new ConnectionFactory() { HostName = "localhost" };
+using var connection = factory.CreateConnection();
+using var channel = connection.CreateModel();
+channel.QueueDeclare(queue: "hello", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-        var consumer = new EventingBasicConsumer(channel);
-        consumer.Received += (model, ea) =>
-        {
-            var body = ea.Body;
-            var message = Encoding.UTF8.GetString(body);
-            Console.WriteLine(" [x] Received {0}", message);
-        };
-        channel.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
+var consumer = new EventingBasicConsumer(channel);
+consumer.Received += (model, ea) =>
+{
+    var body = ea.Body;
+    var message = Encoding.UTF8.GetString(body);
+    Console.WriteLine(" [x] Received {0}", message);
+};
+channel.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
+            \end{minted}
+        \end{ssmall}
+    \end{frame}
+
+    \section{Apache Kafka}
+
+    \begin{frame}
+        \frametitle{Apache Kafka}
+        \begin{itemize}
+            \item Несколько другой подход к очередям: лог событий
+            \begin{itemize}
+                \item Сообщение посылается на сервер и хранится там вечно (ну, почти), получатель при обработке его не удаляет
+                \item Индекс текущего сообщения хранит сам получатель, может отмотать назад
+                \item Подход ``Event Sourcing'' --- не храним состояние, храним набор событий, позволяющих его получить
+                \item Гораздо лучше с распределённостью
+            \end{itemize}
+            \item Быстрее RabbitMQ, лучше масштабируется
+            \item Хуже с маршрутизацией (по идее), немного сложнее в настройке
+        \end{itemize}
+        \begin{textblock}{3}(8,0)
+            \includegraphics[width=\textwidth]{kafkaLogo.png}
+        \end{textblock}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Apache Kafka, устройство}
+        \begin{center}
+            \includegraphics[width=0.6\textwidth]{kafkaArchitecture.png}
+            \attribution{J. Kreps et al., Kafka: a Distributed Messaging System for Log Processing, 2011}
+        \end{center}
+        \begin{itemize}
+            \item Топики --- каналы, куда можно писать
+            \item Разделы --- логические куски топиков
+            \item Брокеры --- отдельные сервера, балансируют нагрузку
+            \item Сегменты --- файлы на диске, куски разделов, хранящиеся у брокеров
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример, отправитель}
+        \begin{small}
+            \begin{minted}{csharp}
+using Confluent.Kafka;
+
+var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
+
+using var p = new ProducerBuilder<Null, string>(config).Build();
+try
+{
+    var deliveryResult = await p.ProduceAsync(
+        "test-topic", new Message<Null, string> { Value = "test" });
+}
+catch (ProduceException<Null, string> e)
+{
+    Console.WriteLine($"Delivery failed: {e.Error.Reason}");
+}
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример, получатель}
+        \begin{ssmall}
+            \begin{minted}{csharp}
+using Confluent.Kafka;
+
+var conf = new ConsumerConfig {
+    GroupId = "test-consumer-group",
+    BootstrapServers = "localhost:9092",
+    AutoOffsetReset = AutoOffsetReset.Earliest
+};
+
+using var consumer = new ConsumerBuilder<Ignore, string>(conf).Build();
+consumer.Subscribe("my-topic");
+
+var cts = new CancellationTokenSource();
+Console.CancelKeyPress += (_, e) => {
+    e.Cancel = true;
+    cts.Cancel();
+};
+
+try {
+    while (true) {
+        var consumeResult = consumer.Consume(cts.Token);
+        Console.WriteLine($"Consumed message '{consumeResult.Message.Value}'.");
     }
+}
+catch (OperationCanceledException) {
+    consumer.Close();
 }
             \end{minted}
         \end{ssmall}
