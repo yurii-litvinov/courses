@@ -28,7 +28,7 @@
 \date{14.12.2021}
 
 \begin{document}
-    
+
     \frame{\titlepage}
 
     \section{REST}
@@ -40,7 +40,7 @@
             \item Отсутствие состояния
             \item Кэширование
             \item Единообразие интерфейса
-            \item Слои
+            \item Как правило, очень простые запросы
         \end{itemize}
     \end{frame}
 
@@ -80,19 +80,6 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Достоинства}
-        \begin{itemize}
-            \item Надёжность
-            \item Производительность
-            \item Масштабируемость
-            \item Прозрачность системы взаимодействия
-            \item Простота интерфейсов
-            \item Портативность компонентов
-            \item Лёгкость внесения изменений
-        \end{itemize}
-    \end{frame}
-
     \section{Микросервисы}
 
     \begin{frame}
@@ -114,11 +101,10 @@
     \begin{frame}
         \frametitle{Монолитные приложения}
         \begin{itemize}
-            \item Большой и сложный MVC
             \item Единый процесс разработки и стек технологий
-            \item Сложная архитектура
-            \item Сложно масштабировать
-            \item Сложно вносить изменения
+            \item Существенно меньше затрат на передачу данных между компонентами
+            \item Существенно проще развёртывание
+            \item Невозможно масштабирование по частям
         \end{itemize}
     \end{frame}
 
@@ -349,5 +335,7 @@ networks:
             \attribution{\url{https://www.docker.com}}
         \end{center}
     \end{frame}
+
+    \section{Kubernetes}
 
 \end{document}
