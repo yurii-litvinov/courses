@@ -31,16 +31,178 @@
 
     \frame{\titlepage}
 
+    \section{Архитектурные стили распределённых систем}
+
+    % Источник: https://github.com/MicrosoftDocs/architecture-center/tree/main/docs/guide/architecture-styles
+
+    \begin{frame}
+        \frametitle{Big Compute}
+        \begin{center}
+            \includegraphics[width=0.8\textwidth]{bigCompute.png}
+        \end{center}
+        \begin{itemize}
+            \item Для сверхсложных задач, предполагающих тысячи вычислительных узлов
+            \item Требует <<embarrassingly parallel>> задачу
+            \item Предполагает использование весьма продвинутых (и дорогих) облачных ресурсов
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Big Data}
+        \begin{center}
+            \includegraphics[width=0.9\textwidth]{bigData.png}
+        \end{center}
+        \begin{itemize}
+            \item Для аналитики над большими данными
+            \begin{itemize}
+                \item Либо данных много и их можно обрабатывать неторопливо
+                \item Либо данных много и их надо обрабатывать в реальном времени
+            \end{itemize}
+            \item Данные не лезут в обычную СУБД
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Big Data, хорошие практики}
+        \begin{itemize}
+            \item Распределённые хранение и обработка
+            \begin{itemize}
+                \item Например, Apache Hadoop, Apache Spark
+            \end{itemize}
+            \item Schema-on-read
+            \begin{itemize}
+                \item Data lake --- распределённое хранилище слабоструктурированных данных
+            \end{itemize}
+            \item Обработка на месте
+            \item Разделение данных по интервалам обработки
+            \item Раннее удаление приватных данных
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример: IoT}
+        \begin{center}
+            \includegraphics[width=0.9\textwidth]{iot.png}
+            \attribution{https://github.com/MicrosoftDocs/architecture-center/blob/main/docs/guide/architecture-styles/big-data.md}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Событийно-ориентированная архитектура}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{eventDrivenArchitecture.png}
+        \end{center}
+        \begin{itemize}
+            \item Для обработки событий в реальном времени
+            \item Бывает двух видов:
+            \begin{itemize}
+                \item Издатель/подписчик (например, RabbitMQ)
+                \item Event Sourcing (например, Apache Kafka)
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Web-queue-worker}
+        \begin{center}
+            \includegraphics[width=0.9\textwidth]{webQueueWorker.png}
+        \end{center}
+        \begin{itemize}
+            \item Для вычислительно сложных задач в несложной предметной области
+            \item Позволяет эффективно использовать готовые сервисы
+            \item Независимое масштабирование фронтенда и обработчика
+            \item Может превратиться в Big Ball of Mud
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{N-звенная архитектура}
+        \begin{center}
+            \includegraphics[width=0.9\textwidth]{nTierArchitecture.png}
+        \end{center}
+        \begin{itemize}
+            \item Для быстрого переноса монолита в облако
+            \item Для простых веб-приложений
+            \item Проблемы с масштабированием и сопровождаемостью
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример: N-звенное приложение на Azure}
+        \begin{center}
+            \includegraphics[width=\textwidth]{n-tier-physical-bastion.png}
+            \attribution{https://github.com/MicrosoftDocs/architecture-center/blob/main/docs/guide/architecture-styles/n-tier.md}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Микросервисная архитектура}
+        \begin{center}
+            \includegraphics[width=0.85\textwidth]{microservices.png}
+        \end{center}
+        \begin{itemize}
+            \item Для приложений со сложной предметной областью
+            \item Альтернатива монолиту, со своими достоинствами и недостатками
+            \item Микросервис пишется одним человеком за две недели
+            \begin{itemize}
+                \item На самом деле, пишется и поддерживается небольшой командой
+            \end{itemize}
+            \item Микросервис --- ограниченный контекст в смысле DDD
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Особенности}
+        \begin{itemize}
+            \item Каждый микросервис --- отдельное приложение
+            \begin{itemize}
+                \item Независимость языков и технологий
+                \item Имеет своё хранилище данных, не имеет права шарить данные
+                \begin{itemize}
+                    \item В каком-то смысле, объект из ООП
+                    \item Каждому сервису наиболее подходящая СУБД
+                \end{itemize}
+            \end{itemize}
+            \item Мелкозернистая масштабируемость
+            \item Независимое развёртывание
+            \item Изоляция ошибок
+            \item Маленькая и простая кодовая база
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Проблемы}
+        \begin{itemize}
+            \item Сложность перекладывается с реализации на оркестрацию
+            \begin{itemize}
+                \item Неочевидно, неразвитые инструменты
+                \item В целом сложнее, чем рассмотренные выше стили
+                \item Сложное управление и мониторинг, требуется развитая культура DevOps
+                \item Сложная в плане управления зависимостями разработка
+            \end{itemize}
+            \item Технологический зоопарк
+            \item Нагрузка на сеть
+            \item Сложно поддерживать целостность данных
+            \begin{itemize}
+                \item Eventual Consistency
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
     \section{REST}
 
     \begin{frame}
         \frametitle{Representational State Transfer (REST)}
         \begin{itemize}
-            \item Модель клиент-сервер
-            \item Отсутствие состояния
-            \item Кэширование
-            \item Единообразие интерфейса
-            \item Как правило, очень простые запросы
+            \item Самая популярная сейчас архитектура веб-сервисов
+            \item Передача всего необходимого в запросе
+            \begin{itemize}
+                \item Нельзя хранить состояние сессии
+            \end{itemize}
+            \item Стандартизованный интерфейс, очень простые запросы
+            \item Стандартные протоколы (в основном поверх HTTP)
+            \item Обычно JSON как формат сериализации
+            \item Кеширование
         \end{itemize}
     \end{frame}
 
@@ -49,22 +211,16 @@
         \begin{itemize}
             \item Коллекции
             \begin{itemize}
-                \item \url{http://api.example.com/resources/}
+                \item \url{http://api.example.com/customers/}
             \end{itemize}
             \item Элементы
             \begin{itemize}
-                \item \url{http://api.example.com/resources/item/17}
+                \item \url{http://api.example.com/customers/17}
             \end{itemize}
-            \item HTTP-методы
-            \begin{itemize}
-                \item GET
-                \item PUT
-                \item POST
-                \item DELETE
-            \end{itemize}
+            \item HTTP-методы (GET, POST, PUT, DELETE), стандартная семантика, стандартные коды ошибок
             \item Передача параметров прямо в URL
             \begin{itemize}
-                \item \url{http://api.example.com/resources?user=me&access_token=ASFQF}
+                \item \url{http://api.example.com/customers?user=me&access_token=ASFQF}
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -80,99 +236,127 @@
         \end{itemize}
     \end{frame}
 
-    \section{Микросервисы}
-
     \begin{frame}
-        \frametitle{Микросервисы}
+        \frametitle{Дизайн REST-интерфейса}
         \begin{itemize}
-            \item Набор небольших сервисов
+            \item API строится вокруг ресурсов, не действий
             \begin{itemize}
-                \item Разные языки и технологии
+                \item \url{http://api.example.com/customers/} --- хорошо
+                \item \url{http://api.example.com/get_customer/} --- плохо
             \end{itemize}
-            \item Каждый в собственном процессе
+            \item Отношения между сущностями: \url{http://api.example.com/customers/5/orders}
             \begin{itemize}
-                \item Независимое развёртывание
-                \item Децентрализованное управление
+                \item Максимум одно отношение --- надо будет, сделают ещё запросы
             \end{itemize}
-            \item Легковесные коммуникации
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Монолитные приложения}
-        \begin{itemize}
-            \item Единый процесс разработки и стек технологий
-            \item Существенно меньше затрат на передачу данных между компонентами
-            \item Существенно проще развёртывание
-            \item Невозможно масштабирование по частям
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Разбиение на сервисы}
-        \begin{center}
-            \includegraphics[width=\textwidth]{microservices.png}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Основные особенности}
-        \begin{itemize}
-            \item Микросервисы и SOA
-            \item Smart endpoints and dumb pipes
-            \item Проектирование под отказ
-            \item Асинхронные вызовы
-            \item Децентрализованное управление данными
-            \item Автоматизация инфраструктуры
-            \item Эволюционный дизайн
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Основные проблемы}
-        \begin{itemize}
-            \item Сложности выделения границ сервисов
-            \item Перенос логики на связи между сервисами
+            \item API --- модель предметной области, не данных
+            \item Семантика HTTP
             \begin{itemize}
-                \item Большой обмен данными
-                \item Нетривиальные зависимости
+                \item Заголовки Content-Type, Accept
+                \item Коды возврата (200, 204, 404, 400, 409)
             \end{itemize}
-            \item Нетривиальная инфраструктура
-            \item Нетривиальная переиспользуемость кода
+            \item Механизмы фильтрации и <<пагинации>>
+            \item Поддержка Partial Content
+            \item HATEOAS
+            \item Версионирование --- не ломать обратную совместимость
         \end{itemize}
     \end{frame}
 
-    \section{Peer-to-peer}
+    \section{Общие принципы дизайна}
 
     \begin{frame}
-        \frametitle{Архитектура Peer-to-Peer}
+        \frametitle{Общие принципы дизайна распределённых приложений}
+        \framesubtitle{Самовосстановление}
         \begin{itemize}
-            \item Децентрализованный и самоорганизующийся сервис
-            \item Динамическая балансировка нагрузки
+            \item Повтор при временном отказе
+            \item Паттерн <<Circuit Breaker>>
+            \item API для самодиагностики
+            \item Разделение на изолированные группы ресурсов
+            \item Буферизация запросов
+            \item Автоматическое переключение на резервный экземпляр, ручное обратно
+            \item Промежуточное сохранение
+            \item Плавная потеря работоспособности (graceful degradation)
+            \item Тестирование отказов, Chaos engineering
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Избыточность}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{itemize}
+                    \item Бизнес-требования к надёжности
+                    \begin{itemize}
+                        \item Recovery Time Objective, Recovery Point Objective, Maximum Tolerable Outage
+                    \end{itemize}
+                    \item Балансировщики нагрузки
+                    \item Репликация БД
+                    \item Разделение по регионам
+                    \item Шардирование
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{rpoRtoExample.png}
+                    \attribution{\url{https://en.wikipedia.org/wiki/Disaster_recovery}}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Минимизация координации}
+        \begin{itemize}
+            \item Eventual Consistency, компенсационные транзакции
+            \item Доменные события (domain events)
+            \item Паттерн <<Command and Query Responsibility Segregation>> (CQRS)
+            \item Event Sourcing
+            \item Асинхронные, идемпотентные операции
+            \item Шардирование
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{CAP-теорема}
+        В любой распределённой системе можно обеспечить не более двух из трёх свойств:
+        \begin{itemize}
+            \item Согласованность данных (Consistency) --- во всех вычислительных узлах данные консистентны
+            \item Доступность (Availability) --- любой запрос завершается корректно, но без гарантии, что ответы всех узлов одинаковы
+            \item Устойчивость к разделению (Partitioning Tolerance) --- потеря связи между узлами не портит ответы
             \begin{itemize}
-                \item Вычислительные ресурсы
-                \item Хранилища данных
+                \item Этот пункт в распределённых системах должен быть обеспечен всегда, потому что отказы неизбежны. Остаётся выбрать один из двух
             \end{itemize}
-            \item Динамическое изменение состава участников
         \end{itemize}
     \end{frame}
 
     \begin{frame}
-        \frametitle{Skype: Overlayed P2P}
-        \begin{center}
-            \includegraphics[width=0.6\textwidth]{skype.png}
-        \end{center}
+        \frametitle{ACID vs BASE}
+        ACID:
+        \begin{itemize}
+            \item Atomicity --- транзакция не применится частично
+            \item Consistency --- завершённая транзакция не нарушает целостности данных
+            \item Isolation --- параллельные транзакции не мешают друг другу
+            \item Durability --- если транзакция завершилась, её данные не потеряются
+        \end{itemize}
+        BASE:
+        \begin{itemize}
+            \item Basically Available --- отказ узла может привести к некорректному ответу, но только для клиентов, обслуживавшихся узлом
+            \item Soft-state --- состояние может меняться само собой, согласованность между узлами не гарантируется
+            \item Eventually consistent --- гарантируется целостность только в некоторый момент в будущем
+        \end{itemize}
     \end{frame}
 
     \begin{frame}
-        \frametitle{BitTorrent : Resource Trading P2P}
+        \frametitle{Проектирование для обслуживания}
         \begin{itemize}
-            \item Обмен сегментами
-            \item Поиск не входит в протокол
-            \item Трекеры
-            \item Метаданные
-            \item Управление приоритетами
-            \item Бестрекерная реализация
+            \item Делать всё наблюдаемым
+            \begin{itemize}
+                \item Трассировка, в т.ч. распределённая
+                \item Логирование 
+            \end{itemize}
+            \item Мониторинг, метрики
+            \item Стандартизация форматов логов и метрик
+            \item Автоматизация задач обслуживания
+            \item Конфигурация --- это код
         \end{itemize}
     \end{frame}
 
@@ -183,7 +367,7 @@
         \begin{itemize}
             \item Средство для ``упаковки'' приложений в изолированные контейнеры
             \item Что-то вроде легковесной виртуальной машины
-            \item \item Широкий инструментарий: DSL для описания образов, публичный репозиторий, поддержка оркестраторами
+            \item Широкий инструментарий: DSL для описания образов, публичный репозиторий, поддержка оркестраторами
         \end{itemize}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{docker.png}
@@ -296,14 +480,12 @@ CMD ["python", "app.py"]
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Балансировка нагрузки}
-        \framesubtitle{docker-compose.yml}
+        \frametitle{Docker Compose}
         \begin{scriptsize}
             \begin{minted}{yaml}
 version: "3"
 services:
     web:
-        # replace username/repo:tag with your name and image details
         image: username/repo:tag
         deploy:
             replicas: 5
@@ -324,7 +506,7 @@ networks:
     \end{frame}
 
     \begin{frame}
-        \frametitle{Swarm-ы}
+        \frametitle{Docker Swarm}
         \begin{itemize}
             \item Машина, на которой запускается контейнер, становится главной
             \item Другие машины могут присоединяться к swarm-у и получать копию контейнера
@@ -337,5 +519,212 @@ networks:
     \end{frame}
 
     \section{Kubernetes}
+
+    % Источник: Cloud Native DevOps with Kubernetes
+
+    \begin{frame}
+        \frametitle{Kubernetes}
+        \begin{itemize}
+            \item Оркестратор контейнеров
+            \item Отвечает за раскидывание контейнеров по хостам, масштабирование, мониторинг и управление жизненным циклом
+            \begin{itemize}
+                \item Сильно продвинутый Docker Compose
+            \end{itemize}
+            \item Open-source, Google, Go
+        \end{itemize}
+        \begin{flushright}
+            \includegraphics[width=0.2\textwidth]{kubernetes.png}
+            \hspace{1cm}
+            \attribution{\url{https://kubernetes.io/}}
+        \end{flushright}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Архитектура Kubernetes}
+        \begin{center}
+            \includegraphics[width=0.8\textwidth]{kubernetesArchitecture.png}
+            \hspace{1cm}
+            \attribution{\url{https://ru.wikipedia.org/wiki/Kubernetes}}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Объекты Kubernetes}
+        \begin{center}
+            \includegraphics[width=0.4\textwidth]{kubernetesObjects.png}
+            \hspace{1cm}
+            \attribution{J. Arundel, J. Domingus, Cloud Native DevOps with Kubernetes}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Deployment}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{scriptsize}
+                    \begin{minted}{yaml}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+  labels:
+    app: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      containers:
+        - name: demo
+          image: cloudnatived/demo:hello
+          ports:
+          - containerPort: 8888
+                    \end{minted}
+                \end{scriptsize}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                Запуск:
+                \begin{minted}{text}
+kubectl apply -f k8s/deployment.yaml
+                \end{minted}
+                \attribution{J. Arundel, J. Domingus, Cloud Native DevOps with Kubernetes}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Сервисы}
+        \begin{center}
+            \includegraphics[width=0.4\textwidth]{kubernetesServices.png}
+            \hspace{1cm}
+            \attribution{J. Arundel, J. Domingus, Cloud Native DevOps with Kubernetes}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Service}
+        \begin{footnotesize}
+            \begin{minted}{yaml}
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo
+  labels:
+    app: demo
+spec:
+  ports:
+  - port: 9999
+   protocol: TCP
+    targetPort: 8888
+  selector:
+    app: demo
+  type: ClusterIP
+            \end{minted}
+        \end{footnotesize}
+        Запуск:
+        \begin{minted}{text}
+            kubectl apply -f k8s/service.yaml
+            kubectl port-forward service/demo 9999:8888
+        \end{minted}
+        \attribution{J. Arundel, J. Domingus, Cloud Native DevOps with Kubernetes}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Рекомендации и техники}
+        \begin{itemize}
+            \item Конфигурация --- это код, не управляйте кластером вручную
+            \item Мониторинг
+                \begin{scriptsize}
+                    \begin{minted}{yaml}
+livenessProbe:
+    httpGet:
+        path: /healthz
+        port: 8888
+    initialDelaySeconds: 3
+    periodSeconds: 3
+                    \end{minted}
+                \end{scriptsize}
+            \item Blue/green deployment, rainbow deployment, canary deployment
+            \item Метрики: RED, USE
+            \item Используйте инструменты
+            \begin{itemize}
+                \item Helm
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \section{Облачная инфраструктура}
+
+    \begin{frame}
+        \frametitle{Облачная инфраструктура}
+        \begin{itemize}
+            \item Виды сервисов:
+            \begin{itemize}
+                \item Infrastructure as a Service
+                \item Platform as a Service
+                \item Software as a Service
+            \end{itemize}
+            \item Основные провайдеры:
+            \begin{itemize}
+                \item Amazon Web Services (почти 50\% рынка)
+                \item Microsoft Azure (порядка 10\%)
+                \item Google Cloud
+                \item Всё остальное (Heroku, Yandex.Cloud, ...)
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    % Источник: https://docs.google.com/presentation/d/13pCPuvsjATqodW5iN1qVkIU0_BEz4lYhAKTp6TbWMA0 (с разрешения Владислава Танкова)
+
+    \begin{frame}
+        \frametitle{Пример: экосистема AWS}
+        \begin{itemize}
+            \item Вычисления:
+            \begin{itemize}
+                \item EC2 (Elastic Computations)
+                \item ECS (Elastic Container Service)
+            \end{itemize}
+            \item Сеть:
+            \begin{itemize}
+                \item VPC (Virtual Private Cloud)
+                \item ELB (Elastic Load Balancer)
+            \end{itemize}
+            \item Устройства хранения:
+            \begin{itemize}
+                \item EFS (Elastic File System)
+                \item EBS (Elastic Block Storage)
+            \end{itemize}
+            \item SaaS, базы данных:
+            \begin{itemize}
+                \item RDS (Relational Database Service)
+                \item DynamoDB
+                \item ElasticSearch Service
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Infrastructure as Code}
+        \begin{columns}
+            \begin{column}{0.7\textwidth}
+                <<The enabling idea of infrastructure as a code is that systems and devices which are used to run software can be treated as if they, themselves, are software>> (Infrastructure as Code, Kief Morris)
+                \begin{itemize}
+                    \item Платформонезависимое представление инфраструктуры
+                    \item Воспроизводимое развёртывание
+                    \item Пример: Terraform
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.3\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.9\textwidth]{terraformLogo.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
 
 \end{document}
