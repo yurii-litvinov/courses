@@ -73,7 +73,7 @@
             \begin{itemize}
                 \item Data lake --- распределённое хранилище слабоструктурированных данных
             \end{itemize}
-            \item Обработка на месте
+            \item Обработка на месте (TEL вместо ETL)
             \item Разделение данных по интервалам обработки
             \item Раннее удаление приватных данных
         \end{itemize}
@@ -256,7 +256,7 @@
             \end{itemize}
             \item Механизмы фильтрации и <<пагинации>>
             \item Поддержка Partial Content
-            \item HATEOAS
+            \item Hypertext as the Engine of Application State (HATEOAS)
             \item Версионирование --- не ломать обратную совместимость
         \end{itemize}
     \end{frame}
@@ -306,12 +306,12 @@
     \begin{frame}
         \frametitle{Минимизация координации}
         \begin{itemize}
-            \item Eventual Consistency, компенсационные транзакции
             \item Доменные события (domain events)
             \item Паттерн <<Command and Query Responsibility Segregation>> (CQRS)
             \item Event Sourcing
             \item Асинхронные, идемпотентные операции
             \item Шардирование
+            \item Eventual Consistency, компенсационные транзакции
         \end{itemize}
     \end{frame}
 
@@ -480,6 +480,34 @@ CMD ["python", "app.py"]
     \end{frame}
 
     \begin{frame}[fragile]
+        \frametitle{Двухфазная сборка}
+        \begin{scriptsize}
+            \begin{minted}{html}
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["ConferenceRegistration/ConferenceRegistration.csproj", "ConferenceRegistration/"]
+RUN dotnet restore "ConferenceRegistration/ConferenceRegistration.csproj"
+COPY . .
+WORKDIR "/src/ConferenceRegistration"
+RUN dotnet build "ConferenceRegistration.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "ConferenceRegistration.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ConferenceRegistration.dll"]
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}[fragile]
         \frametitle{Docker Compose}
         \begin{scriptsize}
             \begin{minted}{yaml}
@@ -543,7 +571,6 @@ networks:
         \frametitle{Архитектура Kubernetes}
         \begin{center}
             \includegraphics[width=0.8\textwidth]{kubernetesArchitecture.png}
-            \hspace{1cm}
             \attribution{\url{https://ru.wikipedia.org/wiki/Kubernetes}}
         \end{center}
     \end{frame}
@@ -552,7 +579,6 @@ networks:
         \frametitle{Объекты Kubernetes}
         \begin{center}
             \includegraphics[width=0.4\textwidth]{kubernetesObjects.png}
-            \hspace{1cm}
             \attribution{J. Arundel, J. Domingus, Cloud Native DevOps with Kubernetes}
         \end{center}
     \end{frame}
@@ -601,7 +627,6 @@ kubectl apply -f k8s/deployment.yaml
         \frametitle{Сервисы}
         \begin{center}
             \includegraphics[width=0.4\textwidth]{kubernetesServices.png}
-            \hspace{1cm}
             \attribution{J. Arundel, J. Domingus, Cloud Native DevOps with Kubernetes}
         \end{center}
     \end{frame}
@@ -619,7 +644,7 @@ metadata:
 spec:
   ports:
   - port: 9999
-   protocol: TCP
+    protocol: TCP
     targetPort: 8888
   selector:
     app: demo
@@ -650,11 +675,14 @@ livenessProbe:
                     \end{minted}
                 \end{scriptsize}
             \item Blue/green deployment, rainbow deployment, canary deployment
-            \item Метрики: RED, USE
+            \begin{itemize}
+                \item Не используйте тэг latest для Docker-образов
+            \end{itemize}
             \item Используйте инструменты
             \begin{itemize}
-                \item Helm
+                \item Helm, Kubernetes Dashboard и аналоги, Prometheus, Clair, Velero, ...
             \end{itemize}
+            \item Метрики: Requests-Errors-Duration, Utilization-Saturation-Errors
         \end{itemize}
     \end{frame}
 
