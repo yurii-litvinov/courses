@@ -16,80 +16,83 @@
 \tabulinesep=0.7mm
 
 \newcommand{\attribution}[1] {
-	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
 }
 
-\title{Примеры архитектур}
+\title{Практика 10: примеры архитектур}
+\subtitle{Системы контроля версий}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
-\date{11.03.2020г}
+\date{21.03.2022}
 
 \begin{document}
-	
-	\frame{\titlepage}
+    
+\frame{\titlepage}
 
-	\section{Git}
+    \section{Введение}
 
-	\begin{frame}
-		\frametitle{Краткая история систем контроля версий}
-		\begin{itemize}
-			\item 1975 -- SCCS (Source Code Control System)
-			\begin{itemize}
-				\item Дельты
-			\end{itemize}
-			\item 1982 -- RCS (Revision Control System)
-			\begin{itemize}
-				\item С открытым исходным кодом (до сих пор поддерживается GNU)
-			\end{itemize}
-			\item 1986 -- CVS (Concurrent Versioning System)
-			\begin{itemize}
-				\item Одновременное редактирование, мерджи, ветки, тэги, удалённые репозитории
-			\end{itemize}
-			\item 2000 -- SVN (Subversion)
-			\item 2005 --- Git, Mercurial, Bazaar
-			\begin{itemize}
-				\item Распределённые
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Краткая история систем контроля версий}
+        \begin{itemize}
+            \item 1975 -- SCCS (Source Code Control System)
+            \begin{itemize}
+                \item Дельты
+            \end{itemize}
+            \item 1982 -- RCS (Revision Control System)
+            \begin{itemize}
+                \item С открытым исходным кодом (до сих пор поддерживается GNU)
+            \end{itemize}
+            \item 1986 -- CVS (Concurrent Versioning System)
+            \begin{itemize}
+                \item Одновременное редактирование, мерджи, ветки, тэги, удалённые репозитории
+            \end{itemize}
+            \item 2000 -- SVN (Subversion)
+            \item 2005 --- Git, Mercurial, Bazaar
+            \begin{itemize}
+                \item Распределённые
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Git\footnote{\tiny{По гл. 10 \url{https://git-scm.com/book} и \url{http://aosabook.org/en/git.html}}}}
-		\begin{itemize}
-			\item Распределённая VCS
-			\item Linus Torvalds, 2005 год, драма с BitKeeper
-			\item Architectural drivers
-			\begin{itemize}
-				\item Распределённая разработка с тысячей коммитеров
-				\item Защита от порчи исходников
-				\begin{itemize}
-					\item Возможность отменить мердж, смерджиться вручную
-				\end{itemize}
-				\item Высокая скорость работы
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \section{Git}
 
-	\begin{frame}
-		\frametitle{Внутреннее устройство Git}
-		Структура папки .git:
-		\begin{itemize}
-			\item HEAD
-			\item index
-			\item config
-			\item description
-			\item hooks/
-			\item info/
-			\item objects/
-			\item refs/
-			\item ...
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Git\footnote{\tiny{По гл. 10 \url{https://git-scm.com/book} и \url{http://aosabook.org/en/git.html}}}}
+        \begin{itemize}
+            \item Распределённая VCS
+            \item Linus Torvalds, 2005 год, драма с BitKeeper
+            \item Architectural drivers
+            \begin{itemize}
+                \item Распределённая разработка с тысячей коммитеров
+                \item Защита от порчи исходников
+                \begin{itemize}
+                    \item Возможность отменить мердж, смерджиться вручную
+                \end{itemize}
+                \item Высокая скорость работы
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Объекты}
-		Git внутри --- хеш-таблица, отображающая SHA-1-хеш файла в содержимое файла. Пример:
-		\begin{minted}{text}
+    \begin{frame}
+        \frametitle{Внутреннее устройство Git}
+        Структура папки .git:
+        \begin{itemize}
+            \item HEAD
+            \item index
+            \item config
+            \item description
+            \item hooks/
+            \item info/
+            \item objects/
+            \item refs/
+            \item ...
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Объекты}
+        Git внутри --- хеш-таблица, отображающая SHA-1-хеш файла в содержимое файла. Пример:
+        \begin{minted}{text}
 $ git init test
 Initialized empty Git repository in /tmp/test/.git/
 $ cd test
@@ -103,19 +106,19 @@ d670460b4b4aece5915caf5c68d12f560a9fe3e4
 
 $ find .git/objects -type f
 .git/objects/d6/70460b4b4aece5915caf5c68d12f560a9fe3e4
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Объекты (2)}
-		Как получить сохранённый объект:
-		\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Объекты (2)}
+        Как получить сохранённый объект:
+        \begin{minted}{text}
 $ git cat-file -p d670460b4b4aece5915caf5c68d12f560a9fe3e4
 test content
-		\end{minted}
+        \end{minted}
 
-		Версионный контроль:
-		\begin{minted}{text}
+        Версионный контроль:
+        \begin{minted}{text}
 $ echo 'version 1' > test.txt
 $ git hash-object -w test.txt
 83baae61804e65cc73a7201a7252750c76066a30
@@ -126,52 +129,52 @@ $ find .git/objects -type f
 .git/objects/1f/7a7a472abf3dd9643fd615f6da379c4acb3e3a
 .git/objects/83/baae61804e65cc73a7201a7252750c76066a30
 .git/objects/d6/70460b4b4aece5915caf5c68d12f560a9fe3e4
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Объекты (3)}
-		Переключение между версиями файла:
-		\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Объекты (3)}
+        Переключение между версиями файла:
+        \begin{minted}{text}
 $ git cat-file -p 83baae61804e65cc73a7201a7252750c76066a30 \
-    > test.txt
+> test.txt
 $ cat test.txt
 version 1
 
 $ git cat-file -p 1f7a7a472abf3dd9643fd615f6da379c4acb3e3a \
-    > test.txt
+> test.txt
 $ cat test.txt
 version 2
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Деревья}
-		blob (то, что мы видели раньше) хранит только содержимое файла, не хранит даже его имя. Решение проблемы --- tree:
-		\begin{scriptsize}
-		\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Деревья}
+        blob (то, что мы видели раньше) хранит только содержимое файла, не хранит даже его имя. Решение проблемы --- tree:
+        \begin{scriptsize}
+        \begin{minted}{text}
 $ git cat-file -p master^{tree}
 100644 blob a906cb2a4a904a152e80877d4088654daad0c859      README
 100644 blob 8f94139338f9404f26296befa88755fc2598c289      Rakefile
 040000 tree 99f1a6d12cb4b6f19c8655fca46c3ecf317074e0      lib
-		\end{minted}
-		\end{scriptsize}
-		\begin{center}
-			\includegraphics[width=0.5\textwidth]{gitTreeObject.png}
-		\end{center}
-	\end{frame}
+        \end{minted}
+        \end{scriptsize}
+        \begin{center}
+            \includegraphics[width=0.5\textwidth]{gitTreeObject.png}
+        \end{center}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Какие ещё виды объектов бывают}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{gitDataStructure.png}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Какие ещё виды объектов бывают}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{gitDataStructure.png}
+        \end{center}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Коммиты}
-		tree-объекты могут хранить структуру файлов (как inode в файловой системе), но не хранят метаинформацию типа автора файла и даты создания. Это хранится в commit-объектах:
-		\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Коммиты}
+        tree-объекты могут хранить структуру файлов (как inode в файловой системе), но не хранят метаинформацию типа автора файла и даты создания. Это хранится в commit-объектах:
+        \begin{minted}{text}
 $ echo 'first commit' | git commit-tree d8329f
 fdf4fc3344e67ab068f836878b6c4951e3b15f3d
 
@@ -181,75 +184,75 @@ author Scott Chacon <schacon@gmail.com> 1243040974 -0700
 committer Scott Chacon <schacon@gmail.com> 1243040974 -0700
 
 first commit
-		\end{minted}
-		Ещё коммит хранит список коммитов-родителей
-	\end{frame}
+        \end{minted}
+        Ещё коммит хранит список коммитов-родителей
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Коммиты, как это выглядит}
-		\begin{center}
-			\includegraphics[width=0.7\textwidth]{gitCommitObjects.png}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Коммиты, как это выглядит}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{gitCommitObjects.png}
+        \end{center}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Ссылки}
-		Теперь вся информация хранится на диске, но чтобы ей воспользоваться, нужно помнить SHA-1 хеши. На помощь приходят reference-ы. 
+    \begin{frame}[fragile]
+        \frametitle{Ссылки}
+        Теперь вся информация хранится на диске, но чтобы ей воспользоваться, нужно помнить SHA-1 хеши. На помощь приходят reference-ы. 
 
-		\begin{itemize}
-			\item .git/refs
-			\item .git/refs/heads
-			\item .git/refs/tags
-		\end{itemize}
+        \begin{itemize}
+            \item .git/refs
+            \item .git/refs/heads
+            \item .git/refs/tags
+        \end{itemize}
 
-		\begin{minted}{text}
+        \begin{minted}{text}
 $ echo "1a410efbd13591db07496601ebc7a059dd55cfe9" \
-    > .git/refs/heads/master
+> .git/refs/heads/master
 
 $ git log --pretty=oneline master
 1a410efbd13591db07496601ebc7a059dd55cfe9 third commit
 cac0cab538b970a37ea1e769cbbde608743bc96d second commit
 fdf4fc3344e67ab068f836878b6c4951e3b15f3d first commit
-		\end{minted}
-		\begin{itemize}
-			\item Команда \verb|git update-ref|
-		\end{itemize}
-	\end{frame}
+        \end{minted}
+        \begin{itemize}
+            \item Команда \verb|git update-ref|
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Ссылки, как это выглядит}
-		\begin{center}
-			\includegraphics[width=0.9\textwidth]{gitRefs.png}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Ссылки, как это выглядит}
+        \begin{center}
+            \includegraphics[width=0.9\textwidth]{gitRefs.png}
+        \end{center}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{HEAD}
-		Теперь не надо помнить хеши, но как переключаться между ветками?
+    \begin{frame}[fragile]
+        \frametitle{HEAD}
+        Теперь не надо помнить хеши, но как переключаться между ветками?
 
-		Текущая ветка хранится в HEAD. HEAD --- символическая ссылка, то есть ссылка на другую ссылку.
-		\begin{minted}{text}
+        Текущая ветка хранится в HEAD. HEAD --- символическая ссылка, то есть ссылка на другую ссылку.
+        \begin{minted}{text}
 $ cat .git/HEAD
 ref: refs/heads/master
 
 $ git symbolic-ref HEAD refs/heads/test
 $ cat .git/HEAD
 ref: refs/heads/test
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Тэги}
-		Последний из объектов в Git --- tag. Это просто указатель на коммит.
-		\begin{footnotesize}
-			\begin{itemize}
-				\item Легковесный тэг:
-					\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Тэги}
+        Последний из объектов в Git --- tag. Это просто указатель на коммит.
+        \begin{footnotesize}
+            \begin{itemize}
+                \item Легковесный тэг:
+                    \begin{minted}{text}
 git update-ref refs/tags/v1.0 cac0cab538b970a37ea1e769cbbde608743bc96d
-					\end{minted}
-					Или просто git tag
-				\item Аннотированный тэг:
-					\begin{minted}{text}
+                    \end{minted}
+                    Или просто git tag
+                \item Аннотированный тэг:
+                    \begin{minted}{text}
 $ git tag -a v1.1 1a410efbd13591db07496601ebc7a059dd55cfe9 -m 'test tag'
 
 $ git cat-file -p 9585191f37f7b0fb9444f35a9bf50de191beadc2
@@ -259,16 +262,16 @@ tag v1.1
 tagger Scott Chacon <schacon@gmail.com> Sat May 23 16:48:58 2009 -0700
 
 test tag
-					\end{minted}
-			\end{itemize}
-		\end{footnotesize}
-	\end{frame}
+                    \end{minted}
+            \end{itemize}
+        \end{footnotesize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Packfiles}
-		Пока что получалось, что все версии всех файлов в Git хранятся целиком, как они есть. Все они всегда сжимаются zlib, но в целом, если создать репозиторий, добавлять туда файлы, коммитить и т.д., все версии всех файлов будут в нём целиком. На помощь приходят .pack-файлы:
-		\begin{footnotesize}
-			\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Packfiles}
+        Пока что получалось, что все версии всех файлов в Git хранятся целиком, как они есть. Все они всегда сжимаются zlib, но в целом, если создать репозиторий, добавлять туда файлы, коммитить и т.д., все версии всех файлов будут в нём целиком. На помощь приходят .pack-файлы:
+        \begin{footnotesize}
+            \begin{minted}{text}
 $ git gc
 Counting objects: 18, done.
 Delta compression using up to 8 threads.
@@ -282,38 +285,38 @@ $ find .git/objects -type f
 .git/objects/info/packs
 .git/objects/pack/pack-978e03944f5c581011e6998cd0e9e30000905586.idx
 .git/objects/pack/pack-978e03944f5c581011e6998cd0e9e30000905586.pack
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Как оно устроено}
-		\begin{center}
-			\includegraphics[width=0.6\textwidth]{gitPackFiles.png}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Как оно устроено}
+        \begin{center}
+            \includegraphics[width=0.6\textwidth]{gitPackFiles.png}
+        \end{center}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Pack-файлы, подробности}
-		\begin{itemize}
-			\item Упаковка происходит, когда:
-			\begin{itemize}
-				\item Выполняется git push
-				\item Слишком много <<свободных>> объектов (порядка 7000)
-				\item Вручную вызвана git gc
-			\end{itemize}
-			\item Используется дельта-компрессия
-			\begin{itemize}
-				\item Последняя версия хранится целиком, дельты <<идут назад>>
-			\end{itemize}
-			\item Можно заглянуть внутрь, git verify-pack
-			\item Git может хитро перепаковывать pack-файлы
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Pack-файлы, подробности}
+        \begin{itemize}
+            \item Упаковка происходит, когда:
+            \begin{itemize}
+                \item Выполняется git push
+                \item Слишком много <<свободных>> объектов (порядка 7000)
+                \item Вручную вызвана git gc
+            \end{itemize}
+            \item Используется дельта-компрессия
+            \begin{itemize}
+                \item Последняя версия хранится целиком, дельты <<идут назад>>
+            \end{itemize}
+            \item Можно заглянуть внутрь, git verify-pack
+            \item Git может хитро перепаковывать pack-файлы
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Reflog и восстановление коммитов}
-			\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Reflog и восстановление коммитов}
+            \begin{minted}{text}
 $ git reflog
 1a410ef HEAD@{0}: reset: moving to 1a410ef
 ab1afef HEAD@{1}: commit: modified repo.rb a bit
@@ -326,15 +329,15 @@ Reflog message: updating HEAD
 Author: Scott Chacon <schacon@gmail.com>
 Date:   Fri May 22 18:22:37 2009 -0700
 
-    third commit
+third commit
 $ git branch recover-branch ab1afef
-			\end{minted}
-	\end{frame}
+            \end{minted}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Как более капитально прострелить себе ногу}
-		\framesubtitle{И что делать}
-		\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Как более капитально прострелить себе ногу}
+        \framesubtitle{И что делать}
+        \begin{minted}{text}
 $ git branch -D recover-branch
 $ rm -Rf .git/logs/
 
@@ -345,688 +348,279 @@ dangling blob d670460b4b4aece5915caf5c68d12f560a9fe3e4
 dangling commit ab1afef80fac8e34258ff41fc1b867c702daa24b
 dangling tree aea790b9a58f6cf6f2804eeac9f0abbe9631e4c9
 dangling blob 7108f7ecb345ee9d0084193f147cdad4d2998293
-		\end{minted}
-		Git не удалит даже <<висячие>> объекты несколько месяцев, если его явно не попросить.
-	\end{frame}
+        \end{minted}
+        Git не удалит даже <<висячие>> объекты несколько месяцев, если его явно не попросить.
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Lessons Learned}
-		\begin{itemize}
-			\item Команды реализовывались как набор шелл-скриптов
-			\begin{itemize}
-				\item Не портировать под Windows
-				\item Сложно интегрировать с IDE
-				\item В итоге замедлило внедрение git-а
-				\item В итоге побеждено
-			\end{itemize}
-			\item Большой набор команд (включая plumbing) делает Git тяжёлым для изучения и усложняет сообщения об ошибках
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Lessons Learned}
+        \begin{itemize}
+            \item Команды реализовывались как набор шелл-скриптов
+            \begin{itemize}
+                \item Не портировать под Windows
+                \item Сложно интегрировать с IDE
+                \item Замедлило внедрение git-а
+            \end{itemize}
+            \item Большой набор команд (включая plumbing) делает Git тяжёлым для изучения и усложняет сообщения об ошибках
+        \end{itemize}
+    \end{frame}
 
-	\section{Mercurial}
+    \section{Mercurial}
 
-	\begin{frame}
-		\frametitle{Mercurial\footnote{\tiny{По \url{http://aosabook.org}}}}
-		\begin{itemize}
-			\item Python + C
-			\item Распределённая VCS
-			\item Architectural drivers
-			\begin{itemize}
-				\item Масштабные open-source-проекты (ядро Linux)
-				\begin{itemize}
-					\item Миллионы файлов
-					\item Миллионы ревизий
-					\item Тысячи пользователей, вносящих изменения параллельно в течение десятилетий
-				\end{itemize}
-				\item Компрессия хранилища данных
-				\item Эффективное получение произвольных ревизий
-				\item Эффективное добавление новых ревизий
-				\item Работа с историями файлов
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Mercurial\footnote{\tiny{По \url{http://aosabook.org}}}}
+        \begin{itemize}
+            \item Python + C
+            \item Распределённая VCS
+            \item Architectural drivers
+            \begin{itemize}
+                \item Масштабные open-source-проекты (ядро Linux)
+                \begin{itemize}
+                    \item Миллионы файлов
+                    \item Миллионы ревизий
+                    \item Тысячи пользователей, вносящих изменения параллельно в течение десятилетий
+                \end{itemize}
+                \item Компрессия хранилища данных
+                \item Эффективное получение произвольных ревизий
+                \item Эффективное добавление новых ревизий
+                \item Работа с историями файлов
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Revlog}
-		\begin{columns}
-			\begin{column}{0.6\textwidth}
-				\begin{itemize}
-					\item Каждый файл хранится в виде набора ревизий
-					\item Ревизии хранятся в виде дельт, иногда снапшоты файла целиком
-					\item Каждая ревизия описывается записью с форматом как на рисунке
-					\item Отдельно файл с дельтами (данные), отдельно файл с записями (индекс)
-					\item Сжатие zlib
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.4\textwidth}
-				\begin{center}
-					\includegraphics[width=0.8\textwidth]{revlog.png}
-				\end{center}
-			\end{column}
-		\end{columns}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Revlog}
+        \begin{columns}
+            \begin{column}{0.6\textwidth}
+                \begin{itemize}
+                    \item Каждый файл хранится в виде набора ревизий
+                    \item Ревизии хранятся в виде дельт, иногда снапшоты файла целиком
+                    \item Каждая ревизия описывается записью с форматом как на рисунке
+                    \item Отдельно файл с дельтами (данные), отдельно файл с записями (индекс)
+                    \item Сжатие zlib
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.4\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.8\textwidth]{revlog.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Структура revlog-ов}
-		\begin{itemize}
-			\item Сhangelog --- метаданные о ревизии + ссылка на манифест
-			\item Manifests --- список имён файлов в ревизии + для каждого ссылка на filelog
-			\item Filelog --- содержимое файлов ревизии + немного метаданных
-			\item Dirstate --- информация о рабочей копии, кеш дерева файлов
-			\item Обновление логов в фиксированном порядке, гарантирующее консистентность
-			\item Revlog-и хранятся тоже в виде дельт
-		\end{itemize}
-		\begin{center}
-			\includegraphics[width=0.5\textwidth]{mercurialLogStructure.png}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Структура revlog-ов}
+        \begin{itemize}
+            \item Сhangelog --- метаданные о ревизии + ссылка на манифест
+            \item Manifests --- список имён файлов в ревизии + для каждого ссылка на filelog
+            \item Filelog --- содержимое файлов ревизии + немного метаданных
+            \item Dirstate --- информация о рабочей копии, кеш дерева файлов
+            \item Обновление логов в фиксированном порядке, гарантирующее консистентность
+            \item Revlog-и хранятся тоже в виде дельт
+        \end{itemize}
+        \begin{center}
+            \includegraphics[width=0.5\textwidth]{mercurialLogStructure.png}
+        \end{center}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Как это выглядит}
-		Changelog:
-		\begin{minted}{text}
+    \begin{frame}[fragile]
+        \frametitle{Как это выглядит}
+        Changelog:
+        \begin{minted}{text}
 0a773e3480fe58d62dcc67bd9f7380d6403e26fa
 Dirkjan Ochtman <dirkjan@ochtman.nl>
 1276097267 -7200
 mercurial/discovery.py
 discovery: fix description line
-		\end{minted}
-		\vspace{3mm}
-		Manifest:
-		\begin{minted}{text}
+        \end{minted}
+        \vspace{3mm}
+        Manifest:
+        \begin{minted}{text}
 .hgignore\x006d2dc16e96ab48b2fcca44f7e9f4b8c3289cb701
 .hgsigs\x00de81f258b33189c609d299fd605e6c72182d7359
 .hgtags\x00b174a4a4813ddd89c1d2f88878e05acc58263efa
 CONTRIBUTORS\x007c8afb9501740a450c549b4b1f002c803c45193a
 COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
-		\end{minted}
-	\end{frame}
+        \end{minted}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Ревизии}
-		\begin{center}
-			\includegraphics[width=\textwidth]{mercurialRevisions.png}
-			\attribution{https://www.mercurial-scm.org/wiki/UnderstandingMercurial}
-		\end{center}
-		\begin{itemize}
-			\item Локальный номер ревизии
-			\begin{itemize}
-				\item Доступ за константное время к узлу в revlog-е
-			\end{itemize}
-			\item Глобальный SHA-1-хеш ревизии
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Ревизии}
+        \begin{center}
+            \includegraphics[width=\textwidth]{mercurialRevisions.png}
+            \attribution{https://www.mercurial-scm.org/wiki/UnderstandingMercurial}
+        \end{center}
+        \begin{itemize}
+            \item Локальный номер ревизии
+            \begin{itemize}
+                \item Доступ за константное время к узлу в revlog-е
+            \end{itemize}
+            \item Глобальный SHA-1-хеш ревизии
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Ветки}
-		\begin{columns}
-			\begin{column}{0.6\textwidth}
-				\begin{enumerate}
-					\item Cоздание ветки через клонирование репозитория
-					\item Bookmarks --- объекты-ссылки в духе git
-					\item Именованные ветки --- имя ветки в метаданных ревизии
-					\item Анонимные ветки
-				\end{enumerate}
-				\begin{itemize}
-					\item Тэги хранятся как версионируемый файл .hgtags в репозитории
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.4\textwidth}
-				\includegraphics[width=\textwidth]{mercurialBranches.png}
-			\end{column}
-		\end{columns}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Ветки}
+        \begin{columns}
+            \begin{column}{0.6\textwidth}
+                \begin{enumerate}
+                    \item Cоздание ветки через клонирование репозитория
+                    \item Bookmarks --- объекты-ссылки в духе git
+                    \item Именованные ветки --- имя ветки в метаданных ревизии
+                    \item Анонимные ветки
+                \end{enumerate}
+                \begin{itemize}
+                    \item Тэги хранятся как версионируемый файл .hgtags в репозитории
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.4\textwidth}
+                \includegraphics[width=\textwidth]{mercurialBranches.png}
+            \end{column}
+        \end{columns}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Статическая структура}
-		\begin{columns}
-			\begin{column}{0.4\textwidth}
-				\begin{itemize}
-					\item Один модуль --- один файл
-					\item CLI
-					\item Одна команда --- одна функция, все в одном файле
-					\item Хеш-таблица, отображающая имена команд на функции
-					\item Опции, общие наборы опций
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.6\textwidth}
-				\includegraphics[width=\textwidth]{mercurialImportGraph.png}
-			\end{column}
-		\end{columns}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Статическая структура}
+        \begin{columns}
+            \begin{column}{0.4\textwidth}
+                \begin{itemize}
+                    \item Один модуль --- один файл
+                    \item CLI
+                    \item Одна команда --- одна функция, все в одном файле
+                    \item Хеш-таблица, отображающая имена команд на функции
+                    \item Опции, общие наборы опций
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.6\textwidth}
+                \includegraphics[width=\textwidth]{mercurialImportGraph.png}
+            \end{column}
+        \end{columns}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Расширяемость}
-		\begin{itemize}
-			\item Модули расширения
-			\begin{itemize}
-				\item Новые команды
-				\begin{itemize}
-					\item cmdtable, uisetup, reposetup
-				\end{itemize}
-				\item Обёртки над существующими командами
-				\item Обёртки над репозиторием
-				\item Обёртки над любой функцией Mercurial
-				\item Новые типы репозиториев (например, hgsubversion)
-				\item Алиасы
-			\end{itemize}
-			\item hooks
-			\begin{itemize}
-				\item Вызов шелл-скрипта
-				\item Вызов Python-функции
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Расширяемость}
+        \begin{itemize}
+            \item Модули расширения
+            \begin{itemize}
+                \item Новые команды
+                \begin{itemize}
+                    \item cmdtable, uisetup, reposetup
+                \end{itemize}
+                \item Обёртки над существующими командами
+                \item Обёртки над репозиторием
+                \item Обёртки над любой функцией Mercurial
+                \item Новые типы репозиториев (например, hgsubversion)
+                \item Алиасы
+            \end{itemize}
+            \item hooks
+            \begin{itemize}
+                \item Вызов шелл-скрипта
+                \item Вызов Python-функции
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Lessons Learned}
-		\begin{itemize}
-			\item Python: и хорошо, и плохо
-			\item Намеренно сложно модифицировать changeset после публикации
-			\item Revlogs + модель данных -- хорошо и эффективно
-			\item Небольшое количество основных команд помогает легче научиться
-			\item .hgtags оказался внезапен для пользователей
-			\item Люди впервые знакомились с Python, чтобы писать расширения для mercurial, потому что это просто
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Lessons Learned}
+        \begin{itemize}
+            \item Python: и хорошо, и плохо
+            \item Намеренно сложно модифицировать changeset после публикации, что плохо для локальной работы
+            \item Revlogs + модель данных -- хорошо и эффективно, но не дружат с переименованиями
+            \item Небольшое количество основных команд помогает легче научиться
+            \item .hgtags оказался внезапен для пользователей
+            \item Люди впервые знакомились с Python, чтобы писать расширения для mercurial, потому что это просто
+        \end{itemize}
+    \end{frame}
 
-	\section{Log4j/SLF4J}
+    \section{Subversion}
 
-	\begin{frame}
-		\frametitle{Log4j, логирование}
-		\begin{itemize}
-			\item Отладочный вывод --- дешёвая альтернатива отладке
-			\begin{itemize}
-				\item Иногда быстрее вставить отладочную печать, чем проходить отладчиком
-				\item Иногда отладчик недоступен или бесполезен
-				\begin{itemize}
-					\item Многопоточные и распределённые приложения
-					\item Встроенные системы
-				\end{itemize}
-			\end{itemize}
-			\item Post-mortem-анализ
-			\begin{itemize}
-				\item ``Отладочный вывод'' должен работать и на развёрнутой системе
-				\item И выводить не в консоль
-				\item И обеспечивать информацию о контексте
-			\end{itemize}
-			\item Примерно 4\% кода типичных проектов связано с логированием
-			\item Стратегическая расстановка операций логирования --- важная часть архитектуры
-		\end{itemize}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Subversion\footnote{\tiny{По \url{http://svnbook.red-bean.com/en/1.7/svn-book.html}}}}
+        \begin{itemize}
+            \item Написана на C
+            \item Централизованная VCS
+            \item Architectural drivers
+            \begin{itemize}
+                \item починить CVS
+                \item не поддерживать обратную совместимость с CVS, но сделать переход по возможности безболезненным
+                \item развивать проект как open source
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Apache Log4j 2, основные понятия}
-		\begin{description}
-			\item [Logger] --- штука, которая может что-то куда-то выводить (на самом деле, производить логирующие события)
-			\item [LoggerConfig] --- управляет поведением логгера
-			\item [LogManager] --- создаёт, хранит и выдаёт по запросу логгеры
-			\item [Filter] --- фильтрует логирующие события, говоря, надо или не надо их куда-то выводить
-			\item [Appender] --- на самом деле выводит информацию куда-то (в файл, на консоль, в системный лог и т.д.)
-			\item [Layout] --- говорит, в каком формате и какую информацию о событии следует выводить
-		\end{description}
-		\begin{center}Вся конфигурация --- иерархическая\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Архитектура}
+        \begin{center}
+            \includegraphics[height=0.8\textheight]{subversionArchitecture.png}
+        \end{center}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Архитектура}
-		\begin{center}
-			\includegraphics[width=0.8\textwidth]{log4jClasses.jpg}
-		\end{center}
-	\end{frame}
+    \begin{frame}
+        \frametitle{Ревизии и репозиторий}
+        \begin{itemize}
+            \item Ревизии имеют уникальный числовой номер
+            \begin{itemize}
+                \item Хранятся в виде обратных дельт со снапшотами
+            \end{itemize}
+            \item Номер ревизии --- свойство всего репозитория, а не файла
+            \item В рабочей копии ревизии разных файлов могут быть разными
+            \item Коммиты атомарны
+            \item Единое дерево исходников
+            \begin{itemize}
+                \item trunk
+                \item branches
+                \item tags
+            \end{itemize}
+            \item Ветка и тэг --- не более чем копия папки
+            \item Репозиторий не хранит копии одного файла
+            \item Можно чекаутить конкретную папку
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример}
-		\begin{minted}{java}
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
- 
-public class HelloWorld {
-    private static final Logger logger 
-            = LogManager.getLogger("HelloWorld");
-    public static void main(String[] args) {
-        logger.info("Hello, World!");
-    }
-}
-		\end{minted}
-\end{frame}
+    \begin{frame}
+        \frametitle{Структура репозитория}
+        \begin{itemize}
+            \item conf/ --- папка с конфигурационными файлами
+            \item db/ --- хранилище версионируемых данных
+            \begin{itemize}
+                \item BerkleyDB или FSFS
+            \end{itemize}
+            \item format --- описывает организацию репозитория
+            \item hooks/ --- папка со скриптами-хуками
+            \item locks/ --- замки для управления одновременным доступом
+            \item README.txt --- файл, в котором написано, что это репозиторий Subversion
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}[fragile]
-		\frametitle{Пример конфигурации}
-		\begin{minted}{xml}
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration monitorInterval="30">
-  <Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern=
-          "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="Console"/>
-    </Root>
-  </Loggers>
-</Configuration>
-		\end{minted}
-\end{frame}
+    \begin{frame}[fragile]
+        \frametitle{Свойства}
+        \begin{itemize}
+            \item Свойства --- пары ``ключ-значение'', которые хранятся вместе с файлами, папками или ревизиями
+            \item Ключ --- строка из ASCII-символов, значение --- либой массив байтов
+            \item Версионируются как данные в самих файлах
+            \item Активно используются самой Subversion и тулами
+            \begin{itemize}
+                \item Например, \verb|svn:ignore|, \verb|svn:eol-style|
+            \end{itemize}
+            \item Например, для набора изображений можно хранить в свойствах описание, дату и даже thumbnail
+        \end{itemize}
+    \end{frame}
 
-	\begin{frame}
-		\frametitle{Куда это писать}
-		Log4j ищет конфигурации в следующих местах в следующем порядке:
-		\begin{itemize}
-			\item Системное свойство ``log4j.configurationFile'' (указывается при запуске опцией -D)
-			\item log4j2-test.properties в classpath
-			\item log4j2-test.yaml или log4j2-test.yml в classpath
-			\item log4j2-test.json или log4j2-test.jsn в classpath
-			\item log4j2-test.xml в classpath
-			\item log4j2.properties в classpath
-			\item log4j2.yaml или log4j2.yml в classpath
-			\item log4j2.json или log4j2.jsn в classpath
-			\item log4j2.xml в classpath
-			\item Иначе используется DefaultConfiguration, которая выводит на консоль
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Уровни и маркеры}
-		Уровни логирования: \textbf{TRACE}, \textbf{DEBUG}, \textbf{INFO}, \textbf{WARN}, \textbf{ERROR}, \textbf{FATAL}, \textbf{OFF}
-
-		Маркеры --- способ тонкой настройки информации, которую хочется выводить. Пример:
-		\begin{minted}{java}
-private static final Marker SQL_MARKER 
-        = MarkerManager.getMarker("SQL");
-
-private static final Marker QUERY_MARKER 
-        = MarkerManager.getMarker("SQL_QUERY")
-                       .setParents(SQL_MARKER);
-...
-logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
-		\end{minted}
-\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Синтаксис конфигурации (1)}
-		\begin{minted}{xml}
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
-  <Properties>
-    <Property name="name1">value</property>
-    <Property name="name2" value="value2"/>
-  </Properties>
-  <Filter type="type" ... />
-  <Appenders>
-    <Appender type="type" name="name">
-      <Filter type="type" ... />
-    </Appender>
-    ...
-  </Appenders>
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Синтаксис конфигурации (2)}
-		\begin{minted}{xml}
-  <Loggers>
-    <Logger name="name1">
-      <Filter type="type" ... />
-    </Logger>
-    ...
-    <Root level="level">
-      <AppenderRef ref="name"/>
-    </Root>
-  </Loggers>
-</Configuration>
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Appenders}
-		\begin{description}
-			\item [Console] --- выводит в SYSTEM\_OUT или SYSTEM\_ERR
-			\item [File] --- выводит в указанный файл
-			\item [RollingFile] --- выводит в указанный файл, создавая новые файлы и удаляя старые при необходимости
-			\begin{itemize}
-				\item TriggeringPolicy --- когда переходить к следующему файлу и что-то делать с предыдущими
-				\begin{itemize}
-					\item При запуске, по времени, по размеру, по дате/часу
-				\end{itemize}
-				\item RolloverStrategy --- что делать с файлами
-				\begin{itemize}
-					\item По шаблону (хитро), с указанием максимума хранимых файлов, кого удалять, сжатие логов
-				\end{itemize}
-			\end{itemize}
-			\item [Ещё штук 20]
-		\end{description}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Пример конфигурации}
-		\begin{footnotesize}
-			\begin{minted}{xml}
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration name="MyApp">
-  <Appenders>
-    <RollingFile name="RollingFile" 
-        fileName="logs/app.log"
-        filePattern=
-          "logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-    </RollingFile>
-  </Appenders>
-  ...
-</Configuration>
-			\end{minted}
-		\end{footnotesize}
-\end{frame}
-
-	\begin{frame}
-		\frametitle{Patterns}
-		\begin{tabu} {| X[0.2 l p] | X[1 l p] |}
-			\tabucline-
-			\everyrow{\tabucline-}
-			c/logger   & Имя логгера                                    \\
-			C/class    & Имя класса, который вывел сообщение            \\
-			d/date     & Дата и время                                   \\
-			p/level    & Уровень логирующего события (TRACE, INFO, ...) \\
-			t/thread   & Имя потока, в котором произошло событие        \\
-			m/message  & Собственно, сообщение из программы             \\
-			n          & Перевод строки                                 \\
-			marker     & Полное имя маркера                             \\
-			L/line     & Строка, где вызвали логгер                     \\
-			highlight  & Штука, позволяющая управлять цветом вывода     \\
-		\end{tabu}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Как это выглядит в коде}
-		Неправильно:
-		\begin{minted}{java}
-if (logger.isDebugEnabled()) {
-    logger.debug("Logging in user " + user.getName() 
-            + " with birthday " + user.getBirthdayCalendar());
-}
-		\end{minted}
-
-		Правильно:
-		\begin{minted}{java}
-logger.debug("Logging in user {} with birthday {}"
-        , user.getName(), user.getBirthdayCalendar());
-		\end{minted}
-\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Длительные операции}
-		Неправильно:
-		\begin{minted}{java}
-if (logger.isTraceEnabled()) {
-    logger.trace("Some long-running operation returned {}", 
-            expensiveOperation());
-}
-		\end{minted}
-
-		Правильно:
-		\begin{minted}{java}
-logger.trace("Some long-running operation returned {}", 
-        () -> expensiveOperation());
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Flow Tracing}
-		\begin{minted}{java}
-public void setMessages(String[] messages) {
-    logger.traceEntry(new JsonMessage(messages));
-    this.messages = messages;
-    logger.traceExit();
-}
-
-public String retrieveMessage() {
-    logger.entry();
-    String testMsg = getMessage(getKey());
-    return logger.exit(testMsg);
-}
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{ThreadContext}
-		\textbf{ThreadContext} --- Map со значениями, локальными для потока или для контекста, которые можно использовать в логах:
-		\begin{minted}{java}
-ThreadContext.put("id", UUID.randomUUID().toString());
-ThreadContext.put("ipAddress", request.getRemoteAddr());
-...
-logger.debug("Message 1");
-...
-ThreadContext.clear();
-		\end{minted}
-		Шаблон \textbf{\%X} включает в лог всё, \textbf{\%X\{key\}} --- только значение с заданным ключом
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{SLF4J}
-		\framesubtitle{Simple Logging Facade for Java}
-		\begin{itemize}
-			\item Фасад (на самом деле, прокси) для библиотек логирования
-			\item Нужен, чтобы код не зависел от конкретной библиотеки логирования, а зависел только от легковесного фасада
-			\item Фасад, в свою очередь, использует ту библиотеку, которую нашёл в CLASSPATH при запуске
-			\item Работает очень быстро и позволяет не навязывать лишних зависимостей
-			\begin{itemize}
-				\item Особенно полезно в библиотечном коде
-				\item Спасает от ситуации, когда есть несколько компонентов, каждый из которых хочет свою библиотеку логирования
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Архитектура}
-		\begin{center}
-			\includegraphics[width=\textwidth]{slf4jBindings.png}
-		\end{center}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Пример}
-		\begin{footnotesize}
-			\begin{minted}{java}
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class Wombat {
-  private final Logger logger = LoggerFactory.getLogger(Wombat.class);
-  private Integer t;
-  private Integer oldT;
-
-  public void setTemperature(Integer temperature) {
-    oldT = t;
-    t = temperature;
-
-    logger.debug("Temperature set to {}. Old temperature was {}.", t, oldT);
-
-    if(temperature.intValue() > 50) {
-      logger.info("Temperature has risen above 50 degrees.");
-    }
-  }
-} 
-			\end{minted}
-		\end{footnotesize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{SLF4J}
-		\begin{itemize}
-			\item Умеет многое из того, что умеют ``настоящие'' библиотеки, так что можно просто выводить в лог, не задумываясь об API
-			\begin{itemize}
-				\item Формирование строк через \{\}
-				\item Маркеры
-			\end{itemize}
-			\item Чтобы всё работало, надо подключить:
-			\begin{itemize}
-				\item slf4j-api --- обязательно, и одно из:
-				\item slf4j-simple --- бэкенд ``из коробки'', умеет выводить в System.err
-				\item log4j-slf4j-impl --- для использования Log4J в качестве бэкенда
-			\end{itemize}
-			\item Не забываем конфигурационный файл Log4J, если используем как бэкенд его
-		\end{itemize}
-	\end{frame}
-
-	\section{Wesnoth}
-
-	\begin{frame}
-		\frametitle{Battle for Wesnoth\footnote{\tiny{По \url{http://aosabook.org}}}}
-		\begin{columns}
-			\begin{column}{0.4\textwidth}
-				\begin{itemize}
-					\item Пошаговая стратегия
-					\item Порядка 200000 строк кода на C++
-					\item 4 миллиона скачиваний
-					\item 9/10 на Steam
-					\item 2003 год
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.6\textwidth}
-				\includegraphics[width=\textwidth]{wesnoth.png}
-				\attribution{https://www.wesnoth.org/}
-			\end{column}
-		\end{columns}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Architectural Drivers}
-		\begin{itemize}
-			\item Доступность для новых разработчиков и авторов контента
-			\item В ущерб технической красоте
-			\item Не nice to have, а условие выживания проекта в контексте широкого open-source сообщества из людей без каких-либо обязательств и разного технического уровня
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Высокоуровневая архитектура}
-		\begin{columns}
-			\begin{column}{0.6\textwidth}
-				\begin{itemize}
-					\item Wesnoth Markup Language (WML)
-					\item Минимизация зависимостей от сторонних библиотек
-					\begin{itemize}
-						\item SDL Simple Directmedia Layer) для видео и ввода/вывода
-						\begin{itemize}
-							\item Простота использования и кроссплатформенность
-						\end{itemize}
-						\item Boost, Pango, zlib, Python, Lua, GNU gettext
-					\end{itemize}
-				\end{itemize}
-			\end{column}
-			\begin{column}{0.4\textwidth}
-				\includegraphics[width=\textwidth]{wesnothArchitecture.png}
-			\end{column}
-		\end{columns}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Основные компоненты}
-		\begin{itemize}
-			\item Парсер и препроцессор WML
-			\item Базовый ввод-вывод --- видео, звук, сеть
-			\item GUI --- виджеты
-			\item Display module --- игровая доска, юниты, анимация и т.д.
-			\item ИИ
-			\item Поиск пути (плюс утилиты для работы с гексагональной доской)
-			\item Генератор карт
-			\item Специализированные модули
-			\begin{itemize}
-				\item Титульный экран
-				\item Storyline module --- для проигрывания катсцен
-				\item Лобби --- для мультиплеера
-				\item ``Play game'' module --- управление основным игровым процессом
-			\end{itemize}
-			\item Отдельно --- wesnothd и content server
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Wesnoth Markup Language}
-		\begin{minted}{text}
-[unit_type]
-    id=Elvish Fighter
-    name= _ "Elvish Fighter"
-    image="units/elves-wood/fighter.png"
-    hitpoints=33
-    advances_to=Elvish Captain,Elvish Hero
-    {LESS_NIMBLE_ELF}
-    [attack]
-        name=sword
-        icon=attacks/sword-elven.png
-        range=melee
-        damage=5
-    [/attack]
-[/unit_type]
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}[fragile]
-		\frametitle{Макросы}
-		\begin{minted}{c++}
-#define GOLD EASY_AMOUNT NORMAL_AMOUNT HARD_AMOUNT
-  #ifdef EASY
-    gold={EASY_AMOUNT}
-  #endif
-  #ifdef NORMAL
-    gold={NORMAL_AMOUNT}
-  #endif
-  #ifdef HARD
-    gold={HARD_AMOUNT}
-  #endif
-#enddef
-...
-{GOLD 50 100 200}
-		\end{minted}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Модель данных}
-		\begin{itemize}
-			\item Всё сливается в один гигантский WML-документ
-			\item Перезагружается при смене опций
-			\item Всякие хаки на уровне препроцессора, чтобы не грузить вообще всё
-			\item Классы unit и unit\_type (архитектурный стиль Knowledge Layer)
-			\item Фиксированный набор поддерживаемых движком атрибутов, задаваемых для каждого типа через WML
-			\begin{itemize}
-				\item Нельзя описывать произвольное поведение через WML, хотели сохранить декларативность
-			\end{itemize}
-			\item Класс attack\_type
-			\item Трейты, инвентарь
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Мультиплеер}
-		\begin{itemize}
-			\item Начальное состояние и команды
-			\item Сервер просто пересылает команды между клиентами
-			\begin{itemize}
-				\item TCP/IP
-			\end{itemize}
-			\item Replay
-			\item Никакой защиты от читов
-			\item Версии клиентов
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Lessons Learned}
-		\begin{itemize}
-			\item 250 тысяч строк на WML
-			\item Сотни созданных пользователями кампаний
-			\item 74 тысячи коммитов, 196 контрибуторов
-			\item Сами разработчики смеются над WML
-			\item В целом задача обеспечить доступность для модификации очень сложна
-		\end{itemize}
-	\end{frame}
+    \begin{frame}[fragile]
+        \frametitle{Проблемы и ограничения}
+        % См. https://en.wikipedia.org/wiki/Apache_Subversion
+        \begin{itemize}
+            \item Переименование реализовано как copy и delete, что смущает разрешение конфликтов
+            \item До версии 1.7 папки .svn хранились в каждой папке проекта
+            \item При чекауте не выставляются ``настоящие'' времена модификации файлов, используется время чекаута
+            \begin{itemize}
+                \item Неожиданно для пользователя, но полезно для make
+            \end{itemize}
+            \item ``Наивная'' поддержка веток и тэгов, делает невозможными некоторые операции
+            \begin{itemize}
+                \item Например, \verb|svn log -r tag1:tag2 myfile|
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
 \end{document}
