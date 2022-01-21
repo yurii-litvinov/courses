@@ -1,0 +1,71 @@
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[font=scriptsize]{caption}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+\usepackage{verse}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Практика 11: Практика по DDD}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+\date{18.04.2022}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\section{Задача, магазин книг}
+
+В командах по 2-3 человека надо проанализировать запрос \url{ https://goo.gl/94LyFc} и построить модель приложения согласно <<чистой архитектуре>> и канонам предметно-ориентированного проектирования.
+
+\begin{itemize}
+    \item Обратите внимание, это <<сырой>> Request For Proposals, некоторые требования там к заданию не относятся. Их надо выявить и обсудить.
+    \item Основное внимание надо уделить модели предметной области, внешние сущности (такие как средства доставки --- веб-интерфейс, интерфейс веб сервиса, или средства персистентности) должны упоминаться, но без деталей.
+    \item Необходима <<каноничная>> для чистой архитектуры высокоуровневая структура и явно выделенное смысловое ядро.
+\end{itemize}
+
+Что надо постараться успеть сделать за занятие:
+
+\begin{itemize}
+    \item диаграмму компонентов и диаграмму классов;
+    \begin{itemize}
+        \item лучше на одной диаграмме сразу;
+    \end{itemize}
+    \item как обычно, выложить результаты в репозиторий одного из членов команды, не забыв указать полный её состав;
+    \item успеть показать на проекторе и обсудить пару решений.
+\end{itemize}
+
+Обратите внимание, что помимо аккуратного проектирования будет оцениваться и полнота покрытия требований из RFP, и пунктуальность в синтаксисе UML.
+
+\end{document}

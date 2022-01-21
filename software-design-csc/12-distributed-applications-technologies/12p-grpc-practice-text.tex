@@ -1,0 +1,81 @@
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[font=scriptsize]{caption}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+\usepackage{verse}
+\usepackage{xcolor}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+
+\newcommand{\attribution}[1] {
+    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Практика 12: Сетевой чат на gRPC}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+\date{25.04.2022}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\section{Задание на практику}
+
+В командах по два человека разработать сетевой чат (наподобие Telegram) с помощью gRPC. При этом:
+
+\begin{itemize}
+    \item оно должно работать как peer-to-peer, то есть соединение напрямую, без всяких серверов;
+    \begin{itemize}
+        \item и клиент, и сервер должны быть одним и тем же приложением, работающим в разных режимах;
+        \item если приложение запускается с указанием только порта, оно становится сервером;
+        \item если IP и порта, то клиентом;
+        \item порт можно зафиксировать в коде и не просить у пользователя;
+    \end{itemize}
+    \item консольный пользовательский интерфейс;
+    \item отображение имени отправителя, даты отправки и текста сообщения;
+    \item при запуске указываются:
+    \begin{itemize}
+        \item адрес peer-а и порт, если хотим подключиться;
+        \begin{itemize}
+            \item должно быть можно не указывать, тогда работаем в режиме сервера;
+        \end{itemize}
+        \item своё имя пользователя.
+    \end{itemize}
+\end{itemize}
+
+Реализация допустима на любом языке программирования из поддержанных gRPC.
+
+Сдавать надо, приложив ссылку на пуллреквест из отдельной ветки в репозиторий одного из членов команды.
+
+\end{document}
