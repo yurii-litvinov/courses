@@ -1,0 +1,57 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Практика 11: Практика по DDD}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{18.04.2022}
+
+\begin{document}
+    
+    \frame{\titlepage}
+
+    \begin{frame}
+        \frametitle{Задача на пару, магазин книг}
+        В командах по 2-3 человека проанализировать запрос \url{ https://goo.gl/94LyFc} и построить модель приложения согласно <<чистой архитектуре>> и канонам предметно-ориентированного проектирования.
+        \begin{itemize}
+            \item Обратите внимание, это <<сырой>> RFP, некоторые требования там к заданию не относятся
+            \begin{itemize}
+                \item Выявить их и обсудить --- ваша задача
+            \end{itemize}
+            \item Основное внимание надо уделить модели предметной области, внешние сущности (средства доставки, средства персистентности) должны упоминаться, но без деталей
+            \item Необходима <<каноничная>> высокоуровневая структура и явно выделенное смысловое ядро
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Что надо сделать за пару}
+        \begin{itemize}
+            \item Диаграмму компонентов + диаграмму классов
+            \begin{itemize}
+                \item Лучше на одной диаграмме сразу
+            \end{itemize}
+            \item Успеть показать на проекторе и обсудить пару решений
+            \item Как обычно, выложить результаты в репозиторий одного из членов команды, не забыв указать полный её состав
+            \item Будет оцениваться в том числе и полнота покрытия требований из RFP и пунктуальность в синтаксисе UML
+        \end{itemize}
+    \end{frame}
+
+\end{document}
