@@ -159,3 +159,7 @@ pythontex-files-*/
 TSWLatexianTemp*
 dotNet/7-wpf/wpf.vpp.bak_000f
 dotNet/7-wpf/wpf.vpp.bak_000f
+
+# Visual Paradigm temporary files
+*.vpp.bak*
+*.vpp.vbak
