@@ -200,12 +200,14 @@ val it : int = -1
         \frametitle{Generic-печать}
         \begin{alertblock}{F\# Interactive}
             \begin{minted}{fsharp}
-> any_to_string (Some(100, [1.0; 2.0; 3.1415]));;
-val it : string = "Some (100, [1.0; 2.0; 3.1415])"
-
 > sprintf "result = %A" ([1], [true]);;
 val it : string = "result = ([1], [true])"
-val it : int = -1
+            \end{minted}
+            \vspace{3mm}
+            ToString():
+            \begin{minted}{fsharp}
+                > sprintf "result = %O" ([1], [true]);;
+                val it : string = "result = ([1], [true])"
             \end{minted}
         \end{alertblock}
     \end{frame}
@@ -257,12 +259,12 @@ let addresses = Map.ofList [
     "Fred", "987 Pine Road, Phila., PA 19116";
     "Mary", "PO Box 112233, Palo Alto, CA 94301" ]
 
-let fsOut = new FileStream("Data.dat", FileMode.Create)
+use fsOut = new FileStream("Data.dat", FileMode.Create)
 writeValue fsOut addresses
 fsOut.Close()
 
-let fsIn = new FileStream("Data.dat", FileMode.Open)
-let res : Map<string,string> = readValue fsIn
+use fsIn = new FileStream("Data.dat", FileMode.Open)
+let res : Map<string, string> = readValue fsIn
 fsIn.Close()
         \end{minted}
     \end{frame}
