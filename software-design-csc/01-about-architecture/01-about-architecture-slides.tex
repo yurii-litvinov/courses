@@ -4,7 +4,7 @@
 \usepackage{minted}
 \usepackage{tabu}
 
-\useoutertheme{infolines}
+\useoutertheme{default}
 
 \usepackage{fontspec}
 \setmainfont{FreeSans}
@@ -14,10 +14,20 @@
 \setlength{\TPHorizModule}{1cm}
 \setlength{\TPVertModule}{1cm}
 
-\definecolor{links}{HTML}{2A1B81}
+\definecolor{links}{RGB}{7, 195, 159}
 \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
+\definecolor{cscmain}{RGB}{7, 195, 159}
+\definecolor{cscblack}{RGB}{29, 29, 29}
+
 \usecolortheme{cormorant}
+
+\setbeamercolor{titlelike}{fg=cscmain,bg=cscblack}
+\setbeamercolor{background canvas}{bg=cscblack}
+\setbeamercolor{item}{fg=cscmain}
+\setbeamercolor{structure}{fg=cscmain}
+
+\beamertemplatenavigationsymbolsempty
 
 \tabulinesep=1.2mm
 
@@ -45,7 +55,7 @@
         \begin{itemize}
             \item Лекционно-практический курс, две пары в неделю
             \item В конце устный экзамен и аттестация по домашним работам
-            \item Работа в аудитории за небольшие баллы в плюс к домашке
+            \item Работа на занятиях за небольшие баллы в плюс к домашке
             \item Балльная система
             \begin{itemize}
                 \item 50\% за домашки, 50\% за экзамен
@@ -113,7 +123,7 @@
         \begin{center}
             \includegraphics[width=0.5\textwidth]{brooksSquare.png}
         \end{center}
-        \begin{textblock}{2}(10,-3)
+        \begin{textblock}{2}(9,-3)
             \includegraphics[width=\textwidth]{brooksCover.png}
         \end{textblock}
     \end{frame}
