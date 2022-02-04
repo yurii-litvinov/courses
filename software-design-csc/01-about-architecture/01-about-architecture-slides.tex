@@ -1,48 +1,6 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
+\documentclass{../cscslides}
 
-\useoutertheme{default}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\usepackage{textpos}
-\setlength{\TPHorizModule}{1cm}
-\setlength{\TPVertModule}{1cm}
-
-\definecolor{links}{RGB}{7, 195, 159}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\definecolor{cscmain}{RGB}{7, 195, 159}
-\definecolor{cscblack}{RGB}{29, 29, 29}
-
-\usecolortheme{cormorant}
-
-\setbeamercolor{titlelike}{fg=cscmain,bg=cscblack}
-\setbeamercolor{background canvas}{bg=cscblack}
-\setbeamercolor{item}{fg=cscmain}
-\setbeamercolor{structure}{fg=cscmain}
-
-\beamertemplatenavigationsymbolsempty
-
-\tabulinesep=1.2mm
-
-\title{Проектирование программного обеспечения}
-\subtitle{Лекция 1: Об архитектуре}
-\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{07.02.2022}
-
-\newcommand{\DownArrow} {
-    \hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
-}
-
-\newcommand{\attribution}[1] {
-    \begin{flushright}\begin{scriptsize}\textcolor{gray}{#1}\end{scriptsize}\end{flushright}
-}
+\slidetitle[Лекция 1: Об архитектуре]{Проектирование программного обеспечения}{07.02.2022}
 
 \begin{document}
 
@@ -120,11 +78,9 @@
 
     \begin{frame}
         \frametitle{Программа и программный продукт}
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{brooksSquare.png}
-        \end{center}
-        \begin{textblock}{2}(9,-3)
-            \includegraphics[width=\textwidth]{brooksCover.png}
+        \image[Ф. Брукс, <<Мифический человеко-месяц>>]{brooksSquare}{0.5}
+        \begin{textblock}{2}(9,-4)
+            \includegraphics[width=\textwidth]{brooksCover}
         \end{textblock}
     \end{frame}
 
@@ -173,7 +129,7 @@
                 \end{itemize}
             \end{column}
             \begin{column}{0.3\textwidth}
-                \includegraphics[width=\textwidth]{whatArchitecture.png}
+                \image[Интернеты]{whatArchitecture}{1}
             \end{column}
         \end{columns}
     \end{frame}
@@ -207,9 +163,7 @@
 
     \begin{frame}
         \frametitle{Архитектор vs разработчик}
-        \begin{center}
-            \includegraphics[width=0.35\textwidth]{architectVsDeveloper.png}
-        \end{center}
+        \image{architectVsDeveloper}{0.35}
         \begin{itemize}
             \item Широта знаний
             \item Коммуникационные навыки
@@ -238,9 +192,7 @@
                 \end{itemize}
             \end{column}
             \begin{column}{0.4\textwidth}
-                \begin{center}
-                    \includegraphics[width=0.9\textwidth]{oscilloscope.png}
-                \end{center}
+                \image{oscilloscope}{0.9}
             \end{column}
         \end{columns}
         \vspace{1cm}
@@ -251,30 +203,22 @@
 
     \begin{frame}
         \frametitle{Вариант 1: объектная модель}
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{oscilloscopeObjects.png}
-        \end{center}
+        \image[Garlan D., Shaw M. An introduction to software architecture]{oscilloscopeObjects}{0.5}
     \end{frame}
 
     \begin{frame}
         \frametitle{Вариант 2: слоистая архитектура}
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{oscilloscopeLayers.png}
-        \end{center}
+        \image[Garlan D., Shaw M. An introduction to software architecture]{oscilloscopeLayers}{0.5}
     \end{frame}
 
     \begin{frame}
         \frametitle{Вариант 3: каналы и фильтры}
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{oscilloscopeFilters.png}
-        \end{center}
+        \image[Garlan D., Shaw M. An introduction to software architecture]{oscilloscopeFilters}{0.5}
     \end{frame}
 
     \begin{frame}
         \frametitle{Вариант 4: модифицированные каналы и фильтры}
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{oscilloscopeModifiedFilters.png}
-        \end{center}
+        \image[Garlan D., Shaw M. An introduction to software architecture]{oscilloscopeModifiedFilters}{0.5}
     \end{frame}
 
     \begin{frame}
@@ -341,20 +285,12 @@
 
     \begin{frame}
         \frametitle{Роль архитектуры в жизненном цикле}
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{architectureLifeCycle.png}
-
-            \begin{tiny}
-                Рисунок из Z. Quin, "Software Architecture"
-            \end{tiny}
-        \end{center}
+        \image[Z. Quin, ``Software Architecture'']{architectureLifeCycle}{0.5}
     \end{frame}
 
     \begin{frame}
         \frametitle{Архитектура и требования}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{useCaseDiagram.png}
-        \end{center}
+        \image{useCaseDiagram}{0.8}
     \end{frame}
 
     \begin{frame}
@@ -381,9 +317,7 @@
 
     \begin{frame}
         \frametitle{Архитектура и проектирование}
-        \begin{center}
-            \includegraphics[width=0.9\textwidth]{trikRuntimeComponents.png}
-        \end{center}
+        \image{trikRuntimeComponents}{0.8}
     \end{frame}
 
     \begin{frame}
@@ -430,42 +364,32 @@
     \begin{frame}
         \frametitle{Пример: Hadoop}
         \framesubtitle{As-designed}
-        \begin{center}
-            \includegraphics[width=0.6\textwidth]{hadoopPrescriptive.png}
-        \end{center}
-        \attribution{Special thanks to prof. Nenad Medvidovic (USC) for kind permission for using his slides}
+        \image{hadoopPrescriptive}{0.6}
+        \begin{scriptsize}\textcolor{gray}{Special thanks to prof. Nenad Medvidovic (USC) for kind permission for using his slides}\end{scriptsize}
     \end{frame}
 
     \begin{frame}
         \frametitle{Hadoop as-built}
         \framesubtitle{HDFS}
-        \begin{center}
-            \includegraphics[width=0.9\textwidth]{hadoopDescriptive.png}
-        \end{center}
+        \image[Nenad Medvidovic]{hadoopDescriptive}{0.9}
     \end{frame}
 
     \begin{frame}
         \frametitle{Hadoop as-built}
         \framesubtitle{HDFS + MapReduce}
-        \begin{center}
-            \includegraphics[width=0.7\textwidth]{hdfsMapReduce.png}
-        \end{center}
+        \image[Nenad Medvidovic]{hdfsMapReduce}{0.7}
     \end{frame}
 
     \begin{frame}
         \frametitle{Hadoop as-built}
         \framesubtitle{Полная архитектура}
-        \begin{center}
-            \includegraphics[width=0.9\textwidth]{hadoopFull.png}
-        \end{center}
+        \image[Nenad Medvidovic]{hadoopFull}{0.9}
     \end{frame}
 
     \begin{frame}
         \frametitle{Hadoop as-built}
         \framesubtitle{Граф зависимостей}
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{hadoopDependencies.png}
-        \end{center}
+        \image[Nenad Medvidovic]{hadoopDependencies}{0.5}
     \end{frame}
 
 \end{document}
