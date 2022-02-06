@@ -36,7 +36,7 @@
 \definecolor{cscmain}{RGB}{7, 195, 159}
 
 % Black-grey, which we will use as a slide background.
-\definecolor{cscblack}{RGB}{29, 29, 29}
+\definecolor{cscblack}{RGB}{0, 0, 0}
 
 % Link colors
 \hypersetup{colorlinks,linkcolor=,urlcolor=cscmain}
