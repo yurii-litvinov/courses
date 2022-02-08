@@ -1,0 +1,56 @@
+\documentclass[xetex,mathserif,serif]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{minted}
+\usepackage{tabu}
+
+\useoutertheme{infolines}
+
+\usepackage{fontspec}
+\setmainfont{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\tabulinesep=0.7mm
+
+\newcommand{\attribution}[1] {
+    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+}
+
+\title{Практика 5: Порождающие шаблоны и Roguelike}
+\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
+
+\date{28.04.2022}
+
+\begin{document}
+    
+    \frame{\titlepage}
+
+    \begin{frame}
+        \frametitle{Задачи на остаток пары}
+        Уточнить модель компьютерной игры Roguelike:
+
+        \begin{enumerate}
+            \item Используя шаблон ``Строитель'' для инициализации карты
+            \item Используя шаблон ``Абстрактная фабрика'' для создания мобов и предметов на карте
+            \item Используя шаблон ``Прототип'' для поддержки клонирования персонажей и предметов
+        \end{enumerate}
+
+        Выложить модифицированные диаграммы классов на HwProj
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Что делать}
+        \begin{itemize}
+            \item Заполнить форму \url{https://forms.gle/jWZZG4UQpSiT7Cv37} ссылками на проект и командный чат
+            \begin{itemize}
+                \item Сделать это в самом начале работы
+            \end{itemize}
+            \item Посматривать в общий чат в Skype
+            \item За 10 минут до конца пары собираемся в общем чате и представляем результаты
+        \end{itemize}
+    \end{frame}
+
+\end{document}
