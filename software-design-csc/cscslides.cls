@@ -11,9 +11,16 @@
 % Loading common packages
 \usepackage{polyglossia}
 \setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
 \usepackage{tabu}
 \usepackage{moresize}
+
+% Loading minted and stopping it from highlighting every lexer error
+% See https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters
+\usepackage{minted}
+\makeatletter
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
 
 % Loading font (we use default font instead of corporate for the sake of simplicity, maybe we should change that)
 \usepackage{fontspec}

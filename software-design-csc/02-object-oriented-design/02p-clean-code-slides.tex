@@ -75,7 +75,7 @@ public class Point {
             \begin{column}{0.05\textwidth}
                 vs
             \end{column}
-            \begin{column}{0.6\textwidth}
+            \begin{column}{0.65\textwidth}
                 \begin{minted}{java}
 public interface Point {
     double getX();
@@ -266,7 +266,7 @@ class Operation {
                 \begin{column}{0.1\textwidth}
                     vs
                 \end{column}
-                \begin{column}{0.45\textwidth}
+                \begin{column}{0.55\textwidth}
                     \begin{minted}{java}
 abstract class Operation {
     private int left;
@@ -311,11 +311,11 @@ class Plus extends Operation {
         \begin{itemize}
             \item Паттерн ``Builder'':
                 \begin{center}
-                    \includegraphics[width=0.4\textwidth]{builder.png}
+                    \includegraphics[width=0.4\textwidth]{builderBlack.png}
                 \end{center}
             \item Паттерн ``Factory'':
                 \begin{center}
-                    \includegraphics[width=0.4\textwidth]{factory.png}
+                    \includegraphics[width=0.4\textwidth]{factoryBlack.png}
                     \attribution{Р. Мартин, Чистый код}
                 \end{center}
         \end{itemize}
@@ -336,7 +336,7 @@ class Plus extends Operation {
     \begin{frame}
         \frametitle{Пример IoC-контейнера: Spring}
         \begin{center}
-            \includegraphics[width=0.5\textwidth]{springIoC.png}
+            \includegraphics[width=0.5\textwidth]{springIoCBlack.png}
         \end{center}
     \end{frame}
 
@@ -345,7 +345,7 @@ class Plus extends Operation {
         \framesubtitle{Стековый калькулятор}
         \begin{small}
             \begin{minted}{java}
-package ru.hse.ioc;
+package ru.compscicenter.ioc;
 
 public class Calculator {
 
@@ -389,11 +389,11 @@ public class LinkedStack implements Stack {
 <beans ....>
 
     <bean id="stack"
-          class="ru.hse.ioc.LinkedStack"
+          class="ru.compscicenter.ioc.LinkedStack"
           />
 
     <bean id="calculator"
-          class="ru.hse.ioc.Calculator">
+          class="ru.compscicenter.ioc.Calculator">
         <constructor-arg ref="stack"/>
     </bean>
 
@@ -491,14 +491,14 @@ public class Main {
         \begin{columns}
             \begin{column}{0.5\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.7\textwidth]{wtfsMin.png}
+                    \includegraphics[width=0.7\textwidth]{wtfsMinBlack.png}
                 \end{center}
                 \vspace{-0.8cm}
                 \attribution{http://commadot.com, Thom Holwerda}
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.7\textwidth]{goodCodeXkcd.png}
+                    \includegraphics[width=0.7\textwidth]{goodCodeXkcdBlack.png}
                 \end{center}
                 \vspace{-0.8cm}
                 \attribution{https://xkcd.com}
