@@ -19,7 +19,7 @@
 \title{Функциональное программирование на языке F\#}
 \subtitle{Введение}
 \author{Юрий Литвинов}
-\date{17.02.2022}
+\date{18.02.2022}
 
 \begin{document}
     
@@ -54,10 +54,10 @@
             \item Домашка (много несложной)
             \item Одна контрольная в середине семестра
             \item Учебная практика
-            \item Доклад (-1 домашка)
+            \item Доклад (я знаю, вы не любите)
             \item Сдача и учёт через MS Teams 
             \begin{itemize}
-                \item (если там ничего не сломается)
+                \item Надеемся на HwProj 2
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -155,7 +155,7 @@ let rec factorial x =
     if x = 1 then 1 else x * factorial (x - 1)
             \end{minted}
         \end{exampleblock}
-\end{frame}
+    \end{frame}
 
     \begin{frame}[fragile]
         \frametitle{Как с этим жить}
@@ -176,7 +176,7 @@ let rec sumFirst3 ls acc i =
             (i + 1)
             \end{minted}
         \end{exampleblock}
-\end{frame}
+    \end{frame}
 
     \begin{frame}
         \frametitle{Зачем}
@@ -255,7 +255,7 @@ let calculate =
         \begin{itemize}
             \item Типизированный функциональный язык для платформы .NET
             \item НЕ чисто функциональный (можно императивный стиль и ООП)
-            \item Первый раз представлен публике в 2005 г., актуальная версия --- 5.0 (10 ноября 2020 года)
+            \item Первый раз представлен публике в 2005 г., актуальная версия --- 6.0 (19 октября 2021 года)
             \item Создавался под влиянием OCaml (практически диалект OCaml под .NET)
             \item Использует .NET CLI
             \item Компилируемый и интерпретируемый
@@ -266,12 +266,9 @@ let calculate =
     \begin{frame}
         \frametitle{Что скачать и поставить}
         \begin{itemize}
-            \item Под Windows --- Visual Studio, из коробки
-            \item Под Linux
-            \begin{itemize}
-                \item Rider (студентам бесплатно)
-                \item .NET 5 (или .NET Core) + Visual Studio Code + Ionide
-            \end{itemize}
+            \item Rider (студентам бесплатно)
+            \item Visual Studio Community
+            \item .NET 6 + Visual Studio Code + Ionide
             \item Прямо в браузере: \url{https://dotnetfiddle.net/}
         \end{itemize}
     \end{frame}
