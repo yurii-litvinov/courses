@@ -404,7 +404,25 @@ let person = { Name = "Anna"
                DateOfBirth = new System.DateTime(1968, 07, 23) }
 
 let { Name = name; DateOfBirth = date} = person
+
+// деконструкция в параметре функции f
+let f { Name = name; DateOfBirth = date} =  ..
         \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Анонимные записи}
+        \begin{minted}{fsharp}
+let person = {| Name = "Anna"; DateOfBirth = DateTime(1968, 07, 23) |}
+        \end{minted}
+        \begin{itemize}
+            \item Могут возвращаться из функций (в отличие от анонимных объектов в C\#)
+            \item Имеют структурное равенство и сравнение
+                \begin{minted}{fsharp}
+                {| a = 2 |} > {| a = 1 |} // true
+                \end{minted}
+            \item Не могут участвовать в сопоставлении с шаблоном
+        \end{itemize}
     \end{frame}
 
     \section{Размеченные объединения}
