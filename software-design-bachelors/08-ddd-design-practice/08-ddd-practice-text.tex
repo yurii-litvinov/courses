@@ -1,0 +1,94 @@
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\usepackage{tabu}
+
+\usepackage{indentfirst}
+\usepackage{minted}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\newcommand{\attribution}[1] {
+    \begin{flushright}\begin{scriptsize}\textcolor{gray}{#1}\end{scriptsize}\end{flushright}
+}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Практика 8: практика по DDD}
+\author{}
+\date{07.03.2022}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\section{Задание на пару}
+
+В командах по 3 человека требуется по канонам Domain-Driven Design спроектировать систему контроля версий, представляющую из себя консольное приложение и умеющую:
+
+\begin{itemize}
+    \item commit с commit message, датой коммита и автором;
+    \item работу с ветками: создание и удаление;
+    \item checkout по имени ревизии или ветки;
+    \item log --- список ревизий вместе с commit message в текущей ветке;
+    \item merge --- сливает указанную ветку с текущей;
+    \begin{itemize}
+        \item должен быть предусмотрен механизм разрешения конфликтов;
+    \end{itemize}
+    \item работа с удалёнными репозиториями: clone, fetch/pull, push.
+\end{itemize}
+
+При этом код системы должен позволять себя использовать как библиотеку, но предполагается также наличие консольного интерфейса.
+
+Что надо сделать:
+
+\begin{itemize}
+    \item диаграмму компонентов и диаграмму/диаграммы классов;
+    \begin{itemize}
+        \item лучше всего сделать одну большую диаграмму, где отображены одновременно и компоненты, и классы;
+    \end{itemize}
+    \item сдавать, как обычно, пуллреквестом в репозиторий одного из членов команды, либо исходника с диаграммой, либо .md-файла со ссылкой на проект в облачном редакторе;
+    \begin{itemize}
+        \item не забудьте расшарить;
+        \item не забудьте указать, кто в команде;
+    \end{itemize}
+    \item текстовое описание не требуется, поясняйте непонятные моменты в комментариях на диаграмме;
+    \begin{itemize}
+        \item однако любая неоднозначность и непонятность будет трактована не в вашу пользу;
+    \end{itemize}
+    \item нельзя подсматривать в Git Book и другую архитектурную документацию систем контроля версий (там всё написано, хотя конкретно git нельзя назвать примером хорошей архитектуры, и у нас про это ещё отдельная пара будет).
+\end{itemize}
+
+Ожидается разделение на уровни, выделенная модель предметной области и выделенное смысловое ядро.
+
+Обратите внимание на следующие вещи.
+
+\begin{itemize}
+    \item Как представляются файлы, коммиты, ветки, репозиторий?
+    \item Как выполняется компрессия и выполняется ли вообще? Насколько просто получить текущую, предыдущую, произвольную версии?
+    \item Каков жизненный цикл файла?
+    \item Как выполняется работа с файловой системой?
+    \item Как выполняется работа с пользователем? Как представляются команды?
+    \item Как выполняется работа с сервером со стороны клиента?
+    \item Какова архитектура серверной части?
+\end{itemize}
+
+Эту систему реализовывать будет не надо.
+
+\end{document}
