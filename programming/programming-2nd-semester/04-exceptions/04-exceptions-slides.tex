@@ -58,7 +58,27 @@ public class StackTest
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Автоматизация}
+        \frametitle{Ещё хороший приём}
+        \begin{minted}{csharp}
+private static IEnumerable<TestCaseData> Stacks { 
+    get {
+        var stacks = new List<IStack>() 
+            { new ArrayStack(), new ListStack() };
+        var data = new List<int>() { 1, 2, 3 };
+        var result = new List<TestCaseData>();
+        foreach (var stack in stacks) {
+            foreach (var item in data) {
+                result.Add(new TestCaseData(item, stack));
+            }
+        }
+        return result;
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Более простые случаи}
         \begin{minted}{csharp}
 [TestCase(12, 3, 4)]
 [TestCase(12, 2, 6)]
@@ -596,6 +616,13 @@ public static string RockPaperScissors(string first, string second)
     \end{frame}
 
     \begin{frame}[fragile]
+        \frametitle{Шаблоны в var}
+        \begin{minted}{csharp}
+var (x, y) = (1, 2);
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
         \frametitle{Deconstruct (C\# 8)}
         \begin{minted}{csharp}
 public class Point
@@ -608,6 +635,14 @@ public class Point
     public void Deconstruct(out int x, out int y) =>
         (x, y) = (X, Y);
 }
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{И использование}
+        \begin{minted}{csharp}
+var point = new Point(10, 20);
+var (a, b) = point;
         \end{minted}
     \end{frame}
 
@@ -656,13 +691,6 @@ static void WriteLinesToFile(IEnumerable<string> lines)
                 \item Попытки присвоить \mintinline{csharp}|null| или что-то, что может быть \mintinline{csharp}|null|, вызовут предупреждения компилятора
             \end{itemize}
             \item \mintinline{csharp}|name!.Length| --- null-forgiving operator
-            \item Как включить: 
-                \begin{minted}{xml}
-<PropertyGroup>
-    <Nullable>enable</Nullable>
-</PropertyGroup>
-                \end{minted}
-                в проектный файл
             \item Управляется директивами \mintinline{csharp}|#nullable disable| и \mintinline{csharp}|#nullable enable|
             \item Подробности: \url{https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references}
             \item Для нового кода обязательно к применению
@@ -708,6 +736,15 @@ public record Person
         => (FirstName, LastName) = (first, last);
 }
         \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{C\# 10}
+        \begin{itemize}
+            \item File-scoped namespaces
+            \item global using
+            \item Улучшенные шаблоны: \mintinline{csharp}|{ Prop1.Prop2: pattern }|
+        \end{itemize}
     \end{frame}
 
 \end{document}
