@@ -15,7 +15,7 @@
 
 \tabulinesep=0.7mm
 
-\title{Практика 9: антипаттерны}
+\title{Практика 8: антипаттерны}
 \subtitle{То, как делать не надо}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
 
@@ -106,12 +106,39 @@
                 \item Или просто по неосторожности
             \end{itemize}
             \item Имеет впечатляющие последствия в C++, во многих языках невозможен
-            \item Как бороться:
-            \begin{itemize}
-                \item Зависеть от абстракции, а не от реализации
-                \item Разделение на слои
-                \item Observer, Dependency Injection и т.д.
-            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Circular dependency, пример}
+        Файл a.h:
+        \begin{minted}{cpp}
+#pragma once
+#include "b.h"
+class A {
+    public:
+        B b;
+}
+        \end{minted}
+            
+        И файл b.h:
+            
+        \begin{minted}{cpp}
+#pragma once
+#include "a.h"
+class B {
+    public:
+        A a;
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Circular dependency, как бороться}
+        \begin{itemize}
+            \item Зависеть от абстракции, а не от реализации
+            \item Разделение на слои
+            \item Observer, Dependency Injection и т.д.
         \end{itemize}
     \end{frame}
 
