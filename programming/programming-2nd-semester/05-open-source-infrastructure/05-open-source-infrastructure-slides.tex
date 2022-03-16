@@ -23,7 +23,7 @@
 \title{Экосистема open source проектов}
 \subtitle{Полезные инструменты и сервисы}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
-\date{17.03.2022}
+\date{18.03.2022}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -43,7 +43,7 @@
         \begin{itemize}
             \item Основные консольные команды: cd, dir
             \item Переменные окружения, PATH
-            \item .NET Core (точнее уже просто .NET)
+            \item .NET SDK
             \item NuGet Command Line
             \item Как сделать жизнь более удобной
             \begin{itemize}
@@ -64,7 +64,7 @@
             \item dotnet build --- собрать проект в текущей папке
             \item dotnet run --- запустить проект в текущей папке
             \begin{itemize}
-                \item dotnet run -- моиАргументы
+                \item \mintinline{text}{dotnet run -- моиАргументы}
             \end{itemize}
             \item dotnet test --- запустить юнит-тесты для проекта в текущей папке
         \end{itemize}
@@ -107,16 +107,150 @@
         \end{itemize}
     \end{frame}
 
+    \subsection{GitHub Actions}
+
+    \begin{frame}
+        \frametitle{GitHub Actions}
+        \begin{itemize}
+            \item Бесплатная система облачной сборки для проектов на GitHub
+            \item \url{https://docs.github.com/en/actions}
+            \item Как настроить:
+            \begin{itemize}
+                \item В репозитории на GitHub Settings -> Actions -> Allow all actions
+                \item Создаём в корне репозитория папку .github/workflows/
+                \item В нём создаём файл <имя действия>.yml (например, ci.yml)
+                \item Описываем процесс сборки согласно \url{https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions}
+                \begin{itemize}
+                    \item Пример и описание линуксовой сборки: \url{https://www.incredibuild.com/blog/using-github-actions-with-your-c-project}
+                \end{itemize}
+                \item Коммитим-пушим
+                \item Смотрим статус коммита и пуллреквеста
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Что получится}
+        \begin{center}
+            \includegraphics[width=0.9\textwidth]{githubActionsBuildStatus}
+        \end{center}
+        И появятся иконки статуса рядом с коммитами и пуллреквестами
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Типичный Workflow для сборки}
+        \begin{scriptsize}
+            \begin{minted}{yaml}
+name: Build
+on: [push, pull_request]
+jobs:
+    build-Ubuntu:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-dotnet@v1
+              with:
+                  dotnet-version: '6.x'
+            - name: Build
+              run: For /R %%I in (*.sln) do dotnet build %%I
+            - name: Run tests
+              run: For /R %%I in (*.sln) do dotnet test %%I
+    build-Windows:
+        runs-on: windows-latest
+        steps:
+            ...
+            - name: Build
+              run: For /R %%I in (*.sln) do dotnet build %%I
+            - name: Run tests
+              run: For /R %%I in (*.sln) do dotnet test %%I
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{GitHub Actions, Workflow и Job}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{githubActionsWorkflow}
+        \end{center}
+        \begin{itemize}
+            \item Step --- это либо скрипт, либо \emph{Action}
+            \item Action --- произвольный код (по сути, отдельное приложение), выполняющийся как шаг Job-а
+            \begin{itemize}
+                \item Переиспользуемый строительный блок
+                \item Можно переиспользовать Workflow-ы
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Переменные окружения}
+        \begin{scriptsize}
+            \begin{minted}{yaml}
+env:
+  DAY_OF_WEEK: Monday
+
+jobs:
+  greeting_job:
+    runs-on: ubuntu-latest
+    env:
+      Greeting: Hello
+    steps:
+      - name: "Say Hello Mona it's Monday"
+        if: ${{ env.DAY_OF_WEEK == 'Monday' }}
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
+        env:
+          First_Name: Mona
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Матрица сборки}
+        \begin{scriptsize}
+            \begin{minted}{yaml}
+runs-on: ${{ matrix.os }}
+strategy:
+  matrix:
+    os: [ubuntu-18.04, ubuntu-20.04]
+    node: [10, 12, 14]
+steps:
+  - uses: actions/setup-node@v2
+    with:
+      node-version: ${{ matrix.node }}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Что ещё?}
+        \begin{itemize}
+            \item Секреты
+            \begin{itemize}
+                \item \mintinline{yaml}|super_secret: ${{ secrets.SUPERSECRET }}|
+            \end{itemize}
+            \item Кеширование промежуточных результатов
+            \item Автоматическое развёртывание
+            \begin{itemize}
+                \item В том числе, автодеплой документации на github-pages
+            \end{itemize}
+            \item Проверка стиля кодирования, статический анализ кода и т.п.
+            \begin{itemize}
+                \item Может быть интересно для Python-разработчиков
+            \end{itemize}
+            \item Можно иметь несколько Workflow-ов в одном репозитории
+        \end{itemize}
+    \end{frame}
+
     \subsection{AppVeyor}
 
     \begin{frame}
         \frametitle{AppVeyor}
         \begin{itemize}
-            \item \url{https://www.appveyor.com/} --- пример бесплатной для open source-проектов облачной CI-системы
+            \item \url{https://www.appveyor.com/} --- отдельная облачная CI-cистема, тоже довольно неплоха и проще в настройке
             \item Виртуальная машина с ОС Windows и настроенными инструментами сборки .NET-приложений
             \begin{itemize}
-                \item Windows Server 2019 + VS 2019 или более старые
-                \item Умеет Linux Ubuntu 20.04 и macOS 10.15
+                \item Windows Server 2019 + VS 2022 или более старые
+                \item Умеет Linux Ubuntu 20.04 и macOS 12.2.1
             \end{itemize}
             \item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
             \item Собирает по умолчанию системой сборки MSBuild
@@ -147,156 +281,13 @@
     \begin{frame}[fragile]
         \frametitle{AppVeyor, пример файла конфигурации}
         \begin{minted}{yaml}
-image: Visual Studio 2019
+image: Visual Studio 2022
 
 before_build: 
     - nuget restore myCoolHomework/Homework.sln
 
 build: 
     project: myCoolHomework/Homework.sln
-
-test_script: 
-    - dotnet test myCoolHomework/Homework.sln
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{На что обратить внимание}
-        \begin{itemize}
-            \item Файл должен называться именно appveyor.yml (или .appveyor.yml)
-            \item И лежать именно в корне репозитория
-            \item Отступы и минусы критически важны
-            \item \url{https://www.appveyor.com/docs/appveyor-yml/}
-            \item Выкладывается обычно в master, потом вмердживается в остальные ветки
-            \begin{itemize}
-                \item При этом возможны конфликты, которые надо не забывать разрешать
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{При этом, чтобы работали тесты}
-        \begin{itemize}
-            \item Нужно добавить Reference на
-            \begin{itemize}
-                \item Microsoft.NET.Test.Sdk
-                \item NUnit3TestAdapter
-                \item NUnit
-            \end{itemize}
-            \item Или другие библиотеки, которыми пользуетесь, но не забыть SDK и раннер.
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{AppVeyor, жизненный цикл сборки}
-        \begin{itemize}
-            \item Запуск скриптов из раздела init
-            \item Клонирование репозитория, переход в его корень
-            \item Запуск скриптов из раздела install
-            \item Запуск скриптов из раздела before\_build
-            \item Запуск msbuild (или скрипта из раздела build\_script)
-            \item Запуск скриптов из раздела after\_build 
-            \item Поиск и запуск тестов (перед --- before\_test, после --- after\_test)
-            \item Упаковка и выкладывание собранного
-            \item Финализация (on\_success/on\_failure и on\_finish)
-        \end{itemize}
-        Билд ограничен 60 минутами
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{AppVeyor, Build matrix}
-        \begin{itemize}
-            \item Предназначена для сборки проекта в разном окружении
-            \begin{itemize}
-                \item Операционная система
-                \item Платформа
-                \item Конфигурация
-                \item Переменные окружения
-            \end{itemize}
-        \end{itemize}
-        Пример:
-        \begin{minted}{yaml}
-configuration:
-- Debug
-- Release
-
-environment:
-  matrix:
-    - MY_VAR: A
-    - MY_VAR: B
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Способ эксплуатировать матрицу для сборки домашек}
-        \begin{minted}{yaml}
-environment:
-  matrix:
-  - solution_name: <путь от корня репозитория>/solution1.sln
-  - solution_name: <путь от корня репозитория>/solution2.sln
-
-build_script:
-  - msbuild %solution_name%
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Или более хитрый способ}
-        \framesubtitle{Без матрицы, но с консольными скриптами}
-        \begin{minted}{yaml}
-build_script:
-  - For /R %%I in (*.sln) do dotnet test %%I
-test: off
-        \end{minted}
-    \end{frame}
-
-    \subsection{Travis}
-
-    \begin{frame}
-        \frametitle{Travis}
-        \begin{itemize}
-            \item \url{https://travis-ci.org/} --- ещё одна бесплатная для Open Source CI-система
-            \item Linux и OS X
-            \begin{itemize}
-                \item Умеет и Windows, но плохо
-            \end{itemize}
-            \item Умеет всё, что и AppVeyor
-            \item Собирать проект двумя разными CI-системами вполне ок
-            \begin{itemize}
-                \item AppVeyor под винду, Travis под линукс
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Travis, настройка сборки}
-        \begin{itemize}
-            \item Установить commit hook на гитхабе
-            \begin{itemize}
-                \item Travis умеет это делать сам, надо залогиниться под своим GitHub-аккаунтом на Travis и выбрать нужный репозиторий в профиле
-            \end{itemize}
-            \item Добавить .travis.yml в корень репозитория
-            \item Закоммитить и запушить, это инициирует процесс сборки
-            \begin{itemize}
-                \item Коммит, где в комментарии есть подстрока ``[ci skip]'', игнорируется Travis-ом, остальные он собирает
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Пример}
-        \framesubtitle{Travis, .NET Core}
-        \begin{minted}{yaml}
-language: csharp
-
-mono: none
-dotnet: 3.1.101
-
-before_build: 
-    - nuget restore myCoolHomework/Homework.sln
-
-build: 
-    - dotnet build myCoolHomework/Homework.sln
 
 test_script: 
     - dotnet test myCoolHomework/Homework.sln
@@ -314,8 +305,8 @@ test_script:
             \begin{itemize}
                 \item 100\% покрытие не гарантирует работоспособность программы
             \end{itemize}
-            \item Интегрируется с гитхабом (комментит пуллреквесты информацией о тестовом покрытии)
-            \item Пример конфигурации для .NET, AppVeyor и Travis:
+            \item Интегрируется с GitHub (комментит пуллреквесты информацией о тестовом покрытии)
+            \item Пример конфигурации для .NET с AppVeyor:
             \begin{itemize}
                 \item \url{https://github.com/codecov/example-csharp}
             \end{itemize}
@@ -385,7 +376,7 @@ test_script:
                 \item Другие тулы
             \end{itemize}
             \item Синтаксическая подсветка (markdown), вложения, отображение картинок, ...
-            \item Gitter интегрирован с гитхабом и ``более открыт'' (предназначается прежде всего для общения сообщества)
+            \item Gitter интегрирован с GitHub и ``более открыт'' (предназначается прежде всего для общения сообщества)
             \item Slack интегрирован с чем угодно, предназначается прежде всего для общения внутри команды
         \end{itemize}
     \end{frame}
