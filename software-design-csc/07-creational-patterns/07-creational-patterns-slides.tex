@@ -26,16 +26,16 @@
     \begin{frame}
         \frametitle{``Мост'', пример}
         \begin{center}
-            \includegraphics[width=0.7\textwidth]{noBridge.png}
+            \includegraphics[width=0.7\textwidth]{noBridgeBlack.png}
             \Huge{$$\downarrow$$}
-            \includegraphics[width=0.7\textwidth]{bridge.png}
+            \includegraphics[width=0.7\textwidth]{bridgeBlack.png}
         \end{center}
     \end{frame}
 
     \begin{frame}
         \frametitle{``Мост'', общая схема}
         \begin{center}
-            \includegraphics[width=0.7\textwidth]{bridgeGeneral.png}
+            \includegraphics[width=0.7\textwidth]{bridgeGeneralBlack.png}
         \end{center}
         \begin{itemize}
             \item \textit{Abstraction} --- определяет интерфейс абстракции, хранит ссылку на реализацию
@@ -90,7 +90,7 @@
         Как: предварительное объявление класса-реализации, полное определение --- в .cpp-файле вместе с методами абстракции
 
         \begin{center}
-            \includegraphics[width=0.6\textwidth]{pImpl.png}
+            \includegraphics[width=0.6\textwidth]{pImplBlack.png}
         \end{center}
 
         Часто используется в реализации библиотек (например, Qt)
@@ -116,7 +116,7 @@
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.8\textwidth]{warriors.png}
+                    \includegraphics[width=0.8\textwidth]{warriorsBlack.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -150,7 +150,7 @@ private:
             \end{column}
             \begin{column}{0.4\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.95\textwidth]{warriorVirtualCtor.png}
+                    \includegraphics[width=0.95\textwidth]{warriorVirtualCtorBlack.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -167,7 +167,7 @@ private:
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.8\textwidth]{warriorFactoryMethod.png}
+                    \includegraphics[width=0.8\textwidth]{warriorFactoryMethodBlack.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -177,7 +177,7 @@ private:
         \frametitle{Паттерн ``Factory Method''}
         \framesubtitle{Factory Method}
         \begin{center}
-            \includegraphics[width=0.8\textwidth]{factoryMethod.png}
+            \includegraphics[width=0.8\textwidth]{factoryMethodBlack.png}
         \end{center}
         \begin{itemize}
             \item Применимость:
@@ -192,14 +192,14 @@ private:
     \begin{frame}
         \frametitle{Пример, текстовый редактор}
         \begin{center}
-            \includegraphics[width=0.9\textwidth]{factoryMethodForTextEditor.png}
+            \includegraphics[width=0.9\textwidth]{factoryMethodForTextEditorBlack.png}
         \end{center}
     \end{frame}
 
     \begin{frame}
         \frametitle{``Фабричный метод'', детали реализации}
         \begin{center}
-            \includegraphics[width=0.6\textwidth]{factoryMethod.png}
+            \includegraphics[width=0.6\textwidth]{factoryMethodBlack.png}
         \end{center}
         \begin{itemize}
             \item Абстрактный Creator или реализация по умолчанию
@@ -226,7 +226,7 @@ private:
             \end{itemize}
         \end{itemize}
         \begin{center}
-            \includegraphics[width=0.95\textwidth]{widgets.png}
+            \includegraphics[width=0.95\textwidth]{widgetsBlack.png}
         \end{center}
     \end{frame}
 
@@ -246,7 +246,7 @@ private:
     \begin{frame}
         \frametitle{Фабрика виджетов}
         \begin{center}
-            \includegraphics[width=0.95\textwidth]{widgetFactory.png}
+            \includegraphics[width=0.95\textwidth]{widgetFactoryBlack.png}
         \end{center}
     \end{frame}
 
@@ -264,7 +264,7 @@ private:
             \end{column}
             \begin{column}{0.6\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.95\textwidth]{abstractFactory.png}
+                    \includegraphics[width=0.95\textwidth]{abstractFactoryBlack.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -291,7 +291,7 @@ private:
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
-                    \includegraphics[width=\textwidth]{abstractFactory.png}
+                    \includegraphics[width=\textwidth]{abstractFactoryBlack.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -319,7 +319,7 @@ private:
             \end{column}
             \begin{column}{0.4\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.6\textwidth]{singleton.png}
+                    \includegraphics[width=0.6\textwidth]{singletonBlack.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -412,7 +412,7 @@ public class Singleton {
                 \end{itemize}
             \end{column}
             \begin{column}{0.4\textwidth}
-                \includegraphics[width=\textwidth]{multiton.png}
+                \includegraphics[width=\textwidth]{multitonBlack.png}
             \end{column}
         \end{columns}
     \end{frame}
@@ -462,7 +462,7 @@ public class Singleton {
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}[fragile]
         \frametitle{Паттерн ``Пул объектов''}
         \framesubtitle{Решение: пул потоков в .NET}
         \begin{itemize}
@@ -472,7 +472,11 @@ public class Singleton {
             \begin{itemize}
                 \item Например, 
                 \begin{footnotesize}
-                    \mintinline{csharp}|ThreadPool.QueueUserWorkItem(() => Console.WriteLine("Goodbye, world!"))|
+                    \begin{minted}{csharp}
+ThreadPool.QueueUserWorkItem(
+    () => Console.WriteLine("Goodbye, world!")
+)
+                    \end{minted}
                 \end{footnotesize}
             \end{itemize}
             \item Если есть свободный поток, он начинает исполнять задачу
@@ -505,7 +509,7 @@ public class Singleton {
     \begin{frame}
         \frametitle{``Прототип'', мотивация}
         \begin{center}
-            \includegraphics[width=0.9\textwidth]{musicalEditor.png}
+            \includegraphics[width=0.9\textwidth]{musicalEditorBlack.png}
         \end{center}
     \end{frame}
 
@@ -513,7 +517,7 @@ public class Singleton {
         \frametitle{Паттерн ``Прототип''}
         \framesubtitle{Prototype}
         \begin{center}
-            \includegraphics[width=0.85\textwidth]{prototype.png}
+            \includegraphics[width=0.85\textwidth]{prototypeBlack.png}
         \end{center}
     \end{frame}
     

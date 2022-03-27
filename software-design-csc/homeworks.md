@@ -183,6 +183,7 @@ Roguelike — это довольно популярный жанр компью
 - высокой свободой действий персонажа (так называемые "игры-песочницы")
 
 Классические примеры:
+
 - https://en.wikipedia.org/wiki/NetHack
 - https://en.wikipedia.org/wiki/Angband_(video_game)
 - https://en.wikipedia.org/wiki/Ancient_Domains_of_Mystery
