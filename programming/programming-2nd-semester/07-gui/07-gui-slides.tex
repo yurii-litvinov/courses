@@ -60,10 +60,10 @@ public class MyForm : Form {
         button1.Location = new Point(30, 30);
         button1.Text = "Click me";
         this.Controls.Add(button1);
-        button1.Click += new EventHandler(button1Click);
+        button1.Click += new EventHandler(Button1Click);
     }
 
-    private void button1Click(object sender, EventArgs e)
+    private void Button1Click(object sender, EventArgs e)
     {
         MessageBox.Show("Hello World");
     }
