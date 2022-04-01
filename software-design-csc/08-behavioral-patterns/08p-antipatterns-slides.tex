@@ -37,7 +37,7 @@
             \end{column}
             \begin{column}{0.4\textwidth}
                 \begin{center}
-                    \includegraphics[width=\textwidth]{bookCover.png}
+                    \includegraphics[width=\textwidth]{bookCoverBlack.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -94,6 +94,30 @@
                 \item Observer, Dependency Injection и т.д.
             \end{itemize}
         \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Circular dependency, пример}
+        Файл a.h:
+        \begin{minted}{cpp}
+#pragma once
+#include "b.h"
+class A {
+    public:
+        B b;
+}
+        \end{minted}
+            
+        И файл b.h:
+            
+        \begin{minted}{cpp}
+#pragma once
+#include "a.h"
+class B {
+    public:
+        A a;
+}
+        \end{minted}
     \end{frame}
 
     \begin{frame}
@@ -370,61 +394,7 @@
         \end{itemize}
     \end{frame}
 
-    \section{Антипаттерны архитектуры}
-
-    \begin{frame}
-        \frametitle{Stovepipe Enterprise (Island of Automation)}
-        \begin{columns}
-            \begin{column}{0.6\textwidth}
-                \begin{itemize}
-                    \item Отсутствие переиспользования между системами в организации или между компонентами в одной системе
-                    \begin{itemize}
-                        \item Существующие кодовые базы никак не помогают друг другу
-                    \end{itemize}
-                    \item Как бороться:
-                    \begin{itemize}
-                        \item Использовать промышленные стандарты
-                        \item Фиксировать технологии и типовую архитектуру на уровне предприятия
-                        \item Создать и поддерживать инфраструктуру переиспользования
-                    \end{itemize}
-                \end{itemize}
-            \end{column}
-            \begin{column}{0.4\textwidth}
-                \begin{center}
-                    \includegraphics[width=\textwidth]{islandOfAutomation.png} \\
-                    \includegraphics[width=\textwidth]{noIslandOfAutomation.png}
-                \end{center}	
-            \end{column}
-        \end{columns}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Stovepipe System}
-        \begin{columns}
-            \begin{column}{0.7\textwidth}
-                \begin{itemize}
-                    \item Аналог Stovepipe Enterprise для отдельной системы
-                    \begin{itemize}
-                        \item Отсутствие единого стандарта по взаимодействию между подсистемами
-                        \item Интеграция между подсистемами по принципу ad-hoc
-                    \end{itemize}
-                    \item Как бороться:
-                    \begin{itemize}
-                        \item Абстракция --- единые интерфейсы для подсистем
-                        \item Единый протокол общения между подсистемами
-                        \begin{itemize}
-                            \item Паттерны интеграции, например, Enterprise Service Bus
-                        \end{itemize}
-                    \end{itemize}
-                \end{itemize}
-            \end{column}
-            \begin{column}{0.3\textwidth}
-                \begin{center}
-                    \includegraphics[width=\textwidth]{stovepipeSystem.png}
-                \end{center}	
-            \end{column}
-        \end{columns}
-    \end{frame}
+    \section{Антипаттерны организации}
 
     \begin{frame}
         \frametitle{Vendor Lock−In}
