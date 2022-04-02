@@ -24,7 +24,7 @@
 \title{Практика 11: веб-приложения}
 \subtitle{Экспресс-курс}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{yurii.litvinov@gmail.com}}}
-\date{28.03.2022}
+\date{04.04.2022}
 
 \newcommand{\attribution}[1] {
 \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -58,7 +58,6 @@
         \frametitle{Веб-сервисы}
         \begin{itemize}
             \item \textit{Веб-сервис} --- это примерно то же самое, но не для пользователя, а для других приложений
-            \item Нужны для создания распределённых приложений
             \item Общаются не с помощью HTML, а посредством специализированных протоколов
             \begin{itemize}
                 \item Например, SOAP
@@ -73,6 +72,21 @@
                 \item OpenAPI (Swagger) для REST
             \end{itemize}
             \item Реализуются посредством технологий, например, ASP.NET Web APIs
+        \end{itemize}
+    \end{frame}
+
+	\begin{frame}
+        \frametitle{Типовой процесс разработки веб-приложения}
+        \begin{itemize}
+            \item Определяемся, можно ли сделать приложение client-only
+            \item Определяемся с тем, какие запросы надо обрабатывать
+            \item Пишем контроллеры и серверную логику
+            \item Одновременно верстаем фронтенд, пишем клиентскую логику
+            \item Настраиваем упаковку в Docker-контейнер, возможно, настраиваем оркестратор (например, Docker Compose)
+            \item Проверяем всё локально
+            \item Настраиваем облачное окружение, деплоим туда
+            \item Настраиваем CI/CD
+            \item Продолжаем процесс, пока не будем довольны результатом
         \end{itemize}
     \end{frame}
 
@@ -553,38 +567,6 @@ namespace RazorPagesIntro.Pages
         \attribution{MSDN}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Модель в MVC}
-        \begin{minted}{csharp}
-public IActionResult Error()
-{
-    return View(new ErrorViewModel { 
-        RequestId = Activity.Current?.Id 
-            ?? HttpContext.TraceIdentifier 
-    });
-}
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{И View}
-        \begin{minted}{html}
-@model ErrorViewModel
-
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred 
-    while processing your request.</h2>
-
-@if (Model?.ShowRequestId ?? false)
-{
-    <p>
-        <strong>Request ID:</strong> 
-        <code>@Model?.RequestId</code>
-    </p>
-}
-        \end{minted}
-    \end{frame}
-
     \section{Роутинг}
 
     \begin{frame}
@@ -673,20 +655,7 @@ namespace WebApplication1.Pages
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Способ 2: вручную}
-        \begin{small}
-            \begin{minted}{csharp}
-public void OnPost()
-{
-    var name = Request.Form["name"];
-    Console.WriteLine(name);
-}
-            \end{minted}
-        \end{small}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Способ 3: через свойства}
+        \frametitle{Способ 2: через свойства}
         \begin{small}
             \begin{minted}{csharp}
 [BindProperty]
