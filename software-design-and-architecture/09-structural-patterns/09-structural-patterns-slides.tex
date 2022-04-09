@@ -19,9 +19,9 @@
 
 \tabulinesep=1.2mm
 
-\title[Структурные шаблоны]{Лекция 6: Структурные шаблоны}
+\title[Структурные шаблоны]{Лекция 6/Практика 4: Структурные шаблоны}
 \author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
-\date{21.04.2022}
+\date{14.04.2022}
 
 \newcommand{\attribution}[1] {
     \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
@@ -71,79 +71,6 @@
                 \end{center}
             \end{column}
         \end{columns}
-    \end{frame}
-
-    \section{Паттерн ``Компоновщик''}
-
-    \begin{frame}
-        \frametitle{Паттерн ``Компоновщик''}
-        \framesubtitle{Composite}
-        \begin{columns}
-            \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item Представление иерархии объектов вида часть-целое
-                    \item Единообразная обработка простых и составных объектов
-                    \item Простота добавления новых компонентов
-                    \item Пример:
-                    \begin{itemize}
-                        \item Синтаксические деревья
-                    \end{itemize}
-                \end{itemize}
-            \end{column}
-            \begin{column}{0.5\textwidth}
-                \begin{center}
-                    \includegraphics[width=\textwidth]{composite.png}
-                \end{center}
-            \end{column}
-        \end{columns}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{``Компоновщик'' (Composite), детали реализации}
-        \begin{itemize}
-            \item Ссылка на родителя
-            \begin{itemize}
-                \item Может быть полезна для простоты обхода
-                \item ``Цепочка обязанностей''
-                \item Но дополнительный инвариант
-                \item Обычно реализуется в Component
-            \end{itemize}
-            \item Разделяемые поддеревья и листья
-            \begin{itemize}
-                \item Позволяют сильно экономить память
-                \item Проблемы с навигацией к родителям и разделяемым состоянием
-                \item Паттерн ``Приспособленец''
-            \end{itemize}
-            \item Идеологические проблемы с операциями для работы с потомками
-            \begin{itemize}
-                \item Не имеют смысла для листа
-                \begin{itemize}
-                    \item Можно считать Leaf Composite-ом, у которого всегда 0 потомков
-                \end{itemize}
-                \item Операции add и remove можно объявить и в Composite, тогда придётся делать cast
-                \begin{itemize}
-                    \item Иначе надо бросать исключения в add и remove
-                \end{itemize}
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{``Компоновщик'', детали реализации (2)}
-        \begin{itemize}
-            \item Операция getComposite() – более аккуратный аналог cast-а
-            \item Порядок потомков может быть важен, может нет
-            \item Кеширование информации для обхода или поиска
-            \begin{itemize}
-                \item Например, кеширование ограничивающих прямоугольников для фрагментов картинки
-                \item Инвалидация кеша
-            \end{itemize}
-            \item Удаление потомков
-            \begin{itemize}
-                \item Если нет сборки мусора, то лучше в Composite
-                \item Следует опасаться разделяемых листьев/поддеревьев
-            \end{itemize}
-        \end{itemize}
     \end{frame}
 
     \section{Паттерн ``Декоратор''}
@@ -310,6 +237,29 @@
             \end{itemize}
             \item Объект-стратегия может быть приспособленцем
         \end{itemize}
+    \end{frame}
+
+    \section{Задание на практику}
+
+    \begin{frame}
+        \frametitle{Задачи на остаток пары}
+        Уточнить модель компьютерной игры Roguelike с предыдущего занятия:
+
+        \begin{enumerate}
+            \item Используя шаблон ``Стратегия'' для поддержки различных поведений мобов
+            \begin{itemize}
+                \item Агрессивное поведение, атакуют игрока, как только его видят
+                \item Пассивное поведение, просто стоят на месте
+                \item Трусливое поведение, стараются держаться на расстоянии от игрока
+            \end{itemize}
+            \item Используя шаблон ``Декоратор'' для поддержки временных эффектов, накладываемых на мобов и игрока
+            \begin{itemize}
+                \item Эффект конфузии, заставляющий персонажа двигаться в случайном направлении
+                \item Возможность добавить другие похожие эффекты
+            \end{itemize}
+        \end{enumerate}
+
+        Выложить модифицированные диаграммы как решение задания в Teams
     \end{frame}
 
 \end{document}
