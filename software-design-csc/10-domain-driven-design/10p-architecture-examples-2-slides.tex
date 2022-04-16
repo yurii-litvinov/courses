@@ -137,14 +137,14 @@ $ git cat-file -p master^{tree}
         \end{minted}
         \end{scriptsize}
         \begin{center}
-            \includegraphics[width=0.5\textwidth]{gitTreeObject.png}
+            \includegraphics[width=0.5\textwidth]{gitTreeObjectBlack.png}
         \end{center}
     \end{frame}
 
     \begin{frame}
         \frametitle{Какие ещё виды объектов бывают}
         \begin{center}
-            \includegraphics[width=0.7\textwidth]{gitDataStructure.png}
+            \includegraphics[width=0.7\textwidth]{gitDataStructureBlack.png}
         \end{center}
     \end{frame}
 
@@ -168,7 +168,7 @@ first commit
     \begin{frame}
         \frametitle{Коммиты, как это выглядит}
         \begin{center}
-            \includegraphics[width=0.7\textwidth]{gitCommitObjects.png}
+            \includegraphics[width=0.7\textwidth]{gitCommitObjectsBlack.png}
         \end{center}
     \end{frame}
 
@@ -199,7 +199,7 @@ fdf4fc3344e67ab068f836878b6c4951e3b15f3d first commit
     \begin{frame}
         \frametitle{Ссылки, как это выглядит}
         \begin{center}
-            \includegraphics[width=0.9\textwidth]{gitRefs.png}
+            \includegraphics[width=0.9\textwidth]{gitRefsBlack.png}
         \end{center}
     \end{frame}
 
@@ -269,7 +269,7 @@ $ find .git/objects -type f
     \begin{frame}
         \frametitle{Как оно устроено}
         \begin{center}
-            \includegraphics[width=0.6\textwidth]{gitPackFiles.png}
+            \includegraphics[width=0.6\textwidth]{gitPackFilesBlack.png}
         \end{center}
     \end{frame}
 
@@ -379,7 +379,7 @@ dangling blob 7108f7ecb345ee9d0084193f147cdad4d2998293
             \end{column}
             \begin{column}{0.4\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.8\textwidth]{revlog.png}
+                    \includegraphics[width=0.8\textwidth]{revlogBlack.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -396,7 +396,7 @@ dangling blob 7108f7ecb345ee9d0084193f147cdad4d2998293
             \item Revlog-и хранятся тоже в виде дельт
         \end{itemize}
         \begin{center}
-            \includegraphics[width=0.5\textwidth]{mercurialLogStructure.png}
+            \includegraphics[width=0.5\textwidth]{mercurialLogStructureBlack.png}
         \end{center}
     \end{frame}
 
@@ -416,7 +416,7 @@ discovery: fix description line
 .hgignore\x006d2dc16e96ab48b2fcca44f7e9f4b8c3289cb701
 .hgsigs\x00de81f258b33189c609d299fd605e6c72182d7359
 .hgtags\x00b174a4a4813ddd89c1d2f88878e05acc58263efa
-CONTRIBUTORS\x007c8afb9501740a450c549b4b1f002c803c45193a
+CONTRIBUTORS\x007c8afb9501740a450c549b4b1f002c803c4519
 COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
         \end{minted}
     \end{frame}
@@ -424,7 +424,7 @@ COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
     \begin{frame}
         \frametitle{Ревизии}
         \begin{center}
-            \includegraphics[width=\textwidth]{mercurialRevisions.png}
+            \includegraphics[width=\textwidth]{mercurialRevisionsBlack.png}
             \attribution{https://www.mercurial-scm.org/wiki/UnderstandingMercurial}
         \end{center}
         \begin{itemize}
@@ -441,7 +441,7 @@ COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
         \begin{columns}
             \begin{column}{0.6\textwidth}
                 \begin{enumerate}
-                    \item Cоздание ветки через клонирование репозитория
+                    \item Создание ветки через клонирование репозитория
                     \item Bookmarks --- объекты-ссылки в духе git
                     \item Именованные ветки --- имя ветки в метаданных ревизии
                     \item Анонимные ветки
@@ -451,7 +451,7 @@ COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
                 \end{itemize}
             \end{column}
             \begin{column}{0.4\textwidth}
-                \includegraphics[width=\textwidth]{mercurialBranches.png}
+                \includegraphics[width=\textwidth]{mercurialBranchesBlack.png}
             \end{column}
         \end{columns}
     \end{frame}
@@ -469,7 +469,7 @@ COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
                 \end{itemize}
             \end{column}
             \begin{column}{0.6\textwidth}
-                \includegraphics[width=\textwidth]{mercurialImportGraph.png}
+                \includegraphics[width=\textwidth]{mercurialImportGraphBlack.png}
             \end{column}
         \end{columns}
     \end{frame}
@@ -528,7 +528,7 @@ COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
     \begin{frame}
         \frametitle{Архитектура}
         \begin{center}
-            \includegraphics[height=0.8\textheight]{subversionArchitecture.png}
+            \includegraphics[height=0.8\textheight]{subversionArchitectureBlack.png}
         \end{center}
     \end{frame}
 
@@ -573,7 +573,7 @@ COPYING\x005ac863e17c7035f1d11828d848fb2ca450d89794
         \frametitle{Свойства}
         \begin{itemize}
             \item Свойства --- пары ``ключ-значение'', которые хранятся вместе с файлами, папками или ревизиями
-            \item Ключ --- строка из ASCII-символов, значение --- либой массив байтов
+            \item Ключ --- строка из ASCII-символов, значение --- любой массив байтов
             \item Версионируются как данные в самих файлах
             \item Активно используются самой Subversion и тулами
             \begin{itemize}
