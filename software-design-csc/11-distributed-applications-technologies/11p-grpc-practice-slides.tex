@@ -1,0 +1,31 @@
+\documentclass{../cscslides}
+
+\slidetitle{Практика 11: Сетевой чат на gRPC}{25.04.2022}
+
+\begin{document}
+    
+    \frame{\titlepage}
+
+    \section{Задача}
+
+    \begin{frame}
+        \frametitle{Задание на пару}
+        В командах по два человека разработать сетевой чат (наподобие Telegram) с помощью gRPC
+        \begin{itemize}
+            \item peer-to-peer, то есть соединение напрямую
+            \item Консольный пользовательский интерфейс
+            \begin{itemize}
+                \item Отображение имени отправителя, даты отправки и текста сообщения
+            \end{itemize}
+            \item При запуске указываются:
+            \begin{itemize}
+                \item Адрес peer-а и порт, если хотим подключиться
+                \begin{itemize}
+                    \item Должно быть можно не указывать, тогда работаем в режиме сервера
+                \end{itemize}
+                \item Своё имя пользователя
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+\end{document}
