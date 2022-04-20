@@ -24,9 +24,10 @@
     \begin{flushright}\begin{scriptsize}\textcolor{gray}{#1}\end{scriptsize}\end{flushright}
 }
 
-\title{Синтаксический анализ на F\#}
+\title{Синтаксический анализ}
+\subtitle{Часть 1: синтаксический анализ вообще}
 \author{Юрий Литвинов}
-\date{14.04.2022}
+\date{21.04.2022}
 
 \begin{document}
     
@@ -172,11 +173,6 @@ NUMBER ::= 1 | 2 | 3 | ... | 9
             \end{itemize}
             \item Языки типа 0 --- естественные языки (да, их тоже анализируют грамматиками, и вообще, Хомский был лингвистом)
         \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Мини-опрос}
-        \center{\url{https://forms.gle/BA24ZmgVncH3AP338}}
     \end{frame}
 
     \subsection{Вывод}
@@ -424,11 +420,6 @@ rule = lhs , "=" , rhs , ";" ;
 grammar = { rule } ;
             \end{minted}
         \end{footnotesize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Мини-опрос}
-        \center{\url{https://forms.gle/6YPGUwKjJxcnwybE8}}
     \end{frame}
 
     \section{Синтаксический анализ в ФП}
