@@ -132,7 +132,7 @@
         \end{center}
     \end{frame}
 
-    \section{protobuf}
+    \subsection{protobuf}
 
     \begin{frame}
         \frametitle{Protocol buffers}
@@ -177,7 +177,7 @@ john.writeTo(output);
         \end{minted}
     \end{frame}
 
-    \section{gRPC}
+    \subsection{gRPC}
 
     \begin{frame}
         \frametitle{gRPC}
@@ -216,7 +216,7 @@ service RouteGuide {
         \begin{itemize}
             \item Сборка --- плагином grpc к protoc
         \end{itemize}
-\end{frame}
+    \end{frame}
 
     \begin{frame}[fragile]
         \frametitle{Реализация сервиса на Java}
@@ -344,6 +344,8 @@ public void getFeature(int lat, int lon) {
         \end{itemize}
     \end{frame}
 
+    \subsection{SOAP-сервисы}
+
     \begin{frame}
         \frametitle{SOAP-ориентированные сервисы}
         \begin{columns}
@@ -436,7 +438,7 @@ public void getFeature(int lat, int lon) {
         \end{itemize}
     \end{frame}
 
-    \section{WCF}
+    \subsection{WCF}
 
     \begin{frame}
         \frametitle{Пример: WCF}
@@ -590,6 +592,107 @@ client.Close();
         \end{ssmall}
     \end{frame}
 
+    \subsection{REST-cервисы}
+
+    \begin{frame}
+        \frametitle{Representational State Transfer (REST)}
+        \begin{itemize}
+            \item Самая популярная сейчас архитектура веб-сервисов
+            \item Передача всего необходимого в запросе
+            \begin{itemize}
+                \item Нельзя хранить состояние сессии
+            \end{itemize}
+            \item Стандартизованный интерфейс, очень простые запросы
+            \item Стандартные протоколы (в основном поверх HTTP)
+            \item Обычно JSON как формат сериализации
+            \item Кеширование
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Интерфейс сервиса}
+        \begin{itemize}
+            \item Коллекции
+            \begin{itemize}
+                \item \url{http://api.example.com/customers/}
+            \end{itemize}
+            \item Элементы
+            \begin{itemize}
+                \item \url{http://api.example.com/customers/17}
+            \end{itemize}
+            \item HTTP-методы (GET, POST, PUT, DELETE), стандартная семантика, стандартные коды ошибок
+            \item Передача параметров прямо в URL
+            \begin{itemize}
+                \item \url{http://api.example.com/customers?user=me&access_token=ASFQF}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример, Google Drive REST API}
+        \begin{itemize}
+            \item GET \url{https://www.googleapis.com/drive/v2/files} --- список всех файлов
+            \item GET \url{https://www.googleapis.com/drive/v2/files/fileId} --- метаданные файла по его Id
+            \item POST \url{https://www.googleapis.com/upload/drive/v2/files} — загрузить новый файл
+            \item PUT \url{https://www.googleapis.com/upload/drive/v2/files/fileId} --- обновить файл
+            \item DELETE \url{https://www.googleapis.com/drive/v2/files/fileId} --- удалить файл
+        \end{itemize}
+    \end{frame}
+
+    \subsection{ASP.NET Web APIs}
+
+    \begin{frame}
+        \frametitle{ASP.NET}
+        \begin{itemize}
+            \item Вообще --- серверный фреймворк для разработки веб-приложений под .NET
+            \item Появился в 2002 году (вместе с самим .NET), переписан под .NET Core в 2016
+            \item Кроссплатформенный, open-source, лицензия MIT
+            \item Имеет механизм быстрого создания REST-сервисов
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{ASP.NET Web APIs}
+        \begin{center}
+            \includegraphics[width=0.4\textwidth]{webApiServiceDesignBlack.png}
+            \attribution{https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример}
+        \framesubtitle{Полный код сервиса!}
+        \begin{ssmall}
+            \begin{minted}{csharp}
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+var summaries = new[] {
+    "Freezing", "Bracing", "Chilly", "Cool", "Mild", 
+    "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+};
+
+app.MapGet("/weatherforecast", () => {
+    var forecast = Enumerable.Range(1, 5).Select(index =>
+       new WeatherForecast
+       (
+           DateTime.Now.AddDays(index),
+           Random.Shared.Next(-20, 55),
+           summaries[Random.Shared.Next(summaries.Length)]
+       )).ToArray();
+    return forecast;
+});
+
+app.Run();
+
+internal record WeatherForecast(DateTime Date, 
+        int TemperatureC, string? Summary) {
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}
+            \end{minted}
+        \end{ssmall}
+    \end{frame}
+
     \section{Очереди сообщений}
 
     \begin{frame}
@@ -608,7 +711,7 @@ client.Close();
         \end{itemize}
     \end{frame}
 
-    \section{RabbitMQ}
+    \subsection{RabbitMQ}
 
     \begin{frame}
         \frametitle{RabbitMQ}
@@ -675,7 +778,7 @@ channel.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
         \end{ssmall}
     \end{frame}
 
-    \section{Apache Kafka}
+    \subsection{Apache Kafka}
 
     \begin{frame}
         \frametitle{Apache Kafka}

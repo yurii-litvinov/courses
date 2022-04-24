@@ -165,52 +165,7 @@
     \end{frame}
 
     \section{REST}
-
-    \begin{frame}
-        \frametitle{Representational State Transfer (REST)}
-        \begin{itemize}
-            \item Самая популярная сейчас архитектура веб-сервисов
-            \item Передача всего необходимого в запросе
-            \begin{itemize}
-                \item Нельзя хранить состояние сессии
-            \end{itemize}
-            \item Стандартизованный интерфейс, очень простые запросы
-            \item Стандартные протоколы (в основном поверх HTTP)
-            \item Обычно JSON как формат сериализации
-            \item Кеширование
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Интерфейс сервиса}
-        \begin{itemize}
-            \item Коллекции
-            \begin{itemize}
-                \item \url{http://api.example.com/customers/}
-            \end{itemize}
-            \item Элементы
-            \begin{itemize}
-                \item \url{http://api.example.com/customers/17}
-            \end{itemize}
-            \item HTTP-методы (GET, POST, PUT, DELETE), стандартная семантика, стандартные коды ошибок
-            \item Передача параметров прямо в URL
-            \begin{itemize}
-                \item \url{http://api.example.com/customers?user=me&access_token=ASFQF}
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Пример, Google Drive REST API}
-        \begin{itemize}
-            \item GET https://www.googleapis.com/drive/v2/files --- список всех файлов
-            \item GET https://www.googleapis.com/drive/v2/files/fileId --- метаданные файла по его Id
-            \item POST https://www.googleapis.com/upload/drive/v2/files — загрузить новый файл
-            \item PUT https://www.googleapis.com/upload/drive/v2/files/fileId --- обновить файл
-            \item DELETE https://www.googleapis.com/drive/v2/files/fileId --- удалить файл
-        \end{itemize}
-    \end{frame}
-
+    
     \begin{frame}
         \frametitle{Дизайн REST-интерфейса}
         \begin{itemize}
