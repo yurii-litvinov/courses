@@ -483,7 +483,7 @@ public class ContainerSpecification {
     }
 }
         \end{minted}
-\end{frame}
+    \end{frame}
 
     \begin{frame}[fragile]
         \frametitle{Код, контейнер}
@@ -498,124 +498,6 @@ boolean isSafelyPacked() {
     return true;
 }
         \end{minted}
-\end{frame}
-
-    \section{Гибкая архитектура}
-
-    \begin{frame}[fragile]
-        \frametitle{Пример рефакторинга, смешивание красок}
-        \framesubtitle{Начальное состояние}
-        \begin{center}
-            \includegraphics[height=0.3\textheight]{originalPaintBlack.png}
-        \end{center}
-        \begin{footnotesize}
-            \begin{minted}{java}
-public void paint (Paint paint } {
-    v = v + paint.getV();  // После смешивания объем суммируется
-// Опущено много строк сложного расчета смешивания цветов,
-// который заканчивается присваиванием новых значений
-// компонентов r (красного), b (синего) и y (желтого).
-}
-            \end{minted}
-        \end{footnotesize}
-\end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Шаг 1: говорящий интерфейс}
-        \begin{center}
-            \includegraphics[width=0.4\textwidth]{informativeInterfaceForPaintBlack.png}
-        \end{center}
-        \begin{footnotesize}
-            \begin{minted}{java}
-public void testPaint() {
-    // Начинаем с чистой желтой краски объемом = 100
-    Paint ourPaint = new Paint(100.0, 0, 50, 0);
-    // Берем чистую синюю краску объемом = 100
-    Paint bluе = new Paint(100.0, 0, 0, 50);
-    // Примешиваем синюю краску к желтой
-    ourPaint.mixIn(blue); 
-    // Должно получиться 200.0 единиц зеленой краски
-    assertEquals(200.0, ourPaint.getVolume(), 0.01);
-    assertEquals(25, ourPaint.getBlue());
-    assertEquals(25, ourPaint.getYellow());
-    assertEquals(0, ourPaint.getRed());
-}
-            \end{minted}
-        \end{footnotesize}
-\end{frame}
-
-    \begin{frame}
-        \frametitle{Шаг 2: функции без побочных эффектов (1)}
-        \framesubtitle{Проблема}
-        \begin{center}
-            \includegraphics[width=0.9\textwidth]{mixinSideEffectsBlack.png}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Шаг 2: функции без побочных эффектов (2)}
-        \framesubtitle{Идея рефакторинга}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{pigmentColorBlack.png}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Шаг 2: функции без побочных эффектов (3)}
-        \framesubtitle{Рефакторинг}
-        \begin{footnotesize}
-            \begin{minted}{java}
-public class PigmentColor {
-    public PigmentColor mixedWith(PigmentColor other, double ratio) {
-        // Много строк сложного расчета смешивания цветов.
-        // в результате создается новый объект PigmentColor
-        // с новыми пропорциями красного, синего и желтого.
-    }
-}
-
-public class Paint {
-    public void mixIn(Paint other) {
-        volume = volume + other.getVolume();
-        double ratio = other.getVolume() / volume;
-        pigmentColor = pigmentColor.mixedWith(other.pigmentColor(), ratio);
-    }
-}
-            \end{minted}
-        \end{footnotesize}
-\end{frame}
-
-    \begin{frame}
-        \frametitle{Шаг 2: функции без побочных эффектов (4)}
-        \framesubtitle{Результат}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{pigmentColorValueObjectBlack.png}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Шаг 3: assertions (1)}
-        \framesubtitle{Инварианты, как они есть}
-        Постусловие для mixIn():
-        {\color{blue}
-        \begin{verbatim}
-После pl.mixIn(p2):
-    pl.volume увеличивается на объем p2.volume
-    p2.volume не изменяется
-\end{verbatim} }
-        И инвариант:
-        {\color{blue}
-        \begin{verbatim}
-Общий объем краски не должен измениться от смешивания
-\end{verbatim} }
-    ???
-\end{frame}
-
-    \begin{frame}
-        \frametitle{Шаг 3: assertions (2)}
-        \framesubtitle{Рефакторинг}
-        \begin{center}
-            \includegraphics[height=0.8\textheight]{stockPaintsBlack.png}
-        \end{center}
     \end{frame}
 
 \end{document}
