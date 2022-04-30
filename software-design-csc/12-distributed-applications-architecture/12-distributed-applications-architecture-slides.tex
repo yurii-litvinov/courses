@@ -1,6 +1,6 @@
 \documentclass{../cscslides}
 
-\slidetitle{Лекция 12: Проектирование распределённых приложений}{02.05.2022}
+\slidetitle[Часть вторая: архитектурные вопросы]{Лекция 12: Проектирование распределённых приложений}{02.05.2022}
 
 \begin{document}
 
@@ -198,7 +198,6 @@
         \framesubtitle{Самовосстановление}
         \begin{itemize}
             \item Повтор при временном отказе
-            \item Паттерн <<Circuit Breaker>>
             \item API для самодиагностики
             \item Разделение на изолированные группы ресурсов
             \item Буферизация запросов
@@ -207,6 +206,22 @@
             \item Плавная потеря работоспособности (graceful degradation)
             \item Тестирование отказов, Chaos engineering
         \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Circuit Breaker, поведение}
+        \begin{center}
+            \includegraphics[height=0.7\textheight]{circuitBreakerSequenceBlack.png}
+            \attribution{\url{https://martinfowler.com/bliki/CircuitBreaker.html}}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Circuit Breaker, состояния}
+        \begin{center}
+            \includegraphics[width=0.5\textwidth]{circuitBreakerStatesBlack.png}
+            \attribution{\url{https://martinfowler.com/bliki/CircuitBreaker.html}}
+        \end{center}
     \end{frame}
 
     \begin{frame}
@@ -237,12 +252,19 @@
         \frametitle{Минимизация координации}
         \begin{itemize}
             \item Доменные события (domain events)
-            \item Паттерн <<Command and Query Responsibility Segregation>> (CQRS)
             \item Event Sourcing
             \item Асинхронные, идемпотентные операции
             \item Шардирование
             \item Eventual Consistency, компенсационные транзакции
         \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Command and Query Responsibility Segregation}
+        \begin{center}
+            \includegraphics[width=0.8\textwidth]{cqrsBlack.png}
+            \attribution{\url{https://medium.com/design-microservices-architecture-with-patterns/cqrs-design-pattern-in-microservices-architectures-5d41e359768c}}
+        \end{center}
     \end{frame}
 
     \begin{frame}
