@@ -65,14 +65,3 @@
     \author[Юрий Литвинов]{Юрий Литвинов\newline\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
     \date{#3}
 }
-
-% Convenience command that includes an image. Takes image name, size as a fraction of text width, and optional attribution.
-\newcommand{\image}[3][{}] {
-    \begin{center}
-        \includegraphics[width=#3\textwidth]{#2}
-    \end{center}
-    \if\relax\detokenize{#1}\relax
-    \else
-        \attribution{#1}
-    \fi
-}

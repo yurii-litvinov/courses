@@ -40,6 +40,8 @@
 \usepackage{footnote}
 \usepackage{minted}
 \usepackage{bookmark}
+\usepackage{multicol}
+\usepackage{xcolor}
 
 \usepackage[hang,multiple]{footmisc}
 \renewcommand{\footnotelayout}{\raggedright}
@@ -61,4 +63,9 @@
     \title{#1}
     \author{Юрий Литвинов\\\small{y.litvinov@spbu.ru}}
     \date{}
+}
+
+% Defining a command for attribution info, mostly for "borrowed" images:
+\newcommand{\attribution}[1] {
+    \begin{flushright}\begin{scriptsize}\textcolor{gray}{\copyright\ #1}\end{scriptsize}\end{flushright}
 }
