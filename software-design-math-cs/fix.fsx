@@ -10,7 +10,7 @@ for dir in dirs do
     for file in texFiles do
         let text = File.ReadAllText(file)
 
-        let targetRegex = Regex(@"\\documentclass.*\\title{(.*)}.*\\author.*\\begin{document}", RegexOptions.Singleline)
+        let targetRegex = Regex(@"\\documentclass.*\\title{(.*)}.*\\date.*\\begin{document}", RegexOptions.Singleline)
         let matches = targetRegex.Matches text
 
         let mutable textParts = []
