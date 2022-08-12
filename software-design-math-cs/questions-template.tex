@@ -1,0 +1,150 @@
+% Шаблон списка вопросов, который включает в себя вообще весь материал, который может быть в курсе.
+% Под каждое конкретное прочтение из него делается список вопросов вырезанием тех, которые не успели пройти.
+
+\documentclass[a5paper]{article}
+\usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
+
+\usepackage[font=scriptsize]{caption}
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+\usepackage{textcomp}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\newlength\Colsep
+\setlength\Colsep{10pt}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+
+\newcommand{\todo}[1] {
+\begin{center}\textcolor{red}{TODO: #1}\end{center}
+}
+
+\sloppy
+\pagestyle{plain}
+
+\title{Вопросы к экзамену ``Проектирование ПО''}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+
+\begin{document}
+
+\thispagestyle{empty}
+
+\section*{Вопросы к экзамену ``Проектирование программного обеспечения''}
+
+\begin{flushright}\begin{small}Юрий Литвинов\\\small{yurii.litvinov@gmail.com}\end{small}\end{flushright}
+
+\begin{enumerate}
+    \item Понятие архитектуры, профессия <<Архитектор>>.
+    \item Архитектурные виды.
+    \item Роль архитектуры в жизненном цикле программного обеспечения.
+    \item Пример архитектуры: Apache Hadoop. Prescriptive и descriptive-архитектура.
+    \item Понятие декомпозиции. Модульность, связность, сопряжение, сложность.
+    \item Понятия класса и объекта, абстракция, инкапсуляция, наследование. 
+    \item Принципы выделения абстракций предметной области.
+    \item Принципы SOLID. Закон Деметры.
+    \item Моделирование, визуальные модели, виды моделей, метафора визуализации.
+    \item Язык UML. Диаграмма классов.
+    \item Диаграммы объектов, диаграммы пакетов UML.
+    \item Диаграмма компонентов UML.
+    \item Моделирование требований: диаграмма случаев использования UML, диаграмма характеристик, Feature tree.
+    \item Диаграмма активностей UML, BPMN.
+    \item Моделирование данных: диаграммы <<Сущность-связь>>, ORM-диаграммы.
+    \item Диаграммы конечных автоматов, последовательностей UML.
+    \item Диаграммы коммуникации, составных структур UML.
+    \item Диаграммы коопераций, временные диаграммы UML.
+    \item Диаграммы обзора взаимодействия, диаграммы потоков данных.
+    \item Диаграммы IDEF0, сети Петри. 
+    \item Паттерн <<Компоновщик>>.
+    \item Паттерн <<Декоратор>>.
+    \item Паттерн <<Стратегия>>.
+    \item Паттерн <<Адаптер>>.
+    \item Паттерн <<Заместитель>>.
+    \item Паттерн <<Фасад>>.
+    \item Паттерн <<Приспособленец>>.
+    \item Паттерн <<Мост>>.
+    \item Паттерн <<Фабричный метод>>.
+    \item Паттерн <<Абстрактная фабрика>>.
+    \item Паттерн <<Одиночка>>.
+    \item Паттерны <<Ленивая инициализация>> и <<Пул объектов>>.
+    \item Паттерн <<Прототип>>.
+    \item Паттерн <<Строитель>>.
+    \item Паттерн <<Наблюдатель>>.
+    \item Паттерн <<Шаблонный метод>>.
+    \item Паттерн <<Посредник>>.
+    \item Паттерн <<Команда>>.
+    \item Паттерн <<Цепочка ответственности>>.
+    \item Паттерн <<Состояние>>.
+    \item Паттерн <<Посетитель>>.
+    \item Паттерн <<Хранитель>>.
+    \item Паттерн <<Интерпретатор>>.
+    \item Паттерн <<Итератор>>.
+    \item Понятие архитектурного стиля, трёхзвенная архитектура.
+    \item Model-View-Controller, Sense-Compute-Control.
+    \item Слоистый стиль, <<Клиент-сервер>>.
+    \item Гексагональная архитектура, луковая архитектура.
+    \item Чистая архитектура.
+    \item Пакетная обработка, каналы и фильтры. 
+    \item Стиль Blackboard.
+    \item Событийно-ориентированные стили, Publish-Subscribe, событийная шина.
+    \item Peer-to-peer.
+    \item Понятие предметно-ориентированного проектирования, единый язык.
+    \item Изоляция предметной области в DDD, антипаттерн <<Умный GUI>>.
+    \item DDD, основные структурные элементы модели предметной области.
+    \item DDD, паттерн <<Агрегат>>.
+    \item DDD, паттерны <<Фабрика>>, <<Репозиторий>>.
+    \item Паттерн <<Спецификация>>.
+    % \item Ограниченный контекст, непрерывная интеграция, карта контекстов.
+    % \item Подходы к интеграции контекстов.
+    % \item Смысловое ядро, приёмы дистилляции, абстрактное ядро.
+    % \item Крупномасштабная структура, метафора системы, разбиение по уровням. 
+    % \item Типичные уровни в производственных и финансовых системах.
+    % \item Стили <<Уровень знаний>>, <<Подключаемые компоненты>>.
+    \item Понятие распределённой системы, заблуждения при проектировании распределённых систем.
+    \item RPC, RMI. Пример: gRPC.
+    \item Веб-сервисы, SOAP. WCF.
+    \item Веб-сервисы, REST. ASP.NET Web APIs.
+    % \item Очереди сообщений, RabbitMQ, Kafka.
+    \item Архитектурные стили распределённых приложений: Big Compute, Big Data.
+    \item Web-queue-worker, N-звенная архитектура.
+    \item Микросервисная архитектура.
+    \item Дизайн REST-интерфейса.
+    \item Принципы дизайна распределённых приложений: самовосстановление.
+    \item Паттерн <<Circuit Breaker>>.
+    \item Принципы дизайна распределённых приложений: избыточность.
+    \item Принципы дизайна распределённых приложений: минимизация координации.
+    \item Command and Query Responsibility Segregation.
+    \item CAP-теорема, модели ACID и BASE.
+    \item Принципы дизайна распределённых приложений: проектирование для обслуживания.
+    % \item Docker, Docker Compose.
+    % \item Kubernetes.
+    % \item Облачная инфраструктура, AWS, Terraform.
+    % \item Архитектура командной оболочки Bash.
+    % \item Архитектура системы контроля версий Git.
+    % \item Архитектура компьютерной игры Battle for Wesnoth.
+\end{enumerate}
+
+\end{document}
