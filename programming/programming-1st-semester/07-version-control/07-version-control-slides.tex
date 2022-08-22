@@ -19,23 +19,33 @@
 \tabulinesep=0.7mm
 
 \newcommand{\attribution}[1] {
-    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
+    \begin{flushright}\begin{scriptsize}\textcolor{gray}{\copyright\ #1}\end{scriptsize}\end{flushright}
 }
 
-\title{Системы контроля версий, git}
+\title{Системы контроля версий}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{y.litvinov@spbu.ru}}}
 
 \date{21.09.2021}
 
 \begin{document}
-    
-    \frame{\titlepage}
-    
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \section{Введение}
+
     \begin{frame}
         \frametitle{Мотивация}
         \begin{itemize}
             \item Откат изменений
+            \begin{itemize}
+                \item Система контроля версий --- это машина времени
+            \end{itemize}
             \item Управление версиями
+            \begin{itemize}
+                \item Машина времени с альтернативными временными ветками
+            \end{itemize}
             \item Централизованное хранение кода
             \item Командная разработка
         \end{itemize}
@@ -66,48 +76,67 @@
     \end{frame}
 
     \begin{frame}
-        \frametitle{Управление версиями}
+        \frametitle{Дельты}
+        \begin{itemize}
+            \item Системы контроля версий управляют изменениями
+            \item Единица работы --- коммит, набор изменений по всем файлам репозитория
+            \item Файлы системы контроля версий не очень интересуют!
+            \item Рабочая копия --- папка с исходниками, где ведётся разработка
+        \end{itemize}
         \begin{center}
-            \includegraphics[width=0.6\textwidth]{deltaVersioning.png}
-
-            \vspace{5mm}
-            \includegraphics[width=0.6\textwidth]{snapshotVersioning.png}
-            \attribution{https://git-scm.com/book/ru}
+            \includegraphics[width=0.8\textwidth]{delta.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Дельта}
-        \begin{center}
-            \includegraphics[width=0.9\textwidth]{delta.png}
-        \end{center}
-    \end{frame}
+    \section{Git}
 
     \begin{frame}
         \frametitle{Конкретно Git}
         \begin{itemize}
-            \item 2005 год, Линус Торвальдс (тот самый)
-            \item Консольная утилита, реализованная под все нормальные ОС
+            \item Не GitHub!
+            \item Не файлообменник
+            \item Распределённая система контроля версий
+            \item Удобная поддержка веток
+            \item 2005 год, Линус Торвальдс (тот самый), для версионирования ядра Linux
             \begin{itemize}
-                \item Git for Windows, \url{https://git-scm.com/download/win}
+                \item Был написан за несколько дней после ссоры с BitKeeper-ом как набор скриптов на Bash-е
+                \item Речь про сотни тысяч коммитов и тысячи коммитеров
             \end{itemize}
-            \item Графические клиенты (много)
+            \item С тех пор реализован под все нормальные ОС в виде библиотеки 
             \begin{itemize}
-                \item TortoiseGit, \url{https://tortoisegit.org/}
+                \item И консольной утилиты, её использующей
+            \end{itemize} 
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Что поставить, чтобы всё работало}
+        \begin{itemize}
+            \item Git for Windows, \url{https://git-scm.com/download/win}
+            \item Linux/MacOS: \verb|apt install git|, \verb|brew install git| или что-то подобное
+            \begin{itemize}
+                \item Кстати, для Windows есть Chocolatey: \verb|choco install git|
             \end{itemize}
-            \item Хостинги репозиториев: GitHub, GitLab, BitBucket, ...
+            \item На первое время какой-нибудь графический клиент:
+            \begin{itemize}
+                \item Github Desktop
+                \item TortoiseGit
+                \item SmartGit 
+                \item ...
+                \item Плагин к вашей любимой IDE
+            \end{itemize}
         \end{itemize}
     \end{frame}
 
     \begin{frame}
-        \frametitle{Жизненный цикл файла}
+        \frametitle{Git, жизненный цикл файла}
         \begin{center}
             \includegraphics[width=0.8\textwidth]{fileLifeCycle.png}
             \attribution{https://git-scm.com/book/ru}
         \end{center}
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}[fragile]
         \frametitle{Основные команды}
         \begin{itemize}
             \item git add --- добавить новый файл под управление git или добавить изменение к коммиту
@@ -126,17 +155,14 @@
             \begin{itemize}
                 \item Git Commit в TortoiseGit
             \end{itemize}
-            \item git rm --- удалить файл и удалить его из репозитория
-            \begin{itemize}
-                \item Delete в TortoiseGit
-            \end{itemize}
             \item git log --- просмотреть список коммитов
             \begin{itemize}
                 \item Show log в TortoiseGit
             \end{itemize}
-            \item git checkout --- откатить изменения в файле или перейти на другую ветку
+            \item git restore --- откатить изменения в файле или перейти на другую ветку
             \begin{itemize}
                 \item Revert... или Switch/Checkout
+                \item Есть ещё \verb|git reset --hard|, плюс \verb|git clean -dfx|
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -144,118 +170,42 @@
     \begin{frame}
         \frametitle{Демо}
         \begin{itemize}
-            \item Надо скачать и поставить Git for Windows и TortoiseGit
+            \item Надо скачать и поставить консольный клиент Git и TortoiseGit
             \item Создадим локально репозиторий, научимся коммитить файлы, смотреть историю и откатывать изменения
         \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Как всё устроено}
-        \begin{minted}{text}
-$ git add README test.rb LICENSE
-$ git commit -m 'initial commit of my project'
-        \end{minted}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{blobs.png}
-            \attribution{https://git-scm.com/book/ru}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Коммит и его родители}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{commits.png}
-            \attribution{https://git-scm.com/book/ru}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}
         \frametitle{Ветки}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{branches.png}
-            \attribution{https://git-scm.com/book/ru}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Создание ветки}
-        \begin{minted}{text}
-$ git branch testing
-        \end{minted}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{creatingBranch.png}
-            \attribution{https://git-scm.com/book/ru}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Переключение ветки}
-        \begin{minted}{text}
-$ git checkout testing
-        \end{minted}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{checkout.png}
-            \attribution{https://git-scm.com/book/ru}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Новый коммит}
-        \begin{minted}{text}
-<Что-то поделали с файлами в рабочей копии>
-$ git add <изменения, которые хотим коммитить>
-$ git commit -m 'made a change'
-        \end{minted}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{newCommit.png}
-            \attribution{https://git-scm.com/book/ru}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Переключимся на master}
-        \begin{minted}{text}
-$ git checkout master
-        \end{minted}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{checkoutToMaster.png}
-            \attribution{https://git-scm.com/book/ru}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Сделаем новый коммит там}
-        \begin{minted}{text}
-<Что-то поделали с файлами в рабочей копии>
-$ git add <изменения, которые хотим коммитить>
-$ git commit -m 'made other changes'
-        \end{minted}
-        \begin{center}
-            \includegraphics[width=0.8\textwidth]{newCommitToMaster.png}
-            \attribution{https://git-scm.com/book/ru}
-        \end{center}
+        \begin{itemize}
+            \item Ветка --- цепочка коммитов
+            \item История коммитов может ветвиться, как дерево
+            \begin{itemize}
+                \item Хотим проверить вариант решения
+                \item Хотим не выкладывать в основную ветку недоделанную работу
+                \item Хотим при командной разработке не мешать друг другу
+            \end{itemize}
+            \item \verb|git checkout -b <имя ветки>| --- отвести новую ветку от текущей
+            \item \verb|git checkout <имя ветки>| --- переключиться на указанную ветку
+            \begin{itemize}
+                \item Switch/Checkout в TortoiseGit, там же флажок Create New Branch
+            \end{itemize}
+            \item Очень важно следить, от какой ветки отводим новую
+        \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]
         \frametitle{Слияние веток}
+        \verb|git merge <имя ветки>| --- притянуть изменения из указанной ветки в текущую
         \begin{minted}{text}
-$ git checkout master
-Switched to branch 'master'
-$ git merge testing
-Merge made by the 'recursive' strategy.
-index.html |    1 +
-1 file changed, 1 insertion(+)
+            $ git checkout master
+            $ git merge iss53
         \end{minted}
         \begin{center}
-            \includegraphics[width=0.8\textwidth]{merge.png}
-            \attribution{https://git-scm.com/book/ru}
+            \includegraphics[width=0.7\textwidth]{merge.png}
         \end{center}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Результат}
         \begin{center}
-            \includegraphics[width=0.8\textwidth]{mergeResult.png}
+            \includegraphics[width=0.7\textwidth]{mergeResult.png}
             \attribution{https://git-scm.com/book/ru}
         \end{center}
     \end{frame}
@@ -263,14 +213,10 @@ index.html |    1 +
     \begin{frame}
         \frametitle{Конфликты}
         \begin{center}
-            \includegraphics[width=0.95\textwidth]{conflicts.png}
+            \includegraphics[width=0.7\textwidth]{conflicts.png}
         \end{center}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Конфликты в коде}
         \begin{center}
-            \includegraphics[width=0.5\textwidth]{conflictsInCode.png}
+            \includegraphics[width=0.3\textwidth]{conflictsInCode.png}
         \end{center}
     \end{frame}
 
@@ -284,7 +230,6 @@ index.html |    1 +
                     \item git push
                     \item git fetch
                     \item git pull
-                    \item Соответствующие команды в окне Git Sync... в TortoiseGit
                 \end{itemize}
             \end{column}
             \begin{column}{0.6\textwidth}
@@ -294,6 +239,28 @@ index.html |    1 +
                 \end{center}
             \end{column}
         \end{columns}
+    \end{frame}
+
+    \section{GitHub}
+
+    \begin{frame}
+        \frametitle{GitHub}
+        \begin{itemize}
+            \item GitHub --- один из облачных хостингов git-репозиториев
+            \begin{itemize}
+                \item Никто не мешает использовать Git локально или поднять сервер самому
+            \end{itemize}
+            \item Ещё из известных GitLab (включая self-hosted), BitBucket, Azure DevOps Server, ...
+            \item Не только хостинг репозитория, но и:
+            \begin{itemize}
+                \item UI для просмотра исходников и поиска по ним
+                \item Пуллреквесты
+                \item Форки
+                \item Социальное взаимодействие
+                \item CI/CD
+                \item Средства для управления проектом
+            \end{itemize}
+        \end{itemize}
     \end{frame}
 
     \begin{frame}
@@ -328,119 +295,21 @@ index.html |    1 +
         \end{footnotesize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{То же, но с домашкой}
-        \begin{itemize}
-            \item Хотите сделать новую задачу
-            \item Отводите себе ветку от main-а
-            \begin{itemize}
-                \item Create Branch..., Base On --- main
-                \item Вводите адекватное имя ветки (например, номер или название задачи)
-            \end{itemize}
-            \item Создаёте \emph{прямо там} проект, делаете задачу
-            \item Коммитите, сколько хотите
-            \begin{itemize}
-                \item После каждого значимого продвижения
-                \item Git Commit -> имя вашей ветки (проверьте, что не main)
-                \item Вводим в message \emph{внятное} описание изменений
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{То же, но с домашкой (2)}
-        \begin{itemize}
-            \item Когда считаете, что задача готова, пушите её на GitHub
-            \begin{itemize}
-                \item Git Sync -> Push
-            \end{itemize}
-            \item Идёте на GitHub, делаете пуллреквест
-            \begin{itemize}
-                \item Выбираете ветку в ``Branch:''
-                \item Жмёте на Pull request
-                \item Вводите внятное описание пуллреквеста
-                \item Жмёте на Create pull request
-            \end{itemize}
-            \item Ссылку на то, что получилось, выкладываете на Blackboard
-            \begin{itemize}
-                \item Список всех пуллреквестов можно посмотреть во вкладке Pull requests на GitHub
-            \end{itemize}
-            \item Ждёте, пока я прокомментирую решение
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{То же, но с домашкой (3)}
-        \begin{itemize}
-            \item В это время можно заняться следующей задачей
-            \begin{itemize}
-                \item Create Branch..., Base On --- main
-            \end{itemize}
-            \item Получаете ревью на GitHub, исправляете замечания
-            \begin{itemize}
-                \item Переключаетесь на исходную ветку
-                \begin{itemize}
-                    \item Коммитите текущие изменения в рабочей копии
-                    \item Switch/Checkout -> исходная ветка
-                \end{itemize}
-                \item Исправляете, коммитя сколько хотите
-                \item Коммитите исправления
-                \item Пушите на GitHub
-            \end{itemize}
-            \item Проверяете, что всё ок, в пуллреквестах на GitHub
-            \begin{itemize}
-                \item Пуллреквест пересоздавать не надо, пуллреквест открывается от ветки, а не от коммита
-            \end{itemize}
-            \item Когда задача принята, мерджите пуллреквест на GitHub и удаляете ветку
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Что надо выкладывать}
-        \begin{itemize}
-            \item .c, .h-файлы
-            \item Проектные файлы:
-            \begin{itemize}
-                \item Visual Studio: .vcxproj, .sln
-                \item CLion: всё содержимое папки .idea, кроме workspace.xml и tasks.xml
-            \end{itemize}
-            \item Текстовые файлы и прочие ресурсы, которые используются в тестах или во время работы программы
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Что не надо выкладывать}
-        \begin{itemize}
-            \item Бинарные файлы: .exe, .dll, бинарники под линуксом
-            \begin{itemize}
-                \item Включите себе отображение расширений файлов
-            \end{itemize}
-            \item Промежуточные результаты компиляции: .o, .obj, ...
-            \item Скрытую папку .vs в Visual Studio
-            \begin{itemize}
-                \item Включите себе отображение скрытых файлов
-            \end{itemize}
-        \end{itemize}
-        .gitignore:
-        \begin{itemize}
-            \item \url{https://git-scm.com/docs/gitignore}
-            \item \url{https://github.com/github/gitignore}
-        \end{itemize}
-    \end{frame}
+    \section{Хорошие практики}
 
     \begin{frame}
         \frametitle{Хорошие практики}
         \begin{itemize}
-            \item При первом коммите попросят имя и Email, аккуратно заполняем
-            \begin{itemize}
-                \item Желательно, чтобы они совпадали с именем аккаунта и почтой, с которой регались на GitHub
-            \end{itemize}
-            \item Коммитим только то, что нужно, чтобы получить в чистую папку и собрать проект
+            \item Коммитим только исходные тексты, конфиги, картинки и т.п.
+            \item Если что-то может быть автоматически сгенерировано по тому, что уже есть в репозитории, это НЕ коммитим
             \item Всегда пишем адекватные комментарии к коммитам
-            \item Коммитим как можно чаще
-            \item Один коммит --- одна функциональность
             \begin{itemize}
-                \item Сделали что-то, хоть немного напоминающее осмысленное -> коммит
+                \item Одно-два осмысленных предложения, в повелительной форме
+                \item Комментарии к коммиту обязательны, за fix или ``.'' сразу увольняют
+            \end{itemize}
+            \item Коммитим как можно чаще
+            \begin{itemize}
+                \item Сделали что-то осмысленное --- коммит
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -448,17 +317,60 @@ index.html |    1 +
     \begin{frame}
         \frametitle{Хорошие практики (2)}
         \begin{itemize}
+            \item Никогда не коммитим исполнимые файлы (включая .dll/.so), объектные файлы, локальные настройки
+            \begin{itemize}
+                \item Из каждого правила есть исключения, но всё же
+            \end{itemize}
+            \item Обязательно выкладываем файлы, необходимые для сборки
+            \begin{itemize}
+                \item Проектные файлы, мейкфайлы, скрипты и т.п.
+                \item Visual Studio: .vcxproj, .sln
+                \item IDEA: всё содержимое папки .idea, кроме workspace.xml и tasks.xml
+            \end{itemize}
+            \item Имеет смысл проверить, склонив репозиторий в пустую папку
+            \begin{itemize}
+                \item Кстати, никто не запрещает иметь локально несколько копий репозитория, например, с разными ветками
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Хорошие практики (3)}
+        \begin{itemize}
             \item Коммит не должен содержать в себе файлы, не относящиеся к изменениям
             \begin{itemize}
                 \item .gitignore
+                \item \url{https://github.com/github/gitignore}
+                \item Обязательно надо проверять, что коммитим (git diff)
             \end{itemize}
             \item Коммит не должен добавлять/убирать пустые строки, менять пробелы на табы и т.д., если это не суть коммита
             \item Стиль исходного кода и отступов должен совпадать с текстом вокруг
+            \item Делаете пуллреквест --- посмотрите diff
         \end{itemize}
         \begin{center}
             \includegraphics[width=0.4\textwidth]{inCaseOfFire.png}
         \end{center}
     \end{frame}
 
-\end{document}
+    \begin{frame}[fragile]
+        \frametitle{Ещё полезные команды}
+        \begin{itemize}
+            \item \verb|git add -p| --- интерактивное добавление изменений к коммиту, позволяет коммитить только часть файла
+            \item \verb|git commit --amend| --- исправить последний коммит
+            \begin{itemize}
+                \item \verb|git commit --amend -m "an updated commit message"|
+                \item Применять \textbf{только до} git push
+            \end{itemize}
+            \item \verb|git rebase <имя ветки>| --- положить изменения из данной ветки поверх текущей, альтернатива merge
+            \item \verb|git reset --hard| --- откатить все изменения в рабочей копии до последнего коммита
+            \begin{itemize}
+                \item Обязательно проверить git status, что не откатите лишнего
+            \end{itemize}
+            \item \verb|git reset --hard <хеш коммита>| --- откатить все изменения в текущей ветке до указанного коммита, забыть все коммиты, что были после
+            \begin{itemize}
+                \item И случайно грохнуть всю домашку перед зачётом
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
+\end{document}
