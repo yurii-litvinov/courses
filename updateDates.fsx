@@ -1,8 +1,8 @@
 let holidays = ["23.02.2022"; "08.03.2022"; "01.05.2022"; "02.05.2022"; "09.05.2022"; "10.05.2022"; "12.06.2022"; "13.06.2022"]
 let controlWorkPairNumbers = []
-let fromPair = 5
-let startDate = "14.03.2022"
-let directoryPath = "software-design-csc"
+let fromPair = 1
+let startDate = "06.09.2022"
+let directoryPath = "software-design-math-cs"
 
 
 
@@ -12,7 +12,11 @@ open System.Text.RegularExpressions
 
 let convertedStartDate = DateTime.Parse startDate
 
-let dirs = Directory.GetDirectories directoryPath |> Seq.filter (fun dir -> not ((FileInfo dir).Name.StartsWith("_")))
+let dirs = 
+        Directory.GetDirectories directoryPath 
+        |> Seq.filter (fun dir -> not ((FileInfo dir).Name.StartsWith("_")))
+        |> Seq.filter (fun dir -> not ((FileInfo dir).Name.StartsWith(".")))
+
 let courseDates = 
     Seq.initInfinite (fun i -> convertedStartDate + (TimeSpan.FromDays <| float (i * 7)))
     |> Seq.map (fun date -> date.ToShortDateString())
