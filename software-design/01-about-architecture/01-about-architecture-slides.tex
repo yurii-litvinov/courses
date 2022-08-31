@@ -1,44 +1,12 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
+\documentclass{../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\usepackage{textpos}
-\setlength{\TPHorizModule}{1cm}
-\setlength{\TPVertModule}{1cm}
-
-\definecolor{links}{HTML}{2A1B81}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\tabulinesep=1.2mm
-
-\title{Архитектура ПО}
-\subtitle{Лекция 1: Об архитектуре}
-\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
-\date{07.09.2021}
-
-\newcommand{\todo}[1] {
-    \begin{center}\textcolor{red}{TODO: #1}\end{center}
-}
-
-\newcommand{\DownArrow} {
-    \hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
-}
-
-\newcommand{\attribution}[1] {
-    \begin{flushright}\begin{scriptsize}\textcolor{gray}{#1}\end{scriptsize}\end{flushright}
-}
+\slidetitle{Архитектура ПО}{01.09.2022}
 
 \begin{document}
 
-    \frame{\titlepage}
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
     \section{Организационное}
 
@@ -53,12 +21,12 @@
                 \item Будут допы
                 \item Если не готовиться, можно получить трояк или вынос
             \end{itemize}
-            \item Три домашних задания <<на потренироваться>>
+            \item Два домашних задания <<на потренироваться>>
             \item ECTS-like балльная система
             \begin{itemize}
                 \item 30\% за домашки, 10\% за практическую работу, 80\% за экзамен
             \end{itemize}
-            \item Материалы будут выкладываться в Teams
+            \item Материалы будут выкладываться на Blackboard
         \end{itemize}
     \end{frame}
 
@@ -71,7 +39,8 @@
             \item Архитектурные стили
             \item Предметно-ориентированное проектирование
             \item Проектирование распределённых приложений
-            \item Примеры архитектур
+            \item Немного про DevOps
+            \item Если успеем (что вряд ли), примеры архитектур
         \end{itemize}
     \end{frame}
 
@@ -82,7 +51,7 @@
         \begin{center}
             \includegraphics[width=0.5\textwidth]{brooksSquare.png}
         \end{center}
-        \begin{textblock}{2}(10,-3)
+        \begin{textblock}{2}(9,-4)
             \includegraphics[width=\textwidth]{brooksCover.png}
         \end{textblock}
     \end{frame}
@@ -153,32 +122,14 @@
     \end{frame}
 
     \begin{frame}
-        \frametitle{Профессиональный стандарт <<Архитектор>>}
-        Создание и сопровождение архитектуры программных средств, заключающейся
-        \begin{itemize}
-            \item в синтезе и документировании решений о структуре
-            \item компонентном устройстве
-            \item основных показателях назначения
-            \item порядке и способах реализации программных средств в рамках системной архитектуры
-            \item реализации требований к программным средствам
-            \item контроле реализации и ревизии решений
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
         \frametitle{Трудовые функции архитектора}
-        \framesubtitle{По стандарту}
+        \framesubtitle{По профстандарту 06.003}
         \begin{itemize}
-            \item Создание вариантов архитектуры программного средства
-            \item Документирование архитектуры программных средств
-            \item Реализация программных средств \textit{(в основном контроль и анализ)}
-            \item Оценка требований к программному средству
-            \item Оценка и выбор варианта архитектуры программного средства
-            \item Контроль реализации программного средства
-            \item Контроль сопровождения программных средств
-            \item Оценка возможности создания архитектурного проекта
-            \item Утверждение и контроль методов и способов взаимодействия программного средства со своим окружением
-            \item Модернизация программного средства и его окружения
+            \item Выявление и согласование требований к программной системе с точки зрения архитектуры
+            \item Выбор и моделирование архитектурного решения для реализации программной системы
+            \item Разработка разделов по архитектуре проектных и эксплуатационных документов программной системы
+            \item Контроль реализации и испытаний программной системы с точки зрения архитектуры
+            \item Сопровождение эксплуатации программной системы с точки зрения архитектуры
         \end{itemize}
     \end{frame}
 
@@ -230,6 +181,7 @@
         \frametitle{Вариант 1: объектная модель}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeObjects.png}
+            \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
@@ -237,6 +189,7 @@
         \frametitle{Вариант 2: слоистая архитектура}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeLayers.png}
+            \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
@@ -244,6 +197,7 @@
         \frametitle{Вариант 3: каналы и фильтры}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeFilters.png}
+            \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
@@ -251,6 +205,7 @@
         \frametitle{Вариант 4: модифицированные каналы и фильтры}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeModifiedFilters.png}
+            \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
@@ -278,71 +233,23 @@
         \framesubtitle{Стандарт IEEE 1016-2009}
         \begin{itemize}
             \item Контекст --- фиксирует окружение системы
-            \begin{itemize}
-                \item Диаграммы активностей UML, IDEF0 (SADT)
-            \end{itemize}
             \item Композиция --- описывает крупные части системы и их предназначение
-            \begin{itemize}
-                \item Диаграммы компонентов UML, IDEF0
-            \end{itemize}
             \item Логическая структура --- структура системы в терминах классов, интерфейсов и отношений между ними
-            \begin{itemize}
-                \item Диаграммы классов UML, диаграммы объектов UML
-            \end{itemize}
+            \item Зависимости --- определяет связи по данным между элементами
+            \item Информационная структура --- определяет персистентные данные в системе
+            \item Использование шаблонов --- документирование использования локальных паттернов проектирования
         \end{itemize}
     \end{frame}
 
     \begin{frame}
         \frametitle{Архитектурные виды (2)}
         \begin{itemize}
-            \item Зависимости --- определяет связи по данным между элементами
-            \begin{itemize}
-                \item Диаграммы компонентов UML, диаграммы пакетов UML
-            \end{itemize}
-            \item Информационная структура --- определяет персистентные данные в системе
-            \begin{itemize}
-                \item Диаграммы классов UML, IDEF1x, ER, ORM
-            \end{itemize}
-            \item Использование шаблонов --- документирование использования локальных паттернов проектирования
-            \begin{itemize}
-                \item Диаграммы классов UML, диаграммы пакетов UML, диаграммы коллабораций UML
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Архитектурные виды (3)}
-        \begin{itemize}
             \item Интерфейсы --- специфицирует информацию о внешних и внутренних интерфейсах
-            \begin{itemize}
-                \item IDL, диаграммы компонентов UML, макеты пользовательского интерфейса, неформальные описания сценариев использования
-            \end{itemize}
             \item Структура системы --- рекурсивное описание внутренней структуры компонентов системы
-            \begin{itemize}
-                \item Диаграммы композитных структур UML, диаграммы классов UML, диаграммы пакетов UML
-            \end{itemize}
             \item Взаимодействия --- описывает взаимодействие между сущностями
-            \begin{itemize}
-                \item Диаграммы композитных структур UML, диаграммы взаимодействия UML, диаграммы последовательностей UML
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Архитектурные виды (4)}
-        \begin{itemize}
             \item Динамика состояний --- описание состояний и правил переходов между состояниями
-            \begin{itemize}
-                \item Диаграммы конечных автоматов UML, диаграммы Харела, сети Петри
-            \end{itemize}
             \item Алгоритмы --- описывает в деталях поведение каждой сущности
-            \begin{itemize}
-                \item Диаграммы активностей UML, псевдокод, настоящие языки программирования
-            \end{itemize}
             \item Ресурсы --- описывает использование внешних ресурсов
-            \begin{itemize}
-                \item Диаграммы развёртывания UML, диаграммы классов UML, OCL
-            \end{itemize}
         \end{itemize}
     \end{frame}
 
@@ -466,6 +373,7 @@
         \framesubtitle{HDFS}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{hadoopDescriptive.png}
+            \attribution{Nenad Medvidovic}
         \end{center}
     \end{frame}
 
@@ -474,6 +382,7 @@
         \framesubtitle{HDFS + MapReduce}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{hdfsMapReduce.png}
+            \attribution{Nenad Medvidovic}
         \end{center}
     \end{frame}
 
@@ -482,6 +391,7 @@
         \framesubtitle{Полная архитектура}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{hadoopFull.png}
+            \attribution{Nenad Medvidovic}
         \end{center}
     \end{frame}
 
@@ -490,6 +400,7 @@
         \framesubtitle{Граф зависимостей}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{hadoopDependencies.png}
+            \attribution{Nenad Medvidovic}
         \end{center}
     \end{frame}
 
