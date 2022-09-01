@@ -1,28 +1,13 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
+\documentclass{../text-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\definecolor{links}{HTML}{2A1B81}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\tabulinesep=0.7mm
-
-\title{Распределённые приложения, gRPC}
+\texttitle{Распределённые приложения, gRPC}
 \author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{yurii.litvinov@gmail.com}}}
-
-\date{12.01.2023}
 
 \begin{document}
 	
-	\frame{\titlepage}
+	\begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
 	\section{Задача}
 

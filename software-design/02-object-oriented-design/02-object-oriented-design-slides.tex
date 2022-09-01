@@ -1,45 +1,12 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
+\documentclass{../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\usepackage{textpos}
-\setlength{\TPHorizModule}{1cm}
-\setlength{\TPVertModule}{1cm}
-
-\setbeamertemplate{blocks}[rounded][shadow=false]
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
-\tabulinesep=1.2mm
-
-\title[Декомпозиция, ООП]{Лекция 2: Декомпозиция, объектно-ориентированное проектирование}
-\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
-\date{08.09.2022}
-
-\newcommand{\todo}[1] {
-    \begin{center}\textcolor{red}{TODO: #1}\end{center}
-}
-
-\newcommand{\DownArrow} {
-    \hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
-}
-
-\newcommand{\attribution}[1] {
-    \begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
-}
+\slidetitleext{Лекция 2: Декомпозиция, объектно-ориентированное проектирование}{08.09.2022}{Декомпозиция, ООП}
 
 \begin{document}
 
-    \frame{\titlepage}
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
     \section{Декомпозиция и модульность}
 

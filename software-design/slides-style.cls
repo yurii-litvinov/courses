@@ -33,14 +33,8 @@
 \setlength{\TPHorizModule}{1cm}
 \setlength{\TPVertModule}{1cm}
 
-% Selecting Beamer outer theme with minimal clutter and template with frame numbers
-\useoutertheme{default}
-\setbeamertemplate{footline}[text line]{% 
-    \hfill\strut{% 
-        \scriptsize\color{black!60}% 
-        \insertframenumber/\inserttotalframenumber 
-    }% 
-} 
+% Selecting Beamer outer theme with some presentation structure info.
+\useoutertheme{infolines}
 
 % Link colors
 \definecolor{links}{HTML}{2A1B81}
@@ -58,10 +52,19 @@
     \begin{flushright}\begin{scriptsize}\textcolor{gray}{\copyright\ #1}\end{scriptsize}\end{flushright}
 }
 
-% Slide title command. Takes three arguments --- title, date and subtitle (third is optional)
+% Slide title command. Takes three arguments --- title, date and optional subtitle.
 \newcommand{\slidetitle}[3][{}] {
     \title{#2}
     \subtitle{#1}
     \author[Юрий Литвинов]{Юрий Литвинов\newline\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
     \date{#3}
 }
+
+% Slide title with shortened title command. Takes four arguments --- title, date, shortened title for slide footer and optional subtitle.
+\newcommand{\slidetitleext}[4][{}] {
+    \title[#4]{#2}
+    \subtitle{#1}
+    \author[Юрий Литвинов]{Юрий Литвинов\newline\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
+    \date{#3}
+}
+
