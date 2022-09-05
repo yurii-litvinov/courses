@@ -1,20 +1,6 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\definecolor{links}{HTML}{2A1B81}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\title{Учебные практики второго курса}
-\subtitle{Требования, рекомендации}
-\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{y.litvinov@spbu.ru}}}
-\date{01.09.2021}
+\slidetitle[Требования, рекомендации]{Учебные практики второго курса}{05.09.2022}
 
 \begin{document}
     
@@ -25,7 +11,7 @@
         \begin{itemize}
             \item Научно-исследовательская или программно-инженерная работа
             \begin{itemize}
-                \item Решение более-менее научной или практически полезной задачи
+                \item Решение более-менее сложной практической либо научной задачи
                 \item Отчёт (текст)
                 \item Код (опционально, но желательно)
             \end{itemize}
@@ -64,17 +50,17 @@
     \begin{frame}
         \frametitle{Откуда брать тему и научника}
         \begin{itemize}
-            \item Глобальная таблица с темами: \url{https://bit.ly/themes-2021-2022}
+            \item Сайт кафедры СП: \url{https://se.math.spbu.ru/diplomas/index.html}
             \begin{itemize}
-                \item Обратите внимание, там вкладки по кафедрам
-                \item Ищите те, про которые написано, что они могут быть практиками второго курса
+                \item Обратите внимание, там есть фильтры, но пока нет фильтра по кафедрам --- ориентируйтесь на научника (не консультанта)
                 \item Если тема заинтересовала, но не подходит, можно пообщаться с консультантом
             \end{itemize}
             \item У преподавателя по программированию --- он сможет хотя бы направить
             \item На стажировке
-            \item Результат выбора темы \textbf{до конца сентября} записать сюда: \url{https://bit.ly/3DwotoJ}
+            \item Результат выбора темы \textbf{до конца сентября} записать сюда: \url{https://docs.google.com/spreadsheets/d/17TxV9OgKSN37RaFiGRgRe_T45E20YtODrnn5U3q3P9k}
             \begin{itemize}
-                \item Там тоже вкладки по кафедрам
+                \item Там есть вкладки по кафедрам
+                \item В октябре таблица будет закрыта для редактирования, кто не успел --- минус балл
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -102,7 +88,7 @@
         \frametitle{Примерный план, двухсеместровая практика}
         \begin{itemize}
             \item Так же, как односеместровая практика, но растянуто на целый год
-            \item К зимней защите текст должен содержать как минимум введение и обзор
+            \item К зимней защите текст должен содержать как минимум введение и обзор, должна быть начата реализация
             \item На защите представить сделанную часть работы, описать план
             \item Указать план апробации/экспериментов и ожидаемые результаты
         \end{itemize}
@@ -111,14 +97,11 @@
     \begin{frame}
         \frametitle{Полезные ресурсы}
         \begin{itemize}
-            \item Команда Teams курса --- \textbf{a79jhzr}
-            \begin{itemize}
-                \item Подписаться и включить уведомления обязательно
-            \end{itemize}
             \item Сайт кафедры СП --- \url{https://se.math.spbu.ru/}, там раздел ``Студентам'' --- примеры работ
             \item Шаблон отчёта: \url{https://github.com/spbu-se/matmex-diploma-template}
             \item Шаблон презентации: \url{https://github.com/spbu-se/report_presentation_template}
             \item Онлайн-редакторы TeX --- \url{https://papeeria.com/}, \url{https://www.overleaf.com/}
+            \item Все новости, объявления и созвоны --- в команде курса в Teams
         \end{itemize}
     \end{frame}
 
@@ -130,6 +113,7 @@
             \item Введение в предметную область, постановка задачи
             \item Обзор литературы и существующих решений
             \item Описание предлагаемого решения (архитектура, план реализации, что успели сделать)
+            \item Апробация/эксперименты
             \item Заключение
             \item Список литературы
         \end{itemize}
@@ -188,7 +172,7 @@
             \end{itemize}
             \item Обзор используемых чужих результатов
             \begin{itemize}
-                \item  Всё, написанное и придуманное не вами --- в обзор
+                \item Всё, написанное и придуманное не вами --- в обзор
             \end{itemize}
             \item Должен соотноситься с темой работы
         \end{itemize}
@@ -224,6 +208,29 @@
             \begin{itemize}
                 \item Чтобы было всё видно даже в напечатанном варианте
             \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Апробация}
+        \framesubtitle{Или эксперименты}
+        \begin{itemize}
+            \item Доказать, почему всё, что вы делали, вообще осмысленно
+            \item Апробация --- внешняя <<оценка>> работы
+            \begin{itemize}
+                \item Отзывы пользователей, лучше количественные
+                \begin{itemize}
+                    \item Например, \url{https://www.usability.gov/how-to-and-tools/methods/system-usability-scale.html}
+                \end{itemize}
+                \item Внедрение, релиз, оценки
+                \item Выступления на конференциях
+            \end{itemize}
+            \item Эксперименты --- численное доказательство, что ваш результат лучше аналогов
+            \begin{itemize}
+                \item Замеры производительности, точности и т.д.
+                \item Отдельная большая наука, не делайте на отвяжись!
+            \end{itemize}
+            \item Для двухсеместровых практик --- обязательно продуманный план апробации или экспериментов
         \end{itemize}
     \end{frame}
 
@@ -302,7 +309,7 @@
             \end{itemize}
             \item Из презентации должно быть предельно понятно, что и зачем вы делаете (актуальность, сложность работы) и при чём тут ваша кафедра
             \begin{itemize}
-                \item Будут яростно нападать
+                \item Это один из основных пунктов дискуссии
             \end{itemize}
             \item Озаботьтесь получением отзывов заранее
             \item Код --- CI, юнит-тесты, README, лицензия

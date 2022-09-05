@@ -1,38 +1,25 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\definecolor{links}{HTML}{2A1B81}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\title{Учебные практики на кафедре СП}
-\subtitle{Требования, рекомендации}
-\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{y.litvinov@spbu.ru}}}
-\date{15.09.2021}
+\slidetitle[Требования, рекомендации]{Учебные практики третьего курса}{03.09.2022}
 
 \begin{document}
     
-    \frame{\titlepage}
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
     \begin{frame}
-        \frametitle{Что такое учебная практика}
+        \frametitle{Чем отличается от практики второго курса?}
         \begin{itemize}
-            \item Научно-исследовательская или программно-инженерная работа
-            \begin{itemize}
-                \item Решение более-менее научной или практически полезной задачи
-                \item Отчёт (текст)
-                \item Код
-                \item Выступление на защите
-            \end{itemize}
-            \item По формату близка к научной статье и выступлению на конференции
             \item На два семестра, с промежуточной отчётностью зимой
-            \item Тема должна быть интересна кафедре (``программирование для программистов'')
+            \begin{itemize}
+                \item Можно две односеместровые практики, но в порядке исключения
+            \end{itemize}
+            \item Большая <<научность>> или <<производственность>>
+            \begin{itemize}
+                \item Должна быть некая научная или инженерная новизна
+                \item Должна быть кому-то полезна
+            \end{itemize}
         \end{itemize}
     \end{frame}
 
@@ -43,18 +30,18 @@
             \begin{itemize}
                 \item Введение, постановка задачи, обзор, начало реализации, план апробации/экспериментов
                 \item Выполненные задачи, задачи на весну
-                \item Будет выборочное рецензирование!
+                \item На СП будет выборочное рецензирование
             \end{itemize}
             \item Доклад
             \begin{itemize}
-                \item Порядка 3-5 минут
+                \item Порядка 7-9 минут (можно меньше, но нельзя больше)
                 \item Рассказать о задаче и текущих успехах
             \end{itemize}
             \item Отзывы научного руководителя и консультанта
             \item Ссылка на код, если он открыт
             \begin{itemize}
                 \item Должен быть грамотно оформлен репозиторий
-                \item Ссылка на репозиторий в заключении отчёта
+                \item Ссылка на репозиторий \emph{в заключении отчёта}
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -65,10 +52,10 @@
             \item Отчёт на 20-30 страниц
             \begin{itemize}
                 \item Полное описание работы, включая осеннюю часть
-                \item Можно переиспользовать текст осенних практик
+                \item Можно переиспользовать текст осенней практики
                 \item Тоже будет выборочное рецензирование
             \end{itemize}
-            \item Доклад, на 7-9 минут
+            \item Доклад, опять-таки на 7-9 минут
             \begin{itemize}
                 \item Предзащита
                 \item Защита
@@ -78,32 +65,18 @@
     \end{frame}
 
     \begin{frame}
-        \frametitle{Кто такой научник, консультант и т.п.?}
-        \begin{itemize}
-            \item \textit{Консультант} --- ставит задачу, читает и рецензирует код, помогает с техническими проблемами
-            \item \textit{Научный руководитель} --- преподаватель (обязательно), отвечает за адекватность задачи, следит за методологическими вопросами, следит за ходом работы, помогает с текстом и подготовкой к защите
-            \item \textit{Руководитель практики} --- общая организация процесса, сбор и распределение тем, сбор отчётов и отзывов, организация защит, решение организационных проблем
-            \item \textit{Комиссия} --- преподаватели кафедры, представитель индустрии
-            \begin{itemize}
-                \item Все защиты всегда с комиссией
-                \item \emph{Защищаетесь в комиссии той кафедры, с которой научник}
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
         \frametitle{Откуда брать тему и научного руководителя}
         \begin{itemize}
-            \item Глобальная таблица с темами: \url{https://bit.ly/themes-2021-2022}
+            \item Список тем на сайте кафедры: \url{https://se.math.spbu.ru/diplomas/index.html}
             \begin{itemize}
-                \item Обратите внимание, там вкладки по кафедрам
-                \item Ищите те, про которые написано, что они могут быть практиками третьего курса
+                \item Обратите внимание, там есть фильтры, но пока нет фильтра по кафедре --- ориентируйтесь на научника
                 \item Если тема заинтересовала, но не подходит, можно пообщаться с консультантом
             \end{itemize}
             \item На стажировке, работе
-            \item Результат выбора темы \textbf{до конца сентября} записать сюда: \url{https://bit.ly/practices-3rd-course}
+            \item Результат выбора темы \textbf{до конца сентября} записать сюда: \url{https://docs.google.com/spreadsheets/d/1zUMT5TkjDuiwjABzu-83n972tlx0Jg1b_wwZcYFzLQs}
             \begin{itemize}
-                \item Там тоже вкладки по кафедрам
+                \item Обратите внимание на вкладки по кафедрам
+                \item В октябре таблица будет закрыта для редактирования, кто не успел --- минус балл
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -111,13 +84,6 @@
     \begin{frame}
         \frametitle{Полезные ресурсы}
         \begin{itemize}
-            \item Рассылка кафедры: \url{http://bit.ly/sysprog-talks}
-            \item Рассылка курса СП: \url{https://groups.google.com/g/spbsu-se-bachelors-2019-2023}
-            \item Команда Teams СП: \textbf{xao59z5}
-            \item Команда Teams матобеса: \textbf{5xdod4t}
-            \begin{itemize}
-                \item Подписаться и включить уведомления обязательно
-            \end{itemize}
             \item Сайт кафедры --- \url{https://se.math.spbu.ru/}
             \begin{itemize}
                 \item Раздел ``Студентам'' --- архив работ
@@ -125,6 +91,7 @@
             \item Шаблон отчёта: \url{https://github.com/spbu-se/matmex-diploma-template}
             \item Шаблон презентации: \url{https://github.com/spbu-se/report_presentation_template}
             \item Онлайн-редакторы TeX --- \url{https://papeeria.com/}, \url{https://www.overleaf.com/}
+            \item Все объявления и созвоны --- в Teams
         \end{itemize}
     \end{frame}
 
@@ -140,7 +107,7 @@
                 \item Проектирование
                 \item Написание текста
             \end{itemize}
-            \item Середина декабря --- сдача текста на выборочное рецензирование
+            \item (Для СП) Середина декабря --- сдача текста на выборочное рецензирование
             \item Конец декабря --- защиты
         \end{itemize}
     \end{frame}
@@ -155,102 +122,17 @@
                 \item Написание текста
             \end{itemize}
             \item Начало мая --- предзащиты
-            \item Начало--середина мая --- выборочное рецензирование
+            \item (Для СП) Начало--середина мая --- выборочное рецензирование
             \item Конец мая --- защиты
             \item Минимум раз в неделю отчитываться научному руководителю о ходе работы
-            \item Весенние отчёты публикуются на сайте кафедры
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Отчёт, структура}
-        \begin{itemize}
-            \item Титульный лист
-            \item Оглавление
-            \item Введение в предметную область, постановка задачи
-            \item Обзор литературы и существующих решений
-            \item Описание предлагаемого решения (архитектура, план реализации, что успели сделать)
-            \item Заключение
-            \item Список литературы
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Введение}
-        \begin{columns}
-            \begin{column}{0.6\textwidth}
-                \begin{itemize}
-                    \item Известная информация, ``Background''
-                    \item Неизвестная информация, ``Gap''
-                    \begin{itemize}
-                        \item Актуальность темы
-                        \item Практическая значимость
-                        \item Кому конкретно это надо
-                    \end{itemize}
-                    \item Кратко про ваш подход к решению задачи, почему он приведёт к успеху (``Гипотеза'' и ``Подход'')
-                \end{itemize}
-            \end{column}
-            \begin{column}{0.4\textwidth}
-                \begin{center}
-                    \includegraphics[width=\textwidth]{introductionCone.png}
-                \end{center}
-            \end{column}
-        \end{columns}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Постановка задачи}
-        \begin{itemize}
-            \item Цель работы
-            \begin{itemize}
-                \item Одним предложением --- что конкретно надо сделать
-            \end{itemize}
-            \item Задачи
-            \begin{itemize}
-                \item Отчуждаемые
-                \item Специфичные
-                \item Решение которых приведёт к цели
-                \item Выполнить обзор, спроектировать, реализовать, выполнить апробацию/эксперименты
-                \item Отдельно на осеннюю и весеннюю часть
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Обзор}
-        \begin{itemize}
-            \item Обзор существующих решений
-            \begin{itemize}
-                \item Цель обзора, критерии отбора материалов
-                \item Критерии сравнения
-                \item Таблица с результатами
-                \item Выводы
-            \end{itemize}
-            \item Обзор используемых чужих результатов
-            \begin{itemize}
-                \item  Всё, написанное и придуманное не вами --- в обзор
-            \end{itemize}
-            \item Должен соотноситься с темой работы
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Описание решения}
-        \begin{itemize}
-            \item Весной будет несколько разделов, сейчас достаточно одного
-            \begin{itemize}
-                \item Желательно, чтобы разделы соответствовали списку задач
-            \end{itemize}
-            \item Аргументированное обоснование принятых решений и отказа от альтернатив
-            \item Выбор инструментария
-            \item Описание архитектуры, алгоритмов и т.п.
+            \item (Для СП) Весенние отчёты публикуются на сайте кафедры
         \end{itemize}
     \end{frame}
 
     \begin{frame}
         \frametitle{Общие рекомендации}
         \begin{itemize}
-            \item Никакого заимствования 
+            \item В тексте работы никакого заимствования 
             \begin{itemize}
                 \item Сдача чужой работы --- отчисление без права восстановления сразу
                 \item Копипаст даже одного предложения без указания источника --- незачёт
@@ -260,9 +142,9 @@
             \begin{itemize}
                 \item Стоит порепетировать выступление
             \end{itemize}
-            \item Из презентации должно быть предельно понятно, что и зачем вы делаете (актуальность, сложность работы) и при чём тут СП
+            \item Из презентации должно быть предельно понятно, что и зачем вы делаете (актуальность, сложность работы) и при чём тут ваша кафедра
             \begin{itemize}
-                \item Будут яростно нападать
+                \item Это будет один из основных пунктов дискуссии на защите
             \end{itemize}
             \item Озаботьтесь получением отзывов заранее
             \item Код --- CI, юнит-тесты, README, лицензия
