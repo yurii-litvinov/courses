@@ -1,40 +1,12 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
-\usepackage{pgfplots}
-\usepackage{textpos}
-\usepackage{subcaption}
-\usepackage{graphicx}
-\usepackage[normalem]{ulem}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\usepackage{forest}
-\usetikzlibrary{arrows}
-
-\definecolor{links}{HTML}{2A1B81}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\newcommand{\attribution}[1] {
-    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
-}
-
-\tabulinesep=0.7mm
-
-\title{Хеш-таблицы}
-\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{y.litvinov@spbu.ru}}}
-
-\date{09.11.2021}
+\slidetitle{Хеш-таблицы}{09.11.2022}
 
 \begin{document}
     
-    \frame{\titlepage}
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
     \begin{frame}
         \frametitle{Хеш-таблица}

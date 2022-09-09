@@ -1,38 +1,12 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
-\usepackage{pgfplots}
-\usepackage{textpos}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\usepackage{forest}
-\usetikzlibrary{arrows}
-
-\setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor*{block title example}{fg=green!50!black,bg=green!20}
-\setbeamercolor*{block body example}{fg=black,bg=green!10}
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
-\tabulinesep=0.7mm
-
-\title{``Динамические'' структуры данных}
-\subtitle{Что ещё можно делать с указателями}
-\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{y.litvinov@spbu.ru}}}
-
-\date{12.10.2021}
+\slidetitle[Что ещё можно делать с указателями]{``Динамические'' структуры данных}{12.10.2022}
 
 \begin{document}
 	
-	\frame{\titlepage}
+	\begin{frame}[plain]
+        \titlepage
+    \end{frame}
 	
 	\begin{frame}[fragile]
 		\frametitle{Структуры, ссылающиеся сами на себя}
