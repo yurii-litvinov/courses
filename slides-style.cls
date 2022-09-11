@@ -14,6 +14,11 @@
 \usepackage{tabu}
 \usepackage{moresize}
 \usepackage{bookmark}
+\usepackage{pgfplots}
+\usepackage{ulem}
+\usepackage{algpseudocode}
+\usepackage{forest}
+\usetikzlibrary{arrows}
 
 % Loading minted and stopping it from highlighting every lexer error
 % See https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters
@@ -50,6 +55,11 @@
 % Attribution info, mostly for "borrowed" images:
 \newcommand{\attribution}[1] {
     \begin{flushright}\begin{scriptsize}\textcolor{gray}{\copyright\ #1}\end{scriptsize}\end{flushright}
+}
+
+% Fine-looking down arrow.
+\newcommand{\DownArrow} {
+    \hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
 }
 
 % Slide title command. Takes three arguments --- title, date and optional subtitle.

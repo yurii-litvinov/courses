@@ -42,6 +42,9 @@
 \usepackage{bookmark}
 \usepackage{multicol}
 \usepackage{xcolor}
+\usepackage{moresize}
+\usepackage{forest}
+\usetikzlibrary{arrows}
 
 \usepackage[hang,multiple]{footmisc}
 \renewcommand{\footnotelayout}{\raggedright}

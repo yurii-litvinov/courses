@@ -1,42 +1,12 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
-\usepackage{moresize}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\definecolor{links}{HTML}{2A1B81}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\setbeamertemplate{blocks}[rounded][shadow=false]
-
-\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
-\setbeamercolor*{block body alerted}{fg=black,bg=red!10}
-
-\tabulinesep=1.2mm
-
-\title{Многопоточное программирование}
-\subtitle{Практика}
-\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
-\date{21.09.2021}
-
-\newcommand{\attribution}[1] {
-\vspace{-2mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
-}
-
-\newcommand{\DownArrow} {
-    \hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
-}
+\slidetitle[Практика]{Многопоточное программирование}{21.09.2022}
 
 \begin{document}
 
-    \frame{\titlepage}
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
     \section{Домашка}
 
