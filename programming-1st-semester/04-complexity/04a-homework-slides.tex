@@ -62,6 +62,8 @@ a = (b + c) / 2;
         \begin{itemize}
             \item Отделяйте логику работы от общения с пользователем --- для переиспользования
             \item \mintinline{c}{int function()} vs \mintinline{c}{int function(void)}
+            \item Именование файлов --- тоже в camelCase
+            \item Сброс входного потока: \mintinline{c}|scanf("%*[^\n]");| или \mintinline{c}|while (getchar() != '\n') {|
         \end{itemize}
     \end{frame}
 
