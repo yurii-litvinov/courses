@@ -12,11 +12,11 @@
         \frametitle{Комментарии по домашке}
         \framesubtitle{Коды ошибок}
         \begin{itemize}
-            \item Не используйте функцию exit()
-            \item Не печатайте на консоль нигде, кроме как в main()
-            \begin{itemize}
-                \item Или функции, созданной \emph{только} для печати на консоль, вызываемой из main()
-            \end{itemize}
+            \item Не используйте функцию system()
+            \item Закомментированный код не нужен
+            \item \mintinline{c}|if (test == false) { всё плохо }|
+            \item Кстати, \mintinline{c}|if (x == true)| --- это то же, что \mintinline{c}|x + 0|
+            \item \mintinline{c}|0| и \mintinline{c}|'\0'|
             \item Если функция может не выполниться, используйте коды возврата
         \end{itemize}
     \end{frame}
@@ -102,13 +102,11 @@ return x == 10;
     \begin{frame}[fragile]
         \frametitle{И ещё комментарии}
         \begin{itemize}
-            \item Целочисленное и вещественное деление
             \item Предупреждения компилятора
-            \item Замер времени в секундах
             \item Выделение памяти
         \end{itemize}
         \begin{minted}{c}
-int *array = calloc(size, sizeof(int));
+int *array = (int*)calloc(size, sizeof(int));
 if (array == NULL) 
 {
     printf("Всё очень плохо :(")
@@ -117,6 +115,9 @@ if (array == NULL)
 ...
 free(array);
         \end{minted}
+        \begin{itemize}
+            \item Или \mintinline{c}|int *array = (int*)malloc(size * sizeof(int));|
+        \end{itemize}
     \end{frame}
     
     \begin{frame}
