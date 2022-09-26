@@ -1,42 +1,12 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\usepackage{textpos}
-\setlength{\TPHorizModule}{1cm}
-\setlength{\TPVertModule}{1cm}
-
-\tabulinesep=1.2mm
-
-\title[Моделирование поведения]{Лекция 5: Моделирование поведения}
-\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
-\date{29.09.2022}
-
-\newcommand{\todo}[1] {
-	\begin{center}\textcolor{red}{TODO: #1}\end{center}
-}
-
-\newcommand{\DownArrow} {
-	\hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
-}
-
-\newcommand{\attribution}[1] {
-	\vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
-}
+\slidetitle{Лекция 5: Моделирование поведения}{29.09.2022}
 
 \begin{document}
 
 	\begin{frame}[plain]
-        \titlepage
-    \end{frame}
+		\titlepage
+	\end{frame}
 
 	\section{Диаграммы состояний}
 
@@ -560,11 +530,11 @@ public void handleEvent(PanelEvent anEvent) {
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Пример использования (1)}
+		\frametitle{Пример использования}
 		\begin{columns}
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
-					\item Сеть Петри как форма представления знаний, генерится автоматически по демонстрации
+					\item Сеть Петри как форма представления знаний, генерируется автоматически по демонстрации
 					\item Поиск по дереву достижимости для определения пути решения задачи или подзадачи
 					\begin{itemize}
 						\item ``как программисту вскипятить чайник, если в нём уже есть вода?''
@@ -578,17 +548,6 @@ public void handleEvent(PanelEvent anEvent) {
 				\end{center}
 			\end{column}
 		\end{columns}
-	\end{frame}
-
-	\begin{frame}
-		\frametitle{Пример использования (2)}
-		\begin{itemize}
-			\item Сеть Петри как план работы, состоящий из элементарных действий гетерогенных агентов
-			\item Автоматическое распределение работ
-		\end{itemize}
-		\begin{center}
-			\includegraphics[width=0.6\textwidth]{petriUsageExample2.png}
-		\end{center}
 	\end{frame}
 
 	\section{Заключение}
