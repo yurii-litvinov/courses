@@ -83,27 +83,26 @@ for (int j = 0; j < 8; ++j)
             \begin{itemize}
                 \item $5$ --- $00000101$, $-5$ --- $10000101$
             \end{itemize}
-            \item Обратный код
-            \begin{itemize}
-                \item $5$ --- $00000101$, $-5$ --- $11111010$
-            \end{itemize}
             \item Дополнительный код
             \begin{itemize}
                 \item $5$ --- $00000101$, $-5$ --- $11111011$
                 \item $-x$ представляется как $2^n - x$, поэтому и дополнительный
                 \begin{itemize}
                     \item $n$ --- разрядность регистра
+                    \item Можно понимать как ``старший разряд имеет вес $-2^{n-1}$''
+                    \item Старший разряд всегда 1 для отрицательных чисел
                 \end{itemize} 
+                \item При сложении единица переноса в старшем разряде отбрасывается
             \end{itemize}
         \end{itemize}
     \end{frame}
 
     \begin{frame}
-        \frametitle{Арифметические действия}
-        \begin{itemize}
-            \item В обратном коде единица переноса в старшем разряде прибавляется к младшему разряду
-            \item В дополнительном коде единица переноса в старшем разряде отбрасывается
-        \end{itemize}
+        \frametitle{Как это можно представлять}
+        \begin{center}
+            \includegraphics[width=\textwidth]{integerScale.png}
+            \attribution{Д.М. Харрис, С.Л. Харрис, Цифровая схемотехника и архитектура компьютера RISC-V}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]
