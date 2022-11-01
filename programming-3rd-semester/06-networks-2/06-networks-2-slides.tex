@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle[Высокий уровень]{Работа с сетью}{12.10.2022}
+\slidetitle[Высокий уровень]{Работа с сетью}{19.10.2022}
 
 \begin{document}
 
@@ -391,86 +391,86 @@ class Program
 
     \section{Безопасность}
 
-    \begin{frame}
-        \frametitle{Сетевая безопасность}
-        \begin{itemize}
-            \item Почти все сервисы требуют авторизации и обеспечения безопасности
-            \item Аутентификация --- установление личности (точнее, идентичности) участника взаимодействия
-            \begin{itemize}
-                \item Обычно взаимна
-            \end{itemize}
-            \item Авторизация --- установление прав на выполнение операции
-            \item Шифрование --- обеспечение конфиденциальности передаваемой информации
-            \item Также важны:
-            \begin{itemize}
-                \item Целостность --- злоумышлениик ничего не поменял
-                \item Актуальность --- злоумышленник не проиграл старое сообщение
-            \end{itemize} 
-        \end{itemize}
-    \end{frame}
+    % \begin{frame}
+    %     \frametitle{Сетевая безопасность}
+    %     \begin{itemize}
+    %         \item Почти все сервисы требуют авторизации и обеспечения безопасности
+    %         \item Аутентификация --- установление личности (точнее, идентичности) участника взаимодействия
+    %         \begin{itemize}
+    %             \item Обычно взаимна
+    %         \end{itemize}
+    %         \item Авторизация --- установление прав на выполнение операции
+    %         \item Шифрование --- обеспечение конфиденциальности передаваемой информации
+    %         \item Также важны:
+    %         \begin{itemize}
+    %             \item Целостность --- злоумышлениик ничего не поменял
+    %             \item Актуальность --- злоумышленник не проиграл старое сообщение
+    %         \end{itemize} 
+    %     \end{itemize}
+    % \end{frame}
 
-    \begin{frame}
-        \frametitle{Шифрование}
-        \begin{center}
-            \includegraphics[width=0.6\textwidth]{cryptography.png}
-            \attribution{Э. Таненбаум}
-        \end{center}
-        \begin{itemize}
-            \item Алгоритм шифрования считается известным, секретен только ключ
-            \item Усложнение алгоритма шифрования не всегда повышает криптостойкость
-        \end{itemize}
-        \begin{textblock}{2.5}(0,-10)
-            \includegraphics[width=\textwidth]{youAreBeingWatched.png}
-        \end{textblock}
-    \end{frame}
+    % \begin{frame}
+    %     \frametitle{Шифрование}
+    %     \begin{center}
+    %         \includegraphics[width=0.6\textwidth]{cryptography.png}
+    %         \attribution{Э. Таненбаум}
+    %     \end{center}
+    %     \begin{itemize}
+    %         \item Алгоритм шифрования считается известным, секретен только ключ
+    %         \item Усложнение алгоритма шифрования не всегда повышает криптостойкость
+    %     \end{itemize}
+    %     \begin{textblock}{2.5}(0,-10)
+    %         \includegraphics[width=\textwidth]{youAreBeingWatched.png}
+    %     \end{textblock}
+    % \end{frame}
 
-    \begin{frame}
-        \frametitle{Шифрование с открытым ключом}
-        \begin{itemize}
-            \item Алгоритм делится на две части, D и E, так, что D(E(P)) = P
-            \item D очень сложно получить по E
-            \begin{itemize}
-                \item Например, найти простые сомножители огромного числа или дискретный логарифм по заданному модулю
-            \end{itemize}
-            \item D (ключ от D) держится в секрете, E выкладывается в открытый доступ
-            \item Если Боб хочет послать Алисе сообщение, он берёт её открытый ключ $E_A$, шифрует им сообщение $P$ и отправляет Алисе
-            \item Алиса дешифрует сообщение, вычисляя $D_A(E_A(P))$
-            \item У каждого пользователя своя пара ключей
-            \item Алгоритмы: RSA, ElGamal, эллиптические шифры
-        \end{itemize}
-    \end{frame}
+    % \begin{frame}
+    %     \frametitle{Шифрование с открытым ключом}
+    %     \begin{itemize}
+    %         \item Алгоритм делится на две части, D и E, так, что D(E(P)) = P
+    %         \item D очень сложно получить по E
+    %         \begin{itemize}
+    %             \item Например, найти простые сомножители огромного числа или дискретный логарифм по заданному модулю
+    %         \end{itemize}
+    %         \item D (ключ от D) держится в секрете, E выкладывается в открытый доступ
+    %         \item Если Боб хочет послать Алисе сообщение, он берёт её открытый ключ $E_A$, шифрует им сообщение $P$ и отправляет Алисе
+    %         \item Алиса дешифрует сообщение, вычисляя $D_A(E_A(P))$
+    %         \item У каждого пользователя своя пара ключей
+    %         \item Алгоритмы: RSA, ElGamal, эллиптические шифры
+    %     \end{itemize}
+    % \end{frame}
 
-    \begin{frame}
-        \frametitle{Цифровые подписи}
-        \begin{center}
-            \includegraphics[width=0.7\textwidth]{signature.png}
-            \attribution{Э. Таненбаум}
-        \end{center}
-        \begin{itemize}
-            \item Надо, чтобы $D(E(P)) = P$ (это так для большинства криптосхем)
-            \item Шифровать всё сообщение слишком медленно
-            \item Message Digest-ы --- хорошие хеши сообщений
-            \begin{itemize}
-                \item MD5, SHA-1, SHA-2, SHA-3
-                \item MD5 уязвим, SHA-1 уязвим чуть менее
-            \end{itemize}
-            \item Подписывается только хеш, это почти так же криптостойко, но в сотни раз быстрее
-        \end{itemize}
-    \end{frame}
+    % \begin{frame}
+    %     \frametitle{Цифровые подписи}
+    %     \begin{center}
+    %         \includegraphics[width=0.7\textwidth]{signature.png}
+    %         \attribution{Э. Таненбаум}
+    %     \end{center}
+    %     \begin{itemize}
+    %         \item Надо, чтобы $D(E(P)) = P$ (это так для большинства криптосхем)
+    %         \item Шифровать всё сообщение слишком медленно
+    %         \item Message Digest-ы --- хорошие хеши сообщений
+    %         \begin{itemize}
+    %             \item MD5, SHA-1, SHA-2, SHA-3
+    %             \item MD5 уязвим, SHA-1 уязвим чуть менее
+    %         \end{itemize}
+    %         \item Подписывается только хеш, это почти так же криптостойко, но в сотни раз быстрее
+    %     \end{itemize}
+    % \end{frame}
 
-    \begin{frame}
-        \frametitle{Сертификаты}
-        \begin{center}
-            \includegraphics[width=0.6\textwidth]{manInTheMiddle.png}
-            \attribution{Э. Таненбаум}
-        \end{center}
-        \begin{itemize}
-            \item Сертификат --- сообщение, подтверждающее идентичность ключа, подписанное Certificate Authority (стандарт X.509)
-            \item Цепочка сертификатов --- CA верхнего уровня подписывает сертификаты CA уровнем ниже, чтобы они могли подписывать сертификаты пользователей
-            \item Корневые сертификаты --- сертификаты, которым принято доверять
-            \item Самоподписанные сертификаты --- не доверенные, используются для отладки
-        \end{itemize}
-    \end{frame}
+    % \begin{frame}
+    %     \frametitle{Сертификаты}
+    %     \begin{center}
+    %         \includegraphics[width=0.6\textwidth]{manInTheMiddle.png}
+    %         \attribution{Э. Таненбаум}
+    %     \end{center}
+    %     \begin{itemize}
+    %         \item Сертификат --- сообщение, подтверждающее идентичность ключа, подписанное Certificate Authority (стандарт X.509)
+    %         \item Цепочка сертификатов --- CA верхнего уровня подписывает сертификаты CA уровнем ниже, чтобы они могли подписывать сертификаты пользователей
+    %         \item Корневые сертификаты --- сертификаты, которым принято доверять
+    %         \item Самоподписанные сертификаты --- не доверенные, используются для отладки
+    %     \end{itemize}
+    % \end{frame}
 
     \begin{frame}
         \frametitle{HTTPS}
