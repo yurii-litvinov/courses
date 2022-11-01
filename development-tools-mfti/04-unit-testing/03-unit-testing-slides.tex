@@ -159,41 +159,77 @@
         \end{itemize}
     \end{frame}
 
-    \section{Юнит-тесты в C\#}
-
     \begin{frame}
-        \frametitle{Юнит-тесты на примере C\#}
+        \frametitle{``Базовые'' библиотеки модульного тестирования}
         \begin{itemize}
-            \item NUnit
+            \item JVM: JUnit 5 (хотя JUnit 4 тоже довольно популярен)
             \begin{itemize}
-                \item Отдельный пакет
-                \item Интегрируется в IDE расширениями
+                \item Kent Beck и Erich Gamma, аж 1997 год
+                \item Самая популярная библиотека для JVM
             \end{itemize}
-            \item xUnit
-            \begin{itemize}
-                \item Тоже отдельный пакет
-                \item Разумная альтернатива NUnit, но менее популярен
-            \end{itemize}
-            \item Microsoft Unit Test Framework
-            \begin{itemize}
-                \item Работает прямо из коробки под Visual Studio, но доступна и как отдельный пакет
-            \end{itemize}
+            \item С++: Google Test, Boost.Test, CTest, Qt Test
+            \item Python: PyTest
+            \item .NET: NUnit, xUnit, Microsoft Unit Test Framework
         \end{itemize}
     \end{frame}
 
     \begin{frame}
-        \frametitle{Демонстрация}
+        \frametitle{Пример, юнит-тесты в C\#}
         \begin{itemize}
             \item Для тех, кто всё пропустил: \url{https://msdn.microsoft.com/en-us/library/hh694602.aspx\#BKMK\_Quick\_starts}
         \end{itemize}
     \end{frame}
 
+    \begin{frame}[fragile]
+        \frametitle{Data-driven-тесты}
+            \begin{minted}{csharp}
+[TestCase(12, 3, 4)]
+[TestCase(12, 2, 6)]
+public void DivideTest(int n, int d, int q)
+{
+    Assert.AreEqual(q, n / d);
+}
+        \end{minted}
+        \vspace{3mm}
+        Или даже
+        \begin{minted}{csharp}
+[TestCase(12, 3, ExpectedResult = 4)]
+[TestCase(12, 2, ExpectedResult = 6)]
+public int DivideTest(int n, int d)
+{
+    return n / d;
+}
+        \end{minted}
+    \end{frame}
+
     \begin{frame}
-        \frametitle{Best practices}
+        \frametitle{Best practices (1)}
+        \begin{itemize}
+            \item Чёткое разделение на три фазы (Arrange-Act-Assert)
+            \begin{itemize}
+                \item Настройка тестового окружения и тестируемой системы (SUT)
+                \item Выполнение действия
+                \item Проверка результатов
+            \end{itemize}
+            \item Именование тестов: ``в таких-то условиях should происходить то-то''
+            \begin{itemize}
+                \item \url{https://stackoverflow.com/questions/155436/unit-test-naming-best-practices}
+            \end{itemize}
+            \item Модульные тесты тестируют один модуль
+            \begin{itemize}
+                \item Mock-объекты
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Best practices (2)}
         \begin{itemize}
             \item Независимость тестов
             \begin{itemize}
                 \item Желательно, чтобы поломка одного куска функциональности ломала один тест
+                \item Подчищать за собой данные, не использовать глобальное состояние
+                \item Тесты могут исполняться параллельно!
             \end{itemize}
             \item Тесты должны работать быстро
             \begin{itemize}
@@ -207,8 +243,141 @@
                 \item Следить за Code coverage
             \end{itemize}
             \item Каждый тест должен проверять конкретный тестовый сценарий
+            \begin{itemize}
+                \item Исключить случайность, не использовать try/catch в тестах
+            \end{itemize}
             \item Test-driven development
         \end{itemize}
+    \end{frame}
+
+    \section{Мок-объекты}
+
+    \begin{frame}
+        \frametitle{Mock-объекты}
+        \begin{itemize}
+            \item Объекты-заглушки, подставляемые вместо реальных
+        \end{itemize}
+        \begin{center}
+            \includegraphics[width=0.6\textwidth]{mock.png}
+            \attribution{http://xunitpatterns.com}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Когда использовать}
+        \begin{itemize}
+            \item Когда тестируемый модуль вызывает много чего ещё --- непонятно, что сломалось, если тест не прошёл
+            \item Когда выполнение реальной операции долго или небезопасно
+            \item Когда есть механизм внедрения mock-объекта --- dependency injection
+            \begin{itemize}
+                \item Хороший код и так должен это делать
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Библиотеки mock-объектов}
+        \begin{itemize}
+            \item JVM: Mockito, EasyMock
+            \item C++: Google Test
+            \item Python: unittest.mock
+            \item .NET: Moq, NSubstitute
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример, Mockito, классический тест}
+        \begin{minted}{java}
+@Test 
+public void test() throws Exception {
+    // Arrange
+    var testee = new UnitToTest();
+    var helper = new Helper();
+    // Act
+    testee.doSomething(helper);
+    // Assert
+    assertTrue(helper.somethingHappened());
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример, Mockito, тест с mock-объектом}
+        \begin{minted}{java}
+@Test
+public void test() throws Exception {
+    // Arrange, prepare behaviour
+    var testee = new UnitToTest();
+    Helper aMock = mock(Helper.class);
+    when(aMock.isCalled()).thenReturn(true);
+    // Act
+    testee.doSomething(aMock);
+    // Assert - verify interactions (optional)
+    verify(aMock).isCalled();
+}
+        \end{minted}
+    \end{frame}
+
+    \section{Матчеры}
+
+    \begin{frame}
+        \frametitle{Матчеры}
+        \begin{itemize}
+            \item Писать Assert.AreEqual неудобно и не всегда типобезопасно
+            \item Сейчас модна объектная модель условия, те самые Matchers (или Constraints)
+            \begin{itemize}
+                \item Пример (NUnit): \mintinline{csharp}|Assert.That(array, Has.Exactly(1).EqualTo(3));|
+            \end{itemize}
+            \item Библиотеки: Hamcrest (JUnit) / NHamcrest (NUnit)
+            \item Многие библиотеки юнит-тестирования умеют что-то такое ``из коробки''
+        \end{itemize}
+    \end{frame}
+
+    \section{Фаззинг}
+
+    \begin{frame}[fragile]
+        \frametitle{Property-driven testing, фаззинг}
+        \begin{itemize}
+            \item А пусть тестовая система сама генерирует данные на вход!
+            \item Пример, FsCheck:
+                \begin{small}
+                    \begin{minted}{fsharp}
+open FsCheck
+
+let revRevIsOrig (xs:list<int>) = List.rev (List.rev xs) = xs
+
+Check.Quick revRevIsOrig
+// Ok, passed 100 tests.
+
+let revIsOrig (xs:list<int>) = List.rev xs = xs
+
+Check.Quick revIsOrig
+// Falsifiable, after 2 tests (2 shrinks) (StdGen (338235241,296278002)):
+// Original:
+// [3; 0]
+// Shrunk:
+// [1; 0]
+                    \end{minted}
+                \end{small}
+        \end{itemize}
+    \end{frame}
+
+    \section{UI-тестирование}
+
+    \begin{frame}
+        \frametitle{UI-тестирование}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{itemize}
+                    \item Есть ещё интеграционные тесты и UI-тесты
+                    \item UI-тестирование: Selenium (Web), FlaUI (или White) и подобные штуки --- настольные приложения
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \includegraphics[width=0.9\textwidth]{titanic.png}
+                \attribution{Интернеты}
+            \end{column}
+        \end{columns}
     \end{frame}
 
 \end{document}
