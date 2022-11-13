@@ -1,12 +1,14 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Консоль и системы сборки}{09.11.2022}
+\slidetitle{Консоль и системы сборки}{16.11.2022}
 
 \begin{document}
     
     \begin{frame}[plain]
         \titlepage
     \end{frame}
+
+    \section{Консоль}
 
     \begin{frame}
         \frametitle{Консоль, зачем}
@@ -187,6 +189,8 @@ if not errorlevel 0 (
         \end{itemize}
     \end{frame}
 
+    \section{Системы сборки}
+
     \begin{frame}
         \frametitle{Системы сборки}
         \begin{itemize}
@@ -223,6 +227,9 @@ cl <имя .c-файла>
 cl /W4 /EHsc file1.c file2.c file3.c /link /out:program1.exe
                 \end{minted}
             \end{footnotesize}
+            \begin{itemize}
+                \item Работает только из Developer Command Prompt (ну, почти только)
+            \end{itemize}
             \item gcc
             \begin{footnotesize}
                 \begin{minted}{text}
@@ -241,6 +248,8 @@ g++ -Wall -o helloworld helloworld.c
             \end{itemize}
         \end{itemize}
     \end{frame}
+
+    \section{make}
 
     \begin{frame}
         \frametitle{make}
@@ -323,12 +332,13 @@ lynx -dump $<   >   $@
                 \item Реализация от Microsoft, в комплекте с Visual Studio
                 \begin{itemize}
                     \item Запускается из Developer Command Prompt
-                    \item На самом деле, это просто консоль с правильно выставленными переменными окружения
                 \end{itemize}
             \end{itemize}
         \end{itemize}
-        Мейкфайлы зависят от операционной системы и даже от конкретной реализации make (Makefile от mingw32-make может не собраться nmake-ом)
+        Мейкфайлы зависят от конкретной реализации make (Makefile от mingw32-make может не собраться nmake-ом)
     \end{frame}
+
+    \section{Системы сборки}
 
     \begin{frame}
         \frametitle{Высокоуровневые системы сборки}
@@ -347,6 +357,158 @@ lynx -dump $<   >   $@
         Написание скриптов сборки для большого проекта --- отдельная и довольно трудоёмкая задача
     \end{frame}
 
+    \section{CMake}
+
+    \begin{frame}
+        \frametitle{CMake}
+        \begin{itemize}
+            \item С открытым исходным кодом (\url{https://gitlab.kitware.com/cmake/cmake})
+            \item Прежде всего для сборки C++-проектов, но умеет много чего
+            \item Разрабатывается с 1999 года
+            \item Бывает версии 2 и 3
+            \item Сама сборкой не занимается, генерирует конфиг для системы сборки
+            \begin{itemize}
+                \item Но может сама их запускать
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Конфигурация CMake}
+        \begin{itemize}
+            \item CMakeLists.txt в корне проекта
+            \item Также могут быть в подкаталогах (для иерархичной конфигурации)
+            \item Бывают также модули (.cmake) и скрипты
+            \item Коммитить, соответственно, CMakeLists.txt (все) и .cmake, если есть
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Минимальный пример}
+        \begin{minted}{text}
+cmake_minimum_required(VERSION 3.20)
+project(Hello)
+
+add_executable(Hello Hello.c)
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Out-of-source-сборка}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{minted}{text}
+source
+    build
+        сгенерированные файлы
+    CMakeLists.txt
+    исходники
+                \end{minted}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{minted}{text}
+build
+    сгенерированные файлы
+source
+    CMakeLists.txt
+    исходники
+                \end{minted}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Фазы сборки}
+        \begin{itemize}
+            \item Конфигурация
+            \begin{itemize}
+                \item cmake <путь до папки с CMakeLists.txt>
+                \item Читает CMakeLists.txt, строит модель, сохраняет в CMakeCache.txt
+                \item Пытается угадать наличествующие инструменты и их возможности (например, поддерживаемую компилятором версию стандарта)
+                \item Можно вручную подредактировать параметры конфигурации (руками или в cmake-gui)
+            \end{itemize}
+            \item Генерация --- генерация конфигов для сборки (например, .vcxproj-файла)
+            \item Сборка
+            \begin{itemize}
+                \item cmake --build
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Основные понятия}
+        \begin{itemize}
+            \item Команды
+            \begin{itemize}
+                \item \mintinline{text}|command_name(список аргументов через пробел)|
+                \item В CMake всё Команды
+                \item Всё строки
+            \end{itemize}
+            \item Переменные
+            \begin{itemize}
+                \item \mintinline{text}|set(name value)|
+                \item \mintinline{text}|message(STATUS "Name = ${name}")|
+                \item Переменные окружения: \mintinline{text}|$ENV{Имя}|
+            \end{itemize}
+            \item Функции
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Ветвления}
+        \begin{minted}{text}
+if (UNIX)
+    message(STATUS "Running on Unix")
+else()
+    message(STATUS "Running on not Unix")
+endif()
+        \end{minted}
+        \begin{itemize}
+            \item Предопределённые переменные: \url{https://cmake.org/cmake/help/latest/manual/cmake-variables.7.html}
+            \item Всё это работает на этапе конфигурации!
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Цели}
+        \begin{itemize}
+            \item Декларативное описание того, что хочется собрать
+            \item Исполняемые файлы
+            \begin{itemize}
+                \item \mintinline{text}|add_executable(targetname source1 ...)|
+            \end{itemize}
+            \item Библиотеки
+            \begin{itemize}
+                \item \mintinline{text}|add_library(targetname [STATIC | SHARED | ...] source1 ...)|
+            \end{itemize}
+            \item Линковка целей
+            \begin{itemize}
+                \item \mintinline{text}|target_link_libraries(myLib [PUBLIC | PRIVATE | INTERFACE] dependencyLib)|
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Что ещё умеет}
+        \begin{itemize}
+            \item Конфигурации: Debug, Release, RelWithDebInfo, MinSizeRel
+            \begin{itemize}
+                \item \mintinline{text}|cmake ../MyProject -DCMAKE_BUILD_TYPE=Debug|
+            \end{itemize}
+            \item Подпапки/подпроекты
+            \begin{itemize}
+                \item \mintinline{text}|add_subdirectory(sourceDir ...)|
+            \end{itemize}
+            \item Toolchain-файлы
+            \item Укачивать исходники прямо в процессе сборки!
+            \begin{itemize}
+                \item См., например, \url{https://google.github.io/googletest/quickstart-cmake.html}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \section{CI}
+
     \begin{frame}
         \frametitle{Continuous Integration}
         \begin{itemize}
@@ -355,18 +517,8 @@ lynx -dump $<   >   $@
                 \item Сборка выполняется очень часто, иногда --- после каждого коммита
             \end{itemize}
             \item Там же запускаются юнит-тесты
-            \item \url{https://www.appveyor.com/} --- пример бесплатной для open source-проектов облачной CI-системы
-            \item Виртуальная машина с ОС Windows
-            \begin{itemize}
-                \item Windows Server 2019 + VS 2019 или более старые
-                \item Умеет Linux Ubuntu 20.04 и macOS 10.15
-            \end{itemize}
-            \item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
-            \item Собирает по умолчанию системой сборки MSBuild
-            \begin{itemize}
-                \item Инструкция по настройке билда для C/C++ под VS: \url{https://www.appveyor.com/docs/lang/cpp/}
-            \end{itemize}
-            \item Окружение настраивается конфигурационным файлом или <<вручную>> из скрипта сборки
+            \item Сборка запускается в свежей виртуальной машине или Docker-контейнере
+            \item Управляется конфигурацией, хранящейся прямо в репозитории
         \end{itemize}
     \end{frame}
 
