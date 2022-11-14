@@ -1,0 +1,67 @@
+\documentclass{../../text-style}
+
+\texttitle{Демо, настройка GitHub Actions}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{itemize}
+    \item Создаём пустой репозиторий на GitHub
+    \item Клоним к себе
+    \item Создаём там тестовый пример
+    \begin{itemize}
+        \item Создаём папку src
+        \item Создаём файл main.cpp с кодом
+            \begin{minted}{cpp}
+#include <iostream>
+
+int main() 
+{
+    std::cout << "Hello, world!" << std::endl;
+}
+            \end{minted}
+        \item Создаём CMakeLists.txt такого содержания:
+            \begin{minted}{cmake}
+cmake_minimum_required(VERSION 3.20)
+
+project(Hello)
+
+add_executable(Hello main.cpp)
+            \end{minted}
+    \end{itemize}
+    \item Проверяем, что собирается локально
+    \begin{itemize}
+        \item Создаём папку build в корне репозитория
+        \item Делаем cmake ../src
+        \item Делаем cmake --build .
+        \item Идём в Debug, запускаем бинарник, проверяем, что всё ок
+    \end{itemize}
+    \item Коммитим-пушим
+    \item Создаём папку .github/workflows
+    \item Создаём workflow ci.yml вот такого содержания:
+    \begin{minted}{yaml}
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: get-cmake
+        uses: lukka/get-cmake@v3.24.3
+      - run: mkdir build
+      - run: |
+          cd build 
+          cmake ../src
+          cmake --build .
+      - run: ./build/Debug/Hello.exe
+    \end{minted}
+    \item Коммитим-пушим
+    \item Идём на GitHub и смотрим, что получилось
+\end{itemize}
+
+\end{document}

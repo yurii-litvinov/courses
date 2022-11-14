@@ -45,6 +45,32 @@
         \end{itemize}
     \end{frame}
 
+    \begin{frame}
+        \frametitle{Системы непрерывной интеграции}
+        \begin{itemize}
+            \item Локальные/on premises
+            \begin{itemize}
+                \item Jenkins --- очень старый, до сих пор активно используется, куча плагинов, стандарт де-факто в on premises CI
+                \begin{itemize}
+                    \item Некогда Hudson
+                \end{itemize}
+                \item JetBrains TeamCity --- тоже очень популярен
+                \item GitLab CI --- если у вас и так GitLab, то почему нет
+            \end{itemize}
+            \item Облачные
+            \begin{itemize}
+                \item GitHub Actions
+                \begin{itemize}
+                    \item На самом деле, у всех нормальных облачных хостингов есть свои CI, даже у DockerHub
+                    \item Azure Pipelines, Gitlab CI, Bitbucket Pipelines, ...
+                \end{itemize}
+                \item CircleCI
+                \item AppVeyor --- очень удобен для Windows/Visual Studio
+                \item Travis --- изначально для Linux
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
     \section{GitHub Actions}
 
     \begin{frame}
@@ -230,6 +256,154 @@ build:
 test_script: 
     - dotnet test myCoolHomework/Homework.sln
         \end{minted}
+    \end{frame}
+
+    \section{Jenkins}
+
+    \begin{frame}
+        \frametitle{Jenkins}
+        \begin{itemize}
+            \item Работает локально
+            \begin{itemize}
+                \item Следовательно, требует настройки и хостинга
+                \item Следовательно, может использоваться в корпоративном окружении
+            \end{itemize}
+            \item Имеет кучу плагинов на все случаи жизни
+            \item Опенсорсный, очень популярен по сей день
+            \begin{itemize}
+                \item Начинался в 2005 в Sun как Hudson
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Jenkinsfile}
+        \begin{minted}{groovy}
+pipeline {
+    agent any
+    stages {
+        stage('build') {
+            steps {
+                sh 'mvn --version'
+            }
+        }
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Более продвинутые шаги}
+        \begin{minted}{groovy}
+pipeline {
+    agent any
+    stages {
+        stage('Deploy') {
+            steps {
+                retry(3) {
+                    sh './flakey-deploy.sh'
+                }
+
+                timeout(time: 3, unit: 'MINUTES') {
+                    sh './health-check.sh'
+                }
+            }
+        }
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Jenkins и Docker}
+        \begin{minted}{groovy}
+pipeline {
+    agent { docker 'maven:3.5.2-jdk-8-slim' }
+    stages {
+        stage('build') {
+            steps {
+                bat 'mvn --version'
+            }
+        }
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Переменные окружения}
+        \begin{footnotesize}
+            \begin{minted}{groovy}
+pipeline {
+    agent any
+
+    environment {
+        DB_ENGINE    = 'sqlite'
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'printenv'
+            }
+        }
+    }
+}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Слежение за тестами}
+        \begin{minted}{groovy}
+pipeline {
+    agent any
+    stages {
+        stage('Test') {
+            steps {
+                sh './gradlew check'
+            }
+        }
+    }
+    post {
+        always {
+            junit 'build/reports/**/*.xml'
+        }
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Деплой, ручное подтверждение}
+        \begin{scriptsize}
+            \begin{minted}{groovy}
+pipeline {
+    agent any
+    stages {
+        ...
+        stage('Deploy - Staging') {
+            steps {
+                sh './deploy staging'
+                sh './run-smoke-tests'
+            }
+        }
+        stage('Sanity check') {
+            steps {
+                input "Does the staging environment look ok?"
+            }
+        }
+        stage('Deploy - Production') {
+            steps {
+                sh './deploy production'
+            }
+        }
+    }
+}
+            \end{minted}
+        \end{scriptsize}
     \end{frame}
 
 \end{document}
