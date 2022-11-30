@@ -28,22 +28,6 @@
     \section{Hello, world}
 
     \begin{frame}[fragile]
-        \frametitle{Index.cshtml.cs}
-        Немного обновим сгенерированный шаблон:
-        \begin{minted}{csharp}
-namespace ConferenceRegistration.Pages;
-
-public class IndexModel : PageModel
-{
-    public void OnGet()
-    {
-    }
-}
-        \end{minted}
-        И уберём using в Program.cs
-    \end{frame}
-
-    \begin{frame}[fragile]
         \frametitle{Вид}
         \begin{minted}{html}
 @page
@@ -131,11 +115,11 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SEIM-2022 registration</title>
+        <title>SEIM-2023 registration</title>
     </head>
     <body>
         <div>
-            <p>SEIM-2022 conference will be held in April in St. Petersburg.</p>
+            <p>SEIM-2023 conference will be (likely) held in April in St. Petersburg.</p>
             <a asp-page="Registration">Register now!</a>
         </div>
     </body>
@@ -193,9 +177,9 @@ public class Participant
         \frametitle{Обновим модель}
         \begin{footnotesize}
             \begin{minted}{csharp}
-using ConferenceRegistration.Data;
-
 namespace ConferenceRegistration.Pages;
+
+using ConferenceRegistration.Data;
 
 [BindProperties]
 public class RegistrationModel : PageModel
@@ -255,6 +239,7 @@ public class RegistrationModel : PageModel
         \begin{footnotesize}
             \begin{minted}{csharp}
 namespace ConferenceRegistration.Data;
+
 using Microsoft.EntityFrameworkCore;
 
 public class ConferenceRegistrationDbContext: DbContext
@@ -386,7 +371,7 @@ public class Participant
                 <tr>
                     <td>@p.Name</td>
                     <td>@p.Email</td>
-                    <td>@(p.Speaker ? "Yes" : "No")</td>
+                    <td>@(p.IsSpeaker ? "Yes" : "No")</td>
                 </tr>
             }
         </tbody>
@@ -604,6 +589,8 @@ using System.ComponentModel.DataAnnotations;
 
 public class Participant
 {
+    public int ParticipantId { get; set; }
+
     [Required(ErrorMessage = "Please enter your name")]
     public string Name { get; set; }
 
@@ -614,7 +601,7 @@ public class Participant
 
     [Required(ErrorMessage = 
         "Please specify whether you'll be a speaker or just attending")]
-    public bool? Speaker { get; set; }
+    public bool? IsSpeaker { get; set; }
 }
             \end{minted}
         \end{footnotesize}
@@ -688,7 +675,7 @@ public class RegistrationModel : PageModel
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
     <script src="/lib/jquery/dist/jquery.js"></script>
     <script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" />
+    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js">
     </script>
 </head>
 ...
@@ -737,21 +724,21 @@ public class RegistrationModel : PageModel
         \frametitle{Dockerfile}
         \begin{scriptsize}
             \begin{minted}{html}
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["ConferenceRegistration/ConferenceRegistration.csproj", "ConferenceRegistration/"]
-RUN dotnet restore "ConferenceRegistration/ConferenceRegistration.csproj"
+COPY ["ConferenceRegistration.csproj", "."]
+RUN dotnet restore "./ConferenceRegistration.csproj"
 COPY . .
-WORKDIR "/src/ConferenceRegistration"
+WORKDIR "/src/."
 RUN dotnet build "ConferenceRegistration.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ConferenceRegistration.csproj" -c Release -o /app/publish
+RUN dotnet publish "ConferenceRegistration.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

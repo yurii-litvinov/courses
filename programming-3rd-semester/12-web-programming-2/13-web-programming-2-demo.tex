@@ -59,7 +59,7 @@ namespace ConferenceRegistration.Pages
 }
 \end{minted}
 
-Давайте сразу же перейдём на C\# 10 (если нет желания, можно этого не делать и не сражаться с IDE, где всё ещё старые шаблоны):
+Давайте сразу же обновим код до C\# 11 (если нет желания, можно этого не делать и не сражаться с IDE, где всё ещё старые шаблоны):
 
 \begin{minted}{csharp}
 global using Microsoft.AspNetCore.Mvc;
@@ -87,13 +87,13 @@ public class IndexModel : PageModel
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <meta name="viewport" content="width=device-width" />
-        <title>Hello</title>
-    </head>
-    <body>
-        Hello, world!
-    </body>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Hello</title>
+</head>
+<body>
+    Hello, world!
+</body>
 </html>
 \end{minted}
 
@@ -104,9 +104,6 @@ public class IndexModel : PageModel
 Чтобы написать <<Hello, world!>>, никакого ASP.NET не нужно, это могла бы быть статическая HTML-страница. Давайте пойдём дальше и сделаем форму регистрации. Для этого добавим новую Razor-страницу, Registration.cshtml, тоже типа <<Razor Page --- Empty>> (мы сами потом сможем прикрутить к ней БД). Начнём с моделирования предметной области. Поскольку она предельно проста, мы можем сделать это прямиком в коде поддержки страницы. В более суровых случаях нам надо было бы сделать отдельно доменную модель, отдельно View Model-ы, и держать их отдельно от контроллеров, но в более суровых случаях нам бы потребовались и настоящие контроллеры, и полноценный MVC, и даже отдельный проект с доменной моделью. Но это всё не лезет в ознакомительный кусочек про веб-программирование в этом курсе. Итак:
 
 \begin{minted}{csharp}
-namespace ConferenceRegistration.Pages;
-
-[BindProperties]
 namespace ConferenceRegistration.Pages;
 
 [BindProperties]
@@ -122,7 +119,7 @@ public class RegistrationModel : PageModel
 
 Обратите внимание на атрибут \mintinline{csharp}{[BindProperties]} над классом --- он говорит ASP.NET, что при получении запроса с параметрами, совпадающими по именам со свойствами (в нашем случае Name и Email), надо их содержимое положить в соответствующие свойства модели. Теперь у нас RegistrationModel --- это не просто поддерживающий страницу код, а суть доменный класс <<участник конференции>> плюс примешанные к нему средства доставки (наследование от PageModel), а потом ещё тут же будут и средства обеспечения персистентности (работа с базой), что для больших проектов нельзя смешивать, но для маленьких вполне ок.
 
-Ещё обратите внимание на то, что свойства проинициализированы пустыми строками --- в C\# 10 Nullability-анализ включён по умолчанию, так что строки (как ссылочный тип) должны быть не \mintinline{csharp}{null} сразу же. А IsSpeaker имеет тип-значение, поэтому он \mintinline{csharp}{null} и так быть не может.
+Ещё обратите внимание на то, что свойства проинициализированы пустыми строками --- в C\# 11 Nullability-анализ включён по умолчанию, так что строки (как ссылочный тип) должны быть не \mintinline{csharp}{null} сразу же. А IsSpeaker имеет тип-значение, поэтому он \mintinline{csharp}{null} и так быть не может.
 
 Теперь добавим HTML-разметку для нашей страницы:
 
@@ -160,7 +157,7 @@ public class RegistrationModel : PageModel
 </html>
 \end{minted}
 
-Тут используются \emph{тэг-хелперы} для описания HTML-формы и её содержимого (про них рассказывалось в предыдущей лекции). Тут тэг-хелперы используются для задания соответствия полей формы и модели (с помощью атрибута asp-for, который заставляет компилятор проверить, что такое свойство у модели действительно есть и правильного типа, и потом ещё отображать результат серверной валидации --- когда мы до неё дойдём).
+Тут используются \emph{тэг-хелперы} для описания HTML-формы и её содержимого (про них упоминалось в предыдущей лекции). Тут тэг-хелперы используются для задания соответствия полей формы и модели (с помощью атрибута asp-for, который заставляет компилятор проверить, что такое свойство у модели действительно есть и правильного типа, и потом ещё отображать результат серверной валидации --- когда мы до неё дойдём).
 
 Уже можно запустить приложение и посмотреть, что получилось. По умолчанию откроется титульная страница, но мы можем вручную перейти на форму регистрации по URL \url{https://localhost:7207/Registration}. Пока что по клику на Submit, впрочем, ничего не произойдёт. Но пока что давайте поправим титульную страницу, чтобы отлаживаться было удобнее:
 
@@ -172,11 +169,11 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SEIM-2022 registration</title>
+        <title>SEIM-2023 registration</title>
     </head>
     <body>
         <div>
-            <p>SEIM-2022 conference will be held in April in St. Petersburg.</p>
+            <p>SEIM-2023 conference will be (likely) held in April in St. Petersburg.</p>
             <a asp-page="Registration">Register now!</a>
         </div>
     </body>
@@ -234,9 +231,9 @@ public class Participant
 И подправим саму модель, чтобы она работала с этим классом:
 
 \begin{minted}{csharp}
-using ConferenceRegistration.Data;
-
 namespace ConferenceRegistration.Pages;
+
+using ConferenceRegistration.Data;
 
 [BindProperties]
 public class RegistrationModel : PageModel
@@ -309,14 +306,14 @@ public class ConferenceRegistrationDbContext: DbContext
 }
 \end{minted}
 
-Тут нас в какой-то момент (например, после того, как вы напечатаете DbContext и нажмёте в Visual Studio Ctrl+.) попросят ещё поставить Nuget-пакет Entity Framework Core, соглашайтесь.
+Тут нас в какой-то момент (например, после того, как вы напечатаете DbContext и нажмёте в Visual Studio Ctrl+.) попросят ещё поставить Nuget-пакет Entity Framework Core (пакет Microsoft.EntityFrameworkCore), соглашайтесь.
 
 Теперь добавим поддержку нашего нового DbContext-а в страницу, используя магию Dependency Injection:
 
 \begin{minted}{csharp}
-using ConferenceRegistration.Data;
-
 namespace ConferenceRegistration.Pages;
+
+using ConferenceRegistration.Data;
 
 [BindProperties]
 public class RegistrationModel : PageModel
@@ -442,7 +439,7 @@ SqliteException: SQLite Error 1: 'no such table: Participants'.
                 <tr>
                     <td>@p.Name</td>
                     <td>@p.Email</td>
-                    <td>@(p.Speaker ? "Yes" : "No")</td>
+                    <td>@(p.IsSpeaker ? "Yes" : "No")</td>
                 </tr>
             }
         </tbody>
@@ -454,9 +451,9 @@ SqliteException: SQLite Error 1: 'no such table: Participants'.
 Тут создаётся HTMLная таблица, в которой просто подряд как строки выводятся все зарегистрированные участники из модели. Соответственно, надо создать модель:
 
 \begin{minted}{csharp}
-using ConferenceRegistration.Data;
-
 namespace ConferenceRegistration.Pages;
+
+using ConferenceRegistration.Data;
 
 public class ListParticipantsModel : PageModel
 {
@@ -559,12 +556,12 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SEIM-2022 registration</title>
+        <title>SEIM-2023 registration</title>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
     </head>
     <body>
         <div class="text-center">
-            <h3>SEIM-2022 conference will be held in April in St. Petersburg.</h3>
+            <h3>SEIM-2023 conference will be (likely) held in April in St. Petersburg.</h3>
             <a class="btn btn-primary" asp-page="Registration">Register now!</a>
         </div>
     </body>
@@ -692,12 +689,14 @@ public class RegistrationModel : PageModel
 Сейчас зарегистрироваться на конференцию можно, просто тыкнув на Register и ничего не вводя. Давайте добавим валидацию, благо это совсем несложно. Просто модифицируем модель Participant в папке Data:
 
 \begin{minted}{csharp}
-using System.ComponentModel.DataAnnotations;
-
 namespace ConferenceRegistration.Data;
+
+using System.ComponentModel.DataAnnotations;
 
 public class Participant
 {
+    public int ParticipantId { get; set; }
+
     [Required(ErrorMessage = "Please enter your name")]
     public string Name { get; set; }
 
@@ -706,7 +705,7 @@ public class Participant
     public string Email { get; set; }
 
     [Required(ErrorMessage = "Please specify whether you'll be a speaker or just attending")]
-    public bool? Speaker { get; set; }
+    public bool? IsSpeaker { get; set; }
 }
 \end{minted}
 
@@ -813,8 +812,7 @@ public class RegistrationModel : PageModel
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
     <script src="/lib/jquery/dist/jquery.js"></script>
     <script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" />
-    </script>
+    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 </head>
 ...
 \end{minted}
@@ -830,21 +828,21 @@ public class RegistrationModel : PageModel
 Итак, чтобы наше приложение запускалось в контейнере, кликаем правой кнопкой по проекту, выбираем Add Docker Support, выбираем Target OS --- Linux (даже если у вас Windows, не пугайтесь, современная Windows умеет притворяться Linux-ом) --- потому что большинство реальных хостингов работают под Linux (точнее, чем-то UNIX-подобным), и хочется, чтобы на них контейнеры работали без проблем. В проекте появится файл Dockerfile --- это конфиг сборки контейнера, типа Makefile для Docker (если вы знаете, что такое Makefile, конечно). Выглядит он примерно вот так:
 
 \begin{minted}{docker}
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["ConferenceRegistration/ConferenceRegistration.csproj", "ConferenceRegistration/"]
-RUN dotnet restore "ConferenceRegistration/ConferenceRegistration.csproj"
+COPY ["ConferenceRegistration.csproj", "."]
+RUN dotnet restore "./ConferenceRegistration.csproj"
 COPY . .
-WORKDIR "/src/ConferenceRegistration"
+WORKDIR "/src/."
 RUN dotnet build "ConferenceRegistration.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ConferenceRegistration.csproj" -c Release -o /app/publish
+RUN dotnet publish "ConferenceRegistration.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
