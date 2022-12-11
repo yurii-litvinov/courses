@@ -13,58 +13,25 @@
 
 \usepackage[font=scriptsize]{caption}
 
-\usepackage{amsmath}
-\usepackage{amssymb,amsfonts,textcomp}
-\usepackage{color}
-\usepackage{array}
-\usepackage{hhline}
-\usepackage{cite}
-\usepackage{textcomp}
-
-\usepackage[hang,multiple]{footmisc}
-\renewcommand{\footnotelayout}{\raggedright}
-
-\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
-\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
-
-\newlength\Colsep
-\setlength\Colsep{10pt}
-
-\usepackage{tabu}
-
-\usepackage{graphicx}
-\usepackage{indentfirst}
-\usepackage{multirow}
-\usepackage{subfig}
-\usepackage{footnote}
-\usepackage{minted}
-
-\newcommand{\todo}[1] {
-\begin{center}\textcolor{red}{TODO: #1}\end{center}
-}
-
 \sloppy
 \pagestyle{plain}
-
-\title{Вопросы к экзамену ``Проектирование ПО''}
-\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
 
 \begin{document}
 
 \thispagestyle{empty}
 
-\section*{Вопросы к экзамену ``Проектирование программного обеспечения''}
+\section*{Вопросы к экзамену <<Архитектура и проектирование информационных систем>>}
 
-\begin{flushright}\begin{small}Юрий Литвинов\\\small{yurii.litvinov@gmail.com}\end{small}\end{flushright}
+\begin{flushright}\begin{small}Юрий Литвинов\\\small{y.litvinov@spbu.ru}\end{small}\end{flushright}
 
 \begin{enumerate}
     \item Понятие архитектуры, профессия <<Архитектор>>.
     \item Архитектурные виды.
     \item Роль архитектуры в жизненном цикле программного обеспечения.
-    \item Пример архитектуры: Apache Hadoop. Prescriptive и descriptive-архитектура.
+    \item Пример архитектуры: Apache Hadoop. Понятия prescriptive и descriptive-архитектуры.
     \item Понятие декомпозиции. Модульность, связность, сопряжение, сложность.
     \item Понятия класса и объекта, абстракция, инкапсуляция, наследование. 
-    \item Принципы выделения абстракций предметной области.
+    \item Принципы выделения объектов.
     \item Принципы SOLID. Закон Деметры.
     \item Моделирование, визуальные модели, виды моделей, метафора визуализации.
     \item Язык UML. Диаграмма классов.
@@ -117,17 +84,17 @@
     \item DDD, паттерн <<Агрегат>>.
     \item DDD, паттерны <<Фабрика>>, <<Репозиторий>>.
     \item Паттерн <<Спецификация>>.
-    % \item Ограниченный контекст, непрерывная интеграция, карта контекстов.
-    % \item Подходы к интеграции контекстов.
-    % \item Смысловое ядро, приёмы дистилляции, абстрактное ядро.
-    % \item Крупномасштабная структура, метафора системы, разбиение по уровням. 
-    % \item Типичные уровни в производственных и финансовых системах.
-    % \item Стили <<Уровень знаний>>, <<Подключаемые компоненты>>.
+    \item Ограниченный контекст, непрерывная интеграция, карта контекстов.
+    \item Подходы к интеграции контекстов.
+    \item Смысловое ядро, приёмы дистилляции, абстрактное ядро.
+    \item Крупномасштабная структура, метафора системы, разбиение по уровням. 
+    \item Типичные уровни в производственных и финансовых системах.
+    \item Стили <<Уровень знаний>>, <<Подключаемые компоненты>>.
     \item Понятие распределённой системы, заблуждения при проектировании распределённых систем.
     \item RPC, RMI. Пример: gRPC.
     \item Веб-сервисы, SOAP. WCF.
     \item Веб-сервисы, REST. ASP.NET Web APIs.
-    % \item Очереди сообщений, RabbitMQ, Kafka.
+    \item Очереди сообщений, RabbitMQ, Kafka.
     \item Архитектурные стили распределённых приложений: Big Compute, Big Data.
     \item Web-queue-worker, N-звенная архитектура.
     \item Микросервисная архитектура.
@@ -139,12 +106,13 @@
     \item Command and Query Responsibility Segregation.
     \item CAP-теорема, модели ACID и BASE.
     \item Принципы дизайна распределённых приложений: проектирование для обслуживания.
-    % \item Docker, Docker Compose.
-    % \item Kubernetes.
-    % \item Облачная инфраструктура, AWS, Terraform.
-    % \item Архитектура командной оболочки Bash.
-    % \item Архитектура системы контроля версий Git.
-    % \item Архитектура компьютерной игры Battle for Wesnoth.
+    \item Docker, Docker Compose.
+    \item Kubernetes.
+    \item Облачная инфраструктура, AWS, Terraform.
+    \item Основные понятия сетевой безопасности, шифрование с симметричным ключом.
+    \item Алгоритм Диффи-Хелмана. Шифрование с открытым ключом.
+    \item Цифровые подписи, сертификаты.
+    \item Аутентификация. OAuth 2.
 \end{enumerate}
 
 \end{document}

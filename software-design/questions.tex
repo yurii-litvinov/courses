@@ -8,43 +8,11 @@
 \setmainfont{FreeSerif}
 \newfontfamily{\russianfonttt}[Scale=0.7]{DejaVuSansMono}
 
-\usepackage[font=scriptsize]{caption}
-
-\usepackage{amsmath}
-\usepackage{amssymb,amsfonts,textcomp}
-\usepackage{color}
-\usepackage{array}
-\usepackage{hhline}
-\usepackage{cite}
-\usepackage{textcomp}
-
-\usepackage[hang,multiple]{footmisc}
-\renewcommand{\footnotelayout}{\raggedright}
-
-\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
-\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
-
-\newlength\Colsep
-\setlength\Colsep{10pt}
-
-\usepackage{tabu}
-
-\usepackage{graphicx}
-\usepackage{indentfirst}
-\usepackage{multirow}
-\usepackage{subfig}
-\usepackage{footnote}
-\usepackage{minted}
-
-\newcommand{\todo}[1] {
-\begin{center}\textcolor{red}{TODO: #1}\end{center}
-}
-
 \sloppy
 \pagestyle{plain}
 
 \title{Вопросы к экзамену <<Проектирование ПО>>}
-\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
+\author{Юрий Литвинов\\\small{y.litvinov@spbu.ru}}
 
 \begin{document}
 
@@ -52,22 +20,22 @@
 
 \section*{Вопросы к экзамену <<Проектирование ПО>>}
 
-\begin{flushright}\begin{small}Юрий Литвинов\\\small{yurii.litvinov@gmail.com}\end{small}\end{flushright}
+\begin{flushright}\begin{small}Юрий Литвинов\\\small{y.litvinov@spbu.ru}\end{small}\end{flushright}
 
 \begin{enumerate}
     \item Понятие архитектуры, профессия <<Архитектор>>.
     \item Архитектурные виды.
     \item Роль архитектуры в жизненном цикле ПО.
-    \item Пример архитектуры: Apache Hadoop. Prescriptive и descriptive-архитектура.
+    % \item Пример архитектуры: Apache Hadoop. Prescriptive и descriptive-архитектура.
     \item Понятие декомпозиции. Модульность, связность, сопряжение, сложность.
     \item Понятия класса и объекта, абстракция, инкапсуляция, наследование. 
-    \item Принципы выделения абстракций предметной области.
+    \item Принципы выделения объектов.
     \item Принципы SOLID.
-    \item Закон Деметры. Принципы хорошего объектно-ориентированного кода.
+    % \item Закон Деметры. Принципы хорошего объектно-ориентированного кода.
     \item Моделирование, визуальные модели, виды моделей, метафора визуализации.
     \item Язык UML. Проектирование структуры системы, диаграммы классов.
-    \item Диаграммы объектов, диаграммы пакетов UML.
-    \item Диаграммы компонентов, диаграммы развёртывания UML.
+    % \item Диаграммы объектов, диаграммы пакетов UML.
+    % \item Диаграммы компонентов, диаграммы развёртывания UML.
     \item Диаграмма случаев использования UML.
     \item Диаграмма активностей UML.
     \item Диаграммы конечных автоматов UML.
@@ -78,8 +46,8 @@
     \item Диаграммы IDEF0, характеристик. Feature tree 
     \item Моделирование требований в SysML.
     \item Язык BPMN.
-    \item Моделирование данных: диаграммы <<Сущность-связь>>.
-    \item Концептуальное моделирование, диаграммы ORM.
+    % \item Моделирование данных: диаграммы <<Сущность-связь>>.
+    % \item Концептуальное моделирование, диаграммы ORM.
     \item Сети Петри, их анализ и применение.
     \item Понятие и примеры CASE-систем.
     \item Паттерн <<Компоновщик>>.
@@ -109,7 +77,7 @@
     \item Антипаттерны <<Круговая зависимость>>, <<Последовательная связность>>, <<Вызов предка>>, <<Проблема Йо-Йо>>.
     \item Антипаттерны <<Активное ожидание>>, <<Сокрытие ошибки>>, <<Магические числа>>, <<Магические строки>>.
     \item Антипаттерны <<Божественный объект>>, <<Поток лавы>>.
-    \item Антипаттерн <<Золотой молоток>>.
+    % \item Антипаттерн <<Золотой молоток>>.
     % \item Антипаттерны <<Функциональная декомпозиция>>, <<Золотой молоток>>.
     \item Понятие архитектурного стиля, трёхзвенная архитектура.
     \item Model-View-Controller, Sense-Compute-Control.
@@ -133,16 +101,16 @@
     \item Понятие распределённой системы, заблуждения при проектировании распределённых систем.
     \item RPC, RMI. Пример: gRPC.
     \item Веб-сервисы, SOAP. WCF.
-    \item Очереди сообщений, RabbitMQ.
+    % \item Очереди сообщений, RabbitMQ, Apache Kafka.
     \item Архитектурные стили распределённых приложений: Big Compute, Big Data.
     \item Web-queue-worker, N-звенная архитектура.
     \item Микросервисная архитектура.
     \item Архитектурный стиль REST.
     \item Принципы дизайна распределённых приложений: самовосстановление, избыточность.
     \item Принципы дизайна распределённых приложений: минимизация координации, проектирование для обслуживания.
-    \item Docker, Docker Compose.
-    \item Kubernetes.
-    \item Облачная инфраструктура, AWS, Terraform.
+    % \item Docker, Docker Compose.
+    % \item Kubernetes.
+    % \item Облачная инфраструктура, AWS, Terraform.
 \end{enumerate}
 
 \end{document}
