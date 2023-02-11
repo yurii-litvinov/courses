@@ -1,0 +1,43 @@
+\documentclass{../mcsslides}
+
+\slidetitle{Практика 15: OAuth}{05.06.2023}
+
+\begin{document}
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Задача}
+        Реализовать на ``голом HTTPS'' консольный клиент Google Drive, умеющий показать список файлов и папок в корне Google Drive пользователя
+        \begin{itemize}
+            \item Нельзя использовать библиотеку клиента Google Drive
+            \item Придётся зарегистрировать приложение на \url{https://console.developers.google.com}
+            \item И включить нужный API
+            \item Авторизация: \url{https://developers.google.com/drive/api/v3/about-auth}
+            \begin{itemize}
+                \item Наш случай: \url{https://developers.google.com/identity/protocols/oauth2/native-app}
+            \end{itemize}
+            \item Надо добавить OAuth Client ID и получить Client ID и Client secret
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Подсказки}
+        \begin{itemize}
+            \item Запрос access token должен быть обязательно POST-запросом, GET вернёт 404
+            \item Копипастить access token из адресной строки браузера good enough
+            \begin{itemize}
+                \item Да, надо будет программно запустить браузер с правильным URL
+            \end{itemize}
+            \item Некоторые значения возвращаются в BASE64-кодировке, а ожидаются в plain text
+            \item Не надо продлять Access Token, правильно хранить Refresh Token и всё такое
+            \begin{itemize}
+                \item Но если успеете, то почему нет
+            \end{itemize}
+            \item Значения Client Id и Client Secret можно принимать параметрами командной строки
+        \end{itemize}
+    \end{frame}
+
+\end{document}
