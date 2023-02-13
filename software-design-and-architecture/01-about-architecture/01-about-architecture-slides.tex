@@ -1,44 +1,12 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\usepackage{textpos}
-\setlength{\TPHorizModule}{1cm}
-\setlength{\TPVertModule}{1cm}
-
-\definecolor{links}{HTML}{2A1B81}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\tabulinesep=1.2mm
-
-\title{Проектирование и архитектура ПО}
-\subtitle{Лекция 1: Об архитектуре}
-\author[Юрий Литвинов]{Юрий Литвинов\\\small{\textcolor{gray}{y.litvinov@spbu.ru}}}
-\date{18.02.2022}
-
-\newcommand{\todo}[1] {
-    \begin{center}\textcolor{red}{TODO: #1}\end{center}
-}
-
-\newcommand{\DownArrow} {
-    \hspace{2cm}\begin{LARGE}$\downarrow$\end{LARGE}
-}
-
-\newcommand{\attribution}[1] {
-    \begin{flushright}\begin{scriptsize}\textcolor{gray}{#1}\end{scriptsize}\end{flushright}
-}
+\slidetitle[Лекция 1: Об архитектуре]{Проектирование и архитектура ПО}{14.02.2023}
 
 \begin{document}
 
-    \frame{\titlepage}
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
     \section{Организационное}
 
@@ -46,15 +14,22 @@
         \frametitle{Организационное}
         \begin{itemize}
             \item Лекционно-практический курс, будем практиковаться по большей части прямо на парах
-            \item В конце зачёт
+            \item В конце теоретический зачёт
+            \item Балльная система ECTS
             \begin{itemize}
-                \item Надо сдать ВСЕ задачи с практических занятий
-                \item Если что-то пропустили или не успели --- доделать дома
-                \item Будут групповые и индивидуальные задания
+                \item 60\% за теорзачёт, 40\% за работу на парах
+                \item Можно доделывать дома за половину баллов
                 \item Прежде всего, проектирование, но будут и задачи на покодить
-                \item Теоретический зачёт по билетам в конце
+                \item Будут групповые и индивидуальные задания
             \end{itemize}
-            \item Материалы и задания будут выкладываться в MS Teams
+            \item Материалы и задания будут выкладываться в HwProj
+            \begin{itemize}
+                \item \url{https://bit.ly/architecture-2023}
+            \end{itemize}
+            \item Коммуникация в Teams
+            \begin{itemize}
+                \item \url{https://bit.ly/architecture-2023-teams}
+            \end{itemize}
         \end{itemize}
     \end{frame}
 
@@ -67,6 +42,7 @@
             \item Архитектурные стили
             \item Предметно-ориентированное проектирование
             \item Проектирование распределённых приложений
+            \item Развёртывание и DevOps
             \item Примеры архитектур (если успеем)
         \end{itemize}
     \end{frame}
@@ -78,6 +54,7 @@
         \begin{center}
             \includegraphics[width=0.5\textwidth]{brooksSquare.png}
         \end{center}
+        \attribution{Ф. Брукс, <<Мифический человеко-месяц>>}
         \begin{textblock}{2}(10,-3)
             \includegraphics[width=\textwidth]{brooksCover.png}
         \end{textblock}
@@ -129,6 +106,7 @@
             \end{column}
             \begin{column}{0.3\textwidth}
                 \includegraphics[width=\textwidth]{whatArchitecture.png}
+                \attribution{Интернеты}
             \end{column}
         \end{columns}
     \end{frame}
@@ -149,32 +127,14 @@
     \end{frame}
 
     \begin{frame}
-        \frametitle{Профессиональный стандарт <<Архитектор>>}
-        Создание и сопровождение архитектуры программных средств, заключающейся
-        \begin{itemize}
-            \item в синтезе и документировании решений о структуре
-            \item компонентном устройстве
-            \item основных показателях назначения
-            \item порядке и способах реализации программных средств в рамках системной архитектуры
-            \item реализации требований к программным средствам
-            \item контроле реализации и ревизии решений
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
         \frametitle{Трудовые функции архитектора}
-        \framesubtitle{По стандарту}
+        \framesubtitle{По профстандарту 06.003}
         \begin{itemize}
-            \item Создание вариантов архитектуры программного средства
-            \item Документирование архитектуры программных средств
-            \item Реализация программных средств \textit{(в основном контроль и анализ)}
-            \item Оценка требований к программному средству
-            \item Оценка и выбор варианта архитектуры программного средства
-            \item Контроль реализации программного средства
-            \item Контроль сопровождения программных средств
-            \item Оценка возможности создания архитектурного проекта
-            \item Утверждение и контроль методов и способов взаимодействия программного средства со своим окружением
-            \item Модернизация программного средства и его окружения
+            \item Выявление и согласование требований к программной системе с точки зрения архитектуры
+            \item Выбор и моделирование архитектурного решения для реализации программной системы
+            \item Разработка разделов по архитектуре проектных и эксплуатационных документов программной системы
+            \item Контроль реализации и испытаний программной системы с точки зрения архитектуры
+            \item Сопровождение эксплуатации программной системы с точки зрения архитектуры
         \end{itemize}
     \end{frame}
 
@@ -214,6 +174,7 @@
                 \begin{center}
                     \includegraphics[width=0.9\textwidth]{oscilloscope.png}
                 \end{center}
+                \attribution{Hantek}
             \end{column}
         \end{columns}
         \vspace{1cm}
@@ -226,6 +187,7 @@
         \frametitle{Вариант 1: объектная модель}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeObjects.png}
+            \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
@@ -233,6 +195,7 @@
         \frametitle{Вариант 2: слоистая архитектура}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeLayers.png}
+            \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
@@ -240,6 +203,7 @@
         \frametitle{Вариант 3: каналы и фильтры}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeFilters.png}
+            \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
@@ -247,6 +211,7 @@
         \frametitle{Вариант 4: модифицированные каналы и фильтры}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeModifiedFilters.png}
+            \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
@@ -364,10 +329,7 @@
         \frametitle{Роль архитектуры в жизненном цикле}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{architectureLifeCycle.png}
-
-            \begin{tiny}
-                Рисунок из Z. Quin, "Software Architecture"
-            \end{tiny}
+            \attribution{Z. Quin, ``Software Architecture''}
         \end{center}
     \end{frame}
 
@@ -454,7 +416,7 @@
         \begin{center}
             \includegraphics[width=0.6\textwidth]{hadoopPrescriptive.png}
         \end{center}
-        \attribution{Special thanks to prof. Nenad Medvidovic (USC) for kind permission for using his slides}
+        \begin{scriptsize}\textcolor{gray}{Special thanks to prof. Nenad Medvidovic (USC) for kind permission for using his slides}\end{scriptsize}
     \end{frame}
 
     \begin{frame}
@@ -462,6 +424,7 @@
         \framesubtitle{HDFS}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{hadoopDescriptive.png}
+            \attribution{Nenad Medvidovic}
         \end{center}
     \end{frame}
 
@@ -470,6 +433,7 @@
         \framesubtitle{HDFS + MapReduce}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{hdfsMapReduce.png}
+            \attribution{Nenad Medvidovic}
         \end{center}
     \end{frame}
 
@@ -478,6 +442,7 @@
         \framesubtitle{Полная архитектура}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{hadoopFull.png}
+            \attribution{Nenad Medvidovic}
         \end{center}
     \end{frame}
 
@@ -486,6 +451,7 @@
         \framesubtitle{Граф зависимостей}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{hadoopDependencies.png}
+            \attribution{Nenad Medvidovic}
         \end{center}
     \end{frame}
 
