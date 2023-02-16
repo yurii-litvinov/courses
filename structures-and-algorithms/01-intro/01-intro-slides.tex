@@ -1,29 +1,12 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
-\usepackage{tabu}
-\usepackage{moresize}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\definecolor{links}{HTML}{2A1B81}
-\hypersetup{colorlinks,linkcolor=,urlcolor=links}
-
-\tabulinesep=1.2mm
-
-\title{Функциональное программирование на языке F\#}
-\subtitle{Введение}
-\author{Юрий Литвинов}
-\date{18.02.2022}
+\slidetitleext{Функциональное программирование на языке F\#}{17.02.2023}{Введение}
 
 \begin{document}
     
-    \frame{\titlepage}
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
     
     \section{Введение}
     
@@ -53,11 +36,10 @@
         \begin{itemize}
             \item Домашка (много несложной)
             \item Одна контрольная в середине семестра
-            \item Учебная практика
-            \item Доклад (я знаю, вы не любите)
-            \item Сдача и учёт через MS Teams 
+            \item Доклад
+            \item Сдача и учёт через HwProj 2
             \begin{itemize}
-                \item Надеемся на HwProj 2
+                \item \url{https://bit.ly/sakod-2023}
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -66,31 +48,29 @@
         \frametitle{Критерии оценивания}
         \begin{itemize}
             \item Как в прошлом семестре, ECTS
-            \begin{itemize}
-                \item Как обычно, не идёт в диплом
-            \end{itemize}
             \item Баллы за домашние задачи, баллы за контрольную
             \item Общий балл за домашки: $MAX(0, (n/N – 0.6)) * 2.5 * 100$
             \item Общий балл за контрольные: $n/N * 100$
             \item Итоговая оценка: минимум из этих двух баллов
-            \item Дедлайны по домашкам, -0.5 балла за каждую неделю после дедлайна
-            \begin{itemize}
-                \item Больше половины задач в курсе оцениваются в 1 балл, так что это критично
-            \end{itemize}
-            \item -0.5 балла за каждую попытку сдачи начиная с 3-й
+            \item Дедлайны по домашкам, -1 балл за каждую неделю после дедлайна
+            \item -1 балл за каждую попытку сдачи начиная с 3-й
             \item Сгорает не более половины баллов
+            \begin{itemize}
+                \item Таким образом, задачи на 1 балл не штрафуются вовсе
+                \item Но их сделать проще, чем не сделать
+            \end{itemize}
         \end{itemize}
     \end{frame}
 
     \begin{frame}
         \frametitle{Ориентировочно}
         \begin{itemize}
-            \item Всего около 34 баллов за д/з и по 10 за к/р
-            \item A --- 33 балла за домашки, 9 за контрольную
-            \item B --- 32 баллов за домашки, 8 за контрольную
-            \item C --- 30 баллов за домашки, 7 за контрольную
-            \item D --- 29 баллов за домашки, 6 за контрольную
-            \item E --- 28 баллов за домашки, 5 за контрольную
+            \item Всего около 36 баллов за д/з и 10 за к/р
+            \item A --- 35 балла за домашки, 9 за контрольную
+            \item B --- 34 баллов за домашки, 8 за контрольную
+            \item C --- 32 баллов за домашки, 7 за контрольную
+            \item D --- 31 баллов за домашки, 6 за контрольную
+            \item E --- 29 баллов за домашки, 5 за контрольную
         \end{itemize}
         
         \vspace{0.5cm}
@@ -255,7 +235,7 @@ let calculate =
         \begin{itemize}
             \item Типизированный функциональный язык для платформы .NET
             \item НЕ чисто функциональный (можно императивный стиль и ООП)
-            \item Первый раз представлен публике в 2005 г., актуальная версия --- 6.0 (19 октября 2021 года)
+            \item Первый раз представлен публике в 2005 г., актуальная версия --- 7.0 (8 ноября 2022 года)
             \item Создавался под влиянием OCaml (практически диалект OCaml под .NET)
             \item Использует .NET CLI
             \item Компилируемый и интерпретируемый
@@ -268,7 +248,7 @@ let calculate =
         \begin{itemize}
             \item Rider (студентам бесплатно)
             \item Visual Studio Community
-            \item .NET 6 + Visual Studio Code + Ionide
+            \item .NET 7 + Visual Studio Code + Ionide
             \item Прямо в браузере: \url{https://dotnetfiddle.net/}
         \end{itemize}
     \end{frame}
@@ -278,20 +258,6 @@ let calculate =
         \begin{minted}{fsharp}
 printfn "%s" "Hello, world!"
         \end{minted}
-        Сравните с
-        \begin{minted}{csharp}
-namespace HelloWorld
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            System.Console.WriteLine("Hello, world!");
-        }
-    }
-}
-        \end{minted}
-        (В C\# 9 тоже сделали <<скриптовый>> режим, но всё же)
     \end{frame}
 
     \section{Let-определения}
@@ -422,7 +388,6 @@ let f = fun x -> x * x
 let n = f 4
         \end{minted}
     \end{frame}
-
 
     \begin{frame}
         \frametitle{Списки}
