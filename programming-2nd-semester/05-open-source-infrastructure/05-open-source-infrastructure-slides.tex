@@ -152,9 +152,9 @@ jobs:
               with:
                   dotnet-version: '6.x'
             - name: Build
-              run: For /R %%I in (*.sln) do dotnet build %%I
+              run: for f in $(find . -name "*.sln"); do dotnet build $f; done
             - name: Run tests
-              run: For /R %%I in (*.sln) do dotnet test %%I
+              run: for f in $(find . -name "*.sln"); do dotnet test $f; done
     build-Windows:
         runs-on: windows-latest
         steps:
