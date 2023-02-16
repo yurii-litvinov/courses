@@ -41,12 +41,12 @@
                 \item Домашки, много в начале
                 \begin{itemize}
                     \item Сдавать через GitHub, пуллреквестом в свой репозиторий
-                    \item Blackboard, MS Teams, Telegram
-                    \item Дедлайны в две недели
+                    \item HwProj: \url{https://bit.ly/oop-2023}
+                    \item Дедлайны в две недели, минус балл в неделю за пропуск (не больше чем на половину баллов)
                 \end{itemize}
                 \item Контрольная в середине семестра (одна)
                 \item Зачётная работа в конце семестра
-                \item Доклады ($+10$ баллов)
+                \item Доклады ($+6$ баллов)
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -58,8 +58,9 @@
             \item Итоговый балл за домашки: $MAX(0, (\frac{n}{N} – 0.6)) * 2.5 * 100$
             \begin{itemize}
                 \item Если сделано меньше 60\% --- это 0, если 80\% --- 50 баллов
+                \item Будут бонусные баллы за выполнение дополнительных условий
             \end{itemize}
-            \item Три <<бесплатные>> попытки сдачи
+            \item Три <<бесплатные>> попытки сдачи, дальше минус балл за каждую
             \item Дедлайнов на исправления не будет, но к 26 мая всё должно быть сдано
             \item Итоговый балл за контрольную: $\frac{n}{N} * 100$, её можно переписывать
             \item Зачёт учитывается отдельно, балл считается так же
@@ -70,15 +71,15 @@
     \begin{frame}
         \frametitle{Ориентировочно}
         \begin{itemize}
-            \item Всего около 70 баллов за д/з и по 10 за к/р и зачёт
+            \item Всего около 60 баллов за д/з и по 10 за к/р и зачёт
             \begin{itemize}
                 \item Будет немного бонусных баллов к домашке
             \end{itemize}
-            \item A --- 68 баллов за домашки, 9 за контрольную и зачёт
-            \item B --- 65 баллов за домашки, 8 за контрольную и зачёт
-            \item C --- 62 баллов за домашки, 7 за контрольную и зачёт
-            \item D --- 60 баллов за домашки, 6 за контрольную и зачёт
-            \item E --- 56 баллов за домашки, 5 за контрольную и зачёт
+            \item A --- 58 баллов за домашки, 9 за контрольную и зачёт
+            \item B --- 56 баллов за домашки, 8 за контрольную и зачёт
+            \item C --- 53 баллов за домашки, 7 за контрольную и зачёт
+            \item D --- 51 баллов за домашки, 6 за контрольную и зачёт
+            \item E --- 48 баллов за домашки, 5 за контрольную и зачёт
             \item Это ориентировочно!
         \end{itemize}
     \end{frame}
@@ -86,9 +87,9 @@
     \begin{frame}
     \frametitle{Литература}
         \begin{itemize}
-            \item \textbf{Джепикс Троелсен} Язык программирования C\# 7 и платформы .NET и .NET Core --- C\# для самых маленьких
+            \item \textbf{Джепикс Троелсен} Язык программирования C\# 9 и платформа .NET 5 --- C\# для самых маленьких
             \item \textbf{Джозеф Албахари, Бен Албахари} C\# 9.0. Справочник. Полное описание языка
-            \item \textbf{Jeffrey Richter.} CLR via C\# --- must read про C\#
+            \item \textbf{Jeffrey Richter} CLR via C\# --- must read про C\#
             \begin{itemize}
                 \item Или её русское издание ``CLR via C\#. Программирование на платформе Microsoft.NET Framework 4.5 на языке C\#''
             \end{itemize}
@@ -96,7 +97,7 @@
             \begin{itemize}
                 \item Очень рекомендую все три курса, если наш покажется сложным --- мы за один семестр проходим почти всё, что они за три
             \end{itemize}
-            \item \url{https://blogs.msdn.microsoft.com/dotnet} --- официальный блог о .NET
+            \item \url{https://devblogs.microsoft.com/dotnet/} --- официальный блог о .NET
         \end{itemize}
     \end{frame}
 
@@ -107,9 +108,9 @@
         \begin{itemize}
             \item Объектно-ориентированный язык общего назначения с сильной типизацией
             \item Основной язык программирования для платформы .NET
-            \item Первая версия --- 2002 год, актуальная --- 08.11.2021, C\# 10.0
+            \item Первая версия --- 2002 год, актуальная --- 08.11.2022, C\# 11
             \item В основном для прикладного ПО
-            \item 5-е место в индексе TIOBE на февраль 2022 (после Python, C, Java, C++)
+            \item 5-е место в индексе TIOBE на февраль 2023 (после Python, C, C++, Java)
             \begin{itemize}
                 \item \url{https://www.tiobe.com/tiobe-index/}
             \end{itemize}
@@ -119,7 +120,6 @@
                 \item Microsoft Visual Studio (\url{https://www.visualstudio.com})
                 \item Rider (\url{https://www.jetbrains.com/rider/})
                 \item Visual Studio Code (\url{https://code.visualstudio.com/})
-                \item да любой удобный текстовый редактор
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -145,7 +145,7 @@
         \begin{itemize}
             \item Единый байткод с механизмом оптимизации, интерпретации и генерации машинного кода позволяет экономить время на разработку компиляторов
             \begin{itemize}
-                \item Поэтому под .NET можно писать на C\#, F\#, Visual Basic, J\# (зачем бы он ни был нужен), куче сторонних языков (например, Delphi)
+                \item Поэтому под .NET можно писать на C\#, F\#, Visual Basic (зачем бы он ни был нужен), куче сторонних языков (например, Delphi)
             \end{itemize}
             \item Совместимость кода, написанного на разных языках, возможность из кода на F\# без усилий использовать библиотеки на C\# и наоборот
             \item Виртуальная машина знает всё о выполнении программы и многое может проверять (обращения к памяти, границы массивов и т.д.)
@@ -279,10 +279,10 @@ namespace HelloWorld
         \begin{itemize}
             \item C\# Coding Conventions
             \begin{itemize}
-                \item \url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions}
+                \item \url{https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions}
             \end{itemize}
             \item \url{https://github.com/DotNetAnalyzers/StyleCopAnalyzers}
-            \item \href{https://msdn.microsoft.com/en-us/library/3z0aeatx.aspx}{Code Analysis for Managed Code (бывший FxCop)}
+            \item \href{https://learn.microsoft.com/ru-ru/previous-versions/visualstudio/visual-studio-2015/code-quality/code-analysis-for-managed-code-overview}{Code Analysis for Managed Code}
             \item Здравый смысл
         \end{itemize}
     \end{frame}
@@ -347,9 +347,9 @@ int[,] numbers2 = new int[3, 3] { {2, 3, 2}, {1, 2, 6}, {2, 4, 5} };
         \begin{minted}{csharp}
 enum SomeEnum
 {
-        red,
-        green,
-        blue
+    red,
+    green,
+    blue
 }
         \end{minted}
         Использование:
