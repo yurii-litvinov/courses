@@ -45,9 +45,13 @@
 \usepackage{moresize}
 \usepackage{forest}
 \usetikzlibrary{arrows}
+\usepackage{amsthm}
+\usepackage[normalem]{ulem}
 
 \usepackage[hang,multiple]{footmisc}
 \renewcommand{\footnotelayout}{\raggedright}
+
+\newtheorem{rustheorem}{Теорема}
 
 % Setting up nice-looking hyperlinks.
 \hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}

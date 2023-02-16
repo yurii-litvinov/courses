@@ -17,6 +17,7 @@
 \usepackage{pgfplots}
 \usepackage{ulem}
 \usepackage{algpseudocode}
+\usepackage{algorithm2e}
 \usepackage{forest}
 \usetikzlibrary{arrows}
 
@@ -45,11 +46,20 @@
 \definecolor{links}{HTML}{2A1B81}
 \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 
+% Text block colors
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\setbeamercolor*{block title alerted}{fg=red!50!black,bg=red!20}
+\setbeamercolor*{block body alerted}{fg=black,bg=red!3}
+
 % Remove slide navigation buttons
 \beamertemplatenavigationsymbolsempty
 
 % Setting line separation for tables, to have some vertical space between text and row border in table rows.
 \tabulinesep=1.2mm
+
+% Defining Theorem environment in Russian language.
+\newtheorem{rustheorem}{Теорема}
 
 % At last, some custom commands that shall output same-looking text for all slides:
 % Attribution info, mostly for "borrowed" images:
