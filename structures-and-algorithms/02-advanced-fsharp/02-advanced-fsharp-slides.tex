@@ -4,7 +4,9 @@
 
 \begin{document}
     
-    \frame{\titlepage}
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
     \section{Юнит-тестирование}
 
@@ -94,6 +96,30 @@ Choice<int, string>.Choice1Of2(42) |> should be (choice 1)
 [1; 3; 2] |> should not' (be ascending)
 [3; 2; 1] |> should be descending
 [3; 1; 2] |> should not' (be descending)
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Значения в модулях не инициализируются!}
+        \framesubtitle{Как внезапно прострелить себе ногу}
+        Main.fs:
+        \begin{minted}{fsharp}
+let value = [1]
+        \end{minted}
+        \vspace{5mm}
+        Test.fs:
+        \begin{minted}{fsharp}
+[<Test>]
+let Test () =
+    Assert.AreEqual([1], Main.value)
+        \end{minted}
+        \vspace{5mm}
+        Вывод:
+        \begin{minted}{text}
+Failed Test1 [24 ms]
+Error Message:
+   Expected: < 1 >
+But was:  null     
         \end{minted}
     \end{frame}
 
