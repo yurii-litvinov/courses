@@ -47,6 +47,7 @@
 \usetikzlibrary{arrows}
 \usepackage{amsthm}
 \usepackage[normalem]{ulem}
+\usepackage{tabularx}
 
 \usepackage[hang,multiple]{footmisc}
 \renewcommand{\footnotelayout}{\raggedright}
