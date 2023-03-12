@@ -702,7 +702,7 @@ WeatherStation station = new() { Location = "Seattle, WA" };
     \begin{frame}[fragile]
         \frametitle{Record-ы (C\# 9)}
         \begin{minted}{csharp}
-public record Person
+public class Person
 {
     public string LastName { get; }
     public string FirstName { get; }
@@ -710,6 +710,10 @@ public record Person
     public Person(string first, string last) 
         => (FirstName, LastName) = (first, last);
 }
+        \end{minted}
+        vs
+        \begin{minted}{csharp}
+            public record Person(string FirstName, string LastName);
         \end{minted}
     \end{frame}
 
@@ -719,6 +723,31 @@ public record Person
             \item File-scoped namespaces
             \item global using
             \item Улучшенные шаблоны: \mintinline{csharp}|{ Prop1.Prop2: pattern }|
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{C\# 11}
+        \begin{itemize}
+            \item Шаблоны для списков: \mintinline{csharp}|sequence is [1, 2, 3]|
+            \item File local types
+            \item Сырые строки:
+                \begin{minted}{csharp}
+string longMessage = """
+    This is a long message.
+    It has several lines.
+        Some are indented
+                more than others.
+    Some should start at the first column.
+    Some have "quoted text" in them.
+    """;
+                \end{minted}
+                и
+                \begin{minted}{csharp}
+var location = $$"""
+   You are at {{{Longitude}}, {{Latitude}}}
+   """;
+                \end{minted}
         \end{itemize}
     \end{frame}
 
