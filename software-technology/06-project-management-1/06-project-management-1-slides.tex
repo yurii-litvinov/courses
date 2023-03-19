@@ -245,13 +245,44 @@
     \begin{frame}
         \frametitle{Критерии хорошей декомпозиции}
         \begin{itemize}
-            \item Нисходящая иерархия
+            \item Не TODO --- требуются отчуждаемые артефакты
             \item Полнота разбиения задач
+            \begin{itemize}
+                \item На всех уровнях сумма объёма дочерних работ в точности равна объёму работы дочернего узла
+                \item Отдельные работы друг с другом не пересекаются
+            \end{itemize}
             \item Понятность и конкретность задач
             \begin{itemize}
                 \item Явный вид деятельности
                 \item Явный результат
             \end{itemize} 
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Критерии SMART}
+        \begin{itemize}
+            \item Specific --- задача должна быть конкретной
+            \begin{itemize}
+                \item И однозначно пониматься всеми участниками
+            \end{itemize}
+            \item Measurable --- задача должна быть измеримой
+            \begin{itemize}
+                \item KPI, желательно числовые
+            \end{itemize}
+            \item Achievable --- задача должна быть достижимой 
+            \begin{itemize}
+                \item Реальные сроки
+                \item Опираться на объективные показатели (предыдущий опыт, средние показатели)
+            \end{itemize}
+            \item Relevant --- задача должна быть значимой
+            \begin{itemize}
+                \item Укладываться в общую стратегию проекта
+            \end{itemize}
+            \item Time bound --- задача должна быть ограниченной по времени
+            \begin{itemize}
+                \item Правило 8/80
+            \end{itemize}
         \end{itemize}
     \end{frame}
 
@@ -273,6 +304,28 @@
         \begin{center}
             \includegraphics[width=0.6\textwidth]{wbsProjectManagementTasks.png}
         \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Как делать}
+        \begin{enumerate}
+            \item Собрать все важные документы
+            \begin{itemize}
+                \item Требования, информация по отчуждаемым артефактам и т.д.
+            \end{itemize}
+            \item Определить ключевых участников команды
+            \item Определить элементы 1 уровня
+            \begin{itemize}
+                \item Использовать фазовый или артефактный подход?
+                \item Правило 100\%
+            \end{itemize}
+            \item Рекурсивно повторить шаг 3 для каждого элемента 1 уровня
+            \item Создать словарь WBS
+            \begin{itemize}
+                \item Описание работы в каждом блоке, границы, этапы, риски, стоимость и т.д.
+            \end{itemize}
+            \item Составить диаграмму Гантта/сетевой график
+        \end{enumerate}
     \end{frame}
 
 \end{document}
