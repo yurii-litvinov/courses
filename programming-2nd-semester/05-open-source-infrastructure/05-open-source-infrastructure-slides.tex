@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitleext{Экосистема open source проектов}{24.03.2023}{Полезные инструменты и сервисы}
+\slidetitle[Полезные инструменты и сервисы]{Экосистема open source проектов}{24.03.2023}
 
 \begin{document}
 
@@ -112,6 +112,21 @@
         И появятся иконки статуса рядом с коммитами и пуллреквестами
     \end{frame}
 
+    \begin{frame}
+        \frametitle{GitHub Actions, Workflow и Job}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{githubActionsWorkflow}
+        \end{center}
+        \begin{itemize}
+            \item Step --- это либо скрипт, либо \emph{Action}
+            \item Action --- произвольный код (по сути, отдельное приложение), выполняющийся как шаг Job-а
+            \begin{itemize}
+                \item Переиспользуемый строительный блок
+                \item Можно переиспользовать Workflow-ы
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
     \begin{frame}[fragile]
         \frametitle{Типичный Workflow для сборки}
         \begin{scriptsize}
@@ -125,7 +140,7 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/setup-dotnet@v1
               with:
-                  dotnet-version: '6.x'
+                  dotnet-version: '7.x'
             - name: Build
               run: for f in $(find . -name "*.sln"); do dotnet build $f; done
             - name: Run tests
@@ -140,21 +155,6 @@ jobs:
               run: For /R %%I in (*.sln) do dotnet test %%I
             \end{minted}
         \end{scriptsize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{GitHub Actions, Workflow и Job}
-        \begin{center}
-            \includegraphics[width=0.7\textwidth]{githubActionsWorkflow}
-        \end{center}
-        \begin{itemize}
-            \item Step --- это либо скрипт, либо \emph{Action}
-            \item Action --- произвольный код (по сути, отдельное приложение), выполняющийся как шаг Job-а
-            \begin{itemize}
-                \item Переиспользуемый строительный блок
-                \item Можно переиспользовать Workflow-ы
-            \end{itemize}
-        \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]
@@ -298,61 +298,6 @@ test_script:
             \item Поддерживает много языков (в том числе C\#, C++, Java, Kotlin, Python, Scala)
             \item Не требует дополнительных манипуляций с репозиторием
             \item Очень настраиваема
-        \end{itemize}
-    \end{frame}
-
-    \section{Trello}
-
-    \begin{frame}
-        \frametitle{Инструменты планирования, Trello}
-        \begin{itemize}
-            \item \url{https://trello.com/}
-            \item Интерактивная доска с карточками, организованными в списки
-            \item Карточки легко редактируются и перетаскиваются между списками
-            \begin{itemize}
-                \item Типичные списки: TODO, In Progress, Done (возможны варианты)
-            \end{itemize}
-            \item Поддерживает дедлайны, чеклисты, вложения, комментарии, голосования, метки
-            \item Легковесный инструмент планирования, подходящий, тем не менее, и для больших проектов
-        \end{itemize}
-    \end{frame}
-
-    \section{Pivotal Tracker}
-
-    \begin{frame}
-        \frametitle{Инструменты планирования, Pivotal Tracker}
-        \begin{itemize}
-            \item \url{https://www.pivotaltracker.com}
-            \item Более ``тяжеловесный'' инструмент, ориентированный на Scrum
-            \item Всего три списка
-            \begin{itemize}
-                \item Icebox --- что было бы неплохо сделать
-                \item Backlog --- запланированные задачи
-                \item Current --- задачи на текущую итерацию
-            \end{itemize}
-            \item Задачи можно оценивать, задачи имеют тип и статус
-            \begin{itemize}
-                \item По оценкам задач и статистике работы команды считается team velocity, позволяющая предсказать линейные сроки
-            \end{itemize}
-            \item Есть релизы с дедлайнами, метки, epic-и, чеклисты, вложения, комментарии
-            \item Умеет считать статистику, рисовать графики (burndown charts)
-        \end{itemize}
-    \end{frame}
-
-    \section{Slack и Gitter}
-
-    \begin{frame}
-        \frametitle{Средства коммуникации, Slack и Gitter}
-        \begin{itemize}
-            \item Instant messenger-ы, ориентированные на команды и интегрированные со средствами разработки
-            \begin{itemize}
-                \item Информация о коммитах и пуллреквестах
-                \item Статус CI
-                \item Другие тулы
-            \end{itemize}
-            \item Синтаксическая подсветка (markdown), вложения, отображение картинок, ...
-            \item Gitter интегрирован с GitHub и ``более открыт'' (предназначается прежде всего для общения сообщества)
-            \item Slack интегрирован с чем угодно, предназначается прежде всего для общения внутри команды
         \end{itemize}
     \end{frame}
 
