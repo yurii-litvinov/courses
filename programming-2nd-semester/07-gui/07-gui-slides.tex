@@ -14,7 +14,6 @@
             \item Самая старая из GUI-библиотек для .NET
             \item Событийно-ориентированная
             \item Простая
-            \item Хорошо работает под Mono
             \item Давно не развивается, но поддерживается и используется до сих пор
         \end{itemize}
     \end{frame}
@@ -24,8 +23,10 @@
         \begin{scriptsize}
             \begin{minted}{csharp}
 public class MyForm : Form {
-    public Button button1;
-    public MyForm() {
+    private Button button1;
+
+    public MyForm()
+    {
         button1 = new Button();
         button1.Size = new Size(40, 40);
         button1.Location = new Point(30, 30);
@@ -35,9 +36,7 @@ public class MyForm : Form {
     }
 
     private void Button1Click(object sender, EventArgs e)
-    {
-        MessageBox.Show("Hello World");
-    }
+        => MessageBox.Show("Hello World");
 
     [STAThread]
     static void Main()
