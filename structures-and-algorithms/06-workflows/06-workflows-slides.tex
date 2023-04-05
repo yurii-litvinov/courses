@@ -3,16 +3,23 @@
 \slidetitleext{Вычислительные выражения в F\#}{07.04.2023}{Computation Expressions, Workflows}
 
 \begin{document}
-    
-    \frame{\titlepage}
-    
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \section{Введение}
+
     \begin{frame}
         \frametitle{Что это и зачем нужно}
         \begin{itemize}
             \item Механизм управления процессом вычислений
+            \begin{itemize}
+                \item Обобщённые функции
+            \end{itemize}
             \item В функциональных языках --- единственный способ определить порядок вычислений
             \item Зачастую --- нетривиальным образом (Async)
-            \item Способ не писать кучу вспомогательного кода (сродни АОП)
+            \item Способ не писать кучу вспомогательного кода (сродни аспектно-ориентированному программированию)
             \item В теории ФП они называются монадами
             \item На самом деле, синтаксический сахар
         \end{itemize}
@@ -146,15 +153,30 @@ let withDebug = debugFlow {
         \end{minted}
     \end{frame}
 
+    \section{Как работают CE}
+
     \begin{frame}
         \frametitle{Что происходит}
         \framesubtitle{Как оно устроено внутри}
         \begin{itemize}
             \item Bind создаёт цепочку continuation passing style-функций, возможно, с побочными эффектами
             \item Есть тип-обёртка (или монадический тип), в котором хранится состояние вычисления
+            \begin{itemize}
+                \item Или, более функционально, которое представляет \emph{действие} при вычислении
+            \end{itemize}
             \item let! вызывает Bind, return --- Return, Bind принимает обёрнутое значение и функцию-continuation, return по необёрнутому значению делает обёрнутое
+            \begin{itemize}
+                \item На самом деле, это просто композиция функций, но хитрая, потому что монадический тип
+            \end{itemize} 
+            \item WorkflowBuilder --- это просто класс, в котором должны лежать методы с нужными сигнатурами, сам workflow --- объект этого класса
+            \begin{itemize}
+                \item Обычно он один, но в теории ничто не мешает хранить в нём побочные эффекты
+                \item Не путайте WorkflowBuilder с монадическим типом, это другое
+            \end{itemize}
         \end{itemize}
     \end{frame}
+
+    \section{CPS}
 
     \begin{frame}[fragile]
         \frametitle{Отступление про CPS}
@@ -227,6 +249,8 @@ let ifSuccess3 x = x
 let divide3  = divide ifZero3 ifSuccess3
         \end{minted}
     \end{frame}
+
+    \section{Bind}
 
     \begin{frame}[fragile]
         \frametitle{let, <<многословный>> синтаксис}
@@ -414,6 +438,7 @@ builder.Bind(1, (fun x -> x * 2))
 
     \begin{frame}[fragile]
         \frametitle{Инфиксное определение Bind}
+        \frametitle{Как в Haskell}
         \begin{minted}{fsharp}
 let (>>=) m f = pipeInto(m, f)
 
@@ -438,6 +463,8 @@ type MaybeBuilder() =
     member this.Return(x) = Some x
         \end{minted}
     \end{frame}
+
+    \section{Монадический тип}
 
     \begin{frame}[fragile]
         \frametitle{Содержимое типа-обёртки может иметь разный тип}
@@ -528,6 +555,8 @@ printfn "%A" product
         \end{minted}
     \end{frame}
 
+    \section{Композиция}
+
     \begin{frame}[fragile]
         \frametitle{Композиция Workflow-ов}
         \begin{minted}{fsharp}
@@ -539,7 +568,7 @@ let aWrappedValue =
         let! unwrappedValue1 = subworkflow1
         let! unwrappedValue2 = subworkflow2
         return unwrappedValue1 + unwrappedValue2
-        }
+    }
         \end{minted}
     \end{frame}
 
@@ -551,13 +580,13 @@ let aWrappedValue =
         let! unwrappedValue1 = myworkflow {
             let! x = myworkflow { return 1 }
             return x
-            }
+        }
         let! unwrappedValue2 = myworkflow {
             let! y = myworkflow { return 2 }
             return y
-            }
-        return unwrappedValue1 + unwrappedValue2
         }
+        return unwrappedValue1 + unwrappedValue2
+    }
         \end{minted}
     \end{frame}
 
@@ -602,8 +631,10 @@ maybe {
         \end{minted}
     \end{frame}
 
+    \section{Законы монад}
+
     \begin{frame}[fragile]
-        \frametitle{Первый закон монад}
+        \frametitle{Первый и второй законы монад}
         \begin{itemize}
             \item Bind и Return должны быть взаимно обратны
         \end{itemize}
@@ -628,9 +659,25 @@ myworkflow {
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Второй закон монад}
+        \frametitle{Или то же самое на Haskell}
+        \begin{minted}{haskell}
+return x >>= f == f x
+mv >>= return == mv
+        \end{minted}
+        \vspace{5mm}
+        Или через монадную композицию (\mintinline{haskell}|f >=> g = \x -> (f x >>= g)|):
+        \begin{minted}{haskell}
+return >=> f == f
+f >=> return == f
+        \end{minted}
+        \vspace{5mm}
+        В Haskell монады синтаксически приятнее
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Третий закон монад}
         \begin{itemize}
-            \item Композиция должна быть консистентной
+            \item Ассоциативность композиции
         \end{itemize}
         \begin{minted}{fsharp}
 let result1 = myworkflow { 
@@ -648,6 +695,23 @@ let result2 = myworkflow {
 assertEqual result1 result2
         \end{minted}
     \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Или на Haskell}
+        \begin{minted}{haskell}
+(mv >>= f) >>= g == mv >>= (\x -> (f x >>= g))
+        \end{minted}
+        \vspace{5mm}
+        Или через композицию:
+        \begin{minted}{haskell}
+(f >=> g) >=> h == f >=> (g >=> h)
+        \end{minted}
+        \vspace{5mm}
+
+        Три закона монад обеспечивают адекватность их композиции.
+    \end{frame}
+
+    \section{DSL на Workflow}
 
     \begin{frame}
         \frametitle{Какие ещё методы есть у WorkflowBuilder}
@@ -671,6 +735,109 @@ assertEqual result1 result2
             \end{tabu}
         \end{footnotesize}
     \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Можно определять свои методы}
+        \begin{minted}{fsharp}
+type Slide = { Header: string }
+
+type Deck = { Title: string; Slides: Slide list }
+
+type SlideBuilder() =
+    member inline _.Yield(()) = ()
+
+    [<CustomOperation("header")>]
+    member inline _.Header((), header: string) : Slide = 
+        { Header = header }
+
+let slide = SlideBuilder()
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Как использовать}
+        \begin{minted}{fsharp}
+slide {
+    header "Hello world!"
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Определим набор слайдов}
+        \begin{minted}{fsharp}
+[<RequireQualifiedAccess>]
+type DeckProperty = Title of string | Slide of Slide
+
+type DeckBuilder() =
+    member inline _.Yield(()) = ()
+    member inline _.Yield(slide: Slide) = DeckProperty.Slide slide
+
+    member inline _.Run(prop) =
+        match prop with
+        | DeckProperty.Title title -> { Title = title; Slides = [] }
+        | DeckProperty.Slide slide -> { Title = ""; Slides = [ slide ] }
+
+    [<CustomOperation("title")>]
+    member inline _.Title((), title: string) = DeckProperty.Title title
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Как использовать}
+        \begin{minted}{fsharp}
+deck {
+    yield slide {
+        header "Hello world!"
+    }
+
+    yield slide {
+        header "Slide2"
+    }
+}
+
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{А можно и без Yield}
+        \begin{ssmall}
+            \begin{minted}{fsharp}
+[<RequireQualifiedAccess>]
+type DeckProperty =
+    | Title of string
+    | Slide of Slide
+
+type DeckBuilder() =
+    member inline _.Yield(()) = ()
+    member inline _.Yield(slide: Slide) = DeckProperty.Slide slide
+
+    member inline _.Delay(f: unit -> DeckProperty list) = f ()
+    member inline _.Delay(f: unit -> DeckProperty) = [ f () ]
+
+    member inline _.Combine(newProp: DeckProperty, previousProps: DeckProperty list) = newProp :: previousProps
+
+    member inline x.For(prop: DeckProperty, f: unit -> DeckProperty list) = x.Combine(prop, f ())
+    member inline x.For(prop: DeckProperty, f: unit -> DeckProperty) = [prop; f()]
+
+    member inline x.Run(props: DeckProperty list) =
+        props
+        |> List.fold
+            (fun deck prop ->
+                match prop with
+                | DeckProperty.Title title -> { deck with Title = title }
+                | DeckProperty.Slide slide -> { deck with Slides = deck.Slides @ [ slide ] })
+            { Title = ""; Slides = [] }
+
+    member inline x.Run(prop: DeckProperty) = x.Run([ prop ])
+
+    [<CustomOperation("title")>]
+    member inline _.Title((), title: string) = DeckProperty.Title title
+            \end{minted}
+        \end{ssmall}
+    \end{frame}
+
+    \section{Моноиды и эндоморфизмы}
 
     \begin{frame}
         \frametitle{Моноиды}
@@ -729,26 +896,6 @@ printfn "%d" <| newFunction 20
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Bind}
-        Option.bind : ('T $\to$ 'U option) $\to$ 'T option $\to$ 'U option
-
-        --- частично применённый Bind --- эндоморфизм (если 'T и 'U совпадают)
-        \begin{minted}{fsharp}
-let bindFns = [
-    Option.bind (fun x -> if x > 1 then 
-                              Some (x * 2) 
-                          else None);
-    Option.bind (fun x -> if x < 10 then Some x else None)
-]
-
-let bindAll = 
-    bindFns |> List.reduce (>>)
-
-Some 4 |> bindAll
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
         \frametitle{Не только эндоморфизмы могут образовать моноид}
         \begin{minted}{fsharp}
 type Predicate<'A> = 'A -> bool
@@ -765,24 +912,17 @@ let combinePredicates = predicates |> List.reduce predAnd
         \end{minted}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Монады}
-        \framesubtitle{Workflow-ы, Computational Expressions}
-        \begin{itemize}
-            \item Замкнуты
-            \item Композиция ассоциативна (второй закон монад)
-            \item Нейтральный элемент (Return, первый закон монад)
-        \end{itemize}
-        <<a monad is a monoid in the category of endofunctors, what's the problem?>>
-    \end{frame}
+    \section{Полезные ссылки}
 
     \begin{frame}
         \frametitle{Полезные ссылки}
         \framesubtitle{Откуда взяты примеры}
         \begin{small}
             \begin{itemize}
-                \item \url{https://fsharpforfunandprofit.com/series/computation-expressions.html}
-                \item \url{http://www.slideshare.net/ScottWlaschin/fp-patterns-buildstufflt}
+                \item \url{https://fsharpforfunandprofit.com/series/computation-expressions.html} --- описание Workflow-ов в F\# без использования слова ``монада''
+                \item \url{http://www.slideshare.net/ScottWlaschin/fp-patterns-buildstufflt} --- отличная презентация про ФП вообще, включая Railroad programming и монады
+                \item \url{https://habr.com/ru/articles/127556/} --- перевод статьи с простым объяснением монад в Haskell
+                \item \url{https://sleepyfran.github.io/blog/posts/fsharp/ce-in-fsharp/} --- пример с DSL на Workflow-ах
             \end{itemize}
         \end{small}
     \end{frame}
