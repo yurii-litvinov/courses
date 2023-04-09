@@ -3,8 +3,10 @@
 \slidetitle{Многопоточное программирование в F\#}{14.04.2023}
 
 \begin{document}
-    
-    \frame{\titlepage}
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
 
     \section{Async}
 
@@ -565,25 +567,6 @@ Async.Start (async {
 Async.Start (async { 
     while true do lock p (fun () -> p.Update(20, 20)) })
         \end{minted}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Примитивы синхронизации}
-        \framesubtitle{Пространство имён System.Threading}
-        \begin{footnotesize}
-            \begin{tabu} {| X[0.3 l p] | X[1 l p] |}
-                \tabucline-
-                Примитив          & Описание           \\
-                \tabucline-
-                \everyrow{\tabucline-}
-                AutoResetEvent    & Точка синхронизации. WaitOne блокирует поток, пока кто-нибудь другой не вызовет Set.  \\
-                ManualResetEvent  & То же, что AutoResetEvent, но сбрасывается вручную, вызовом Reset                     \\
-                Monitor           & Ограничивает доступ к критической секции                                              \\
-                Mutex             & Ограничивает доступ к критической секции, работает между процессами                   \\
-                Semaphore         & Позволяет находиться в критической секции не более N потоков                          \\
-                Interlocked       & Атомарные арифметические операции                                                     \\
-            \end{tabu}
-        \end{footnotesize}
     \end{frame}
 
     \section{Lock-free}
