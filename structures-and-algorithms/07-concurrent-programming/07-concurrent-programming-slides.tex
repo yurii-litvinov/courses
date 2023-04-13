@@ -122,7 +122,7 @@ type AsyncBuilder with
 
     \begin{frame}
         \frametitle{Какие конструкции поддерживает Async}
-        \begin{footnotesize}
+        \begin{ssmall}
             \begin{tabu} {| X[0.3 l p] | X[1 l p] |}
                 \tabucline-
                 Конструкция               & Описание           \\
@@ -137,7 +137,7 @@ type AsyncBuilder with
                 return expr               & Оборачивает expr в Async<'T> и возвращает его как результат Workflow \\
                 return! expr              & Возвращает expr типа Async<'T> как результат Workflow \\
             \end{tabu}
-        \end{footnotesize}
+        \end{ssmall}
     \end{frame}
 
     \subsection{Control.Async}
@@ -145,18 +145,21 @@ type AsyncBuilder with
     \begin{frame}
         \frametitle{Control.Async}
         \framesubtitle{Что можно делать со значением Async<'T>, сконструированным билдером}
-        \begin{footnotesize}
+        \begin{ssmall}
             \begin{tabu} {| X[0.7 l p] | X[1 l p] | X[1 l p] |}
                 \tabucline-
                 Метод              & Тип                                         & Описание           \\
                 \tabucline-
                 \everyrow{\tabucline-}
-                RunSynchronously   & Async<'T> * ?int * ?CancellationToken -> 'T & Выполняет вычисление синхронно, возвращает результат \\
-                Start              & Async<unit> * ?CancellationToken -> unit    & Запускает вычисление асинхронно, тут же возвращает управление \\
-                Parallel           & seq<Async<'T> > -> Async<'T []>             & По последовательности Async-ов делает новый Async, исполняющий все Async-и параллельно и возвращающий массив результатов \\
-                Catch              & Async<'T> -> Async<Choice<'T,exn> >         & По Async-у делает новый Async, исполняющий Async и возвращающий либо результат, либо исключение \\
+                RunSynchronously   & Async<'T> * ?int * ?CancellationToken -> 'T                       & Выполняет вычисление синхронно, возвращает результат \\
+                Start              & Async<unit> * ?CancellationToken -> unit                          & Запускает вычисление асинхронно, тут же возвращает управление \\
+                Parallel           & seq<Async<'T> > -> Async<'T []>                                   & По последовательности Async-ов делает новый Async, исполняющий все Async-и параллельно и возвращающий массив результатов \\
+                Catch              & Async<'T> -> Async<Choice<'T,exn> >                               & По Async-у делает новый Async, исполняющий Async и возвращающий либо результат, либо исключение \\
+                StartImmediate     & Async<unit> * ?CancellationToken -> unit                          & Выполняет вычисление асинхронно в вызвавшем потоке \\
+                StartAsTask        & Async<'T> * ?TaskCreationOptions * ?CancellationToken -> Task<'T> & Запускает вычисление и оборачивает его в Task \\
+                AwaitTask          & Task<'T> -> Async<'T>                                             & Оборачивает Task в Async \\
             \end{tabu}
-        \end{footnotesize}
+        \end{ssmall}
     \end{frame}
 
     \begin{frame}[fragile]
@@ -298,6 +301,53 @@ Async.RunSynchronously timerEvent
 
 printfn "Timer ticked at %O" DateTime.Now.TimeOfDay
         \end{minted}
+    \end{frame}
+
+    \section{Взаимодействие с .NET}
+
+    \begin{frame}[fragile]
+        \frametitle{Взаимодействие с .NET}
+        \begin{itemize}
+            \item Потребление Task из F\#:
+            \begin{minted}{fsharp}
+let getValueFromLibrary param =
+    async {
+        let! value = 
+            DotNetLibrary.GetValueAsync param 
+            |> Async.AwaitTask
+        return value
+    }
+            \end{minted}
+            \item Преобразование async в Task:
+            \begin{minted}{fsharp}
+let computationForCaller param =
+    async {
+        let! result = getAsyncResult param
+        return result
+    } |> Async.StartAsTask
+            \end{minted}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Прямое написание Task}
+        \begin{minted}{fsharp}
+let printTotalFileBytesUsingTasks (path: string) =
+    task {
+        let! bytes = File.ReadAllBytesAsync(path)
+        let fileName = Path.GetFileName(path)
+        printfn $"File {fileName} has %d{bytes.Length} bytes"
+    }
+
+[<EntryPoint>]
+let main argv =
+    let task = printTotalFileBytesUsingTasks "path-to-file.txt"
+    task.Wait()
+
+    Console.Read() |> ignore
+    0
+        \end{minted}
+        \attribution{https://learn.microsoft.com/en-us/dotnet/fsharp/tutorials/async}
     \end{frame}
 
     \section{MailboxProcessor}
