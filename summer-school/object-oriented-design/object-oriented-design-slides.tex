@@ -1,20 +1,6 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{minted}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\newcommand{\attribution}[1] {
-    \begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
-}
-
-\title{Принципы объектно-ориентированного проектирования}
-\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{y.litvinov@spbu.ru}}}
-\date{08.07.2022}
+\slidetitle{Принципы объектно-ориентированного проектирования}{10.07.2023}
 
 \begin{document}
     
@@ -207,19 +193,6 @@
         \begin{flushright}
             \includegraphics[width=0.5\textwidth]{dependencyInversionPrinciple.png}
         \end{flushright}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Закон Деметры}
-        \begin{itemize}
-            \item ``Не разговаривай с незнакомцами!''
-            \item Объект A не должен иметь возможность получить непосредственный доступ к объекту C, если у объекта A есть доступ к объекту B, и у объекта B есть доступ к объекту C
-            \begin{itemize}
-                \item \mintinline{java}|book.pages.last.text|
-                \item \mintinline{java}|book.pages().last().text()|
-                \item \mintinline{java}|book.lastPageText()|
-            \end{itemize}
-        \end{itemize}
     \end{frame}
 
     \section{Абстракция}
