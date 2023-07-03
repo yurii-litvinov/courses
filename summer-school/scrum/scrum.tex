@@ -1,29 +1,6 @@
-\documentclass[xetex,mathserif,serif]{beamer}
-\usepackage{polyglossia}
-\setdefaultlanguage[babelshorthands=true]{russian}
-\usepackage{tabu}
-\usepackage{pgfplots}
-\usepackage{textpos}
+\documentclass{../../slides-style}
 
-\useoutertheme{infolines}
-
-\usepackage{fontspec}
-\setmainfont{FreeSans}
-\newfontfamily{\russianfonttt}{FreeSans}
-
-\usepackage{forest}
-\usetikzlibrary{arrows}
-
-\newcommand{\attribution}[1] {
-    \vspace{-5mm}\begin{flushright}\begin{scriptsize}\textcolor{gray}{\textcopyright\, #1}\end{scriptsize}\end{flushright}
-}
-
-\tabulinesep=0.7mm
-
-\title{О методологиях разработки}
-\author[Юрий Литвинов]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{y.litvinov@spbu.ru}}}
-
-\date{06.07.2022}
+\slidetitle{О методологиях разработки}{06.07.2023}
 
 \begin{document}
     
@@ -116,7 +93,7 @@
             \item Постоянное внимание к техническому совершенству и качеству проектирования повышает гибкость проекта
             \item Простота --- искусство минимизации лишней работы --- крайне необходима
             \item Самые лучшие требования, архитектурные и технические решения рождаются у самоорганизующихся команд
-            \item Команда должна систематически анализировать возможные способыулучшения эффективности и соответственно корректировать стиль своей работы
+            \item Команда должна систематически анализировать возможные способы улучшения эффективности и соответственно корректировать стиль своей работы
         \end{itemize}
     \end{frame}
 
@@ -139,23 +116,31 @@
 
     \begin{frame}
         \frametitle{Роли в команде}
-        \begin{itemize}
-            \item Основные
-            \begin{itemize}
-                \item product owner
-                \item scrum master
-                \item команда разработки
-            \end{itemize}
-            \item Вспомогательные
-            \begin{itemize}
-                \item пользователи
-                \item заказчики
-                \item менеджмент
-                \item эксперты, консультанты
-            \end{itemize}
-        \end{itemize}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{itemize}
+                    \item Основные 
+                    \begin{itemize}
+                        \item Product owner
+                        \item Scrum master
+                        \item Команда разработки
+                    \end{itemize}
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{itemize}
+                    \item Вспомогательные 
+                    \begin{itemize}
+                        \item Пользователи
+                        \item Заказчики
+                        \item Вспомогательный менеджмент
+                        \item Эксперты, консультанты
+                    \end{itemize}
+                \end{itemize}
+            \end{column}
+        \end{columns}
         \begin{center}
-            \includegraphics[width=0.7\textwidth]{ham-and-eggs.png}
+            \includegraphics[width=0.8\textwidth]{ham-and-eggs.png}
         \end{center}
     \end{frame}
 
@@ -168,7 +153,7 @@
             \end{itemize}
             \item Формирует видение проекта и доносит его команде
             \item Работает с требованиями
-            \item Приоритизирует задачи
+            \item Приоритезирует задачи
             \item Отвечает за приёмку результата в конце итерации
             \item Единая точка принятия решений о задачах
             \begin{itemize}
@@ -406,9 +391,9 @@
     \end{frame}
 
     \begin{frame}
-        \frametitle{Так часто бывает}
+        \frametitle{Заключение}
         \begin{center}
-            \includegraphics[width=0.5\textwidth]{scrum-master.png}
+            \includegraphics[width=0.45\textwidth]{soviet-union.png}
         \end{center}
     \end{frame}
 
