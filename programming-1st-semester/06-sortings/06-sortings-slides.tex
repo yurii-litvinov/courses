@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Сортировки}{04.10.2023}
+\slidetitle{Сортировки}{20.09.2023}
 
 \begin{document}
     
@@ -10,13 +10,14 @@
 
     \begin{frame}
         \frametitle{Комментарии по домашке}
-        \framesubtitle{Коды ошибок}
         \begin{itemize}
-            \item Не используйте функцию system()
+            \item Не возвращайте 0, если программа завершилась с ошибкой
             \item Закомментированный код не нужен
-            \item \mintinline{c}|if (test == false) { всё плохо }|
-            \item Кстати, \mintinline{c}|if (x == true)| --- это то же, что \mintinline{c}|x + 0|
-            \item \mintinline{c}|0| и \mintinline{c}|'\0'|
+            \item \mintinline{c}|int* a = NULL;| vs \mintinline{c}|int *a = NULL;|
+            \item strlen работает за линейное время, плохо использовать её в цикле без нужды
+            \item \mintinline{c}|char*| vs \mintinline{c}|const char*| в параметрах функций
+            \item Передавать ли длину строки?
+            \item Не спрашивайте длину строки при вводе
             \item Если функция может не выполниться, используйте коды возврата
         \end{itemize}
     \end{frame}
@@ -103,7 +104,7 @@ return x == 10;
         \frametitle{И ещё комментарии}
         \begin{itemize}
             \item Предупреждения компилятора
-            \item Выделение памяти
+            \item Выделение памяти с инициализацией нулями
         \end{itemize}
         \begin{minted}{c}
 int *array = (int*)calloc(size, sizeof(int));
@@ -115,9 +116,6 @@ if (array == NULL)
 ...
 free(array);
         \end{minted}
-        \begin{itemize}
-            \item Или \mintinline{c}|int *array = (int*)malloc(size * sizeof(int));|
-        \end{itemize}
     \end{frame}
     
     \begin{frame}
