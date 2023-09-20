@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Сортировки}{04.10.2023}
+\slidetitle{Сортировки}{20.09.2023}
 
 \begin{document}
     
@@ -10,13 +10,14 @@
 
     \begin{frame}
         \frametitle{Комментарии по домашке}
-        \framesubtitle{Коды ошибок}
         \begin{itemize}
-            \item Не используйте функцию system()
+            \item Не возвращайте 0, если программа завершилась с ошибкой
             \item Закомментированный код не нужен
-            \item \mintinline{c}|if (test == false) { всё плохо }|
-            \item Кстати, \mintinline{c}|if (x == true)| --- это то же, что \mintinline{c}|x + 0|
-            \item \mintinline{c}|0| и \mintinline{c}|'\0'|
+            \item \mintinline{c}|int* a = NULL;| vs \mintinline{c}|int *a = NULL;|
+            \item strlen работает за линейное время, плохо использовать её в цикле без нужды
+            % \item Не используйте функцию system()
+            % \item \mintinline{c}|if (test == false) { всё плохо }|
+            % \item \mintinline{c}|0| и \mintinline{c}|'\0'|
             \item Если функция может не выполниться, используйте коды возврата
         \end{itemize}
     \end{frame}
