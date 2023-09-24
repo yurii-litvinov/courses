@@ -1,6 +1,8 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Графы}{27.12.2023}
+\usepackage{algpseudocode}
+
+\slidetitle{Графы}{15.11.2023}
 
 \begin{document}
     
@@ -291,34 +293,36 @@
 
     \begin{frame}[fragile]
         \frametitle{Алгоритм Дейкстры, псевдокод}
-        \begin{ssmall}
-            \begin{algorithmic}[1]
-            \Procedure{Dijkstra}{$s$}
-                \For{$v \in V$}
-                    \State $d[v] \gets \infty$
-                    \State $used[v] \gets false$
-                \EndFor
-                \State $d[s] \gets 0$
-                \For{$i \in V$}
-                    \State $v \gets null$
-                    \For{$j \in V$}
-                        \If{$!used[j]\ and\ (v == null\ or\ d[j] < d[v])$}
-                            \State $v \gets j$
-                        \EndIf
-                    \EndFor
-                    \If{$d[v] == \infty$}
-                        \State $break$
-                    \EndIf
-                    \State $used[v] \gets true$
-                    \For{$e \in\; $исходящие из v рёбра}
-                        \If{$d[v] + e.len < d[e.to]$}
-                            \State $d[e.to] \gets d[v] + e.len$
-                        \EndIf
-                    \EndFor
-                \EndFor
-            \EndProcedure
-            \end{algorithmic}
-        \end{ssmall}
+        \begin{scriptsize}
+            \begin{algorithm}[H]
+                \DontPrintSemicolon
+                \For{$v \in V$}{
+                    $d[v] \gets \infty$\;
+                    $used[v] \gets false$\;
+                }
+
+                $d[s] \gets 0$\;
+
+                \For{$i \in V$}{
+                    $v \gets null$\;
+                    \For{$j \in V$}{
+                        \If{$!used[j]\ and\ (v == null\ or\ d[j] < d[v])$}{
+                            $v \gets j$\;
+                        }
+                    }
+                    \If{$d[v] == \infty$}{
+                        $break$\;
+                    }
+
+                    $used[v] \gets true$\;
+                    \For{$e \in $исходящие из v рёбра}{
+                        \If{$d[v] + e.len < d[e.to]$}{
+                            $d[e.to] \gets d[v] + e.len$\;
+                        }
+                    }
+                }
+            \end{algorithm}
+        \end{scriptsize}
     \end{frame}
 
     \begin{frame}
