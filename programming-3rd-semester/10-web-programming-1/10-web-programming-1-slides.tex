@@ -8,33 +8,42 @@
         \titlepage
     \end{frame}
 
-    % \section{Доклады}
+    \section{Доклады}
 
-    % \begin{frame}
-    % 	\frametitle{Доклады}
-    % 	\begin{itemize}
-    % 		\item unsafe, fixed, P/Invoke
-    % 		\begin{itemize}
-    % 			\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/unsafe}
-    % 			\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/unsafe-code-pointers/index}
-    % 			\item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/fixed-statement}
-    % 			\item \url{https://docs.microsoft.com/ru-ru/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke}
-    % 		\end{itemize}
-    % 		\item Xamarin
-    % 		\begin{itemize}
-    % 			\item \url{https://dotnet.microsoft.com/apps/xamarin}
-    % 		\end{itemize}
-    % 		\item Rx.NET
-    % 		\begin{itemize}
-    % 			\item \url{https://habr.com/post/242613/}, \url{http://introtorx.com/}
-    % 		\end{itemize}
-    % 		\item TPL.Dataflow
-    % 		\begin{itemize}
-    % 			\item \url{https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library}
-    % 			\item \url{https://habr.com/post/138531/}
-    % 		\end{itemize}
-    % 	\end{itemize}
-    % \end{frame}
+    \begin{frame}
+        \frametitle{Доклады}
+        \begin{itemize}
+            \item unsafe, fixed, P/Invoke
+            \begin{itemize}
+                \footnotesize
+                \item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/unsafe}
+                \item \url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/unsafe-code-pointers/index}
+                \item \url{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/fixed-statement}
+                \item \url{https://docs.microsoft.com/ru-ru/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke}
+            \end{itemize}
+            \item Xamarin
+            \begin{itemize}
+                \footnotesize
+                \item \url{https://dotnet.microsoft.com/apps/xamarin}
+            \end{itemize}
+            \item Rx.NET
+            \begin{itemize}
+                \footnotesize
+                \item \url{https://habr.com/post/242613/}, \url{http://introtorx.com/}
+            \end{itemize}
+            \item TPL.Dataflow
+            \begin{itemize}
+                \footnotesize
+                \item \url{https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library}
+                \item \url{https://habr.com/post/138531/}
+            \end{itemize}
+            \item IoC-контейнеры, Lamar
+            \begin{itemize}
+                \footnotesize
+                \item \url{https://jasperfx.github.io/lamar/}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
     \section{Введение}
 
@@ -81,7 +90,7 @@
     \begin{frame}
         \frametitle{Веб-приложения и .NET}
         \begin{itemize}
-            \item Веб-сервер --- IIS (Internet Information Services), IIS Express, Kestrel
+            \item Веб-сервер --- Kestrel, IIS (Internet Information Services), IIS Express
             \begin{itemize}
                 \item Есть ``из коробки'' в Windows, IIS Express поставляется с Visual Studio и используется для отладки
                 \item Kestrel поставляется как часть ASP.NET
@@ -543,18 +552,16 @@ fetch('https://example.com/profile', {
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
-namespace RazorPagesIntro.Pages
-{
-    public class IndexModel2 : PageModel
-    {
-        public string Message { get; private set; } = "PageModel in C#";
+namespace RazorPagesIntro.Pages;
 
-        public void OnGet()
-        {
-            Message += $" Server time is { DateTime.Now }";
-        }
-    }
+public class IndexModel2 : PageModel
+{
+    public string Message { get; private set; } = "PageModel in C#";
+
+    public void OnGet()
+        => Message += $" Server time is { DateTime.Now }";
 }
+
             \end{minted}
         \end{small}
         \attribution{MSDN}
@@ -564,12 +571,10 @@ namespace RazorPagesIntro.Pages
         \frametitle{Модель в MVC}
         \begin{minted}{csharp}
 public IActionResult Error()
-{
-    return View(new ErrorViewModel { 
-        RequestId = Activity.Current?.Id 
-            ?? HttpContext.TraceIdentifier 
-    });
-}
+    => View(new ErrorViewModel { 
+           RequestId = Activity.Current?.Id 
+               ?? HttpContext.TraceIdentifier 
+           });
         \end{minted}
     \end{frame}
 
@@ -678,20 +683,17 @@ public class HomeController : Controller
         \frametitle{Способ 1: в параметрах обработчика}
         \begin{small}
             \begin{minted}{csharp}
-namespace WebApplication1.Pages
+namespace WebApplication1.Pages;
+
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    public void OnGet()
     {
-        public void OnGet()
-        {
 
-        }
-
-        public void OnPost(string name)
-        {
-            Console.WriteLine(name);
-        }
     }
+
+    public void OnPost(string name)
+        => Console.WriteLine(name);
 }
             \end{minted}
         \end{small}
