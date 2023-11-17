@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Консоль и системы сборки}{10.11.2023}
+\slidetitle{Консоль и системы сборки}{17.11.2023}
 
 \begin{document}
     
@@ -99,7 +99,7 @@ for /l %x in (1, 1, 100) do echo %x
     \begin{frame}[fragile]
         \frametitle{.sh-файлы}
         \begin{itemize}
-            \item Сильно зависят от интерпретатора (bash, zsh, csh, …)
+            \item Зависят от интерпретатора (bash, zsh, csh, …)
             \begin{itemize}
                 \item \#!/bin/bash --- ``shebang''
             \end{itemize}
@@ -324,7 +324,6 @@ lynx -dump $<   >   $@
                 \item Используется в mingw (``Minimalist GNU for Windows'')
                 \begin{itemize}
                     \item Порт gcc на Windows
-                    \item Можно поставить отдельно, можно в составе Qt SDK
                 \end{itemize}
             \end{itemize}
             \item nmake
@@ -351,7 +350,7 @@ lynx -dump $<   >   $@
             \end{itemize}
             \item CMake
             \begin{itemize}
-                \item Кроссплатформенная система сборки, очень популярна в C++ open source-сообществе
+                \item Кроссплатформенная система сборки, очень популярна в С- и C++- open source-сообществе
             \end{itemize}
         \end{itemize}
         Написание скриптов сборки для большого проекта --- отдельная и довольно трудоёмкая задача
@@ -369,6 +368,10 @@ lynx -dump $<   >   $@
             \item Сама сборкой не занимается, генерирует конфиг для системы сборки
             \begin{itemize}
                 \item Но может сама их запускать
+            \end{itemize}
+            \item Пожалуй, основной способ сборки в VS Code (плагином CMake Tools)
+            \begin{itemize}
+                \item Ctrl+Shift+P -> CMake: Quick Start
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -430,7 +433,7 @@ source
             \item Генерация --- генерация конфигов для сборки (например, .vcxproj-файла)
             \item Сборка
             \begin{itemize}
-                \item cmake --build
+                \item \mintinline{text}{cmake --build}
             \end{itemize}
         \end{itemize}
     \end{frame}
