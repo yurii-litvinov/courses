@@ -115,11 +115,11 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SEIM-2023 registration</title>
+        <title>SPISOK-2024 registration</title>
     </head>
     <body>
         <div>
-            <p>SEIM-2023 conference will be (likely) held in April in St. Petersburg.</p>
+            <p>SPISOK-2024 conference will be (likely) held in April in St. Petersburg.</p>
             <a asp-page="Registration">Register now!</a>
         </div>
     </body>
@@ -261,22 +261,18 @@ public class ConferenceRegistrationDbContext: DbContext
         \begin{scriptsize}
             \begin{minted}{csharp}
 namespace ConferenceRegistration.Pages;
+
 using ConferenceRegistration.Data;
 
 [BindProperties]
-public class RegistrationModel : PageModel
+public class RegistrationModel(ConferenceRegistrationDbContext context) : PageModel
 {
-    private readonly ConferenceRegistrationDbContext _context;
-
-    public RegistrationModel(ConferenceRegistrationDbContext context)
-        => _context = context;
-
     public Participant Participant { get; set; } = new();
 
     public async Task<IActionResult> OnPostAsync()
     {
-        _context.Participants.Add(Participant);
-        await _context.SaveChangesAsync();
+        context.Participants.Add(Participant);
+        await context.SaveChangesAsync();
 
         return RedirectToPage("./Index");
     }
@@ -387,15 +383,11 @@ public class Participant
         \begin{footnotesize}
             \begin{minted}{csharp}
 namespace ConferenceRegistration.Pages;
+
 using ConferenceRegistration.Data;
 
-public class ListParticipantsModel : PageModel
+public class ListParticipantsModel(ConferenceRegistrationDbContext context) : PageModel
 {
-    private readonly ConferenceRegistrationDbContext context;
-
-    public ListParticipantsModel(ConferenceRegistrationDbContext context)
-        => this.context = context;
-
     public IList<Participant> Participants { get; private set; } = new List<Participant>();
 
     public void OnGet()
@@ -489,12 +481,12 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SEIM-2022 registration</title>
+        <title>SPISOK-2024 registration</title>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
     </head>
     <body>
         <div class="text-center">
-            <h3>SEIM-2022 conference will be held in April in St. Petersburg.</h3>
+            <h3>SPISOK-2024 conference will be held in April in St. Petersburg.</h3>
             <a class="btn btn-primary" asp-page="Registration">Register now!</a>
         </div>
     </body>

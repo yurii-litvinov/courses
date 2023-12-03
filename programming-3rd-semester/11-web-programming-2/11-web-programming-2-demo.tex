@@ -23,7 +23,7 @@
 
 \section{Создание проекта}
 
-Начнём с создания нового проекта. Create a new project -> ASP.NET Core Web App (можно облегчить поиск, выбрав в фильтрах сверху C\#, All Platforms, Web). Указываем имя и расположение проекта как обычно (назовём проект ConferenceRegistration), оставляем в следующем окне всё по умолчанию.
+Начнём с создания нового проекта. Create a new project -> ASP.NET Core Web App (Microsoft) (можно облегчить поиск, выбрав в фильтрах сверху C\#, All Platforms, Web). Указываем имя и расположение проекта как обычно (назовём проект ConferenceRegistration), оставляем в следующем окне всё по умолчанию.
 
 Запустим и посмотрим, что получилось. Для этого достаточно просто нажать на <<Запустить>>, но можно посмотреть на кнопку запуска внимательнее и выяснить, что она позволяет выбрать \textit{хостинг} для нашего приложения и браузер, в котором мы хотим наше приложение посмотреть. По умолчанию приложение запускается в self-hosted-режиме --- внутри процесса приложения запускается веб-сервер Kestrel. Можно выбрать IIS Express, а можно WSL (тогда приложение запустится на линуксовой виртуальной машине, тоже в self-hosted-режиме --- это полезно, чтобы более-менее реалистично посмотреть, как оно будет работать в реальном линуксовом окружении, но требует длительной настройки, поэтому мы не будем). 
 
@@ -33,7 +33,7 @@
 
 \section{Hello, world}
 
-Начнём с того, что удалим всё содержимое папки Pages, поскольку мы хотим всё сделать своими руками (опять-таки, в реальной жизни сгенерированный шаблон на самом деле может быть полезен). Кликаем правой кнопкой на папку Pages, говорим <<Add Razor Page>>, выбираем <<Razor Page --- Empty>> (это будет главная страница, там ничего интересного не нужно), жмём <<Add>>. Оставляем название по умолчанию <<Index.cshtml>>. Получаем вот такой View:
+Начнём с того, что удалим всё содержимое папки Pages, поскольку мы хотим всё сделать своими руками (опять-таки, в реальной жизни сгенерированный шаблон на самом деле может быть полезен). Кликаем правой кнопкой на папку Pages, говорим <<Add -> Razor Page>>, выбираем <<Razor Page --- Empty>> (это будет главная страница, там ничего интересного не нужно), жмём <<Add>>. Оставляем название по умолчанию <<Index.cshtml>>. Получаем вот такой View:
 
 \begin{minted}{html}
 @page
@@ -59,7 +59,7 @@ namespace ConferenceRegistration.Pages
 }
 \end{minted}
 
-Давайте сразу же обновим код до C\# 11 (если нет желания, можно этого не делать и не сражаться с IDE, где всё ещё старые шаблоны):
+Давайте сразу же обновим код до C\# 12 (если нет желания, можно этого не делать и не сражаться с IDE, где всё ещё старые шаблоны):
 
 \begin{minted}{csharp}
 global using Microsoft.AspNetCore.Mvc;
@@ -119,8 +119,6 @@ public class RegistrationModel : PageModel
 
 Обратите внимание на атрибут \mintinline{csharp}{[BindProperties]} над классом --- он говорит ASP.NET, что при получении запроса с параметрами, совпадающими по именам со свойствами (в нашем случае Name и Email), надо их содержимое положить в соответствующие свойства модели. Теперь у нас RegistrationModel --- это не просто поддерживающий страницу код, а суть доменный класс <<участник конференции>> плюс примешанные к нему средства доставки (наследование от PageModel), а потом ещё тут же будут и средства обеспечения персистентности (работа с базой), что для больших проектов нельзя смешивать, но для маленьких вполне ок.
 
-Ещё обратите внимание на то, что свойства проинициализированы пустыми строками --- в C\# 11 Nullability-анализ включён по умолчанию, так что строки (как ссылочный тип) должны быть не \mintinline{csharp}{null} сразу же. А IsSpeaker имеет тип-значение, поэтому он \mintinline{csharp}{null} и так быть не может.
-
 Теперь добавим HTML-разметку для нашей страницы:
 
 \begin{minted}{html}
@@ -169,11 +167,11 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SEIM-2023 registration</title>
+        <title>SPISOK-2024 registration</title>
     </head>
     <body>
         <div>
-            <p>SEIM-2023 conference will be (likely) held in April in St. Petersburg.</p>
+            <p>SPISOK-2024 conference will be (likely) held in April in St. Petersburg.</p>
             <a asp-page="Registration">Register now!</a>
         </div>
     </body>
@@ -290,9 +288,9 @@ public class RegistrationModel : PageModel
 Теперь нам потребуется EF-специфичная штука: DbContext, класс для доступа к базе. Создаём в папке Data класс ConferenceRegistrationDbContext такого содержания:
 
 \begin{minted}{csharp}
-using Microsoft.EntityFrameworkCore;
-
 namespace ConferenceRegistration.Data;
+
+using Microsoft.EntityFrameworkCore;
 
 public class ConferenceRegistrationDbContext: DbContext
 {
@@ -308,7 +306,7 @@ public class ConferenceRegistrationDbContext: DbContext
 
 Тут нас в какой-то момент (например, после того, как вы напечатаете DbContext и нажмёте в Visual Studio Ctrl+.) попросят ещё поставить Nuget-пакет Entity Framework Core (пакет Microsoft.EntityFrameworkCore), соглашайтесь.
 
-Теперь добавим поддержку нашего нового DbContext-а в страницу, используя магию Dependency Injection:
+Теперь добавим поддержку нашего нового DbContext-а в страницу, используя магию Dependency Injection и новый в C\# 12 синтаксис основных конструкторов (которые работают по аналогии с конструкторами record-ов):
 
 \begin{minted}{csharp}
 namespace ConferenceRegistration.Pages;
@@ -316,19 +314,14 @@ namespace ConferenceRegistration.Pages;
 using ConferenceRegistration.Data;
 
 [BindProperties]
-public class RegistrationModel : PageModel
+public class RegistrationModel(ConferenceRegistrationDbContext context) : PageModel
 {
-    private readonly ConferenceRegistrationDbContext _context;
-
-    public RegistrationModel(ConferenceRegistrationDbContext context)
-        => _context = context;
-
     public Participant Participant { get; set; } = new();
 
     public async Task<IActionResult> OnPostAsync()
     {
-        _context.Participants.Add(Participant);
-        await _context.SaveChangesAsync();
+        context.Participants.Add(Participant);
+        await context.SaveChangesAsync();
 
         return RedirectToPage("./Index");
     }
@@ -341,7 +334,7 @@ public class RegistrationModel : PageModel
 
 Теперь, собственно, конфигурация базы. Поскольку данных немного и нужны они только нашему сервису, воспользуемся локальной базой и СУБД внутри процесса приложения. Хороший вариант для этого --- СУБД SQLite, она не требует установки, подключается как библиотека, хранит данные просто в файле на диске, но вместе с тем поддерживает полноценный SQL и внешне ведёт себя как любая другая реляционная база данных, так что перейти на что-нибудь взрослое можно будет просто заменой конфига (по идее).
 
-Для начала установим Nuget-пакет Microsoft.EntityFrameworkCore.Sqlite. Дальше сконфигурируем в Program.cs базу и добавим её в список сервисов, доступных Dependency Injection:
+Для начала установим Nuget-пакет Microsoft.EntityFrameworkCore.Sqlite (есть ещё Microsoft.EntityFrameworkCore.Sqlite.Core --- это то же самое, но без самой SQLite, нам это не надо). Дальше сконфигурируем в Program.cs базу и добавим её в список сервисов, доступных Dependency Injection:
 
 \begin{minted}{csharp}
 global using Microsoft.AspNetCore.Mvc;
@@ -455,13 +448,8 @@ namespace ConferenceRegistration.Pages;
 
 using ConferenceRegistration.Data;
 
-public class ListParticipantsModel : PageModel
+public class ListParticipantsModel(ConferenceRegistrationDbContext context) : PageModel
 {
-    private readonly ConferenceRegistrationDbContext context;
-
-    public ListParticipantsModel(ConferenceRegistrationDbContext context)
-        => this.context = context;
-
     public IList<Participant> Participants { get; private set; } = new List<Participant>();
 
     public void OnGet()
@@ -556,12 +544,12 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SEIM-2023 registration</title>
+        <title>SPISOK-2024 registration</title>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
     </head>
     <body>
         <div class="text-center">
-            <h3>SEIM-2023 conference will be (likely) held in April in St. Petersburg.</h3>
+            <h3>SPISOK-2024 conference will be (likely) held in April in St. Petersburg.</h3>
             <a class="btn btn-primary" asp-page="Registration">Register now!</a>
         </div>
     </body>
