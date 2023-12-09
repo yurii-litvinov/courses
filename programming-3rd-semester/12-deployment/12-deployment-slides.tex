@@ -172,7 +172,7 @@ ENTRYPOINT ["dotnet", "ConferenceRegistration.dll"]
             \item Создаём облако и каталог (кнопкой "+" слева  вверху)
             \item Ставим себе локально Yandex Cloud CLI
             \item Делаем yc init, авторизуемся
-            \item Создаём реестр контейнеров: \mintinline{text}|yc container registry create --name my-first-registry|
+            \item Создаём реестр Docker-образов: \mintinline{text}|yc container registry create --name my-first-registry|
             \item Говорим Docker про аутентификацию в Yandex Container Registry: \mintinline{text}|yc container registry configure-docker|
             \item Присваиваем нашему образу тэг вида \mintinline{text}|cr.yandex/<ID реестра>/<имя Docker-образа>:<тег>|
             \item Пушим, например: \mintinline{text}|docker push cr.yandex/crpc9qeoft236r8tfalm/ubuntu:hello|
