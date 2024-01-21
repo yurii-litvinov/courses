@@ -21,6 +21,7 @@
 \usetikzlibrary{arrows}
 \usepackage{tabularx}
 \usepackage{outlines}
+\usepackage{csquotes}
 
 % Loading minted and stopping it from highlighting every lexer error
 % See https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters

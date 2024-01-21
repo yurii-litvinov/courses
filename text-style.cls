@@ -48,6 +48,7 @@
 \usepackage{amsthm}
 \usepackage[normalem]{ulem}
 \usepackage{tabularx}
+\usepackage{csquotes}
 
 \usepackage[hang,multiple]{footmisc}
 \renewcommand{\footnotelayout}{\raggedright}
