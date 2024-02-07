@@ -1,8 +1,8 @@
-let holidays = ["23.02.2023"; "24.02.2023"; "08.03.2023"; "01.05.2023"; "08.05.2023"; "09.05.2023"; "12.06.2023"; "04.11.2023"]
+let holidays = ["23.02.2024"; "08.03.2024"; "01.05.2024"; "09.05.2024"; "12.06.2024"; "04.11.2024"]
 let controlWorkPairNumbers = []
 let fromPair = 1
-let startDate = "06.09.2023"
-let directoryPath = "software-design"
+let startDate = "08.02.2024"
+let directoryPath = "software-design-extended"
 
 open System.IO
 open System
@@ -14,6 +14,7 @@ let dirs =
         Directory.GetDirectories directoryPath 
         |> Seq.filter (fun dir -> not ((FileInfo dir).Name.StartsWith("_")))
         |> Seq.filter (fun dir -> not ((FileInfo dir).Name.StartsWith(".")))
+        |> Seq.sort
 
 let courseDates = 
     Seq.initInfinite (fun i -> convertedStartDate + (TimeSpan.FromDays <| float (i * 7)))
