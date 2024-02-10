@@ -14,6 +14,7 @@
 % Setting up support for Russian language.
 \usepackage{polyglossia}
 \setdefaultlanguage[babelshorthands=true]{russian}
+\setotherlanguage{english}
 
 % Setting up font.
 \usepackage{fontspec}

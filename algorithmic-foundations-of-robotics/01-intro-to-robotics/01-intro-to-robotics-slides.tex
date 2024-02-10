@@ -204,7 +204,7 @@
                 \item Шагающие --- 2, 4, 6 ног
                 \item Колёсные --- четыре известных вида колеса, включая \enquote{шведские} и шар, более десятка известных конфигураций колёсных тележек
                 \begin{itemize}
-                    \item \enquote{Автомобильное} управление, дифференциальное (\enquote{танковое}), омниколёса, \enquote{Synchro drive}
+                    \item \enquote{Автомобильное} управление (Аккермана), дифференциальное (\enquote{танковое}), омниколёса, \enquote{Synchro drive}
                 \end{itemize}
             \end{itemize}
         \end{itemize}
@@ -227,7 +227,7 @@
                     \item Глобальная система координат
                     \item Поза:
                         $$\xi_I = \begin{bmatrix} x \\ y \\ \theta \end{bmatrix}$$
-                    \item Кинематическая модель:
+                    \item Прямая кинематическая модель:
                         $$\dot{\xi_I} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{\theta} \end{bmatrix} = f(l, r, \theta, \dot{\phi_1}, \dot{\phi_2})$$
                     \item Каждая модель накладывает ограничения на возможные движения
                 \end{itemize}
@@ -255,7 +255,7 @@
         \frametitle{Виды сенсоров}
         \begin{itemize}
             \item Тактильные: кнопки, бамперы, неконтактные датчики
-            \item Энкодеры, разных видов: оптические, магнитные и т.п.)
+            \item Энкодеры, разных видов: оптические, магнитные и т.п.
             \item Датчики направления: компас, гироскоп, инклинометр
             \item Датчики ориентиров: ГНСС, RF-метки и т.п.
             \item Активные расстояния: УЗ, ИК, лазерные, радар, структурный свет
@@ -270,16 +270,24 @@
             \item Шумы, фильтрация
             \begin{itemize}
                 \item Случайные и систематические ошибки
-                \item Фильтр Калмана
+                \item Скользящее среднее, медианный фильтр, фильтр Калмана
             \end{itemize}
             \item Sensor aliasing
             \item Представление неопределённости
             \begin{itemize}
                 \item Одна гипотеза, несколько гипотез
             \end{itemize}
-            \item Распространение ошибки
             \item Sensor fusion
+            \item Распространение ошибки
         \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Распространение ошибки}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{poseUncertainity.png}
+            \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
+        \end{center}
     \end{frame}
 
     \begin{frame}
@@ -290,17 +298,25 @@
             \begin{itemize}
                 \item Дескриптор --- некое характерное представление точки, не зависящее от ракурса
             \end{itemize}
-            \item Оптический поток (тоже feature-based)
+            \item Оптический поток (тоже feature-based), визуальная одометрия
             \item Поиск границ, поиск геометрических примитивов
             \begin{itemize}
-                \item Лапласиан гауссиана, преобразование Хафа
+                \item Лапласиан гауссиана, оператор Кэнни, преобразование Хафа
             \end{itemize}
             \item Сегментация, кластеризация (сейчас в основном машобуч)
             \begin{itemize}
-                \item DBSCAN
+                \item DBSCAN, RANSAC
             \end{itemize}
             \item Whole-image features --- гистограммы, \enquote{отпечатки}
         \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Преобразование Хафа}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{houghTransform.png}
+            \attribution{\url{https://ru.wikipedia.org/wiki/Преобразование_Хафа}}
+        \end{center}
     \end{frame}
 
     \begin{frame}
