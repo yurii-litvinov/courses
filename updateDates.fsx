@@ -1,8 +1,8 @@
 let holidays = ["23.02.2024"; "08.03.2024"; "01.05.2024"; "09.05.2024"; "12.06.2024"; "04.11.2024"]
-let controlWorkPairNumbers = []
+let controlWorkPairNumbers = [9]
 let fromPair = 1
-let startDate = "13.02.2024"
-let directoryPath = "software-technology"
+let startDate = "16.02.2024"
+let directoryPath = "structures-and-algorithms"
 
 open System.IO
 open System

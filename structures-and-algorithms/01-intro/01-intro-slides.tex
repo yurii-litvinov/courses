@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitleext{Функциональное программирование на языке F\#}{17.02.2023}{Введение}
+\slidetitleext{Функциональное программирование на языке F\#}{16.02.2024}{Введение}
 
 \begin{document}
     
@@ -39,7 +39,7 @@
             \item Доклад
             \item Сдача и учёт через HwProj 2
             \begin{itemize}
-                \item \url{https://bit.ly/sakod-2023}
+                \item \url{https://hwproj.ru/courses/20017}
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -53,7 +53,6 @@
             \item Общий балл за контрольные: $n/N * 100$
             \item Итоговая оценка: минимум из этих двух баллов
             \item Дедлайны по домашкам, -1 балл за каждую неделю после дедлайна
-            \item -1 балл за каждую попытку сдачи начиная с 3-й
             \item Сгорает не более половины баллов
             \begin{itemize}
                 \item Таким образом, задачи на 1 балл не штрафуются вовсе
@@ -140,8 +139,8 @@ let rec factorial x =
     \begin{frame}[fragile]
         \frametitle{Как с этим жить}
         \begin{itemize}
-            \item Состояние и переменные <<эмулируются>> параметрами функций
-            \item Циклы <<эмулируются>> рекурсией
+            \item Состояние и переменные \enquote{эмулируются} параметрами функций
+            \item Циклы \enquote{эмулируются} рекурсией
             \item Последовательность вычислений --- рекурсия + параметры
         \end{itemize}
         \begin{exampleblock}{F\#}
@@ -235,7 +234,7 @@ let calculate =
         \begin{itemize}
             \item Типизированный функциональный язык для платформы .NET
             \item НЕ чисто функциональный (можно императивный стиль и ООП)
-            \item Первый раз представлен публике в 2005 г., актуальная версия --- 7.0 (8 ноября 2022 года)
+            \item Первый раз представлен публике в 2005 г., актуальная версия --- 8.0 (14 ноября 2023 года)
             \item Создавался под влиянием OCaml (практически диалект OCaml под .NET)
             \item Использует .NET CLI
             \item Компилируемый и интерпретируемый
@@ -246,10 +245,10 @@ let calculate =
     \begin{frame}
         \frametitle{Что скачать и поставить}
         \begin{itemize}
-            \item Rider (студентам бесплатно)
             \item Visual Studio Community
             \item .NET 7 + Visual Studio Code + Ionide
             \item Прямо в браузере: \url{https://dotnetfiddle.net/}
+            \item Rider
         \end{itemize}
     \end{frame}
     
