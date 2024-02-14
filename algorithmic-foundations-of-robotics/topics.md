@@ -62,4 +62,4 @@
 1. Шины I2C, CAN.
 1. GPIO, SPI, UART, RS485.
 1. Linux IIO.
-1. Zigbee, Z-Wave.
+1. Беспроводные протоколы датчиков. Zigbee, Z-Wave, ant+, BT LE.
