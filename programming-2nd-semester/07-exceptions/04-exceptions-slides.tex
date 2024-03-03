@@ -413,11 +413,8 @@ static (int prev, int cur) Fibonacci(int n)
     return (prev, prevPrev + prev);
 }
 
-private static void Main(string[] args)
-{
-    var (_, result) = Fibonacci(7);
-    Console.WriteLine(result);
-}
+var (_, result) = Fibonacci(7);
+Console.WriteLine(result);
         \end{minted}
     \end{frame}
 
@@ -430,18 +427,7 @@ var pair = (count: count, label: label);
 
 int count = 5;
 string label = "Colors used in the map";
-var pair = (count, label); // element names are "count" and "label"
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Инициализация свойств}
-        \begin{minted}{csharp}
-public class Person
-{
-    public int Age { get; set; } = 0;
-    public string Name { get; set; } = "Anonymous";
-}
+var pair = (count, label);  // имена полей --- "count" и "label"
         \end{minted}
     \end{frame}
 
@@ -480,20 +466,6 @@ public int Fibonacci(int x)
 }
             \end{minted}
         \end{small}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Индексеры}
-        \begin{minted}{csharp}
-class SampleCollection {
-    private int[] arr = new int[100];
-    public int this[int i]
-    {
-        get => arr[i];
-        set => arr[i] = value;
-    }
-}
-        \end{minted}
     \end{frame}
 
     \begin{frame}[fragile]
@@ -538,8 +510,7 @@ UseParams(1, 2, 3, 4);
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{switch expression (C\# 8)}
-        \framesubtitle{\url{https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-8}}
+        \frametitle{switch expression}
         \begin{minted}{csharp}
 public static RGBColor FromRainbow(Rainbow colorBand) =>
     colorBand switch
@@ -558,7 +529,7 @@ public static RGBColor FromRainbow(Rainbow colorBand) =>
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{switch по свойствам (C\# 8)}
+        \frametitle{switch по свойствам}
         \begin{minted}{csharp}
 public static decimal ComputeSalesTax(Address location, 
         decimal salePrice) =>
@@ -574,7 +545,7 @@ public static decimal ComputeSalesTax(Address location,
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{switch по кортежам (C\# 8)}
+        \frametitle{switch по кортежам}
         \begin{minted}{csharp}
 public static string RockPaperScissors(string first, string second)
     => (first, second) switch
@@ -598,7 +569,7 @@ var (x, y) = (1, 2);
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Deconstruct (C\# 8)}
+        \frametitle{Deconstruct}
         \begin{minted}{csharp}
 public class Point
 {
@@ -622,7 +593,7 @@ var (a, b) = point;
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Позиционные шаблоны (C\# 8)}
+        \frametitle{Позиционные шаблоны}
         \begin{minted}{csharp}
 static string Quadrant(Point p) => p switch
 {
@@ -638,42 +609,7 @@ static string Quadrant(Point p) => p switch
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{using var (C\# 8)}
-        \begin{minted}{csharp}
-static void WriteLinesToFile(IEnumerable<string> lines)
-{
-    using var file = new System.IO.StreamWriter("WriteLines2.txt");
-    foreach (string line in lines)
-    {
-        // If the line doesn't contain the word 'Second', 
-        // write the line to the file.
-        if (!line.Contains("Second"))
-        {
-            file.WriteLine(line);
-        }
-    }
-// file is disposed here
-}
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Nullable reference-типы (C\# 8)}
-        \begin{itemize}
-            \item \mintinline{csharp}|string? name;| --- переменная может быть \mintinline{csharp}|null|
-            \item \mintinline{csharp}|string name;| --- переменная не может быть \mintinline{csharp}|null|
-            \begin{itemize}
-                \item Попытки присвоить \mintinline{csharp}|null| или что-то, что может быть \mintinline{csharp}|null|, вызовут предупреждения компилятора
-            \end{itemize}
-            \item \mintinline{csharp}|name!.Length| --- null-forgiving operator
-            \item Управляется директивами \mintinline{csharp}|#nullable disable| и \mintinline{csharp}|#nullable enable|
-            \item Подробности: \url{https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references}
-            \item Для нового кода обязательно к применению
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Продвинутое сопоставление шаблонов (C\# 9)}
+        \frametitle{Продвинутое сопоставление шаблонов}
         \begin{minted}{csharp}
 public static bool IsLetterOrSeparator(char c) =>
     c is (>= 'a' and <= 'z') or (>= 'A' and <= 'Z') or '.' or ',';
@@ -686,21 +622,7 @@ if (e is not null)
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Продвинутый вывод типов (C\# 9)}
-        \begin{minted}{csharp}
-private List<WeatherObservation> observations = new();
-
-public WeatherForecast ForecastFor(
-    DateTime forecastDate, WeatherForecastOptions options)
-...
-var forecast = station.ForecastFor(DateTime.Now.AddDays(2), new());
-
-WeatherStation station = new() { Location = "Seattle, WA" };
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Record-ы (C\# 9)}
+        \frametitle{Record-ы}
         \begin{minted}{csharp}
 public class Person
 {
@@ -713,7 +635,7 @@ public class Person
         \end{minted}
         vs
         \begin{minted}{csharp}
-            public record Person(string FirstName, string LastName);
+public record Person(string FirstName, string LastName);
         \end{minted}
     \end{frame}
 
@@ -730,7 +652,6 @@ public class Person
         \frametitle{C\# 11}
         \begin{itemize}
             \item Шаблоны для списков: \mintinline{csharp}|sequence is [1, 2, 3]|
-            \item File local types
             \item Сырые строки:
                 \begin{minted}{csharp}
 string longMessage = """
@@ -749,6 +670,62 @@ var location = $$"""
    """;
                 \end{minted}
         \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{File-local types}
+        \begin{minted}{csharp}
+// File1.cs
+namespace NS;
+file class Widget
+{
+}
+
+// File2.cs
+namespace NS;
+file class Widget // Совсем другой Widget
+{
+}
+
+// File3.cs
+using NS;
+var widget = new Widget(); // Ошибка
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Основные конструкторы (C\# 12)}
+        \begin{minted}{csharp}
+public struct Distance(double dx, double dy)
+{
+    public readonly double Magnitude => Math.Sqrt(dx * dx + dy * dy);
+    public readonly double Direction => Math.Atan2(dy, dx);
+
+    public void Translate(double deltaX, double deltaY)
+    {
+        dx += deltaX;
+        dy += deltaY;
+    }
+
+    public Distance() : this(0,0) { }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Collection expressions (C\# 12)}
+        \begin{minted}{csharp}
+int[] row0 = [1, 2, 3];
+int[] row1 = [4, 5, 6];
+int[] row2 = [7, 8, 9];
+int[] single = [.. row0, .. row1, .. row2];
+foreach (var element in single)
+{
+    Console.Write($"{element}, ");
+}
+// output:
+// 1, 2, 3, 4, 5, 6, 7, 8, 9,
+        \end{minted}
     \end{frame}
 
 \end{document}
