@@ -24,3 +24,8 @@
 - в каких инструментах это всё рисовать.
 
 Разных видов диаграмм будет очень много, и рассказываться про них будет очень кратко, но потом будут практики, на которых можно будет потренироваться.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/software-design-and-architecture/04-modeling/04-modeling-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/software-design-and-architecture/04-modeling/04-modeling-text.pdf
