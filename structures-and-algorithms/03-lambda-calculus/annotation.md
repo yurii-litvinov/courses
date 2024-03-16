@@ -14,3 +14,8 @@
   - числа (нумералы Чёрча),
   - пары,
   - списки.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/structures-and-algorithms/03-lambda-calculus/03-lambda-calculus-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/structures-and-algorithms/03-lambda-calculus/03-lambda-calculus-text.pdf
