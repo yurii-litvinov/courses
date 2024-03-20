@@ -1,0 +1,67 @@
+\documentclass{../../slides-style}
+
+\slidetitle{Практика по настройке репозитория}{22.03.2024}
+
+\begin{document}
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Чеклист по оформлению репозитория (1)}
+        \begin{enumerate}
+            \item Лицензия
+            \item Лицензия правильно применяется к репозиторию
+            \item Используемые третьесторонние компоненты и материалы совместимы с лицензией
+            \item Настроенный CI
+            \item Модульные тесты в CI
+            \item Линтер в CI
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Чеклист по оформлению репозитория (2)}
+        \begin{enumerate}
+            \item В репозитории нет результатов сборки, настроен .gitignore
+            \item В репозитории нет секретной информации (паролей, ключей и т.п.)
+            \item Различные сторонние анализаторы (если уместно)
+            \item Для кода на С/С++: использование санитайзеров
+            \item README.md, плашки CI и анализаторов
+            \item README.md, общее описание проекта
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Чеклист по оформлению репозитория (3)}
+        \begin{enumerate}
+            \item README.md, пример использования
+            \item README.md, инструкция по сборке и запуску
+            \item README.md, как помочь проекту (если уместно)
+            \item README.md, корректные названия компаний и организаций
+            \item Настроена секция About, указаны темы (topics)
+            \item Код соответствует принятому в сообществе стилю кодирования
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Чеклист по оформлению репозитория (4)}
+        \begin{enumerate}
+            \item Имеется техническая документация (в README.md или на вики)
+            \item В коде достаточно комментариев
+            \item Комментарии к коммитам адекватны, коммиты показывают историю проекта
+            \item В главной ветке адекватная история коммитов
+            \item Добавление релизов
+            \begin{itemize}
+                \item Semantic versioning
+            \end{itemize}
+            \item Настройки репозитория
+            \begin{itemize}
+                \item Запретить force push в main
+                \item Dependabot
+                \item CodeQL
+            \end{itemize}
+        \end{enumerate}
+    \end{frame}
+
+\end{document}
