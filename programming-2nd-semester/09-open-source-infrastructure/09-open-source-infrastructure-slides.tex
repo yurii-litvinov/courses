@@ -10,23 +10,7 @@
 
     \section{CI}
 
-    \subsection{Работа с консолью}
-
-    \begin{frame}
-        \frametitle{Небольшое отступление про сборку из консоли}
-        \framesubtitle{В Windows, остальные и так умеют}
-        \begin{itemize}
-            \item Основные консольные команды: cd, dir
-            \item Переменные окружения, PATH
-            \item .NET SDK
-            \item NuGet Command Line
-            \item Как сделать жизнь более удобной
-            \begin{itemize}
-                \item FAR (\url{https://www.farmanager.com/})
-                \item Chocolatey (\url{https://chocolatey.org/})
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
+    \subsection{.NET CLI}
 
     \begin{frame}
         \frametitle{Основные команды .NET Command-Line Interface}
@@ -137,10 +121,10 @@ jobs:
     build-Ubuntu:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-dotnet@v1
+            - uses: actions/checkout@v4
+            - uses: actions/setup-dotnet@v4
               with:
-                  dotnet-version: '7.x'
+                  dotnet-version: '8.x'
             - name: Build
               run: for f in $(find . -name "*.sln"); do dotnet build $f; done
             - name: Run tests
@@ -214,59 +198,6 @@ steps:
             \end{itemize}
             \item Можно иметь несколько Workflow-ов в одном репозитории
         \end{itemize}
-    \end{frame}
-
-    \subsection{AppVeyor}
-
-    \begin{frame}
-        \frametitle{AppVeyor}
-        \begin{itemize}
-            \item \url{https://www.appveyor.com/} --- отдельная облачная CI-cистема, тоже довольно неплоха и проще в настройке
-            \item Виртуальная машина с ОС Windows и настроенными инструментами сборки .NET-приложений
-            \begin{itemize}
-                \item Windows Server 2019 + VS 2022 или более старые
-                \item Умеет Linux Ubuntu 20.04 и macOS 12.2.1
-            \end{itemize}
-            \item Интегрируется с GitHub-ом, Slack-ом, умеет деплоить
-            \item Собирает по умолчанию системой сборки MSBuild
-            \begin{itemize}
-                \item Можно переубедить и собирать хоть C++-приложения
-            \end{itemize}
-            \item Окружение настраивается конфигурационным файлом или <<вручную>> из скрипта сборки
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{AppVeyor, настройка сборки}
-        \begin{itemize}
-            \item Зайти на \url{https://www.appveyor.com/} по GitHub-аккаунту
-            \item Добавить проект (разрешив AppVeyor просматривать список репозиториев на гитхабе)
-            \item Положить в корень репозитория файл appveyor.yml с конфигурацией сборки
-            \begin{itemize}
-                \item Пустой тоже ок, это конфигурация по умолчанию, ищет .sln в корне репозитория и пытается его собрать
-            \end{itemize}
-            \item Закоммитить и запушить, это инициирует процесс сборки
-            \item Результаты будут видны прямо на гитхабе, у каждого коммита и в пуллреквесте:
-        \end{itemize}
-        \begin{center}
-            \includegraphics[width=0.7\textwidth]{appVeyorSuccess.png}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{AppVeyor, пример файла конфигурации}
-        \begin{minted}{yaml}
-image: Visual Studio 2022
-
-before_build: 
-    - nuget restore myCoolHomework/Homework.sln
-
-build: 
-    project: myCoolHomework/Homework.sln
-
-test_script: 
-    - dotnet test myCoolHomework/Homework.sln
-        \end{minted}
     \end{frame}
 
     \section{CodeCov}
