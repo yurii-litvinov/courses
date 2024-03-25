@@ -12,5 +12,9 @@
 - как писать свои события и как это делать правильно с точки зрения архитектуры .NET;
 - ручное управление подписчиками, ключевые слова add и remove.
 
-Всё это — на примере мини-игры, позволяющий управлять курсором с клавиатуры (фактически, разбирается большой кусок домашней работы к этой лекции, так что очень рекомендую).
+Всё это — на примере мини-игры, позволяющий управлять курсором с клавиатуры (мы её потом попробуем написать на практике).
 
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/11-event-driven-programs/11-event-driven-programs-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/11-event-driven-programs/11-event-driven-programs-text.pdf

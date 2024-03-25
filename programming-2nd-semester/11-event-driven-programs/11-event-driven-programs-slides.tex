@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitleext{Событийно-ориентированное программирование}{21.03.2024}{Делегаты, события, лямбда-функции}
+\slidetitleext{Событийно-ориентированное программирование}{28.03.2024}{Делегаты, события, лямбда-функции}
 
 \begin{document}
 
@@ -33,12 +33,12 @@
                 \item Inversion of Control --- не мы вызываем библиотеку, а она нас
             \end{itemize}
             \item Языковая поддержка --- event-ы
-            \item Паттерн ``Наблюдатель''
+            \item Паттерн \enquote{Наблюдатель}
         \end{itemize}
     \end{frame}
 
     \begin{frame}
-        \frametitle{Паттерн ``Наблюдатель''}
+        \frametitle{Паттерн \enquote{Наблюдатель}}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{observerExample.png}
         \end{center}
@@ -160,14 +160,10 @@ public class EventLoop {
 public class Game
 {
     public void OnLeft()
-    {
-        Console.WriteLine("Going left");
-    }
+        => Console.WriteLine("Going left");
 
     public void OnRight()
-    {
-        Console.WriteLine("Going right");
-    }
+        => Console.WriteLine("Going right");
 }
         \end{minted}
     \end{frame}
@@ -191,17 +187,13 @@ static void Main(string[] args)
         \frametitle{Delegate chaining}
         \begin{minted}{csharp}
 public void Register(SomeDelegateType someDelegate)
-{
-    currentDelegate = Delegate.Combine(currentDelegate, someDelegate);
-}
+    => currentDelegate = Delegate.Combine(currentDelegate, someDelegate);
         \end{minted}
         \vspace{3mm}
         Или
         \begin{minted}{csharp}
 public void Register(SomeDelegateType someDelegate)
-{
-    currentDelegate += someDelegate;
-}
+    => currentDelegate += someDelegate;
         \end{minted}
     \end{frame}
 
@@ -214,14 +206,10 @@ public class EventLoop
     private ArrowHandler rightHandler;
 
     public void RegisterLeftHandler(ArrowHandler left)
-    {
-        leftHandler += left;
-    }
+        => leftHandler += left;
 
     public void RegisterRightHandler(ArrowHandler right)
-    {
-        rightHandler += right;
-    }
+        => rightHandler += right;
         \end{minted}
     \end{frame}
 
@@ -252,17 +240,13 @@ public class EventLoop
         \begin{minted}{csharp}
 public class Logger
 {
-    private List<string> log = new List<string>();
+    private List<string> log = new();
 
     public void LeftPressed()
-    {
-        log.Add("left");
-    }
+        => log.Add("left");
 
     public void RightPressed()
-    {
-        log.Add("right");
-    }
+        => log.Add("right");
 }
         \end{minted}
     \end{frame}
@@ -291,17 +275,13 @@ static void Main(string[] args)
         \frametitle{Отписывание от событий}
         \begin{minted}{csharp}
 public void UnregisterLeftHandler(ArrowHandler left)
-{
-    leftHandler = (ArrowHandler) Delegate.Remove(leftHandler , left);
-}
+    => leftHandler = (ArrowHandler)Delegate.Remove(leftHandler , left);
         \end{minted}
         \vspace{3mm}
         или
         \begin{minted}{csharp}
 public void UnregisterLeftHandler(ArrowHandler left)
-{
-    leftHandler -= left;
-}
+    => leftHandler -= left;
         \end{minted}
     \end{frame}
 
@@ -673,9 +653,8 @@ internal class MailManager {
         \frametitle{Принимающий событие}
         \begin{minted}{csharp}
 internal sealed class Fax {
-    public Fax(MailManager mm) {
-        mm.NewMail += FaxMsg;
-    }
+    public Fax(MailManager mm)
+        => mm.NewMail += FaxMsg;
 
     private void FaxMsg(object sender, NewMailEventArgs e) {
         Console.WriteLine("Faxing mail message:");
@@ -683,9 +662,8 @@ internal sealed class Fax {
                 e.From, e.To, e.Subject);
     }
 
-    public void Unregister(MailManager mm) {
-        mm.NewMail -= FaxMsg;
-    }
+    public void Unregister(MailManager mm)
+        => mm.NewMail -= FaxMsg;
 }
         \end{minted}
     \end{frame}
@@ -738,14 +716,10 @@ public class EventLoop {
 public class Game
 {
     public void OnLeft(object sender, EventArgs args)
-    {
-        Console.WriteLine("Going left");
-    }
+        => Console.WriteLine("Going left");
 
     public void OnRight(object sender, EventArgs args)
-    {
-        Console.WriteLine("Going right");
-    }
+        => Console.WriteLine("Going right");
 }
             \end{minted}
         \end{footnotesize}
