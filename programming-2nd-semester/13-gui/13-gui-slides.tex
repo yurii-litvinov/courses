@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitleext{Пользовательский интерфейс}{28.03.2024}{Windows Forms}
+\slidetitle[Windows Forms]{Пользовательский интерфейс}{05.04.2024}
 
 \begin{document}
 
@@ -93,6 +93,29 @@ private void textBox1_KeyDown(object sender, KeyEventArgs e)
         \end{itemize}
     \end{frame}
 
+    \begin{frame}{Демонстрация}
+        \begin{Huge}\begin{center}Демонстрация\end{center}\end{Huge}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Best practices}
+        \begin{itemize}
+            \item Отделяйте логику работы программы от представления
+            \begin{itemize}
+                \item Писать логику прямо в обработчиках совсем плохо
+                \item Уровневая архитектура
+                \item Model-View-Presenter
+                \begin{itemize}
+                    \item Может быть overkill-ом для небольших проектов
+                \end{itemize}
+            \end{itemize}
+            \item Форма должна адекватно вести себя при ресайзе
+            \item Пользовательский интерфейс не должен ломать привычек пользователя
+            \item Самые часто используемые элементы интерфейса должны находиться ближе всего к рабочей области
+            \item Не следует думать, что пользователи будут читать документацию
+        \end{itemize}
+    \end{frame}
+
     \begin{frame}
         \frametitle{Валидация ввода}
         \begin{itemize}
@@ -121,30 +144,6 @@ public partial class Form1 : Form
     }
 }
         \end{minted}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Best practices}
-        \begin{itemize}
-            \item Отделяйте логику работы программы от представления
-            \begin{itemize}
-                \item Писать логику прямо в обработчиках совсем плохо
-                \item Уровневая архитектура
-                \item Model-View-Presenter
-                \begin{itemize}
-                    \item Может быть overkill-ом для небольших проектов
-                \end{itemize}
-            \end{itemize}
-            \item Форма должна адекватно вести себя при ресайзе
-            \item Пользовательский интерфейс не должен ломать привычек пользователя
-            \item Самые часто используемые элементы интерфейса должны находиться ближе всего к рабочей области
-            \item Не следует думать, что пользователи будут читать документацию
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Демонстрация}
-        \begin{Huge}\begin{center}Демонстрация\end{center}\end{Huge}
     \end{frame}
 
 \end{document}
