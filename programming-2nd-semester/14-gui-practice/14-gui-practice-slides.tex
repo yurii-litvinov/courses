@@ -1,0 +1,95 @@
+\documentclass{../../slides-style}
+
+\slidetitle{Пользовательский интерфейс, практика}{05.04.2024}
+
+\begin{document}
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \section{Рисование на формах}
+
+    \begin{frame}{Рисование на формах}
+        \begin{itemize}
+            \item Graphics Device Interface (GDI+) --- часть WinAPI, отвечающая за рисование на контролах
+            \begin{itemize}
+                \item Используется .NET на Windows и реализован отдельно на Linux
+            \end{itemize}
+            \item Событие Paint
+            \item Graphics --- канва для рисования
+            \begin{itemize}
+                \item Можно получить из PaintEventArgs
+                \item Можно создать самим, Control.CreateGraphics --- чтобы рисовать не по событию перерисовки, а когда надо
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]{Пример}
+        \begin{minted}{csharp}
+private void ControlPaint(object sender, 
+    System.Windows.Forms.PaintEventArgs e)
+{
+    var font = new Font("Arial", 10);
+
+    e.Graphics.DrawString("This is a diagonal line drawn on the control",
+        font, System.Drawing.Brushes.Blue, new Point(30, 30));
+
+    e.Graphics.DrawLine(
+        System.Drawing.Pens.Red,
+        control.Left,
+        control.Top,
+        control.Right,
+        control.Bottom);
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}{Что ещё бывает}
+        \begin{itemize}
+            \item Brush --- стиль заливки (абстрактный класс), хранит цвет
+            \begin{itemize}
+                \item Бывает SolidBrush, TextureBrush, LinearGradientBrush и т.п.
+                \item Цвет --- структура Color в формате ARGB
+            \end{itemize}
+            \item Pen --- стиль линий
+            \item Bitmap --- изображения и иконки
+            \item Свойство DoubleBuffered --- более плавное (по идее) обновление
+            \item Манипуляции с системой координат: ScaleTransform, RotateTransform, TranslateTransform
+            \begin{itemize}
+                \item Если у вас в коде отрисовки встречаются тригонометрические функции --- скорее всего, вы что-то делаете не так
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]{Пример}
+        \begin{minted}{csharp}
+var rect = new Rectangle(0, 0, 50, 50);
+var pen = new Pen(Color.FromArgb(128, 200, 0, 200), 2);
+e.Graphics.ResetTransform();
+e.Graphics.ScaleTransform(1.75f, 0.5f);
+e.Graphics.RotateTransform(28, MatrixOrder.Append);
+e.Graphics.TranslateTransform(150, 150, MatrixOrder.Append);
+e.Graphics.DrawRectangle(pen, rect);
+        \end{minted}
+    \end{frame}
+
+    \section{Задача}
+
+    \begin{frame}{Задача на остаток пары}
+        \begin{itemize}
+            \item Вспомнить игру с прошлой практики, собраться в команды
+            \item Реализовать вывод карты и персонажа на форму, в любом удобном виде
+            \begin{itemize}
+                \item Предпочтительно, цветными квадратами/кругами
+            \end{itemize}
+            \item Сделать на форме кнопки, управляющие перемещением персонажа
+            \begin{itemize}
+                \item Вверх-вниз-влево-вправо
+                \item Используйте лейауты для позиционирования кнопок
+            \end{itemize}
+            \item Если успеем, поддержать и управление с клавиатуры
+        \end{itemize}
+    \end{frame}
+
+\end{document}
