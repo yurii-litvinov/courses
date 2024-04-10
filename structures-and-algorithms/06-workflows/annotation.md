@@ -10,3 +10,7 @@
 - законы монад;
 - как это можно использовать для "встроенных" предметно-ориентированных языков;
 - небольшое, но связанное дополнение про моноиды и эндоморфизмы.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/structures-and-algorithms/06-workflows/06-workflows-slides.pdf
