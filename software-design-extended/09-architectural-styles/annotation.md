@@ -1,3 +1,5 @@
+# Лекция 9: Архитектурные стили
+
 Самая "архитектурная" лекция в этом курсе, обзор известных архитектурных стилей (и, немного, архитектурных шаблонов). Речь пойдёт про:
 
 - то, что такое архитектурные шаблоны и стили вообще;
@@ -10,3 +12,8 @@
   - стиль Blackboard;
   - событийные стили и их подвиды: publish-subscribe, шины данных;
   - стиль Peer-to-peer.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/software-design-extended/09-architectural-styles/09-architectural-styles-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/software-design-extended/09-architectural-styles/09-architectural-styles-text.pdf
