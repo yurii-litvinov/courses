@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Контейнеры и генерики}{04.04.2024}
+\slidetitle{Контейнеры и генерики}{18.04.2024}
 
 \begin{document}
 
@@ -113,7 +113,7 @@ var str = list[0];
                 \item \{\{\}\} --- 2
                 \item Парадокс Рассела
                 \begin{itemize}
-                    \item ``Пусть А --- множество всех множеств, которые не содержат себя в качестве своего элемента. Содержит ли А само себя в качестве элемента?''
+                    \item \enquote{Пусть А --- множество всех множеств, которые не содержат себя в качестве своего элемента. Содержит ли А само себя в качестве элемента?}
                 \end{itemize}
                 \item Типы ограничивают допустимые операции над значениями
                 \item Виды типизации
@@ -186,7 +186,7 @@ var str = list[0];
         \begin{itemize}
             \item System.Collections.Generic
             \begin{minted}{csharp}
-List<string> listOfStrings = new List<string>();
+List<string> listOfStrings = new();
             \end{minted}
             \item Не требуют исходного кода генерика
             \begin{itemize}
@@ -288,8 +288,8 @@ public class Point<T>
     \begin{frame}[fragile]
         \frametitle{Использование}
         \begin{minted}{csharp}
-Point<int> p = new Point<int>(10, 10);
-Point<double> p2 = new Point<double>(5.4, 3.3);
+Point<int> p = new(10, 10);
+Point<double> p2 = new(5.4, 3.3);
 
 var p = new Point<int>(10, 10);
 var p2 = new Point<double>(5.4, 3.3);
@@ -388,7 +388,7 @@ void Main()
         Иногда вместо
         \begin{footnotesize}
             \begin{minted}{csharp}
-List<DateTime> dtl = new List<DateTime>();
+List<DateTime> dtl = new();
             \end{minted}
         \end{footnotesize}
         пишут
@@ -396,7 +396,7 @@ List<DateTime> dtl = new List<DateTime>();
             \begin{minted}{csharp}
 internal sealed class DateTimeList : List<DateTime> { }
 ...
-DateTimeList dtl = new DateTimeList();
+DateTimeList dtl = new();
             \end{minted}
         \end{footnotesize}
         \vspace{5mm}
@@ -465,9 +465,7 @@ public class MyGenericClass<T, U>
 internal sealed class PrimaryConstraintOfStream<T> where T : Stream 
 {
     public void M(T stream) 
-    {
-        stream.Close();
-    }
+        => stream.Close();
 }
             \end{minted}
         \end{footnotesize}
@@ -497,7 +495,7 @@ internal sealed class PrimaryConstraintOfClass<T> where T : class {
 private static List<TBase> ConvertIList<T, TBase>(IList<T> list)
         where T : TBase 
 {
-    List<TBase> baseList = new List<TBase>(list.Count);
+    List<TBase> baseList = new(list.Count);
     for (int index = 0; index < list.Count; index++) 
     {
         baseList.Add(list[index]);
@@ -576,7 +574,7 @@ public void f(Tuple<object, object> x)
                 \begin{minted}{csharp}
 void PrintAnimals(IEnumerable<Animal> animals) {
     for (var animal in animals)
-      Console.WriteLine(animal.Name);
+        Console.WriteLine(animal.Name);
 }
                 \end{minted}
                 --- IEnumerable<любой наследник Animal> тоже ок, IEnumerable ковариантен
