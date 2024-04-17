@@ -17,3 +17,8 @@
 - всякие тонкости: статические конструкторы, статические поля, идентичность типов-генериков, генерики и вложенные классы, генерики и сравнения;
 - ограничения на параметры-типы, ключевое слово where
 - вариантность: понятие вариантности, ковариантность, контравариантность, инвариантность. Ключевые слова in и out для управления вариантностью своих генериков. 
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/15-generics/15-generics-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/15-generics/15-generics-text.pdf
