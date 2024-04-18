@@ -7,3 +7,7 @@
   - соответственно, про реактивно-событитйный подход к многопоточному программированию;
 - lock, который тоже сделан средствами стандартной библиотеки;
 - lock-free-подход к многопоточности.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/structures-and-algorithms/07-concurrent-programming/07-concurrent-programming-slides.pdf
