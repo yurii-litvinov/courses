@@ -1,0 +1,689 @@
+\documentclass{../../slides-style}
+
+\slidetitle{Стандартная библиотека и LINQ}{25.04.2024}
+
+\begin{document}
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \section{Контейнеры стандартной библиотеки .NET}
+
+    % По https://learn.microsoft.com/en-us/dotnet/standard/collections/
+
+    \begin{frame}{Контейнеры стандартной библиотеки}
+        \begin{itemize}
+            \item System.Array --- массив, встроен в язык
+            \item System.Collections --- негенериковые коллекции
+            \item System.Collections.Generic --- генериковые коллекции
+            \item System.Collections.Concurrent --- потокобезопасные коллекции
+            \item System.Collections.Immutable --- немутабельные коллекции
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Архитектурные соглашения в стандартной библиотеке}
+        \begin{itemize}
+            \item Любая коллекция возвращает энумератор
+            \begin{itemize}
+                \item Есть \mintinline{csharp}{IEnumerable} и \mintinline{csharp}{IEnumerable<T>}, второй наследуется от первого
+                \item С \mintinline{csharp}{IEnumerable<T>} работает LINQ
+            \end{itemize}
+            \item Все коллекции реализуют CopyTo --- копирование в массив
+            \item Есть Capacity и Count, но не у всех коллекций
+            \item Все индексированные коллекции начинают индексы с нуля
+            \item Все коллекции из System.Collections и System.Collections.Generic не потокобезопасны
+            \item Все коллекции вида \enquote{ключ-значение} ожидают, что ключи не будут меняться
+            \begin{itemize}
+                \item Но не могут это проверить
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Какие коллекции вообще бывают}
+        \begin{small}
+            \begin{itemize}
+                \item Dictionary<TKey,TValue> --- словарь на хеш-таблицах
+                \item HashSet<T> --- множество на хеш-таблицах, умеет операции
+                \item LinkedList<T> --- двусвязный список
+                \begin{itemize}
+                    \item LinkedListNode<T>
+                \end{itemize}
+                \item List<T> --- список на массивах
+                \item PriorityQueue<TElement,TPriority> --- очередь на куче
+                \begin{itemize}
+                    \item \enquote{array-backed quaternary min-heap}
+                \end{itemize}
+                \item Queue<T> --- очередь на круговых массивах
+                \item SortedDictionary<TKey,TValue> --- словарь на красно-чёрных деревьях
+                \item SortedList<TKey,TValue> --- последовательность пар (или словарь) на сортированных списках с двоичным поиском
+                \item SortedSet<T> --- множество на красно-чёрных деревьях
+                \item Stack<T> --- стек на массивах
+            \end{itemize}
+        \end{small}
+    \end{frame}
+
+    \begin{frame}{Алгоритмическая сложность}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[1 l p] | X[1 l p] |}
+                \tabucline-
+                Операция                 & Амортизированная трудоёмкость  & Худший случай  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                Stack<T>.Push            & O(1)                           & O(n)           \\
+                Queue<T>.Enqueue         & O(1)                           & O(n)           \\
+                List<T>.Add              & O(1)                           & O(n)           \\
+                List<T>.Item[Int32]      & O(1)                           & O(1)           \\
+                List<T>.Enumerator       & O(n)                           & O(n)           \\
+                HashSet<T>.Add, поиск    & O(1)                           & O(n)           \\
+                SortedSet<T>.Add         & O(log n)                       & O(n)           \\
+                Dictionary<T>.Add        & O(1)                           & O(n)           \\
+                поиск в Dictionary<T>    & O(1)                           & O(1) или O(n)  \\
+                SortedDictionary<T>.Add  & O(log n)                       & O(n log n)     \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}{Вспомогательные интерфейсы и методы}
+        \begin{itemize}
+            \item Object.GetHashCode используется всеми коллекциями на хеш-таблицах
+            \begin{itemize}
+                \item Обязан возвращать равные значения для равных (в терминах Equals) объектов
+                \item Хеш-код нельзя хранить между запусками приложения или передавать
+            \end{itemize}
+            \item IEqualityComparer<T> --- интерфейс компаратора со встроенным GetHashCode \enquote{вне} объекта
+            \begin{itemize}
+                \item Коллекции на хеш-таблицах могут принимать его в конструктор, тогда \enquote{родной} GetHashCode игнорируется
+                \item EqualityComparer<T> и его метод Create для быстрой реализации
+            \end{itemize}
+            \item IComparer<T> --- то же для сортированных коллекций
+            \begin{itemize}
+                \item Сравнения уважают культуру
+                \begin{itemize}
+                    \item См. CultureInfo и InvariantCulture
+                \end{itemize}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Вспомогательные интерфейсы и методы (2)}
+        \begin{itemize}
+            \item IEquatable<T> --- определяет равенство \enquote{изнутри} элемента
+            \begin{itemize}
+                \item Используется в Contains, IndexOf и т.п.
+                \item Если нет, используется Object.Equals
+            \end{itemize}
+            \item IComparable<T> --- то же для сравнения объектов
+            \begin{itemize}
+                \item Есть негенериковая версия, IComparable
+                \item Если не реализован, компаратор надо передавать явно
+            \end{itemize}
+            \item IReadOnlyCollection<T> и его потомки --- часть ICollection<T> без методов изменения
+            \begin{itemize}
+                \item Никто не мешает коллекцию, которую передали по этому интерфейсу, менять извне
+                \item AsReadOnly<T> в CollectionExtensions
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Как писать свои коллекции}
+        \begin{itemize}
+            \item Не делайте этого, всё написано до вас
+            \item Collection<T> --- базовый класс для реализации своих архитектурно правильных коллекций
+            \begin{itemize}
+                \item Переопределением protected-методов InsertItem, RemoveItem, ClearItems, SetItem
+                \item Внутри по умолчанию List<T>, можно использовать \enquote{из коробки}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \section{LINQ}
+
+    \begin{frame}{Language Integrated Query}
+        \begin{itemize}
+            \item LINQ --- набор методов-расширений для операций над разными структурами данных
+            \item Прежде всего для работы с базами данных, но хорошо работает и с коллекциями (LINQ to Objects)
+            \begin{itemize}
+                \item Предназначался прежде всего, чтобы запросы к БД не надо было писать строками в коде
+            \end{itemize}
+            \item Имеет свой набор ключевых слов, делающих запрос похожим на SQL
+            \item Архитектурно интересно устроен
+            \begin{itemize}
+                \item Запрос не исполняется, пока не нужен результат (ленивость)
+                \item Запрос может транслироваться перед исполнением (например, в SQL)
+            \end{itemize}
+            \item Живёт в System.Linq
+            \item В Java ближайший аналог (но не такой навороченный) --- Stream API
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]{Пример}
+        \begin{minted}{csharp}
+string sentence = "the quick brown fox jumps over the lazy dog";
+string[] words = sentence.Split(' ');
+
+var query = words.
+    GroupBy(w => w.Length, w => w.ToUpper()).
+    Select(g => new { Length = g.Key, Words = g }).
+    OrderBy(o => o.Length);
+
+foreach (var obj in query)
+{
+    Console.WriteLine($"Words of length {obj.Length}:");
+    foreach (string word in obj.Words)
+        Console.WriteLine(word);
+}
+        \end{minted}
+        \attribution{\url{https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/}}
+    \end{frame}
+
+    \begin{frame}[fragile]{Или то же самое на встроенном языке запросов}
+        \begin{minted}{csharp}
+string sentence = "the quick brown fox jumps over the lazy dog";
+string[] words = sentence.Split(' ');
+
+var query = from word in words
+    group word.ToUpper() by word.Length into gr
+    orderby gr.Key
+    select new { Length = gr.Key, Words = gr };
+
+foreach (var obj in query)
+{
+    Console.WriteLine($"Words of length {obj.Length}:");
+    foreach (string word in obj.Words)
+        Console.WriteLine(word);
+}
+        \end{minted}
+        \attribution{\url{https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/}}
+    \end{frame}
+
+    \begin{frame}{Выборка и преобразование}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                Where       & Возвращает коллекцию, элементы которой удовлетворяют предикату (filter) \\
+                Select      & Возвращает коллекцию, полученную применением лямбда-функции к каждому элементу исходной (map) \\
+                SelectMany  & Возвращает коллекцию, полученную применением лямбда-функции, возвращающей коллекцию, к каждому элементу исходной, и склеивает результирующие коллекции в одну (collect) \\
+                Zip         & Превращает две последовательности в последовательность пар (zip) \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]{SelectMany, пример}
+        \begin{minted}{csharp}
+List<string> phrases = ["an apple a day", "the quick brown fox"];
+
+var query = phrases.SelectMany(phrases => phrases.Split(' '));
+
+foreach (string s in query)
+{
+    Console.WriteLine(s);
+}
+        \end{minted}
+        \attribution{\ssmall\url{https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/projection-operations}}
+    \end{frame}
+
+    \begin{frame}[fragile]{Zip, пример}
+        \begin{minted}{csharp}
+IEnumerable<int> numbers = [1, 2, 3, 4, 5, 6, 7];
+IEnumerable<char> letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+IEnumerable<string> emoji = [ ":)", ":D", ";)", ":(", ":/", "=^_^="];
+
+foreach ((int number, char letter, string em) 
+    in numbers.Zip(letters, emoji))
+{
+    Console.WriteLine(
+        $"Number: {number} is zipped with letter: '{letter}' and emoji: {em}");
+}
+        \end{minted}
+        \attribution{\ssmall\url{https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/projection-operations}}
+    \end{frame}
+
+    \begin{frame}{Операции над множествами}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                Distinct    & Возвращает коллекцию без дубликатов (с точки зрения Equals или переданного компаратора) \\
+                DistinctBy  & Distinct, но можно указать лямбда-функцию --- \emph{проекцию}, которая должна возвращать ключ \\
+                Except      & Возвращает элементы первой коллекции, которых нет во второй \\
+                ExceptBy    & Except, но с проекцией, отображающей элементы первой коллекции во вторую \\
+                Intersect   & Возвращает коллекцию элементов, которые встречаются в обеих исходных коллекциях \\
+                IntersectBy & Intersect с проекцией \\
+                Union       & Возвращает коллекцию элементов, которые встречаются в одной из исходных коллекций \\
+                UnionBy     & Union с проекцией \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]{DistinctBy, пример}
+        \begin{minted}{csharp}
+string[] words = ["the", "quick", "brown", "fox", "jumped", 
+    "over", "the", "lazy", "dog"];
+
+foreach (var word in words.DistinctBy(p => p.Length))
+{
+    Console.WriteLine(word);
+}
+        \end{minted}
+        \attribution{\ssmall\url{https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/set-operations}}
+    \end{frame}
+
+    \begin{frame}[fragile]{ExceptBy, пример}
+        \begin{minted}{csharp}
+string[] words = ["the", "quick", "brown", "fox", "jumped", 
+    "over", "the", "lazy", "dog"];
+int[] forbiddenLengths = [3, 4];
+
+foreach (var word in words.ExceptBy(forbiddenLengths, 
+    w => w.Length))
+{
+    Console.WriteLine(word);
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]{IntersectBy, пример}
+        \begin{minted}{csharp}
+// Student — класс со свойствами FirstName и LastName
+// Teacher — с аналогичными свойствами First и Last
+// Найдём всех студентов, кто не является учителем
+foreach (Student person in
+    students.IntersectBy(
+        teachers.Select(t => (t.First, t.Last)), 
+            s => (s.FirstName, s.LastName)))
+{
+    Console.WriteLine($"{person.FirstName} {person.LastName}");
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}{Сортировка}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                OrderBy            & Сортировка по возрастанию по ключу                                                                                  \\
+                OrderByDescending  & Сортировка по убыванию по ключу                                                                                     \\
+                ThenBy             & Сортировка по вторичному признаку (возможно, потому что методы сортировки возвращают IOrderedEnumerable<TElement>)  \\
+                ThenByDescending   & Сортировка по вторичному признаку по убыванию                                                                       \\
+                Reverse            & Развернуть коллекцию                                                                                                \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]{ThenBy, пример}
+        \begin{minted}{csharp}
+string[] fruits = { "grape", "passionfruit", "banana", "mango",
+    "orange", "raspberry", "apple", "blueberry" };
+
+// Сортируем по длине и затем равные по длине — по алфавиту 
+IEnumerable<string> query =
+    fruits.OrderBy(fruit => fruit.Length).ThenBy(fruit => fruit);
+
+foreach (string fruit in query)
+{
+    Console.WriteLine(fruit);
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}{Квантификаторы}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                All       & Возвращает true, если для всех элементов коллекции выполнен предикат           \\
+                Any       & Возвращает true, если для хотя бы одного элемента коллекции выполнен предикат  \\
+                Contains  & Возвращает true, коллекция содержит указанный элемент                          \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}{Разбиение коллекций}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                Skip       & Возвращает коллекцию без первых n элементов                                          \\
+                Take       & Возвращает коллекцию из первых n элементов                                           \\
+                SkipWhile  & Возвращает коллекцию, пропустив первые элементы, для которых выполняется предикат    \\
+                TakeWhile  & Возвращает коллекцию, из элементов до первого, для которого не выполняется предикат  \\
+                Chunk      & Делит коллекцию на куски указанного размера                                          \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]{TakeWhile, SkipWhile, пример}
+        \begin{minted}{csharp}
+foreach (int number in Enumerable.Range(0, 8).TakeWhile(n => n < 5))
+{
+    Console.WriteLine(number);
+}
+
+foreach (int number in Enumerable.Range(0, 8).SkipWhile(n => n < 5))
+{
+    Console.WriteLine(number);
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]{Chunk, пример}
+        \begin{minted}{csharp}
+int chunkNumber = 1;
+foreach (int[] chunk in Enumerable.Range(0, 8).Chunk(3))
+{
+    Console.WriteLine($"Chunk {chunkNumber++}:");
+    foreach (int item in chunk)
+    {
+        Console.WriteLine($"    {item}");
+    }
+
+    Console.WriteLine();
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}{Преобразование типов}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                Cast          & Преобразует все элементы коллекции к указанному виду                                   \\
+                OfType        & Оставляет в коллекции только значения, которые можно преобразовать к указанному типу   \\
+                ToArray       & Превращает коллекцию в массив                                                          \\
+                ToDictionary  & Превращает коллекцию в словарь, используя данную лямбду для вычисления ключа элемента  \\
+                ToList        & Превращает коллекцию в список                                                          \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]{OfType, пример}
+        \begin{minted}{csharp}
+var fruits = new System.Collections.ArrayList(4);
+fruits.Add("Mango");
+fruits.Add("Orange");
+fruits.Add("Apple");
+fruits.Add(3.0);
+fruits.Add("Banana");
+
+// Apply OfType() to the ArrayList.
+IEnumerable<string> query1 = fruits.OfType<string>();
+
+Console.WriteLine("Elements of type 'string' are:");
+foreach (string fruit in query1)
+{
+    Console.WriteLine(fruit);
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]{Cast, пример}
+        \begin{minted}{csharp}
+var fruits = new System.Collections.ArrayList();
+fruits.Add("mango");
+fruits.Add("apple");
+fruits.Add("lemon");
+
+IEnumerable<string> query =
+    fruits.Cast<string>()
+    .OrderBy(fruit => fruit)
+    .Select(fruit => fruit);
+
+foreach (string fruit in query)
+{
+    Console.WriteLine(fruit);
+}
+        \end{minted}
+        \attribution{\url{https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.cast?view=net-8.0}}
+    \end{frame}
+
+    \begin{frame}{Join}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                Join          & Zip с проекциями, которые определяют, по каким ключам выполнять JOIN  \\
+                GroupJoin     & Join, но с последующим преобразованием результата                     \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]{Join, пример}
+        \begin{minted}{csharp}
+var query = students.Join(departments,
+    student => student.DepartmentID, department => department.ID,
+    (student, department) => new { 
+        Name = $"{student.FirstName} {student.LastName}", 
+        DepartmentName = department.Name });
+
+foreach (var item in query)
+{
+    Console.WriteLine($"{item.Name} - {item.DepartmentName}");
+}
+        \end{minted}
+        \attribution{\url{https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/join-operations}}
+    \end{frame}
+
+    \begin{frame}[fragile]{GroupJoin, пример}
+        \begin{minted}{csharp}
+IEnumerable<IEnumerable<Student>> studentGroups = 
+    departments.GroupJoin(students, 
+        department => department.ID, 
+        student => student.DepartmentID,
+    (department, studentGroup) => studentGroup);
+
+foreach (IEnumerable<Student> studentGroup in studentGroups)
+{
+    Console.WriteLine("Group");
+    foreach (Student student in studentGroup)
+    {
+        Console.WriteLine($"  - {student.FirstName}, {student.LastName}");
+    }
+}
+        \end{minted}
+        \attribution{\url{https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/join-operations}}
+    \end{frame}
+
+    \begin{frame}{Группировка данных}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                GroupBy   & Раскладывает элементы коллекции по группам (IGrouping<TKey,TElement>) по данной функции-проекции  \\
+                ToLookup  & То же, что GroupBy, но выкладывает элементы в Lookup<TKey,TElement>                               \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]{GroupBy, пример}
+        \begin{minted}{csharp}
+List<int> numbers = [35, 44, 200, 84, 3987, 4, 199, 329, 446, 208];
+
+IEnumerable<IGrouping<int, int>> query = numbers
+    .GroupBy(number => number % 2);
+
+foreach (var group in query)
+{
+    Console.WriteLine(group.Key == 0 ? 
+        "\nEven numbers:" : "\nOdd numbers:");
+    foreach (int i in group)
+    {
+        Console.WriteLine(i);
+    }
+}
+        \end{minted}
+        \attribution{\url{https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/grouping-data}}
+    \end{frame}
+
+    \begin{frame}{Агрегатные операции}
+        \begin{footnotesize}
+            \begin{tabu} {| X[1 l p] | X[3 l p] |}
+                \tabucline-
+                Операция                 & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                Aggregate     & Свёртка. Применяет функцию последовательно к каждому элементу коллекции и состоянию, меняя состояние                         \\
+                Average       & Считает среднее для числовых коллекций                                                                                       \\
+                Min, Max      & Считает минимум/максимум для числовых коллекций или для любых коллекций, если передать лямбду, отображающую элемент в число  \\
+                MinBy, MaxBy  & То же, что Min/Max, но с лямбдой-проекцией и опциональным компаратором для произвольного типа ключа                          \\
+                Sum           & Считает сумму для числовых коллекций или для любых коллекций, если передать лямбду, отображающую элемент в число             \\
+            \end{tabu}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}{Типы операций}
+        \begin{itemize}
+            \item Немедленные (Immediate) --- требуют \emph{материализации} коллекции
+            \begin{itemize}
+                \item Все агрегатные операции
+                \item ToArray, ToList
+            \end{itemize}
+            \item Отложенные (ленивые, Deferred) --- исполняются только когда нужен результат
+            \begin{itemize}
+                \item Можно понимать, как энумератор, \enquote{надеваемый} на исходный
+                \item Могут возвращать разные результаты в разные моменты времени
+            \end{itemize}
+            \item Отложенные потоковые --- возвращают результат для каждого элемента исходной коллекции, если надо (например, Select, Where)
+            \item Отложенные непотоковые --- требуют просмотра всей коллекции для возврата результата (например, Order, GroupBy)
+        \end{itemize}
+    \end{frame}
+
+    \section{Подъязык LINQ}
+
+    \begin{frame}[fragile]{Встроенный язык написания запросов}
+        \begin{minted}{csharp}
+// Specify the data source.
+int[] scores = [97, 92, 81, 60];
+
+// Define the query expression.
+IEnumerable<int> scoreQuery =
+    from score in scores
+    where score > 80
+    select score;
+
+// Execute the query.
+foreach (var i in scoreQuery)
+    Console.Write($"{i} ");
+        \end{minted}
+        \begin{itemize}
+            \item Синтаксический сахар над методами, любой запрос можно записать в \enquote{методной} форме
+            \item Можно комбинировать ключевые слова и методы
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Части запроса}
+        \begin{itemize}
+            \item Начинается с from
+            \begin{itemize}
+                \item Объявляются источники данных и переменные, по которым на них будут ссылаться в запросе
+            \end{itemize}
+            \item Заканчивается на select или group
+            \item Внутри --- where, orderby, join, let или ещё from
+            \item into --- сохранить промежуточные результаты
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]{Пример}
+        \begin{small}
+            \begin{minted}{csharp}
+// percentileQuery is an IEnumerable<IGrouping<int, Country>>
+var percentileQuery =
+    from country in countries
+    let percentile = (int)country.Population / 10_000_000
+    group country by percentile into countryGroup
+    where countryGroup.Key >= 20
+    orderby countryGroup.Key
+    select countryGroup;
+
+// grouping is an IGrouping<int, Country>
+foreach (var grouping in percentileQuery)
+{
+    Console.WriteLine(grouping.Key);
+    foreach (var country in grouping)
+    {
+        Console.WriteLine(country.Name + ":" + country.Population);
+    }
+}
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+    \begin{frame}{Ключевые слова}
+        \begin{ssmall}
+            \begin{tabu} {| X[1 l p] | X[7 l p] |}
+                \tabucline-
+                Ключевое слово  & Описание  \\
+                \tabucline-
+                \everyrow{\tabucline-}
+                from        & Объявление источника данных и \enquote{range variable} (прямого аналога переменной в foreach). Транслируется в имя коллекции и параметры у лямбд  \\
+                where       & Транслируется в Where                                                                                                                             \\
+                select      & Транслируется в Select                                                                                                                            \\
+                group       & Транслируется в GroupBy вместе с by                                                                                                               \\
+                into        & Транслируется во временную переменную, хранящую результат join, group или select                                                                  \\
+                orderby     & Транслируется в OrderBy или OrderByDescending (по умолчанию OrderBy)                                                                              \\
+                join        & Транслируется в Join или GroupJoin                                                                                                                \\
+                let         & Объявляет ещё одну \enquote{range variable} для итерирования по промежуточным результатам                                                         \\
+                in          & Указывает вторую коллекцию для join                                                                                                               \\
+                on          & Указывает условие \enquote{склейки} элементов коллекций в join                                                                                    \\
+                equals      & Говорит, что должно быть равно в join ... on                                                                                                      \\
+                by          & Указывает проекцию для GroupBy                                                                                                                    \\
+                ascending   & Для orderby, указывает порядок сортировки                                                                                                         \\
+                descending  & Для orderby, указывает порядок сортировки                                                                                                         \\
+            \end{tabu}
+        \end{ssmall}
+    \end{frame}
+
+    \begin{frame}[fragile]{join, пример}
+        \begin{small}
+            \begin{minted}{csharp}
+var innerJoinQuery =
+    from category in categories
+    join prod in products on category.ID equals prod.CategoryID
+    select new { ProductName = prod.Name, Category = category.Name };
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+    \begin{frame}[fragile]{let и два from, пример}
+        \begin{small}
+            \begin{minted}{csharp}
+string[] strings = [
+    "A penny saved is a penny earned.",
+    "The early bird catches the worm.",
+    "The pen is mightier than the sword." ];
+
+// Split the sentence into an array of words
+// and select those whose first letter is a vowel.
+var earlyBirdQuery = from sentence in strings
+    let words = sentence.Split(' ')
+    from word in words
+    let w = word.ToLower()
+    where w[0] == 'a' || w[0] == 'e' || w[0] == 'i' || w[0] == 'o' || w[0] == 'u'
+    select word;
+
+// Execute the query.
+foreach (var v in earlyBirdQuery)
+    Console.WriteLine($"\"{v}\" starts with a vowel");
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+\end{document}
