@@ -15,3 +15,8 @@
   - развёртывания (для распределённых приложений);
 - небольшой обзор существующих инструментов рисования диаграмм;
 - предметно-ориентированные визуальные языки.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/18-uml/18-uml-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/18-uml/18-uml-text.pdf
