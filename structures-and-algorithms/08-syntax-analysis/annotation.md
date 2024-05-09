@@ -7,3 +7,7 @@
 - вывод в грамматике, левую рекурсию, неоднозначность;
 - алгоритмы разбора: на пальцах LL и LR, подробно рекурсивный спуск;
 - формы Бэкуса-Наура.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/structures-and-algorithms/08-syntax-analysis/08-syntax-analysis-slides.pdf

@@ -11,3 +11,7 @@
 - определить грамматику и семантические действия;
 - для FParsec — факторизовать грамматику;
 - для FParsec — описать Parse Tree и построение AST по Parse Tree.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/structures-and-algorithms/09-syntax-analysis-2/09-syntax-analysis-2-slides.pdf
