@@ -20,3 +20,8 @@
 - а Fail Fast — наоборот, добро.
 
 Пара хороших книжек про это дело: Steve McConnell, "Code Complete", Роберт Мартин, "Чистый Код".
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/20-clean-code/20-clean-code-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/20-clean-code/20-clean-code-text.pdf
