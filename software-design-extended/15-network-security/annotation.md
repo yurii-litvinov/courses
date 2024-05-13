@@ -1,3 +1,5 @@
+# Лекция 15: Основы сетевой безопасности
+
 Завершающая лекция курса — краткий обзор основных вопросов безопасности, без которых не обходится ни одно распределённое приложение, в основном по книге "Компьютерные сети" Э. Таненбаума и др., плюс немного личного опыта. Рассмотрим:
 
 - задачу обеспечения безопасности вообще;
@@ -7,4 +9,7 @@
 - сертификаты;
 - задачу аутентификации, OAuth 2.
 
-В материалах также приложены вопросы к зачёту/экзамену.
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/software-design-extended/15-network-security/15-network-security-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/software-design-extended/15-network-security/15-network-security-text.pdf 
