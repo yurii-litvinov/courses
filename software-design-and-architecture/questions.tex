@@ -10,11 +10,37 @@
 
 \usepackage[font=scriptsize]{caption}
 
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{cite}
+\usepackage{textcomp}
+
+\usepackage[hang,multiple]{footmisc}
+\renewcommand{\footnotelayout}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}\usepackage[xetex,linktocpage=true,plainpages=false,pdfpagelabels=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+
+\newlength\Colsep
+\setlength\Colsep{10pt}
+
+\usepackage{tabu}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{footnote}
+\usepackage{minted}
+
 \sloppy
 \pagestyle{plain}
 
 \title{Вопросы к зачёту <<Проектирование и архитектура ПО>>}
-\author{Юрий Литвинов\\\small{y.litvinov@spbu.ru}}
+\author{Юрий Литвинов\\\small{yurii.litvinov@gmail.com}}
 
 \begin{document}
 
@@ -22,7 +48,7 @@
 
 \section*{Вопросы к зачёту <<Проектирование и архитектура программного обеспечения>>}
 
-\begin{flushright}\begin{small}Юрий Литвинов\\\small{y.litvinov@spbu.ru}\end{small}\end{flushright}
+\begin{flushright}\begin{small}Юрий Литвинов\\\small{yurii.litvinov@gmail.com}\end{small}\end{flushright}
 
 \begin{enumerate}
     \item Понятие архитектуры, профессия <<Архитектор>>.
@@ -32,17 +58,18 @@
     \item Понятия класса и объекта, абстракция, инкапсуляция, наследование.
     \item Принципы выделения абстракций предметной области.
     \item Принципы SOLID, закон Деметры.
+    % \item Закон Деметры. Некоторые принципы хорошего объектно-ориентированного кода.
     \item Моделирование, визуальные модели, виды моделей.
     \item Язык UML. Проектирование структуры системы, диаграммы классов.
     \item Диаграммы объектов, диаграммы пакетов UML.
     \item Диаграммы компонентов, диаграммы развёртывания UML.
     \item Диаграмма случаев использования UML.
     \item Диаграмма активностей UML.
-    \item Диаграммы конечных автоматов UML.
-    \item Диаграммы последовательностей UML.
-    \item Диаграммы коммуникации UML.
-    \item Диаграммы составных структур, коопераций, временные диаграммы.
-    \item Диаграммы обзора взаимодействия, диаграммы потоков данных.
+    % \item Диаграммы конечных автоматов UML.
+    % \item Диаграммы последовательностей UML.
+    % \item Диаграммы коммуникации UML.
+    % \item Диаграммы составных структур, коопераций, временные диаграммы.
+    % \item Диаграммы обзора взаимодействия, диаграммы потоков данных.
     \item Диаграммы <<Сущность-связь>>.
     \item Понятие архитектурного стиля, трёхзвенная архитектура.
     \item Model-View-Controller, Sense-Compute-Control.
@@ -51,7 +78,7 @@
     \item Чистая архитектура.
     \item Пакетная обработка, каналы и фильтры. 
     \item Стиль Blackboard.
-    \item Событийно-ориентированные стили, Publish-Subscribe, событийная шина.
+    % \item Событийно-ориентированные стили, Publish-Subscribe, событийная шина.
     \item Понятие Domain-Driven Design, единый язык.
     \item Изоляция предметной области в DDD, антипаттерн <<Умный GUI>>.
     \item DDD, основные структурные элементы модели предметной области.
@@ -81,6 +108,14 @@
     \item Паттерн <<Хранитель>>.
     \item Паттерн <<Интерпретатор>>.
     \item Паттерн <<Итератор>>.
+    % \item Антипаттерны <<Круговая зависимость>>, <<Последовательная связность>>.
+    % \item Антипаттерны <<Вызов предка>>, <<Проблема Йо-Йо>>.
+    % \item Антипаттерны <<Активное ожидание>>, <<Сокрытие ошибки>>.
+    % \item Антипаттерны <<Магические числа>>, <<Магические строки>>.
+    % \item Антипаттерн <<Божественный объект>>.
+    % \item Антипаттерн <<Поток лавы>>.
+    % \item Антипаттерн <<Функциональная декомпозиция>>.
+    % \item Антипаттерн <<Золотой молоток>>.
     \item Понятие распределённой системы, заблуждения при проектировании распределённых систем.
     \item RPC, RMI. Пример: gRPC.
     \item Веб-сервисы, SOAP. WCF.
@@ -88,6 +123,18 @@
     \item Архитектурные стили распределённых приложений: Big Compute, Big Data.
     \item Web-queue-worker, N-звенная архитектура.
     \item Микросервисная архитектура.
+    \item Дизайн REST-интерфейса.
+    \item Принципы дизайна распределённых приложений: самовосстановление.
+    \item Паттерн <<Circuit Breaker>>.
+    \item Принципы дизайна распределённых приложений: избыточность.
+    \item Принципы дизайна распределённых приложений: минимизация координации.
+    \item Command and Query Responsibility Segregation.
+    \item CAP-теорема, модели ACID и BASE.
+    \item Принципы дизайна распределённых приложений: проектирование для обслуживания.
+    % \item Docker, назначение и основные концепции.
+    % \item Docker Compose, Docker Swarm.
+    % \item Kubernetes, назначение и архитектура.
+    % \item Облачная инфраструктура.
 \end{enumerate}
 
 \end{document}
