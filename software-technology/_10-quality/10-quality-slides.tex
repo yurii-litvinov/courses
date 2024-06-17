@@ -55,8 +55,8 @@
     \begin{frame}
         \frametitle{Модель качества ПО}
         \begin{itemize}
-            \item Характеристики качества --- отдельные точки зрения пользователя на качество
-            \item Атрибуты характеристик качества --- детализация разных аспектов характеристики
+            \item Характеристики качества~--- отдельные точки зрения пользователя на качество
+            \item Атрибуты характеристик качества~--- детализация разных аспектов характеристики
             \item Метрики качества
             \begin{itemize}
                 \item Метод измерения атрибута
@@ -290,9 +290,9 @@
             \begin{column}{0.7\textwidth}
                 \begin{itemize}
                     \item C $= E – N + 2P$
-                    \item E --- число ребер
-                    \item N --- число узлов
-                    \item P --- число компонентов связности
+                    \item E~--- число ребер
+                    \item N~--- число узлов
+                    \item P~--- число компонентов связности
                 \end{itemize}
             \end{column}
             \begin{column}{0.3\textwidth}
@@ -308,7 +308,7 @@
         \begin{itemize}
             \item Weighted Methods Per Class (WMC)
             \begin{itemize}
-                \item $WMC = \sum_{i=1}^{n}C_i$, где $C_i$ --- как-то посчитанная сложность метода $i$
+                \item $WMC = \sum_{i=1}^{n}C_i$, где $C_i$~--- как-то посчитанная сложность метода $i$
             \end{itemize}
             \item Depth of Inheritance Tree (DIT)
             \item Number of children (NOC)
@@ -318,13 +318,13 @@
             \end{itemize}
             \item Response For a Class (RFC) $= |\{M\} \cup_{i} \{R_i\}| $
             \begin{itemize}
-                \item $\{R_i\}$ --- множество методов, вызываемых методом $i$
-                \item $\{M\}$ --- множество всех методов в классе
+                \item $\{R_i\}$~--- множество методов, вызываемых методом $i$
+                \item $\{M\}$~--- множество всех методов в классе
             \end{itemize}
             \item Lack of Cohesion in Methods (LCOM)
             \begin{itemize}
-                \item NotRelated --- количество пар методов без общих полей/свойств
-                \item Related --- количество пар методов с общими полями/свойствами
+                \item NotRelated~--- количество пар методов без общих полей/свойств
+                \item Related~--- количество пар методов с общими полями/свойствами
                     \begin{equation*}
                         LCOM=\begin{cases}
                             NotRelated - Related, & \text{если}\ NotRelated > Related.\\
@@ -376,9 +376,9 @@ Integrate(function, min, max, method, precision);
         $$LCOM^* = \frac{\Biggl(\frac{1}{a}\sum\limits_{j=1}^{a}m(A_j)\Biggr) - m}{1 - m}$$
 
         \begin{itemize}
-            \item $m$ --- количество методов класса
-            \item $a$ --- количество атрибутов класса
-            \item $m(A_j)$ --- количество методов, которые имеют доступ к атрибуту $A$
+            \item $m$~--- количество методов класса
+            \item $a$~--- количество атрибутов класса
+            \item $m(A_j)$~--- количество методов, которые имеют доступ к атрибуту $A$
         \end{itemize}
     \end{frame}
 
@@ -427,8 +427,8 @@ Integrate(function, min, max, method, precision);
         \frametitle{Фактор закрытости метода (MHF)}
         $$MHF = \frac{\sum\limits_{i=1}^{TC}M_h(C_i)}{\sum\limits_{i=1}^{TC}M_a(C_i)}$$
         \begin{itemize}
-            \item $M_h(C_i)$ --- количество private-методов в классе $C_i$
-            \item $M_a(C_i)$ --- общее количество методов в классе $C_i$ (без унаследованных)
+            \item $M_h(C_i)$~--- количество private-методов в классе $C_i$
+            \item $M_a(C_i)$~--- общее количество методов в классе $C_i$ (без унаследованных)
         \end{itemize}
     \end{frame}
 
@@ -436,8 +436,8 @@ Integrate(function, min, max, method, precision);
         \frametitle{Фактор закрытости свойства (AHF)}
         $$AHF = \frac{\sum\limits_{i=1}^{TC}A_h(C_i)}{\sum\limits_{i=1}^{TC}A_a(C_i)}$$
         \begin{itemize}
-            \item $A_h(C_i)$ --- количество private-атрибутов в классе $C_i$
-            \item $A_a(C_i)$ --- общее количество атрибутов в классе $C_i$
+            \item $A_h(C_i)$~--- количество private-атрибутов в классе $C_i$
+            \item $A_a(C_i)$~--- общее количество атрибутов в классе $C_i$
         \end{itemize}
     \end{frame}
 
@@ -445,8 +445,8 @@ Integrate(function, min, max, method, precision);
         \frametitle{Фактор наследования метода (MIF)}
         $$MIF = \frac{\sum\limits_{i=1}^{TC}M_i(C_i)}{\sum\limits_{i=1}^{TC}M_a(C_i)}$$
         \begin{itemize}
-            \item $M_i(C_i)$ --- количество унаследованных и не переопределенных методов в классе $C_i$
-            \item $M_a(C_i)$ --- общее количество методов в классе $C_i$
+            \item $M_i(C_i)$~--- количество унаследованных и не переопределенных методов в классе $C_i$
+            \item $M_a(C_i)$~--- общее количество методов в классе $C_i$
         \end{itemize}
     \end{frame}
 
@@ -454,8 +454,8 @@ Integrate(function, min, max, method, precision);
         \frametitle{Фактор наследования свойства (AIF)}
         $$AIF = \frac{\sum\limits_{i=1}^{TC}A_i(C_i)}{\sum\limits_{i=1}^{TC}A_a(C_i)}$$
         \begin{itemize}
-            \item $A_i(C_i)$ --- количество унаследованных и не переопределенных атрибутов в классе $C_i$
-            \item $A_a(C_i)$ --- общее количество атрибутов в классе $C_i$
+            \item $A_i(C_i)$~--- количество унаследованных и не переопределенных атрибутов в классе $C_i$
+            \item $A_a(C_i)$~--- общее количество атрибутов в классе $C_i$
         \end{itemize}
     \end{frame}
 
@@ -463,9 +463,9 @@ Integrate(function, min, max, method, precision);
         \frametitle{Фактор полиморфизма (POF)}
         $$POF = \frac{\sum\limits_{i=1}^{TC}M_o(C_i)}{\sum\limits_{i=1}^{TC}M_n(C_i) \times DC(C_i)}$$
         \begin{itemize}
-            \item $M_o(C_i)$ --- количество унаследованных и переопределенных методов в $C_i$
-            \item $M_n(C_i)$ --- количество новых (не унаследованных и переопределенных) методов в $C_i$
-            \item $DC(C_i)$ --- количество потомков класса $C_i$
+            \item $M_o(C_i)$~--- количество унаследованных и переопределенных методов в $C_i$
+            \item $M_n(C_i)$~--- количество новых (не унаследованных и переопределенных) методов в $C_i$
+            \item $DC(C_i)$~--- количество потомков класса $C_i$
         \end{itemize}
     \end{frame}
 
@@ -481,7 +481,7 @@ Integrate(function, min, max, method, precision);
         \end{equation*}
 
         \begin{itemize}
-            \item $C_c$ => $C_s$ --- класс-клиент содержит по меньшей мере одну не унаследованную ссылку на атрибут или метод класса-поставщика
+            \item $C_c$ => $C_s$~--- класс-клиент содержит по меньшей мере одну не унаследованную ссылку на атрибут или метод класса-поставщика
         \end{itemize}
     \end{frame}
 
