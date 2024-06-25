@@ -57,7 +57,7 @@
 \newtheorem{rustheorem}{Теорема}
 
 % Setting up nice-looking hyperlinks.
-\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=1, pdfauthor=, pdfsubject=, pdfkeywords=}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdfauthor=Юрий Литвинов, pdfsubject=, pdfkeywords=}
 
 % Setting default column separator width.
 \newlength\Colsep
@@ -72,6 +72,7 @@
     \title{#1}
     \author{Юрий Литвинов\\\small{y.litvinov@spbu.ru}}
     \date{}
+    \hypersetup{pdftitle={#1}}
 }
 
 % Defining a command for attribution info, mostly for "borrowed" images:
