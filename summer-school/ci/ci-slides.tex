@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Непрерывная интеграция}{12.07.2023}
+\slidetitle{Непрерывная интеграция}{11.07.2024}
 
 \begin{document}
 
@@ -15,7 +15,7 @@
         \begin{itemize}
             \item Среда разработки не всегда доступна
             \begin{itemize}
-                \item Continuous Integration-сервера автоматически выполняют сборку после каждого коммита, там некому открыть IDE и нажать на кнопку ``запустить''
+                \item Continuous Integration-сервера автоматически выполняют сборку после каждого коммита, там некому открыть IDE и нажать на кнопку \enquote{запустить}
             \end{itemize}
             \item Воспроизводимость сборки
             \begin{itemize}
@@ -56,7 +56,7 @@
     \begin{frame}
         \frametitle{make}
         \begin{itemize}
-            \item Стандарт де-факто по ``низкоуровневым'' правилам сборки
+            \item Стандарт де-факто по \enquote{низкоуровневым} правилам сборки
             \item Сама ничего не знает про языки программирования, компиляторы и прочие подобные штуки
             \item Знает про цели, зависимости, временные штампы и правила
             \begin{itemize}
@@ -101,8 +101,8 @@ hello: ; @echo "hello"
             \end{itemize}
             \item JVM:
             \begin{itemize}
-                \item Maven --- старая, но популярная и ``архитектурно правильная''
-                \item Gradle --- несколько более ``императивна'', нынче более популярна, поддерживает Kotlin
+                \item Maven --- старая, но популярная и \enquote{архитектурно правильная}
+                \item Gradle --- несколько более \enquote{императивна}, нынче более популярна, поддерживает Kotlin
             \end{itemize}
             \item .NET --- dotnet CLI, FAKE
         \end{itemize}
@@ -113,7 +113,7 @@ hello: ; @echo "hello"
 
     \begin{frame}
         \frametitle{Continuous Integration}
-        Непрерывная интеграция --- практика слияния всех изменений по нескольку раз в день, сборки их в известном окружении и запуска юнит-тестов.
+        Непрерывная интеграция --- практика слияния всех изменений по нескольку раз в день, сборки их в известном окружении и запуска модульных тестов.
         \begin{itemize}
             \item Автоматическая сборка
             \begin{itemize}
@@ -122,7 +122,7 @@ hello: ; @echo "hello"
             \item Большое количество юнит-тестов, запускаемых автоматически
             \item Выделенная машина, слушающая репозиторий и выполняющая сборку
             \begin{itemize}
-                \item Чаще всего каждая сборка запускается на заранее настроенной виртуалке или в Docker-контейнере
+                \item Чаще всего каждая сборка запускается на заранее настроенной виртуальной машине или в Docker-контейнере
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -132,12 +132,12 @@ hello: ; @echo "hello"
         \begin{itemize}
             \item Извещение всех разработчиков о статусе
             \begin{itemize}
-                \item Если билд не прошёл, разработка приостанавливается до его починки
+                \item Если сборка не прошла, разработка приостанавливается до её починки
             \end{itemize}
             \item Автоматическое выкладывание
-            \item Пока билд не прошёл, задача не считается сделанной
+            \item Пока сборка не прошла, задача не считается сделанной
             \begin{itemize}
-                \item Короткие билды (<10 мин.)
+                \item Короткие сборки (<10 мин.)
                 \item deployment pipeline
                 \begin{itemize}
                     \item Отдельная машина для сборки, для коротких тестов, для длинных тестов, для выкладывания
@@ -176,6 +176,21 @@ hello: ; @echo "hello"
         И появятся иконки статуса рядом с коммитами и пуллреквестами
     \end{frame}
 
+    \begin{frame}
+        \frametitle{GitHub Actions, Workflow и Job}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{githubActionsWorkflow}
+        \end{center}
+        \begin{itemize}
+            \item Step --- это либо скрипт, либо \emph{Action}
+            \item Action --- произвольный код (по сути, отдельное приложение), выполняющийся как шаг Job-а
+            \begin{itemize}
+                \item Переиспользуемый строительный блок
+                \item Можно переиспользовать Workflow-ы
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
     \begin{frame}[fragile]
         \frametitle{Типичный Workflow для сборки}
         \begin{scriptsize}
@@ -186,8 +201,8 @@ jobs:
     build-Ubuntu:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-dotnet@v1
+            - uses: actions/checkout@v4
+            - uses: actions/setup-dotnet@v4
               with:
                   dotnet-version: '7.x'
             - name: Build
@@ -204,21 +219,6 @@ jobs:
               run: For /R %%I in (*.sln) do dotnet test %%I
             \end{minted}
         \end{scriptsize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{GitHub Actions, Workflow и Job}
-        \begin{center}
-            \includegraphics[width=0.7\textwidth]{githubActionsWorkflow.png}
-        \end{center}
-        \begin{itemize}
-            \item Step --- это либо скрипт, либо \emph{Action}
-            \item Action --- произвольный код (по сути, отдельное приложение), выполняющийся как шаг Job-а
-            \begin{itemize}
-                \item Переиспользуемый строительный блок
-                \item Можно переиспользовать Workflow-ы
-            \end{itemize}
-        \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]
