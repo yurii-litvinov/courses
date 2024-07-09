@@ -22,7 +22,7 @@ int main()
     std::cout << "Hello, world!" << std::endl;
 }
             \end{minted}
-        \item Создаём CMakeLists.txt такого содержания:
+        \item Создаём \verb|CMakeLists.txt| такого содержания:
             \begin{minted}{cmake}
 cmake_minimum_required(VERSION 3.20)
 
@@ -34,13 +34,13 @@ add_executable(Hello main.cpp)
     \item Проверяем, что собирается локально
     \begin{itemize}
         \item Создаём папку build в корне репозитория
-        \item Делаем cmake ../src
-        \item Делаем cmake --build .
+        \item Делаем \verb|cmake ../src|
+        \item Делаем \verb|cmake --build .|
         \item Идём в Debug, запускаем бинарник, проверяем, что всё ок
     \end{itemize}
     \item Коммитим-пушим
-    \item Создаём папку .github/workflows
-    \item Создаём workflow ci.yml вот такого содержания:
+    \item Создаём папку \verb|.github/workflows|
+    \item Создаём workflow \verb|ci.yml| вот такого содержания:
     \begin{minted}{yaml}
 name: CI
 
