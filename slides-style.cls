@@ -11,6 +11,8 @@
 % Loading common packages
 \usepackage{polyglossia}
 \setdefaultlanguage[babelshorthands=true]{russian}
+\setotherlanguage{english}
+
 \usepackage{tabu}
 \usepackage{moresize}
 \usepackage{bookmark}
