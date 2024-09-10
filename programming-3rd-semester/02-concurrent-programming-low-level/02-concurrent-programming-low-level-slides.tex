@@ -84,21 +84,18 @@ public void Thread2() {
     \begin{frame}[fragile]
         \frametitle{Ещё один способ прострелить себе ногу}
         \begin{minted}{csharp}
-static void Main(string[] args)
-{
-    var stop = false;
-    var thread = new Thread(() => {
-        stop = true;
-    });
+var stop = false;
+var thread = new Thread(() => {
+    stop = true;
+});
 
-    thread.Start();
+thread.Start();
 
-    while (!stop);
+while (!stop);
 
-    thread.Join();
+thread.Join();
 
-    Console.WriteLine("Done.");
-}
+Console.WriteLine("Done.");
         \end{minted}
     \end{frame}
 
@@ -112,18 +109,14 @@ static void Main(string[] args)
                     \begin{minted}{csharp}
 public int  result;
 
-public void ThreadA()
-{
-    for (int i = 1; i <= 1000; i++) 
-    {
+public void ThreadA() {
+    for (int i = 1; i <= 1000; i++) {
         result++;
     }
 }
 
-public void ThreadB()
-{
-    for (int i = 1; i <= 1000; i++) 
-    {
+public void ThreadB() {
+    for (int i = 1; i <= 1000; i++) {
         result++; 
     }
 }
@@ -136,18 +129,14 @@ public void ThreadB()
                     \begin{minted}{csharp}
 public int  result;
 
-public void ThreadA()
-{
-    for (int i = 1; i <= 1000; i++) 
-    {
+public void ThreadA() {
+    for (int i = 1; i <= 1000; i++) {
         Interlocked.Increment(ref result);
     }
 }
 
-public void ThreadB()
-{
-    for (int i = 1; i <= 1000; i++) 
-    {
+public void ThreadB() {
+    for (int i = 1; i <= 1000; i++) {
         Interlocked.Increment(ref result); 
     }
 }
@@ -172,10 +161,8 @@ public void ThreadB()
             \begin{minted}{csharp}
 private int turn = 0;
 
-void Task1()
-{
-    while (true)
-    {
+void Task1() {
+    while (true) {
         while (turn != 0);
         CriticalSection();
         turn = 1;
@@ -183,10 +170,8 @@ void Task1()
     }
 }
 
-void Task2()
-{
-    while (true)
-    {
+void Task2() {
+    while (true) {
         while (turn != 1) ;
         CriticalSection();
         turn = 0;
@@ -220,7 +205,7 @@ void Task2()
         \framesubtitle{Producer-consumer problem}
         \begin{footnotesize}
             \begin{minted}{csharp}
-private Queue<int> buffer = new Queue<int>();
+private Queue<int> buffer = new();
             \end{minted}
             \begin{columns}
                 \begin{column}{0.5\textwidth}
@@ -276,18 +261,16 @@ private void Consumer() {
         \frametitle{Производитель-потребитель на семафорах}
         \begin{footnotesize}
             \begin{minted}{csharp}
-private Queue<int> buffer = new Queue<int>();
-private Semaphore mutex = new Semaphore(0, 1);
-private Semaphore empty = new Semaphore(100, 100);
-private Semaphore full = new Semaphore(0, 100);
+private Queue<int> buffer = new();
+private Semaphore mutex = new(0, 1);
+private Semaphore empty = new(100, 100);
+private Semaphore full = new(0, 100);
             \end{minted}
             \begin{columns}
                 \begin{column}{0.5\textwidth}
                     \begin{minted}{csharp}
-private void Producer()
-{
-    while (true)
-    {
+private void Producer() {
+    while (true) {
         var item = ProduceItem();
         empty.WaitOne();
         mutex.WaitOne();
@@ -300,10 +283,8 @@ private void Producer()
                 \end{column}
                 \begin{column}{0.5\textwidth}
                     \begin{minted}{csharp}
-private void Consumer()
-{
-    while (true)
-    {
+private void Consumer() {
+    while (true) {
         full.WaitOne();
         mutex.WaitOne();
         var item = buffer.Dequeue();
@@ -339,18 +320,16 @@ private void Consumer()
         \frametitle{Производитель-потребитель на семафорах и мьютексе}
         \begin{footnotesize}
             \begin{minted}{csharp}
-private Queue<int> buffer = new Queue<int>();
-private Mutex mutex = new Mutex();
-private Semaphore empty = new Semaphore(100, 100);
-private Semaphore full = new Semaphore(0, 100);
+private Queue<int> buffer = new();
+private Mutex mutex = new();
+private Semaphore empty = new(100, 100);
+private Semaphore full = new(0, 100);
             \end{minted}
             \begin{columns}
                 \begin{column}{0.5\textwidth}
                     \begin{minted}{csharp}
-private void Producer()
-{
-    while (true)
-    {
+private void Producer() {
+    while (true) {
         var item = ProduceItem();
         empty.WaitOne();
         mutex.WaitOne();
@@ -363,10 +342,8 @@ private void Producer()
                 \end{column}
                 \begin{column}{0.5\textwidth}
                     \begin{minted}{csharp}
-private void Consumer()
-{
-    while (true)
-    {
+private void Consumer() {
+    while (true) {
         full.WaitOne();
         mutex.WaitOne();
         var item = buffer.Dequeue();
@@ -404,8 +381,7 @@ private void Consumer()
                 \begin{column}{0.5\textwidth}
                     \begin{minted}{csharp}
 private class SynchronizedQueue {
-    private Queue<int> buffer = 
-        new Queue<int>();
+    private Queue<int> buffer = new();
 
     public void Enqueue(int item) {
         lock (buffer) {
@@ -430,8 +406,7 @@ private class SynchronizedQueue {
                 \end{column}
                 \begin{column}{0.5\textwidth}
                     \begin{minted}{csharp}
-private SynchronizedQueue buffer = 
-    new SynchronizedQueue();
+private SynchronizedQueue buffer = new();
 
 private void Producer() {
     while (true) {
@@ -455,7 +430,7 @@ private void Consumer() {
     \begin{frame}[fragile]
         \frametitle{lock в .NET}
         \begin{itemize}
-            \item У каждого объекта (сылочного типа) есть скрытое поле, указывающее на структуру синхронизации
+            \item У каждого объекта (ссылочного типа) есть скрытое поле, указывающее на структуру синхронизации
             \item lock использует именно её
             \begin{itemize}
                 \item То есть lock в одной критической секции, но на разные объекты --- это разные мониторы
@@ -469,7 +444,7 @@ private void Consumer() {
         \end{itemize}
         \begin{footnotesize}
             \begin{minted}{csharp}
-private Object lockObject = new Object();
+private Object lockObject = new();
 
 private void SomeMethod() {
     lock (lockObject) {
@@ -503,19 +478,18 @@ private void SomeMethod() {
             \begin{minted}{csharp}
 internal class SimpleWaitLock : IDisposable {
     private readonly AutoResetEvent available;
-    public SimpleWaitLock() {
-        available = new AutoResetEvent(true); 
-    }
 
-    public void Enter() {
-        available.WaitOne();
-    }
+    public SimpleWaitLock() 
+        => available = new AutoResetEvent(true); 
+
+    public void Enter() 
+        => available.WaitOne();
 
     public void Leave() {
-        available.Set();
-    }
+        => available.Set();
 
-    public void Dispose() { available.Dispose(); }
+    public void Dispose() 
+        => available.Dispose();
 }
             \end{minted}
         \end{small}
