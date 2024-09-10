@@ -16,3 +16,8 @@
   - про принцип Fail Fast и защитное программирование.
 
 Лекция намеренно содержит несколько провокационные высказывания, чтобы спровоцировать дискуссию. Не бойтесь брать слово и возражать, соглашаться, либо просто высказывать свои мысли.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/software-design/02-object-oriented-design/02-object-oriented-design-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/software-design/02-object-oriented-design/02-object-oriented-design-text.pdf
