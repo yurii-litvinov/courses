@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Сортировки}{20.09.2023}
+\slidetitle{Сортировки}{25.09.2024}
 
 \begin{document}
     
@@ -8,22 +8,22 @@
         \titlepage
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Комментарии по домашке}
-        \begin{itemize}
-            \item Не возвращайте 0, если программа завершилась с ошибкой
-            \item Закомментированный код не нужен
-            \item \mintinline{c}|int* a = NULL;| vs \mintinline{c}|int *a = NULL;|
-            \item strlen работает за линейное время, плохо использовать её в цикле без нужды
-            \item \mintinline{c}|char*| vs \mintinline{c}|const char*| в параметрах функций
-            \item Передавать ли длину строки?
-            \item Не спрашивайте длину строки при вводе
-            \item Если функция может не выполниться, используйте коды возврата
-        \end{itemize}
-    \end{frame}
+    % \begin{frame}
+    %     \frametitle{Комментарии по домашке}
+    %     \begin{itemize}
+    %         \item Не возвращайте 0, если программа завершилась с ошибкой
+    %         \item Закомментированный код не нужен
+    %         \item \mintinline{c}|int* a = NULL;| vs \mintinline{c}|int *a = NULL;|
+    %         \item strlen работает за линейное время, плохо использовать её в цикле без нужды
+    %         \item \mintinline{c}|char*| vs \mintinline{c}|const char*| в параметрах функций
+    %         \item Передавать ли длину строки?
+    %         \item Не спрашивайте длину строки при вводе
+    %         \item Если функция может не выполниться, используйте коды возврата
+    %     \end{itemize}
+    % \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Пример}
+        \frametitle{Коды возврата}
         \begin{scriptsize}
             \begin{minted}{c}
 int fibonacci(int n, int *result)
@@ -81,48 +81,48 @@ if (errorCode != 0) {
         \end{scriptsize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Ещё комментарии}
-        Не пишите так:
-        \begin{minted}{c}
-if (x == 10) 
-{
-    return true;
-}
-else
-{
-    return false;
-}
-        \end{minted}
-        Пишите так:
-        \begin{minted}{c}
-return x == 10;
-        \end{minted}
-    \end{frame}
+%     \begin{frame}[fragile]
+%         \frametitle{Ещё комментарии}
+%         Не пишите так:
+%         \begin{minted}{c}
+% if (x == 10) 
+% {
+%     return true;
+% }
+% else
+% {
+%     return false;
+% }
+%         \end{minted}
+%         Пишите так:
+%         \begin{minted}{c}
+% return x == 10;
+%         \end{minted}
+%     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{И ещё комментарии}
-        \begin{itemize}
-            \item Предупреждения компилятора
-            \item Выделение памяти с инициализацией нулями
-        \end{itemize}
-        \begin{minted}{c}
-int *array = (int*)calloc(size, sizeof(int));
-if (array == NULL) 
-{
-    printf("Всё очень плохо :(")
-    return -1;
-}
-...
-free(array);
-        \end{minted}
-    \end{frame}
+%     \begin{frame}[fragile]
+%         \frametitle{И ещё комментарии}
+%         \begin{itemize}
+%             \item Предупреждения компилятора
+%             \item Выделение памяти с инициализацией нулями
+%         \end{itemize}
+%         \begin{minted}{c}
+% int *array = (int*)calloc(size, sizeof(int));
+% if (array == NULL) 
+% {
+%     printf("Всё очень плохо :(")
+%     return -1;
+% }
+% ...
+% free(array);
+%         \end{minted}
+%     \end{frame}
     
     \begin{frame}
         \frametitle{Свойства сортировок}
         \begin{itemize}
             \item Работают над любыми контейнерами данных
-            \item Есть понятие ``ключ''
+            \item Есть понятие \enquote{ключ}
             \item Устойчивость --- сохраняется ли взаимное расположение элементов с одинаковым ключом
             \item Естественность --- учёт степени отсортированности исходных данных
             \item Внутренняя сортировка --- работает над данными, целиком помещающимися в память
@@ -157,7 +157,7 @@ free(array);
             \begin{column}{0.6\textwidth}
                 \begin{itemize}
                     \item Сортировка вставкой подпоследовательностей в массиве с постепенно убывающим шагом
-                    \item Элементы ``быстрее'' встают на свои места
+                    \item Элементы \enquote{быстрее} встают на свои места
                     \begin{itemize}
                         \item Сортировка вставкой на каждом шаге уменьшает количество инверсий максимум на 1
                     \end{itemize}
@@ -253,6 +253,9 @@ algorithm partition(A, lo, hi) is
                     \item Не требует дополнительной памяти
                     \item Неустойчива
                     \item Требует произвольного доступа к памяти
+                    \begin{itemize}
+                        \item Что очень плохо для кеша процессора
+                    \end{itemize}
                     \item Сложна в реализации
                 \end{itemize}
             \end{column}
