@@ -8,6 +8,18 @@
         \titlepage
     \end{frame}
 
+    \begin{frame}
+        \frametitle{Комментарии по домашке}
+        \begin{itemize}
+            \item Булевые функции возвращают true или false, не 0 или 1
+            \item Используйте assert (из assert.h) для проверки инвариантов
+            \item Не пишите \mintinline{c}|x += 1|, пишите \mintinline{c}|++x|
+            \item Надо ли передавать в функции длину строки?
+            \item Можно ли считать strlen в цикле?
+            \item Если функция может не выполниться, используйте коды возврата
+        \end{itemize}
+    \end{frame}
+
     % \begin{frame}
     %     \frametitle{Комментарии по домашке}
     %     \begin{itemize}
@@ -81,24 +93,24 @@ if (errorCode != 0) {
         \end{scriptsize}
     \end{frame}
 
-%     \begin{frame}[fragile]
-%         \frametitle{Ещё комментарии}
-%         Не пишите так:
-%         \begin{minted}{c}
-% if (x == 10) 
-% {
-%     return true;
-% }
-% else
-% {
-%     return false;
-% }
-%         \end{minted}
-%         Пишите так:
-%         \begin{minted}{c}
-% return x == 10;
-%         \end{minted}
-%     \end{frame}
+    \begin{frame}[fragile]
+        \frametitle{Ещё комментарии}
+        Не пишите так:
+        \begin{minted}{c}
+if (x == 10) 
+{
+    return true;
+}
+else
+{
+    return false;
+}
+        \end{minted}
+        Пишите так:
+        \begin{minted}{c}
+return x == 10;
+        \end{minted}
+    \end{frame}
 
 %     \begin{frame}[fragile]
 %         \frametitle{И ещё комментарии}
