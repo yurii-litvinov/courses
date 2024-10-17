@@ -8,5 +8,5 @@
 
 ---
 
-- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-3rd-semester/06-networks-2/06-networks-2-slides.pdf
-- Конспект: https://github.com/yurii-litvinov/courses/blob/master/programming-3rd-semester/06-networks-2/06-networks-2-text.pdf
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-3rd-semester/07-networks-practice/08-networks-practice-slides.pdf
+- Конспект: https://github.com/yurii-litvinov/courses/blob/master/programming-3rd-semester/07-networks-practice/08-networks-practice-text.pdf
