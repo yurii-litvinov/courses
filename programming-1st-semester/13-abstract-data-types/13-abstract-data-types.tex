@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Абстрактные типы данных}{18.10.2023}
+\slidetitle{Абстрактные типы данных}{23.10.2024}
 
 \begin{document}
     
@@ -13,7 +13,7 @@
         \begin{itemize}
             \item АТД --- некоторая математическая модель и набор операций, определённый в рамках этой модели
             \begin{itemize}
-                \item Обобщение понятия ``тип''
+                \item Обобщение понятия \enquote{тип}
             \end{itemize}
             \item Состоит из типа данных и операций, выполняющих над ним преобразования
             \begin{itemize}
@@ -65,7 +65,7 @@
             \end{itemize}
             \item Список может хранить разные типы элементов
             \begin{itemize}
-                \item typedef --- ``шаблоны для бедных''
+                \item typedef --- \enquote{шаблоны для бедных}
                 \begin{itemize}
                     \item 
                     \begin{footnotesize}
@@ -89,9 +89,6 @@ struct ListElement {
             \item Некоторое логическое условие, верное всё время жизни АТД
             \begin{itemize}
                 \item Не совсем, внутри функции АТД инвариант может нарушаться
-                \begin{itemize}
-                    \item Не всегда, потому что бывают многопоточные программы
-                \end{itemize}
             \end{itemize}
             \item АТД отвечает за поддержание своего инварианта
             \begin{itemize}
