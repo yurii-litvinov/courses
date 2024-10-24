@@ -31,6 +31,7 @@
             \begin{itemize}
                 \item Медленно
                 \item Нет помощи от системы типов
+                \item Плохо работает с Ahead-of-time-компиляцией
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -49,15 +50,14 @@
             \begin{itemize}
                 \item .dll или .exe, единица развёртывания программы
                 \begin{itemize}
-                    \item На самом деле это неправда, детали см. в CLR via C\#
+                    \item Для .NET Framework это только \emph{почти} всегда так, детали см. в CLR via C\#
                 \end{itemize}
             \end{itemize}
             \item Сборка хранит метаинформацию:
             \begin{itemize}
                 \item Таблицы модулей, типов, методов, полей, параметров, свойств и событий
             \end{itemize}
-            \item На всё это можно посмотреть в ILDasm
-            \item AppDomain --- логическая группа сборок во время выполнения
+            \item На всё это можно посмотреть в ILDasm (поставляется с VS), ILSpy, DotPeek
         \end{itemize}
     \end{frame}
 
@@ -70,8 +70,7 @@ public class Assembly {
     public static Assembly Load(String assemblyString);
     public static Assembly Load(byte[] rawAssembly)
     public static Assembly LoadFrom(String path);
-    public static Assembly ReflectionOnlyLoad(String assemblyString);
-    public static Assembly ReflectionOnlyLoadFrom(String assemblyFile);
+    ...
 }
             \end{minted}
             например,
@@ -83,38 +82,42 @@ var a = Assembly.LoadFrom(@"http://example.com/ExampleAssembly.dll");
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Сильные и слабые имена сборок (1)}
+        \frametitle{Загрузка только метаданных сборки}
         \begin{itemize}
-            \item Сильные сборки подписаны асимметричным шифром
+            \item MetadataLoadContext --- словарь, отображающий имя сборки в загруженные метаданные
+            \item Работает, даже когда сборку нельзя загрузить по-настоящему
             \begin{itemize}
-                \item Публичная часть ключа внедряется в саму сборку
-                \item От сборки считается SHA-1-хеш, шифруется приватным ключом и внедряется в сборку
-                \item CLR при загрузке сборки считает от неё SHA-1-хеш и проверяет, что он совпал с подписанным
-                \item Позволяет проверить, что сборка именно такая, какой её собирал автор, но не позволяет проверить идентичность автора
+                \item Например, для другой целевой платформы
+            \end{itemize}
+            \item Живёт в отдельном NuGet-пакете System.Reflection.MetadataLoadContex
+            \item MetadataAssemblyResolver --- абстракция алгоритма поиска нужной сборки
+            \begin{itemize}
+                \item PathAssemblyResolver --- ищет сборки в переданных путях
+                \item Пути должны включать не только целевую сборку, но и все её зависимости (как минимум, \mintinline{csharp}|typeof(object).Assembly.Location|)
             \end{itemize}
         \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Сильные и слабые имена сборок (2)}
+        \frametitle{Сильные и слабые имена сборок}
         \begin{itemize}
+            \item Сильные сборки подписаны асимметричным шифром
+            \begin{itemize}
+                \item Публичная часть ключа внедряется в саму сборку
+                \item От сборки считается SHA-1-хеш, шифруется приватным ключом и внедряется в сборку
+                \item CLR при загрузке сборки раньше считал от неё SHA-1-хеш и проверял, что он совпал с подписанным
+            \end{itemize}
             \item Пример сильного имени:
             \begin{scriptsize}
                 \begin{minted}{csharp}
 "MyTypes, Version=1.0.8123.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
                 \end{minted}
             \end{scriptsize}
-            \begin{itemize}
-                \item Однозначно идентифицирует сборку
-                \item PublicKeyToken --- короткий хеш публичного ключа
-                \begin{itemize}
-                    \item Естественно, не криптостоек, поэтому CLR проверяет настоящий ключ при загрузке сборки
-                \end{itemize}
-            \end{itemize}
+            \item PublicKeyToken --- короткий хеш публичного ключа
             \item Сборка с сильным именем может ссылаться только на сборки с сильными именами
-            \item Сборка с сильным именем может быть установлена в GAC
+            \item В современном .NET не очень актуально
             \begin{itemize}
-                \item GACUtil --- утилита для манипуляции GAC, в стандартной поставке
+                \item В силу уклона в контейнеризацию и \enquote{xcopy deployment}
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -122,27 +125,20 @@ var a = Assembly.LoadFrom(@"http://example.com/ExampleAssembly.dll");
     \begin{frame}[fragile]
         \frametitle{Пример}
         \framesubtitle{Распечатать имена всех типов в сборке}
-        \begin{footnotesize}
-            \begin{minted}{csharp}
-using System;
+        \begin{minted}{csharp}
 using System.Reflection;
 
-public static class Program {
-    public static void Main() {
-        string dataAssembly = "System.Data, version=4.0.0.0, "
-                + "culture=neutral, PublicKeyToken=b77a5c561934e089";
-        LoadAssemblyAndShowPublicTypes(dataAssembly);
-    }
+var assembly = Assembly.Load("Example");
 
-    private static void LoadAssemblyAndShowPublicTypes(string assemblyId) {
-        var a = Assembly.Load(assemblyId);
-        foreach (Type t in a.ExportedTypes) {
-            Console.WriteLine(t.FullName);
-        }
-    }
+foreach (Type t in assembly.GetTypes())
+{
+    Console.WriteLine(t.FullName);
 }
-            \end{minted}
-        \end{footnotesize}
+        \end{minted}
+        \begin{itemize}
+            \item Уже загруженную сборку так не загрузить (ошибки не будет, но список типов будет пустым)
+            \item Бывает GetTypes, DefinedTypes, GetExportedTypes
+        \end{itemize}
     \end{frame}
 
     \section{Типы}
@@ -171,24 +167,15 @@ var zero = Activator.CreateInstance("mscorlib.dll", "System.Int32").Unwrap();
 
     \begin{frame}[fragile]
         \frametitle{Создание экземпляра типа-генерика}
-        \begin{footnotesize}
-            \begin{minted}{csharp}
-using System;
-using System.Reflection;
+        \begin{minted}{csharp}
+Type openType = typeof(Dictionary<,>);
+Type closedType = openType.MakeGenericType(
+        typeof(string), typeof(int));
+object o = Activator.CreateInstance(closedType);
+Console.WriteLine(o.GetType());
 
 internal sealed class Dictionary<TKey, TValue> { }
-
-public static class Program {
-    public static void Main() {
-        Type openType = typeof(Dictionary<,>);
-        Type closedType = openType.MakeGenericType(
-                typeof(String), typeof(Int32));
-        Object o = Activator.CreateInstance(closedType);
-        Console.WriteLine(o.GetType());
-    }
-}
-            \end{minted}
-        \end{footnotesize}
+        \end{minted}
     \end{frame}
 
     \begin{frame}
@@ -198,7 +185,7 @@ public static class Program {
             \begin{itemize}
                 \item Менять её будет очень проблематично
             \end{itemize}
-            \item Сделать ``ядро системы'' --- отдельную сборку, ссылающуюся на сборку с интерфейсом плагина
+            \item Сделать \enquote{ядро системы} --- отдельную сборку, ссылающуюся на сборку с интерфейсом плагина
             \item Делать набор плагинов, ссылающихся на сборку с интерфейсом плагина и реализующих его
         \end{itemize}
     \end{frame}
@@ -206,10 +193,10 @@ public static class Program {
     \begin{frame}[fragile]
         \frametitle{Пример: интерфейс плагина}
         \begin{minted}{csharp}
-namespace MyCoolSystem.SDK {
-    public interface IAddIn {
-        string DoSomething(int x);
-    }
+namespace MyCoolSystem.SDK;
+
+public interface IAddIn {
+    string DoSomething(int x);
 }
         \end{minted}
     \end{frame}
@@ -220,15 +207,13 @@ namespace MyCoolSystem.SDK {
 using MyCoolSystem.SDK;
 
 public sealed class AddInA : IAddIn {
-    public String DoSomething(int x) {
-        return "AddInA: " + x.ToString();
-    }
+    public String DoSomething(int x)
+        => "AddInA: " + x.ToString();
 }
 
 public sealed class AddInB : IAddIn {
-    public String DoSomething(int x) {
-        return "AddInB: " + (x * 2).ToString();
-    }
+    public String DoSomething(int x)
+        => "AddInB: " + (x * 2).ToString();
 }
         \end{minted}
     \end{frame}
@@ -237,24 +222,22 @@ public sealed class AddInB : IAddIn {
         \frametitle{Пример: ядро системы}
         \begin{scriptsize}
             \begin{minted}{csharp}
-public static class Program
-{
-    public static void Main()
-    {
-        string addInDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-        var addInAssemblies = Directory.EnumerateFiles(addInDir, "*.dll");
-        var addInTypes =
-            addInAssemblies.Select(Assembly.Load)
-                .SelectMany(a => a.ExportedTypes)
-                .Where(t => t.IsClass 
-                        && typeof(IAddIn).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()));
+using System.Reflection;
 
-        foreach (Type t in addInTypes)
-        {
-            var addIn = (IAddIn)Activator.CreateInstance(t);
-            Console.WriteLine(addIn.DoSomething(5));
-        }
-    }
+string addInDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) 
+    ?? throw new Exception("Unable to load assembly");
+
+var addInAssemblies = Directory.EnumerateFiles(addInDir, "*.dll");
+var addInTypes =
+    addInAssemblies.Select(Assembly.Load)
+        .SelectMany(a => a.ExportedTypes)
+        .Where(t => t.IsClass
+                && typeof(IAddIn).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()));
+
+foreach (Type t in addInTypes)
+{
+    var addIn = Activator.CreateInstance(t) as IAddIn;
+    Console.WriteLine(addIn?.DoSomething(5));
 }
             \end{minted}
         \end{scriptsize}
@@ -289,26 +272,21 @@ public static class Program
         \frametitle{Пример: распечатать информацию о полях и методах}
         \begin{scriptsize}
             \begin{minted}{csharp}
-using System;
 using System.Reflection;
 
-public static class Program {
-    public static void Main() {
-        Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        foreach (Assembly a in assemblies) {
-            Console.WriteLine($"Assembly: {a}");
-            foreach (Type t in a.ExportedTypes) {
-                Console.WriteLine($"  Type: {t}");
-                foreach (MemberInfo mi in t.GetTypeInfo().DeclaredMembers) {
-                    var typeName = mi switch {
-                        FieldInfo _ => "FieldInfo",
-                        MethodInfo _ => "MethodInfo",
-                        ConstructorInfo _ => "ConstructorInfo",
-                        _ => ""
-                    };
-                    Console.WriteLine($"    {typeName}: {mi}");
-                }
-            }
+Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+foreach (Assembly a in assemblies) {
+    Console.WriteLine($"Assembly: {a}");
+    foreach (Type t in a.ExportedTypes) {
+        Console.WriteLine($"  Type: {t}");
+        foreach (MemberInfo mi in t.GetTypeInfo().DeclaredMembers) {
+            var typeName = mi switch {
+                FieldInfo _ => "FieldInfo",
+                MethodInfo _ => "MethodInfo",
+                ConstructorInfo _ => "ConstructorInfo",
+                _ => ""
+            };
+            Console.WriteLine($"    {typeName}: {mi}");
         }
     }
 }
@@ -342,27 +320,54 @@ public static class Program {
         \frametitle{Пример: создать объект и вызвать его метод}
         \begin{scriptsize}
             \begin{minted}{csharp}
-using System;
 using System.Reflection;
-using System.Linq;
 
-internal sealed class SomeType {
+Type t = typeof(SomeType);
+Type ctorArgument = Type.GetType("System.Int32") ?? throw new Exception("Failed to load Int32");
+ConstructorInfo ctor = t.GetTypeInfo().DeclaredConstructors.First(
+        c => c.GetParameters()[0].ParameterType == ctorArgument);
+object obj = ctor.Invoke([12]);
+MethodInfo mi = obj.GetType().GetTypeInfo().GetDeclaredMethod("DoSomething") 
+    ?? throw new Exception("Failed to find method");
+
+int result = (int)(mi.Invoke(obj, [3]) ?? throw new Exception("Method returned null"));
+Console.WriteLine($"result = {result}");
+
+internal sealed class SomeType
+{
     public SomeType(int test) { }
     private int DoSomething(int x) => x * 2;
 }
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
 
-public static class Program {
-    public static void Main() {
-        Type t = typeof(SomeType);
-        Type ctorArgument = Type.GetType("System.Int32");
-        ConstructorInfo ctor = t.GetTypeInfo().DeclaredConstructors.First(
-                c => c.GetParameters()[0].ParameterType == ctorArgument);
-        Object[] args = { 12 };
-        Object obj = ctor.Invoke(args);
-        MethodInfo mi = obj.GetType().GetTypeInfo().GetDeclaredMethod("DoSomething");
-        int result = (int)mi.Invoke(obj, new object[]{3});
-        Console.WriteLine($"result = {result}");
-    }
+    \begin{frame}[fragile]{UnsafeAccessorAttribute}
+        \begin{itemize}
+            \item Атрибут, генерирующий код доступа к закрытому члену класса
+            \item Появился в .NET 8
+            \item \enquote{Рефлексия для бедных}, но в десятки раз быстрее рефлексии
+        \end{itemize}
+        Пример:
+        \begin{scriptsize}
+            \begin{minted}{csharp}
+using System.Runtime.CompilerServices;
+
+static void CallStaticPrivateMethod() {
+    StaticPrivateMethod(null);
+
+    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = nameof(StaticPrivateMethod))]
+    extern static void StaticPrivateMethod(Class c);
+}
+static void GetSetStaticPrivateField() {
+    ref int f = ref GetSetStaticPrivateField(null);
+
+    [UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "StaticPrivateField")]
+    extern static ref int GetSetStaticPrivateField(Class c);
+}
+public class Class {
+    static void StaticPrivateMethod() { }
+    static int StaticPrivateField;
 }
             \end{minted}
         \end{scriptsize}
@@ -398,9 +403,7 @@ public enum Animal
 public class AnimalTypeAttribute : Attribute
 {
     public AnimalTypeAttribute(Animal pet)
-    {
-        this.Pet = pet;
-    }
+        => this.Pet = pet;
 
     public Animal Pet { get; set; }
 }
@@ -430,21 +433,20 @@ class AnimalTypeTestClass
         \frametitle{Получение атрибута рефлексией}
         \begin{footnotesize}
             \begin{minted}{csharp}
-static void Main(string[] args)
-{
-    var testClass = new AnimalTypeTestClass();
-    Type type = testClass.GetType();
+using System.Reflection;
 
-    foreach (MethodInfo mInfo in type.GetMethods())
+var testClass = new AnimalTypeTestClass();
+Type type = testClass.GetType();
+
+foreach (MethodInfo mInfo in type.GetMethods())
+{
+    foreach (Attribute attr in Attribute.GetCustomAttributes(mInfo))
     {
-        foreach (Attribute attr in Attribute.GetCustomAttributes(mInfo))
-        {
-            // Check for the AnimalType attribute.
-            if (attr.GetType() == typeof(AnimalTypeAttribute))
-                Console.WriteLine(
-                    "Method {0} has a pet {1} attribute.",
-                    mInfo.Name, ((AnimalTypeAttribute)attr).Pet);
-        }
+        // Check for the AnimalType attribute.
+        if (attr.GetType() == typeof(AnimalTypeAttribute))
+            Console.WriteLine(
+                $"Method {mInfo.Name} has a pet " +
+                $"{((AnimalTypeAttribute)attr).Pet} attribute.");
     }
 }
             \end{minted}
@@ -454,234 +456,15 @@ static void Main(string[] args)
     \begin{frame}[fragile]
         \frametitle{Ограничение области применения атрибута}
         \begin{minted}{csharp}
-namespace System {
-    [AttributeUsage(AttributeTargets.Enum, Inherited = false)]
-    public class FlagsAttribute : System.Attribute {
-        public FlagsAttribute() {
-        }
+namespace System;
+
+[AttributeUsage(AttributeTargets.Enum, Inherited = false)]
+public class FlagsAttribute : System.Attribute {
+    public FlagsAttribute() {
     }
 }
         \end{minted}
         Атрибуты у атрибутов!
-    \end{frame}
-
-    \section{Сериализация}
-
-    \begin{frame}
-        \frametitle{Библиотеки сериализации}
-        \begin{itemize}
-            \item Нужны для передачи объектов по сети или сохранения объектов
-            \item Часто используемые форматы
-            \begin{itemize}
-                \item XML
-                \item JSON
-                \item Protobuf
-            \end{itemize}
-            \item Активно используют рефлексию
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Пример, сериализация в XML, System.Xml.Serialization}
-        \framesubtitle{Данные}
-        \begin{footnotesize}
-            \begin{minted}{csharp}
-public class Point
-{
-    public Point() { }
-    public Point(int x, int y) { this.X = x; this.Y = y; }
-    public int X { get; set; }
-    public int Y { get; set; }
-}
-
-public class SomeData
-{
-    public int Radius { get; set; }
-    public Point Center { get; set; }
-    public List<Point> Points { get; } = new List<Point>();
-}
-            \end{minted}
-        \end{footnotesize}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Сама сериализация}
-        \begin{small}
-            \begin{minted}{csharp}
-var data = new SomeData { Radius = 10, Center = new Point(5, 5)};
-data.Points.Add(new Point(1, 1));
-data.Points.Add(new Point(2, 2));
-
-var serializer = new XmlSerializer(typeof(SomeData));
-using (var textWriter = new StringWriter())
-{
-    serializer.Serialize(textWriter, data);
-    Console.WriteLine(textWriter.ToString());
-}
-            \end{minted}
-        \end{small}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Результат}
-        \begin{small}
-            \begin{minted}{xml}
-<?xml version="1.0" encoding="utf-16"?>
-<SomeData xmlns:xsi="..." xmlns:xsd="...">
-    <Radius>10</Radius>
-    <Center>
-        <X>5</X>
-        <Y>5</Y>
-    </Center>
-    <Points>
-        <Point>
-            <X>1</X>
-            <Y>1</Y>
-        </Point>
-        <Point>
-            <X>2</X>
-            <Y>2</Y>
-        </Point>
-    </Points>
-</SomeData>
-            \end{minted}
-        \end{small}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{То же с Newtonsoft.Json}
-        \begin{small}
-            \begin{minted}{csharp}
-var data = new SomeData { Radius = 10, Center = new Point(5, 5)};
-data.Points.Add(new Point(1, 1));
-data.Points.Add(new Point(2, 2));
-
-var jsonSerializer = new JsonSerializer() { Formatting = Formatting.Indented };
-using (var textWriter = new StringWriter())
-{
-    jsonSerializer.Serialize(textWriter, data);
-    Console.WriteLine(textWriter.ToString());
-}
-            \end{minted}
-        \end{small}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Результат}
-        \begin{small}
-            \begin{minted}{json}
-{
-  "Radius": 10,
-  "Center": {
-    "X": 5,
-    "Y": 5
-  },
-  "Points": [
-    {
-      "X": 1,
-      "Y": 1
-    },
-    {
-      "X": 2,
-      "Y": 2
-    }
-  ]
-}
-            \end{minted}
-        \end{small}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Сериализация графа объектов}
-        \framesubtitle{Дьявол в деталях}
-        \begin{small}
-            \begin{minted}{csharp}
-var center = new Point(5, 5);
-var data = new SomeData { Radius = 10, Center = center };
-data.Points.Add(new Point(1, 1));
-data.Points.Add(center);
-
-var jsonSerializer = new JsonSerializer() {
-    Formatting = Formatting.Indented,
-    PreserveReferencesHandling = PreserveReferencesHandling.All
-};
-using (var textWriter = new StringWriter())
-{
-    jsonSerializer.Serialize(textWriter, data);
-    Console.WriteLine(textWriter.ToString());
-}
-            \end{minted}
-        \end{small}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Результат}
-        \begin{footnotesize}
-            \begin{minted}{json}
-{
-  "$id": "1",
-  "Radius": 10,
-  "Center": {
-    "$id": "2",
-    "X": 5,
-    "Y": 5
-  },
-  "Points": [
-    {
-      "$id": "3",
-      "X": 1,
-      "Y": 1
-    },
-    {
-      "$ref": "2"
-    }
-  ]
-}
-            \end{minted}
-        \end{footnotesize}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Десериализация}
-        \begin{minted}{csharp}
-var deserializedData = 
-    JsonConvert.DeserializeObject<SomeData>(serializedData);
-Console.WriteLine(deserializedData.Radius);
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Управление именами полей}
-        \begin{minted}{csharp}
-public class Videogame
-{
-    [JsonProperty("name")]
-    public string Name { get; set; }
-
-    [JsonProperty("release_date")]
-    public DateTime ReleaseDate { get; set; }
-}
-        \end{minted}
-        \attribution{https://www.newtonsoft.com}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Управление тем, что надо сериализовать, а что нет}
-        \begin{minted}{csharp}
-[JsonObject(MemberSerialization.OptIn)]
-public class File
-{
-    // Это поле не сериализуется,
-    // потому что у него нет JsonPropertyAttribute
-    public Guid Id { get; set; }
-
-    [JsonProperty]
-    public string Name { get; set; }
-
-    [JsonProperty]
-    public int Size { get; set; }
-}
-        \end{minted}
     \end{frame}
 
     \section{dynamic}
@@ -690,16 +473,14 @@ public class File
         \frametitle{Ключевое слово dynamic}
         \begin{scriptsize}
             \begin{minted}{csharp}
-using System;
-
-internal static class DynamicDemo
+static class DynamicDemo
 {
     public static void Main()
     {
         dynamic value;
         for (int demo = 0; demo < 2; demo++)
         {
-            value = (demo == 0) ? (dynamic)5 : (dynamic)"A";
+            value = (demo == 0) ? 5 : "A";
             value = value + value;
             M(value);
         }
@@ -712,10 +493,23 @@ internal static class DynamicDemo
         \end{scriptsize}
     \end{frame}
 
-    \section{ILGenerator}
+    \section{Динамические сборки}
 
     \begin{frame}[fragile]
-        \frametitle{Генерация кода ``на лету''}
+        \frametitle{Динамические сборки}
+        \begin{itemize}
+            \item Динамическая сборка --- сборка, существующая только в памяти
+            \item Генерируется в рантайме средствами из System.Reflection.Emit
+            \item Может быть сохранена на диск
+            \begin{itemize}
+                \item Всегда хотели написать свой язык и компилятор, но боитесь машинно-зависимых оптимизаций?
+            \end{itemize}
+            \item Для .NET неотличима от обычной сборки
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Генерация кода \enquote{на лету}}
         \begin{scriptsize}
             \begin{minted}{csharp}
 public static void Main() {
