@@ -11,7 +11,7 @@
     \section{Введение}
 
     \begin{frame}
-        \frametitle{Попробуем написать что-нибудь ``настоящее''}
+        \frametitle{Попробуем написать что-нибудь \enquote{настоящее}}
         \begin{itemize}
             \item Приложение для регистрации на конференцию
             \item Титульная страница конференции со ссылкой на форму регистрации
@@ -21,7 +21,10 @@
             \end{itemize}
             \item Страница, на которой можно просмотреть всех зарегистрировавшихся
             \item Итого, многостраничное приложение на Razor Pages
-            \item Create a new project -> ASP.NET Core Web App
+            \item Create a new project -> ASP.NET Core Web App (Microsoft)
+            \begin{itemize}
+                \item С именем \enquote{ConferenceRegistration}
+            \end{itemize}
         \end{itemize}
     \end{frame}
 
@@ -50,6 +53,7 @@
 
     \begin{frame}[fragile]
         \frametitle{Моделирование данных}
+        \framesubtitle{Registration.cshtml/Registration.cs}
         \begin{minted}{csharp}
 namespace ConferenceRegistration.Pages;
 
@@ -115,11 +119,11 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SPISOK-2024 registration</title>
+        <title>SPISOK-2025 registration</title>
     </head>
     <body>
         <div>
-            <p>SPISOK-2024 conference will be (likely) held in April in St. Petersburg.</p>
+            <p>SPISOK-2025 conference will be (unlikely, but...) held in April in St. Petersburg.</p>
             <a asp-page="Registration">Register now!</a>
         </div>
     </body>
@@ -481,12 +485,12 @@ public class RegistrationModel : PageModel
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
-        <title>SPISOK-2024 registration</title>
+        <title>SPISOK-2025 registration</title>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
     </head>
     <body>
         <div class="text-center">
-            <h3>SPISOK-2024 conference will be held in April in St. Petersburg.</h3>
+            <h3>SPISOK-2025 conference will be (unlikely, but...) held in April in St. Petersburg.</h3>
             <a class="btn btn-primary" asp-page="Registration">Register now!</a>
         </div>
     </body>
