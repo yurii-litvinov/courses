@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Консоль и системы сборки}{17.11.2023}
+\slidetitle{Консоль и системы сборки}{29.11.2024}
 
 \begin{document}
     
@@ -10,8 +10,7 @@
 
     \section{Консоль}
 
-    \begin{frame}
-        \frametitle{Консоль, зачем}
+    \begin{frame}{Консоль, зачем}
         \begin{itemize}
             \item Программы с интерфейсом командной строки
             \begin{itemize}
@@ -23,8 +22,7 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Интерпретаторы командной строки, терминалы}
+    \begin{frame}{Интерпретаторы командной строки, терминалы}
         Командные интерпретаторы
         \begin{itemize}
             \item Windows
@@ -45,8 +43,7 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{cmd}
+    \begin{frame}{cmd}
         \begin{itemize}
             \item Есть в любой Windows из коробки, но лучше поставить Far
             \begin{itemize}
@@ -71,8 +68,7 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{.bat-файлы}
+    \begin{frame}[fragile]{.bat-файлы}
         \begin{itemize}
             \item echo ``Hello, world''
             \item Параметры командной строки
@@ -96,12 +92,11 @@ for /l %x in (1, 1, 100) do echo %x
         Ctrl-C --- прервать выполнение скрипта (если что-то пошло не так), Ctrl-D --- конец входного потока
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{.sh-файлы}
+    \begin{frame}[fragile]{.sh-файлы}
         \begin{itemize}
             \item Зависят от интерпретатора (bash, zsh, csh, …)
             \begin{itemize}
-                \item \#!/bin/bash --- ``shebang''
+                \item \#!/bin/bash --- \enquote{shebang}
             \end{itemize}
             \item echo ``Hello, world''
             \item Параметры командной строки
@@ -132,8 +127,7 @@ done
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Код возврата}
+    \begin{frame}[fragile]{Код возврата}
         \framesubtitle{cmd}
         \begin{itemize}
             \item Можно проверить тот самый return -1 из main-а и в зависимости от него сделать или не сделать что-нибудь
@@ -149,15 +143,14 @@ if not errorlevel 0 (
         \end{minted}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Переменные окружения (Windows)}
+    \begin{frame}{Переменные окружения (Windows)}
         \begin{itemize}
             \item \%<имя переменной>\%
             \item echo \%path\%
             \item set OLOLO=ololo
             \item Глобальный контекст
             \begin{itemize}
-                \item ``Панель управления'' -> ``Система'' -> ``Дополнительные параметры системы'' -> ``Переменные среды''
+                \item \enquote{Панель управления} -> \enquote{Система} -> \enquote{Дополнительные параметры системы} -> \enquote{Переменные среды}
                 \item setx --- требует админских прав
             \end{itemize}
             \item PATH
@@ -171,8 +164,7 @@ if not errorlevel 0 (
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Переменные окружения (Linux)}
+    \begin{frame}{Переменные окружения (Linux)}
         \begin{itemize}
             \item \$<имя переменной>
             \item echo \$PATH
@@ -191,12 +183,11 @@ if not errorlevel 0 (
 
     \section{Системы сборки}
 
-    \begin{frame}
-        \frametitle{Системы сборки}
+    \begin{frame}{Системы сборки}
         \begin{itemize}
             \item Среда разработки не всегда доступна
             \begin{itemize}
-                \item Continuous Integration-сервера автоматически выполняют сборку после каждого коммита, там некому открыть Visual Studio и нажать на кнопку ``запустить''
+                \item Continuous Integration-сервера автоматически выполняют сборку после каждого коммита, там некому открыть Visual Studio и нажать на кнопку \enquote{запустить}
             \end{itemize}
             \item Воспроизводимость сборки
             \begin{itemize}
@@ -212,8 +203,7 @@ if not errorlevel 0 (
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Сборка вручную без IDE}
+    \begin{frame}[fragile]{Сборка вручную без IDE}
         \begin{itemize}
             \item Visual Studio:
             \begin{footnotesize}
@@ -251,10 +241,9 @@ g++ -Wall -o helloworld helloworld.c
 
     \section{make}
 
-    \begin{frame}
-        \frametitle{make}
+    \begin{frame}{make}
         \begin{itemize}
-            \item Стандарт де-факто по ``низкоуровневым'' правилам сборки
+            \item Стандарт де-факто по \enquote{низкоуровневым} правилам сборки
             \item Сама ничего не знает про языки программирования, компиляторы и прочие подобные штуки
             \item Знает про цели, зависимости, временные штампы и правила
             \begin{itemize}
@@ -268,8 +257,7 @@ g++ -Wall -o helloworld helloworld.c
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Пример}
+    \begin{frame}[fragile]{Пример}
         \begin{footnotesize}
             \begin{minted}{make}
 target [target ...]: [component ...]
@@ -288,8 +276,7 @@ hello: ; @echo "hello"
         \end{footnotesize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Продвинутые штуки}
+    \begin{frame}[fragile]{Продвинутые штуки}
         \begin{itemize}
             \item Переменные
             \begin{itemize}
@@ -316,12 +303,11 @@ lynx -dump $<   >   $@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Под Windows}
+    \begin{frame}{Под Windows}
         \begin{itemize}
             \item mingw32-make
             \begin{itemize}
-                \item Используется в mingw (``Minimalist GNU for Windows'')
+                \item Используется в mingw (\enquote{Minimalist GNU for Windows})
                 \begin{itemize}
                     \item Порт gcc на Windows
                 \end{itemize}
@@ -339,8 +325,7 @@ lynx -dump $<   >   $@
 
     \section{Системы сборки}
 
-    \begin{frame}
-        \frametitle{Высокоуровневые системы сборки}
+    \begin{frame}{Высокоуровневые системы сборки}
         \begin{itemize}
             \item Либо сами вызывают необходимые инструменты, либо генерируют мейкфайлы
             \item MSBuild
@@ -358,8 +343,7 @@ lynx -dump $<   >   $@
 
     \section{CMake}
 
-    \begin{frame}
-        \frametitle{CMake}
+    \begin{frame}{CMake}
         \begin{itemize}
             \item С открытым исходным кодом (\url{https://gitlab.kitware.com/cmake/cmake})
             \item Прежде всего для сборки C++-проектов, но умеет много чего
@@ -376,8 +360,7 @@ lynx -dump $<   >   $@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Конфигурация CMake}
+    \begin{frame}{Конфигурация CMake}
         \begin{itemize}
             \item CMakeLists.txt в корне проекта
             \item Также могут быть в подкаталогах (для иерархичной конфигурации)
@@ -386,8 +369,7 @@ lynx -dump $<   >   $@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Минимальный пример}
+    \begin{frame}[fragile]{Минимальный пример}
         \begin{minted}{text}
 cmake_minimum_required(VERSION 3.20)
 project(Hello)
@@ -396,8 +378,7 @@ add_executable(Hello Hello.c)
         \end{minted}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Out-of-source-сборка}
+    \begin{frame}[fragile]{Out-of-source-сборка}
         \begin{columns}
             \begin{column}{0.5\textwidth}
                 \begin{minted}{text}
@@ -420,8 +401,7 @@ source
         \end{columns}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Фазы сборки}
+    \begin{frame}{Фазы сборки}
         \begin{itemize}
             \item Конфигурация
             \begin{itemize}
@@ -438,8 +418,7 @@ source
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Основные понятия}
+    \begin{frame}{Основные понятия}
         \begin{itemize}
             \item Команды
             \begin{itemize}
@@ -457,8 +436,7 @@ source
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Ветвления}
+    \begin{frame}[fragile]{Ветвления}
         \begin{minted}{text}
 if (UNIX)
     message(STATUS "Running on Unix")
@@ -472,8 +450,7 @@ endif()
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Цели}
+    \begin{frame}{Цели}
         \begin{itemize}
             \item Декларативное описание того, что хочется собрать
             \item Исполняемые файлы
@@ -491,8 +468,7 @@ endif()
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Что ещё умеет}
+    \begin{frame}{Что ещё умеет}
         \begin{itemize}
             \item Конфигурации: Debug, Release, RelWithDebInfo, MinSizeRel
             \begin{itemize}
@@ -512,8 +488,7 @@ endif()
 
     \section{CI}
 
-    \begin{frame}
-        \frametitle{Continuous Integration}
+    \begin{frame}{Continuous Integration}
         \begin{itemize}
             \item Эталонное и единое для проекта окружение, в котором выполняется сборка
             \begin{itemize}
@@ -525,8 +500,7 @@ endif()
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{GitHub Actions}
+    \begin{frame}{GitHub Actions}
         \begin{itemize}
             \item Бесплатная система облачной сборки для проектов на GitHub
             \item \url{https://docs.github.com/en/actions}
