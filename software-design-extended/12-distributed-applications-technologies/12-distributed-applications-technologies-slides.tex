@@ -10,8 +10,7 @@
 
     \section{Введение}
 
-    \begin{frame}
-        \frametitle{Распределённые системы}
+    \begin{frame}{Распределённые системы}
         \begin{itemize}
             \item Компоненты приложения находятся в компьютерной сети
             \item Взаимодействуют через обмен сообщениями
@@ -25,8 +24,7 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Частые заблуждения при проектировании распределённых систем}
+    \begin{frame}{Частые заблуждения при проектировании распределённых систем}
         \begin{itemize}
             \item Сеть надёжна
             \item Задержка (latency) равна нулю
@@ -34,7 +32,7 @@
             \item Сеть безопасна
             \item Топология сети неизменна
             \item Администрирование сети централизовано
-            \item Передача данных ``бесплатна''
+            \item Передача данных \enquote{бесплатна}
             \item Сеть однородна
         \end{itemize}
         \attribution{\url{https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing}}
@@ -42,13 +40,12 @@
 
     \section{Архитектура распределённых систем}
 
-    \begin{frame}
-        \frametitle{Виды взаимодействия}
+    \begin{frame}{Виды взаимодействия}
         \begin{itemize}
             \item Межпроцессное взаимодействие
             \item Удалённые вызовы
             \begin{itemize}
-                \item Протоколы вида ``запрос-ответ''
+                \item Протоколы вида \enquote{запрос-ответ}
                 \item Удалённые вызовы процедур (remote procedure calls, RPC)
                 \item Удалённые вызовы методов (remote method invocation, RMI)
             \end{itemize}
@@ -56,13 +53,12 @@
             \begin{itemize}
                 \item Распределённая общая память
                 \item Очереди сообщений
-                \item Модель ``издатель-подписчик''
+                \item Модель \enquote{издатель-подписчик}
             \end{itemize}
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Варианты размещения}
+    \begin{frame}{Варианты размещения}
         \begin{columns}
             \begin{column}{0.6\textwidth}
                 \begin{itemize}
@@ -82,15 +78,13 @@
 
     \section{RPC, RMI}
 
-    \begin{frame}
-        \frametitle{RPC}
+    \begin{frame}{RPC}
         \begin{center}
             \includegraphics[width=0.6\textwidth]{rpc.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Прозрачность RPC-вызовов}
+    \begin{frame}{Прозрачность RPC-вызовов}
         \begin{itemize}
             \item Изначальная цель --- максимальная похожесть на обычные вызовы
             \begin{itemize}
@@ -102,24 +96,21 @@
                 \begin{itemize}
                     \item Exponential backoff
                 \end{itemize}
-                \item Клиенты должны знать о задержках при передаче данных
-                \begin{itemize}
-                    \item Возможность прервать вызов
-                \end{itemize}
             \end{itemize}
-            \item Явная маркировка удалённых вызовов?
+            \item Клиенты должны знать о задержках при передаче данных
             \begin{itemize}
-                \item Прозрачность синтаксиса
-                \item Явное отличие в интерфейсах
-                \begin{itemize}
-                    \item Указание семантики вызова
-                \end{itemize}
+                \item Возможность прервать вызов
+            \end{itemize}
+            \item Семантика вызова
+            \begin{itemize}
+                \item Exactly once
+                \item At most once
+                \item At least once
             \end{itemize}
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{RMI}
+    \begin{frame}{RMI}
         \begin{itemize}
             \item Локальные и удалённые объекты
             \item Интерфейсы удалённых объектов
@@ -136,8 +127,7 @@
 
     \subsection{protobuf}
 
-    \begin{frame}
-        \frametitle{Protocol buffers}
+    \begin{frame}{Protocol buffers}
         \framesubtitle{protobuf}
         \begin{itemize}
             \item Механизм сериализации-десериализации данных
@@ -181,8 +171,7 @@ john.writeTo(output);
 
     \subsection{gRPC}
 
-    \begin{frame}
-        \frametitle{gRPC}
+    \begin{frame}{gRPC}
         \begin{columns}
             \begin{column}{0.6\textwidth}
                 \begin{itemize}
@@ -200,8 +189,7 @@ john.writeTo(output);
         \end{columns}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Технические подробности}
+    \begin{frame}[fragile]{Технические подробности}
         \begin{itemize}
             \item Сервисы описываются в том же .proto-файле, что и протокол protobuf-а
             \item В качестве типов параметров и результатов --- message-и protobuf-а
@@ -220,8 +208,7 @@ service RouteGuide {
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Реализация сервиса на Java}
+    \begin{frame}[fragile]{Реализация сервиса на Java}
         \begin{scriptsize}
             \begin{minted}{java}
 private static class RouteGuideService extends RouteGuideGrpc.RouteGuideImplBase {
@@ -249,8 +236,7 @@ private static class RouteGuideService extends RouteGuideGrpc.RouteGuideImplBase
         \end{scriptsize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Реализация сервиса на Java (2)}
+    \begin{frame}[fragile]{Реализация сервиса на Java (2)}
         \begin{scriptsize}
             \begin{minted}{java}
     @Override
@@ -279,8 +265,7 @@ private static class RouteGuideService extends RouteGuideGrpc.RouteGuideImplBase
         \end{scriptsize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Реализация клиента на Java (1)}
+    \begin{frame}[fragile]{Реализация клиента на Java (1)}
         \begin{scriptsize}
             \begin{minted}{java}
 public RouteGuideClient(String host, int port) {
@@ -296,8 +281,7 @@ public RouteGuideClient(ManagedChannelBuilder<?> channelBuilder) {
         \end{scriptsize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Реализация клиента на Java (2)}
+    \begin{frame}[fragile]{Реализация клиента на Java (2)}
         \begin{scriptsize}
             \begin{minted}{java}
 public void getFeature(int lat, int lon) {
@@ -326,8 +310,7 @@ public void getFeature(int lat, int lon) {
 
     \section{Веб-сервисы}
 
-    \begin{frame}
-        \frametitle{Веб-сервисы}
+    \begin{frame}{Веб-сервисы}
         \begin{itemize}
             \item Каждый веб-сервис --- отдельная система, представляющая что-то вроде RPC/RMI интерфейса
             \item Cложные приложения как интеграция веб-сервисов
@@ -348,8 +331,7 @@ public void getFeature(int lat, int lon) {
 
     \subsection{SOAP-сервисы}
 
-    \begin{frame}
-        \frametitle{SOAP-ориентированные сервисы}
+    \begin{frame}{SOAP-ориентированные сервисы}
         \begin{columns}
             \begin{column}{0.6\textwidth}
                 \begin{itemize}
@@ -366,8 +348,7 @@ public void getFeature(int lat, int lon) {
         \end{columns}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{SOAP-сообщение}
+    \begin{frame}[fragile]{SOAP-сообщение}
         \begin{small}
             \begin{minted}{xml}
 <env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope">
@@ -387,8 +368,7 @@ public void getFeature(int lat, int lon) {
         \end{small}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{WSDL-описание}
+    \begin{frame}[fragile]{WSDL-описание}
         \begin{small}
             \begin{minted}{xml}
 <message name="getTermRequest">
@@ -705,7 +685,7 @@ internal record WeatherForecast(DateTime Date,
                 \item Даже если отправитель и получатель доступны в разное время
                 \item Локальное хранилище сообщений на каждом устройстве
             \end{itemize}
-            \item Реализуют модель ``издатель-подписчик'', но могут работать и в режиме ``точка-точка''
+            \item Реализуют модель \enquote{издатель-подписчик}, но могут работать и в режиме \enquote{точка-точка}
             \item Как правило, имеют развитые возможности маршрутизации, фильтрации и преобразования сообщений
             \begin{itemize}
                 \item Разветвители, агрегаторы, преобразователи порядка
@@ -789,7 +769,7 @@ channel.BasicConsume(queue: "hello", autoAck: true, consumer: consumer);
             \begin{itemize}
                 \item Сообщение посылается на сервер и хранится там вечно (ну, почти), получатель при обработке его не удаляет
                 \item Индекс текущего сообщения хранит сам получатель, может отмотать назад
-                \item Подход ``Event Sourcing'' --- не храним состояние, храним набор событий, позволяющих его получить
+                \item Подход \enquote{Event Sourcing} --- не храним состояние, храним набор событий, позволяющих его получить
                 \item Гораздо лучше с распределённостью
             \end{itemize}
             \item Быстрее RabbitMQ, лучше масштабируется
