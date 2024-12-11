@@ -146,10 +146,13 @@ ENTRYPOINT ["dotnet", "ConferenceRegistration.dll"]
         \frametitle{Пушим на Docker Hub}
         \begin{itemize}
             \item Регистрируемся на Docker Hub
-            \item docker images ls
+            \item docker images
             \item docker image tag conferenceregistration:latest <ваш юзернейм на Docker Hub>/conferenceregistration:latest
             \item docker push <ваш юзернейм на Docker Hub>/conferenceregistration:latest
-            \item docker run -d -p 80:80 <ваш юзернейм на Docker Hub>/conferenceregistration:latest
+            \begin{itemize}
+                \item Может потребоваться сначала авторизоваться командой docker login
+            \end{itemize}
+            \item docker run -d -p 80:8080 <ваш юзернейм на Docker Hub>/conferenceregistration:latest
         \end{itemize}
     \end{frame}
 
@@ -166,16 +169,29 @@ ENTRYPOINT ["dotnet", "ConferenceRegistration.dll"]
     \end{frame}
 
     \begin{frame}
-        \frametitle{Загрузка образа в Yandex Container Registry}
+        \frametitle{Загрузка образа в Yandex Container Registry (1)}
         \begin{itemize}
             \item Логинимся в \url{https://console.cloud.yandex.ru}
             \item Создаём облако и каталог (кнопкой "+" слева  вверху)
             \item Ставим себе локально Yandex Cloud CLI
-            \item Делаем yc init, авторизуемся
+            \begin{itemize}
+                \item См. \url{https://yandex.cloud/ru/docs/cli/operations/install-cli}
+            \end{itemize}
+            \item Делаем yc init, авторизуемся (оно попросит авторизоваться с яндексовским аккаунтом и покажет в браузере токен, который надо вставить в консоль)
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Загрузка образа в Yandex Container Registry (2)}
+        \begin{itemize}
             \item Создаём реестр Docker-образов: \mintinline{text}|yc container registry create --name my-first-registry|
             \item Говорим Docker про аутентификацию в Yandex Container Registry: \mintinline{text}|yc container registry configure-docker|
             \item Присваиваем нашему образу тэг вида \mintinline{text}|cr.yandex/<ID реестра>/<имя Docker-образа>:<тег>|
-            \item Пушим, например: \mintinline{text}|docker push cr.yandex/crpc9qeoft236r8tfalm/ubuntu:hello|
+            \begin{itemize}
+                \item docker image tag conferenceregistration:latest cr.yandex/<ID реестра>/conferenceregistration:latest
+                \item ID реестра выдал \mintinline{text}|yc container registry create|, его же можно посмотреть в \url{https://console.yandex.cloud}
+            \end{itemize}
+            \item Пушим, например: \mintinline{text}|docker push cr.yandex/crpc9qeoft236r9tfalm/| \\ \mintinline{text}|conferenceregistration:latest|
             \item Идём в консоль Яндекса и проверяем
         \end{itemize}
     \end{frame}
