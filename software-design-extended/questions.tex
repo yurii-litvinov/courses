@@ -1,6 +1,3 @@
-% Шаблон списка вопросов, который включает в себя вообще весь материал, который может быть в курсе.
-% Под каждое конкретное прочтение из него делается список вопросов вырезанием тех, которые не успели пройти.
-
 \documentclass[a5paper]{article}
 \usepackage[a5paper, top=8mm, bottom=8mm, left=8mm, right=8mm]{geometry}
 
@@ -8,8 +5,10 @@
 \setdefaultlanguage{russian}
 
 \usepackage{fontspec}
-\setmainfont{Liberation Serif}
-\newfontfamily{\cyrillicfont}{Liberation Serif}
+%\setmainfont{Liberation Serif}
+\setmainfont{FreeSerif}
+%\newfontfamily{\cyrillicfont}{Liberation Serif}
+\newfontfamily{\cyrillicfont}{FreeSerif}
 
 \usepackage[style=russian]{csquotes}
 
@@ -20,27 +19,31 @@
 
 \thispagestyle{empty}
 
-\section*{Вопросы к зачёту/экзамену \enquote{Архитектура и проектирование информационных систем}}
+% \section*{Вопросы к зачёту/экзамену \enquote{Архитектура и проектирование информационных систем}}
+\section*{Вопросы к экзамену \enquote{Принципы разработки и проектирования}}
 
-\begin{flushright}\begin{small}Юрий Литвинов\\\small{y.litvinov@spbu.ru}\end{small}\end{flushright}
+\begin{flushright}\begin{small}Юрий Литвинов\\\small{yurii.v.litvinov@yandex.ru}\end{small}\end{flushright}
 
 \begin{enumerate}
     \item Понятие архитектуры, профессия \enquote{Архитектор}.
     \item Архитектурные виды.
     \item Роль архитектуры в жизненном цикле программного обеспечения. Понятия prescriptive и descriptive-архитектуры.
-    % \item Пример архитектуры: Apache Hadoop. Понятия prescriptive и descriptive-архитектуры.
     \item Понятие декомпозиции. Модульность, связность, сопряжение, сложность.
     \item Понятия класса и объекта, абстракция, инкапсуляция, наследование. 
     \item Принципы выделения объектов.
-    \item Принципы SOLID. Закон Деметры.
+    \item Принципы SOLID. % Закон Деметры.
     \item Моделирование, визуальные модели, виды моделей, метафора визуализации.
-    \item Язык UML. Диаграмма классов.
-    % \item Диаграммы объектов, диаграммы пакетов UML.
-    \item Диаграмма компонентов UML.
-    \item Моделирование требований: диаграмма случаев использования UML, диаграмма характеристик, Feature tree.
-    \item Диаграмма активностей UML, BPMN.
-    \item Моделирование данных: диаграммы \enquote{Сущность-связь}, ORM-диаграммы.
-    \item Диаграммы конечных автоматов, последовательностей UML.
+    \item Язык UML. Диаграммы классов.
+    \item Диаграммы объектов, диаграммы пакетов UML.
+    \item Диаграммы компонентов UML, диаграммы развёртывания UML.
+    \item Диаграммы случаев использования UML.
+    \item Диаграммы IDEF0 (контекстные), характеристик, Feature tree.
+    \item Диаграммы активностей UML.
+    \item Язык BPMN.
+    \item Диаграммы \enquote{Сущность-связь}.
+    \item Концептуальное моделирование, диаграммы ORM.
+    \item Диаграммы конечных автоматов UML.
+    \item Диаграммы последовательностей UML.
     \item Диаграммы коммуникации, составных структур UML.
     \item Диаграммы коопераций, временные диаграммы UML.
     \item Диаграммы обзора взаимодействия, диаграммы потоков данных.
@@ -70,7 +73,7 @@
     \item Паттерн \enquote{Интерпретатор}.
     \item Паттерн \enquote{Итератор}.
     \item Понятие архитектурного стиля, трёхзвенная архитектура.
-    \item Model-View-Controller, Sense-Compute-Control.
+    \item Шаблоны Model-View-Controller, Sense-Compute-Control.
     \item Слоистый стиль, \enquote{Клиент-сервер}.
     \item Гексагональная архитектура, луковая архитектура.
     \item Чистая архитектура.
@@ -80,7 +83,7 @@
     % \item Peer-to-peer.
     \item Понятие предметно-ориентированного проектирования, единый язык.
     \item Изоляция предметной области в DDD, антипаттерн \enquote{Умный GUI}.
-    \item DDD, основные структурные элементы модели предметной области.
+    \item DDD, основные структурные элементы модели предметной области, идентичность объекта в информационных системах.
     \item DDD, паттерн \enquote{Агрегат}.
     \item DDD, паттерны \enquote{Фабрика}, \enquote{Репозиторий}.
     \item Паттерн \enquote{Спецификация}.
@@ -94,11 +97,11 @@
     \item RPC, RMI. Пример: gRPC.
     \item Веб-сервисы, SOAP. WCF.
     \item Веб-сервисы, REST. ASP.NET Web APIs.
-    \item Очереди сообщений, RabbitMQ, Kafka.
+    \item Очереди сообщений, RabbitMQ. % , Kafka.
     \item Архитектурные стили распределённых приложений: Big Compute, Big Data.
     \item Web-queue-worker, N-звенная архитектура.
     \item Микросервисная архитектура.
-    \item Дизайн REST-интерфейса.
+    \item Хорошие практики проектирования REST-интерфейсов.
     % \item Принципы дизайна распределённых приложений: самовосстановление.
     % \item Паттерн \enquote{Circuit Breaker}.
     % \item Принципы дизайна распределённых приложений: избыточность.
@@ -109,10 +112,10 @@
     \item Docker, Docker Compose.
     \item Kubernetes.
     \item Облачная инфраструктура, AWS, Terraform.
-    \item Основные понятия сетевой безопасности, шифрование с симметричным ключом.
-    \item Алгоритм Диффи-Хелмана. Шифрование с открытым ключом.
-    \item Цифровые подписи, сертификаты.
-    \item Аутентификация. OAuth 2.
+    % \item Основные понятия сетевой безопасности, шифрование с симметричным ключом.
+    % \item Алгоритм Диффи-Хелмана. Шифрование с открытым ключом.
+    % \item Цифровые подписи, сертификаты.
+    % \item Аутентификация. OAuth 2.
 \end{enumerate}
 
 \end{document}
