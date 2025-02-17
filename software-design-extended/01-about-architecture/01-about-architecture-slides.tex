@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle[Лекция 1: Об архитектуре]{Принципы разработки и проектирования ПО}{23.09.2024}
+\slidetitle[Лекция 1: Об архитектуре]{Принципы разработки и проектирования ПО}{17.02.2025}
 
 \begin{document}
 
@@ -12,20 +12,28 @@
 
     \begin{frame}
         \frametitle{Организационное}
-        \begin{itemize}
-            \item Лекционно-практический курс, две пары в неделю
-            \item В конце устный экзамен и аттестация по домашним работам
-            \item Материалы лекций на вики \url{https://cs-uni.ru}
-            \item Балльная система
-            \begin{itemize}
-                \item 40\% за домашки, 60\% за экзамен
-                \item Принцип мажорирующей двойки
-            \end{itemize}
-            \item Коммуникации --- в чате курса в Telegram, \url{https://t.me/+WqqbYo5j6dFlODAy}
-            \begin{itemize}
-                \item Также пишите в Telegram в личку, \url{https://t.me/yurii_litvinov}
-            \end{itemize}
-        \end{itemize}
+        \begin{columns}
+            \begin{column}{0.7\textwidth}
+                \begin{itemize}
+                    \item Лекционно-практический курс, две пары в неделю
+                    \item В конце устный экзамен и аттестация по домашним работам
+                    \item Балльная система
+                    \begin{itemize}
+                        \item 40\% за домашки, 60\% за экзамен
+                        \item Принцип мажорирующей двойки
+                    \end{itemize}
+                    \item Коммуникации и материалы --- в чате курса в Telegram, \url{https://t.me/+7GW9tsI1HUBlNzNi}
+                    \begin{itemize}
+                        \item Также пишите в Telegram в личку, \url{https://t.me/yurii_litvinov}
+                    \end{itemize}
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.3\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.9\textwidth]{chatQrCode.png}
+                \end{center}
+            \end{column}
+        \end{columns}
     \end{frame}
 
     \begin{frame}
@@ -86,7 +94,7 @@
         \begin{center}
             \includegraphics[width=0.5\textwidth]{brooksSquare.png}
         \end{center}
-        \attribution{Ф. Брукс, <<Мифический человеко-месяц>>}
+        \attribution{Ф. Брукс, \enquote{Мифический человеко-месяц}}
         \begin{textblock}{2}(10,-4)
             \includegraphics[width=\textwidth]{brooksCover}
         \end{textblock}
@@ -129,7 +137,7 @@
                     \end{itemize}
                     \item Для чего
                     \begin{itemize}
-                        \item База для реализации, <<фундамент>> системы
+                        \item База для реализации, \enquote{фундамент} системы
                         \item Инструмент для оценки трудоёмкости и отслеживания прогресса
                         \item Средство обеспечения переиспользования
                         \item Средство анализа системы ещё до того, как она реализована
@@ -145,10 +153,10 @@
         \end{columns}
     \end{frame}
 
-    \section{Профессия <<Архитектор>>}
+    \section{Профессия \enquote{Архитектор}}
 
     \begin{frame}
-        \frametitle{Профессия <<Архитектор>>}
+        \frametitle{Профессия \enquote{Архитектор}}
         \begin{itemize}
             \item Архитектор --- специально выделенный человек (или группа людей), отвечающий за:
             \begin{itemize}
@@ -182,7 +190,7 @@
             \item Коммуникационные навыки
             \item Часто архитектор играет роль разработчика и наоборот
             \begin{itemize}
-                \item Архитектор в <<башне из слоновой кости>> --- это плохо
+                \item Архитектор в \enquote{башне из слоновой кости} --- это плохо
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -260,7 +268,7 @@
             \begin{itemize}
                 \item Многое зависит от интуиции и вкуса архитектора, однако ошибки очень дороги
             \end{itemize}
-            \item Можно выделить \emph{архитектурные стили} --- <<архитектуры архитектур>>
+            \item Можно выделить \emph{архитектурные стили} --- \enquote{архитектуры архитектур}
             \item Можно выделить \emph{архитектурные точки зрения} и \emph{архитектурные виды}
             \item Разный уровень детализации
         \end{itemize}
@@ -296,7 +304,6 @@
     \begin{frame}
         \frametitle{Ещё про архитектурные виды}
         \begin{itemize}
-            \item Пример --- \url{http://robotics.ee.uwa.edu.au/courses/design/examples/example_design.pdf}
             \item Ни один вид не обязателен
             \item Активно используются визуальные языки
             \begin{itemize}
@@ -330,7 +337,7 @@
         \frametitle{Требования}
         \begin{itemize}
             \item Функциональные --- то, \emph{что} система должна делать
-            \item Нефункциональные --- то, \emph{как} система должна это делать
+            \item Архитектурные качества --- то, \emph{как} система должна это делать
             \begin{itemize}
                 \item Эффективность
                 \item Масштабируемость
@@ -382,15 +389,15 @@
             \begin{itemize}
                 \item Архитектура у ПО есть всегда, как вес у камня
             \end{itemize}
-            \item \emph{architectural drift} --- <<сползание>> фактической архитектуры
+            \item \emph{architectural drift} --- \enquote{сползание} фактической архитектуры
             \begin{itemize}
                 \item появление в ней важных решений, которых нет в описательной архитектуре
             \end{itemize}
-            \item \emph{architectural erosion} --- <<размывание>> архитектуры
+            \item \emph{architectural erosion} --- \enquote{размывание} архитектуры
             \begin{itemize}
                 \item отклонения от описательной архитектуры, нарушения ограничений
             \end{itemize}
-            \item Антипаттерн <<\emph{Big ball of mud}>> --- результат эрозии
+            \item Антипаттерн \enquote{\emph{Big ball of mud}} --- результат эрозии
         \end{itemize}
     \end{frame}
 
