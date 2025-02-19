@@ -2,13 +2,13 @@
 
 /// Configuration parameters:
 /// Relative path to a directory with presentations (that has separate subdirectories for each pair).
-let directoryPath = "software-design-extended"
+let directoryPath = "programming-4th-semester"
 
 /// Date of a firs pair of a course, in dd.mm.yyyy format.
-let startDate = "17.02.2025"
+let startDate = "13.02.2025"
 
 /// A list of control work pairs that don't have their own slides or text, starting with 1.
-let controlWorkPairNumbers = []
+let controlWorkPairNumbers = [9; 12]
 
 /// All pairs before this pair will be left unmodified.
 let fromPair = 1
