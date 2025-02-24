@@ -1,0 +1,102 @@
+\documentclass{../../slides-style}
+
+\slidetitleext{Практика по модульному тестированию, снова стековый калькулятор}
+    {28.02.2025}
+    {Практика по модульному тестированию}
+
+\begin{document}
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \section{Data-driven testing}
+
+    \begin{frame}[fragile]
+        \frametitle{TestCaseData (NUnit)}
+        \begin{minted}{csharp}
+public class StackTest
+{
+    [TestCaseSource(nameof(Stacks))]
+    public void StackShouldNotEmptyAfterPush(IStack stack)
+    {
+        stack.Push(1);
+        Assert.IsFalse(stack.IsEmpty());
+    }
+
+    private static IEnumerable<TestCaseData> Stacks
+        => new TestCaseData[]
+        {
+            new TestCaseData(new ArrayStack()),
+            new TestCaseData(new ListStack()),
+        };
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Ещё хороший приём}
+        \begin{minted}{csharp}
+private static IEnumerable<TestCaseData> Stacks { 
+    get {
+        var stacks = new List<IStack>() 
+            { new ArrayStack(), new ListStack() };
+        var data = new List<int>() { 1, 2, 3 };
+        var result = new List<TestCaseData>();
+        foreach (var stack in stacks) {
+            foreach (var item in data) {
+                result.Add(new TestCaseData(item, stack));
+            }
+        }
+        return result;
+    }
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Более простые случаи}
+        \begin{minted}{csharp}
+[TestCase(12, 3, 4)]
+[TestCase(12, 2, 6)]
+public void DivideTest(int n, int d, int q)
+    => Assert.AreEqual(q, n / d);
+        \end{minted}
+        \vspace{3mm}
+        Или даже
+        \begin{minted}{csharp}
+[TestCase(12, 3, ExpectedResult=4)]
+[TestCase(12, 2, ExpectedResult=6)]
+public int DivideTest(int n, int d)
+    => return n / d;
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{NUnit \enquote{constraint model}}
+        \begin{minted}{csharp}
+public void DivideTest(int n, int d, int q)
+    => Assert.That(n / d, Is.EqualTo(q));Assert.AreEqual(q, );
+        \end{minted}
+        \vspace{3mm}
+        Что ещё можно: \url{https://docs.nunit.org/articles/nunit/writing-tests/constraints/Constraints.html}
+        \begin{minted}{csharp}
+Assert.That(2.3, Is.GreaterThan(2.0).And.LessThan(3.0));
+Assert.That(array, Has.Member(3));
+Assert.That(array, Has.No.Member(5));
+Assert.That(collection, Is.Ordered.Ascending.By("A")
+    .Then.Descending.By("B"));
+Assert.That(phrase, Does.StartWith("Make"));
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}{Задача}
+        Реализовать модульные тесты к стековому калькулятору с прошлой практики.
+        \begin{itemize}
+            \item Проверять работоспособность на корректных и некорректных строках
+            \item Проверять работу в случае использования разных реализаций стеков
+            \item При этом не содержать дублирующегося кода
+        \end{itemize} 
+    \end{frame}
+
+\end{document}
