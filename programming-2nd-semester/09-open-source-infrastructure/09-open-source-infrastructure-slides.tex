@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle[Полезные инструменты и сервисы]{Экосистема open source проектов}{11.03.2025}
+\slidetitle[Полезные инструменты и сервисы]{Экосистема open source проектов}{14.03.2025}
 
 \begin{document}
 
@@ -35,14 +35,14 @@
         \frametitle{Continuous Integration}
         Непрерывная интеграция --- практика слияния всех изменений по нескольку раз в день, сборки их в известном окружении и запуска юнит-тестов.
         \begin{itemize}
-            \item Автоматический билд
+            \item Автоматическая сборка
             \begin{itemize}
                 \item Всё, что нужно для сборки, есть в репозитории, может быть получено на чистую (ну, практически) машину и собрано одной консольной командой
             \end{itemize}
             \item Большое количество юнит-тестов, запускаемых автоматически
-            \item Выделенная машина, слушающая репозиторий и выполняющая билд
+            \item Выделенная машина, слушающая репозиторий и выполняющая сборку
             \begin{itemize}
-                \item Чаще всего каждый билд запускается на заранее настроенной виртуалке
+                \item Чаще всего каждая сборка запускается на заранее настроенной виртуальной машине
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -52,12 +52,12 @@
         \begin{itemize}
             \item Извещение всех разработчиков о статусе
             \begin{itemize}
-                \item Если билд не прошёл, разработка приостанавливается до его починки
+                \item Если сборка не прошла, разработка приостанавливается до её починки
             \end{itemize}
             \item Автоматическое выкладывание
-            \item Пока билд не прошёл, задача не считается сделанной
+            \item Пока сборка не прошла, задача не считается сделанной
             \begin{itemize}
-                \item Короткие билды (<10 мин.)
+                \item Короткие сборки (<10 мин.)
                 \item deployment pipeline
                 \begin{itemize}
                     \item Отдельная машина для сборки, для коротких тестов, для длинных тестов, для выкладывания
@@ -112,7 +112,7 @@
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Типичный Workflow для сборки}
+        \frametitle{Типичный Workflow для сборки домашки}
         \begin{scriptsize}
             \begin{minted}{yaml}
 name: Build
@@ -124,7 +124,7 @@ jobs:
             - uses: actions/checkout@v4
             - uses: actions/setup-dotnet@v4
               with:
-                  dotnet-version: '8.x'
+                  dotnet-version: '9.x'
             - name: Build
               run: for f in $(find . -name "*.sln"); do dotnet build $f; done
             - name: Run tests
@@ -134,8 +134,10 @@ jobs:
         steps:
             ...
             - name: Build
+              shell: cmd
               run: For /R %%I in (*.sln) do dotnet build %%I
             - name: Run tests
+              shell: cmd
               run: For /R %%I in (*.sln) do dotnet test %%I
             \end{minted}
         \end{scriptsize}
