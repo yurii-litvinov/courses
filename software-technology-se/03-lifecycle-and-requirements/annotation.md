@@ -9,3 +9,8 @@
 - документирование требований, спецификация требований к ПО (SRS);
 - моделирование требований;
 - управление требованиями, атрибуты требований.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/software-technology-se/03-lifecycle-and-requirements/03-lifecycle-and-requirements-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/software-technology-se/03-lifecycle-and-requirements/03-lifecycle-and-requirements-text.pdf
