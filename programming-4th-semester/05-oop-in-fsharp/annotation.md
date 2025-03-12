@@ -11,3 +11,8 @@
 - наследование, интерфейсы;
 - объектные выражения, частичная реализация интерфейсов, делегирование;
 - модули и пространства имён.
+
+---
+
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-4th-semester/05-oop-in-fsharp/05-oop-in-fsharp-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-4th-semester/05-oop-in-fsharp/05-oop-in-fsharp-text.pdf
