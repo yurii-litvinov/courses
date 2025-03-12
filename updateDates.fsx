@@ -2,23 +2,23 @@
 
 /// Configuration parameters:
 /// Relative path to a directory with presentations (that has separate subdirectories for each pair).
-let directoryPath = "software-design-extended"
+let directoryPath = "programming-2nd-semester"
 
-/// Date of a firs pair of a course, in dd.mm.yyyy format.
-let startDate = "17.02.2025"
+/// Date of a firs pair of a course, in dd.mm.yyyy format. Starting from pair in fromPair parameter.
+let startDate = "28.02.2025"
 
 /// A list of control work pairs that don't have their own slides or text, starting with 1.
-let controlWorkPairNumbers = []
+let controlWorkPairNumbers = [17; 22]
 
 /// All pairs before this pair will be left unmodified.
-let fromPair = 1
+let fromPair = 5
 
 /// Should be true if there are two pairs in a week with separate presentations.
-let twoPairsAWeek = false
+let twoPairsAWeek = true
 
 /// If there are two pairs in a week with separate presentations, date of a second pair of a course, in dd.mm.yyyy format.
 /// Has effect only if twoPairsAWeek is true.
-let secondPairStartDate = "14.02.2025"
+let secondPairStartDate = "28.02.2025"
 
 /// A list of holidays (and other days we need to skip for some reason), in dd.mm.yyyy format.
 let holidays = ["08.03.2025"; "01.05.2025"; "08.05.2025"; "09.05.2025"; "12.06.2025"; "04.11.2025"; "31.12.2025"]
@@ -41,9 +41,9 @@ let pairDate (startDate: DateTime) weekNumber =
 
 let courseDates = 
     Seq.initInfinite id 
-    |> Seq.collect (fun i -> (pairDate convertedStartDate i) :: if twoPairsAWeek then [pairDate convertedSecondPairDate i] else [] )
+    |> Seq.collect (fun i -> pairDate convertedStartDate i :: if twoPairsAWeek then [pairDate convertedSecondPairDate i] else [] )
     |> Seq.map (fun date -> date.ToShortDateString())
-    |> Seq.except holidays
+    |> Seq.filter (fun date -> Seq.contains date holidays |> not)
     |> Seq.indexed
     |> Seq.filter (fun (num, _) -> controlWorkPairNumbers |> List.contains (num + 1) |> not)
     |> Seq.map snd

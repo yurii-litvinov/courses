@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Продолжение про F\#}{01.03.2024}
+\slidetitle{Продолжение про F\#}{20.02.2025}
 
 \begin{document}
     
@@ -14,7 +14,7 @@
         \frametitle{Юнит-тестирование в F\#}
         \begin{itemize}
             \item Работают все дотнетовские библиотеки (NUnit, MsTest и т.д.)
-            \item Есть обёртки, делающие код тестов более ``функциональным'' (FsUnit)
+            \item Есть обёртки, делающие код тестов более \enquote{функциональным} (FsUnit)
             \item Есть чисто F\#-овские штуки: FsCheck, Unquote 
             \begin{itemize}
                 \item на самом деле, не совсем F\#-овские, но в C\# такого нет
@@ -643,7 +643,9 @@ let map f list =
     \begin{frame}[fragile]
         \frametitle{Continuation Passing Style}
         \framesubtitle{Аккумулятор --- функция}
-        \begin{minted}{fsharp}
+        \begin{columns}
+            \begin{column}{0.7\textwidth}
+                \begin{minted}{fsharp}
 let printListRev list =
     let rec printListRevTR list cont =
         match list with
@@ -652,7 +654,14 @@ let printListRev list =
             printListRevTR tl (fun () -> 
                 printf "%d " hd; cont () )
     printListRevTR list (fun () -> printfn "Done!")
-        \end{minted}
+                \end{minted}
+            \end{column}
+            \begin{column}{0.3\textwidth}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{continuation.png}
+                \end{center}
+            \end{column}
+        \end{columns}
     \end{frame}
 
     \begin{frame}[fragile]
@@ -672,6 +681,13 @@ let rec linearize binTree cont =
         \end{minted}
     \end{frame}
 
+    \begin{frame}
+        \frametitle{Что происходит}
+        \begin{center}
+            \includegraphics[width=0.95\textwidth]{treeLinearization.png}
+        \end{center}
+    \end{frame}
+
     \begin{frame}[fragile]
         \frametitle{Обход дерева}
         \frametitle{Собственно, обход}
@@ -688,6 +704,13 @@ let iter f binTree =
     
     processSteps steps
         \end{minted}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Пример шага обхода}
+        \begin{center}
+            \includegraphics[width=0.95\textwidth]{treeLinearizationStep.png}
+        \end{center}
     \end{frame}
 
 \end{document}

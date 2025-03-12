@@ -1,0 +1,171 @@
+\documentclass{../../slides-style}
+
+\slidetitle{Введение в Linux}{07.03.2025}
+
+\begin{document}
+    
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \section{Что такое Linux и зачем он нам}
+
+    \begin{frame}{Linux --- что это и зачем?}
+        \begin{itemize}
+            \item Linux --- семейство Unix-подобных операционных систем
+            \begin{itemize}
+                \item Есть сотни дистрибутивов (из которых десяток только широкоизвестных), на базе более-менее общего ядра
+                \item \url{https://github.com/torvalds/linux}
+            \end{itemize}
+            \item С открытым исходным кодом, широкое сообщество разработчиков
+            \item В основном для серверов, встроенных устройств и всякого странного оборудования
+            \begin{itemize}
+                \item На волне импортозамещения популяризуется и для конечных пользователей
+            \end{itemize}
+            \item Удобнее для программирования
+            \item Хуже для игр, хуже с поддержкой железа
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Linux для программистов}
+        \begin{itemize}
+            \item Бесплатна
+            \begin{itemize}
+                \item Поэтому можно ставить на виртуальные машины/контейнеры в любом количестве
+                \item В типичном серверном окружении \emph{каждый} процесс работает в своём контейнере, так что лицензии на другие ОС легко разорят кого угодно
+                \item Есть нюанс --- целый рынок небесплатных дистрибутивов. Свобода ПО не значит, что на нём нельзя зарабатывать.
+            \end{itemize}
+            \item Очень конфигурируема --- от полноценных десктопных дистрибутивов до миниатюрных систем в десятки мегабайт
+            \item Удобная командная строка
+            \item Пакетный менеджер
+            \item Некоторые инструменты есть только для Linux
+            \begin{itemize}
+                \item Valgrind, QEMU, Gem5, ...
+                \item Кое-что можно запустить и на Windows, но это нетривиально
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \begin{center}
+            \includegraphics[width=0.95\textwidth]{unixHistory.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}{Отличия от Windows}
+        \framesubtitle{С точки зрения пользователя}
+        \begin{itemize}
+            \item Пакетный менеджер
+            \begin{itemize}
+                \item Как NuGet, только в масштабах всей системы
+                \item Часто старые версии
+                \item Специфичен для дистрибутива
+                \item Может быть несколько репозиториев пакетов
+            \end{itemize}
+            \item Регистрозависимая файловая система
+            \item Одно дерево файлов, начинающееся в \enquote{/}, монтирование
+            \item Много мелких консольных команд, из которых можно собирать сложные штуки
+            \item Оконный менеджер --- обычное внешнее приложение
+            \item Запускаемое приложение по умолчанию не ищется в текущей папке
+            \item Человекочитаемые файлы конфигурации
+        \end{itemize}
+    \end{frame}
+
+    \section{Что бывает}
+
+    \begin{frame}{Дистрибутивы}
+        \begin{itemize}
+            \item Дистрибутив --- это готовое к установке ядро, набор программ и пакетная экосистема
+            \item Популярные дистрибутивы:
+            \begin{itemize}
+                \item Ubuntu
+                \item Mint
+                \item Fedora
+                \item Debian
+                \item Arch
+                \item Gentoo
+                \item Альт, РОСА, Астра
+            \end{itemize}
+            \item Откуда пошли разные дистрибутивы: \url{https://upload.wikimedia.org/wikipedia/commons/1/1b/Linux_Distribution_Timeline.svg}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Пакеты}
+        \begin{itemize}
+            \item Пакет --- способ распространения приложений и библиотек. 
+            \item Состоит из метаинформации, бинарников, конфигов, доков, иногда исходников
+            \item Дерево зависимостей
+            \item Популярные форматы пакетов: deb, rpm
+            \item Базовые утилиты: rpm, dpkg
+            \item Популярные пакетные менеджеры: 
+            \begin{itemize}
+                \item apt (Advanced Packaging Tool) --- Debian, Ubuntu, Mint, Альт
+                \item yum (Yellowdog Updater, Modified) --- старая Fedora и дистрибутивы на её основе
+                \item dnf (Dandified YUM) --- Fedora, РОСА
+            \end{itemize}
+            \item Формат имени пакета: \mintinline{text}{<название>-<версия>-<выпуск>.<архитектура>}
+            \item Альтернативный подход: ставить приложение со всеми зависимостями целиком
+            \begin{itemize}
+                \item Flatpak, Snappy, AppImage
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Среды рабочего стола}
+        \begin{itemize}
+            \item Оконные системы: X Window System, Wayland
+            \item Среды рабочего стола
+            \begin{itemize}
+                \item GNOME (на GTK+) и его производные (MATE, Cinnamon)
+                \item KDE (Plasma) (на Qt)
+                \item XFCE (на GTK+)
+            \end{itemize}
+            \item Более-менее исключают друг друга
+            \begin{itemize}
+                \item Приложение для одной среды запустится в другой, но потащит за собой огромную кучу зависимостей и будет выглядеть \emph{необычно}
+            \end{itemize}
+            \item Дистрибутивы иногда имеют варианты (Ubuntu --- GNOME, KUbuntu --- KDE)
+        \end{itemize}
+    \end{frame}
+
+    \section{Работа с консолью --- 1}
+
+    \begin{frame}{Основные консольные команды (1)}
+        \begin{itemize}
+            \item cd --- переход в директорию
+            \begin{itemize}
+                \item Абсолютные пути с /
+                \item Относительные пути, специальные директории . и ..
+            \end{itemize}
+            \item pwd --- вывести текущую директорию (обычно в приглашении)
+            \item ls --- показать содержимое директории
+            \begin{itemize}
+                \item Ключи -a, -l
+            \end{itemize}
+            \item mkdir --- создать директорию
+            \begin{itemize}
+                \item Ключ -p
+            \end{itemize}
+            \item touch --- обновить время последнего обращения к файлу или создать пустой файл
+            \item echo --- распечатать что-то в консоль
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Основные консольные команды (2)}
+        \begin{itemize}
+            \item cat --- вывести содержимое файла на консоль
+            \item cp --- скопировать файл/директорию
+            \item mv --- переместить файл/директорию
+            \item rm --- удалить файл/директорию
+            \begin{itemize}
+                \item Ключ -rf
+            \end{itemize}
+            \item ln --- создать ссылку
+            \begin{itemize}
+                \item Жёсткие и символьные ссылки (ln -s)
+            \end{itemize}
+            \item sudo --- запустить от имени суперпользователя
+        \end{itemize}
+    \end{frame}
+
+\end{document}
