@@ -67,23 +67,7 @@ let resistance r1 r2 r3 =
         \end{minted}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{То же самое, через Workflow Builder}
-        \begin{minted}{fsharp}
-type MaybeBuilder() =
-    member this.Bind(x, f) = 
-        match x with
-        | None -> None
-        | Some a -> f a
-    member this.Return(x) = 
-        Some x
-   
-let maybe = new MaybeBuilder()
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Само вычисление}
+    \begin{frame}[fragile]{То же самое, через Workflow Builder}
         \begin{minted}{fsharp}
 let resistance r1 r2 r3 = 
     maybe {
@@ -96,9 +80,7 @@ let resistance r1 r2 r3 =
         \end{minted}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Некоторые синтаксические ``похожести''}
-        \framesubtitle{seq --- это тоже Computation Expression}
+    \begin{frame}[fragile]{seq --- это тоже Computation Expression}
         \begin{minted}{fsharp}
 let daysOfTheYear =
     seq {
@@ -136,14 +118,6 @@ let withDebug =
     \begin{frame}[fragile]
         \frametitle{То же самое с Workflow}
         \begin{minted}{fsharp}
-type DebugBuilder() =
-    member this.Bind(x, f) = 
-        debug x 
-        f x
-    member this.Return(x) = x
-
-let debugFlow = DebugBuilder ()
-
 let withDebug = debugFlow {
         let! a = 1
         let! b = 2
@@ -153,107 +127,10 @@ let withDebug = debugFlow {
         \end{minted}
     \end{frame}
 
-    \section{Как работают CE}
-
-    \begin{frame}
-        \frametitle{Что происходит}
-        \framesubtitle{Как оно устроено внутри}
-        \begin{itemize}
-            \item Bind создаёт цепочку continuation passing style-функций, возможно, с побочными эффектами
-            \item Есть тип-обёртка (или монадический тип), в котором хранится состояние вычисления
-            \begin{itemize}
-                \item Или, более функционально, которое представляет \emph{действие} при вычислении
-            \end{itemize}
-            \item let! вызывает Bind, return --- Return, Bind принимает обёрнутое значение и функцию-continuation, return по необёрнутому значению делает обёрнутое
-            \begin{itemize}
-                \item На самом деле, это просто композиция функций, но хитрая, потому что монадический тип
-            \end{itemize} 
-            \item WorkflowBuilder --- это просто класс, в котором должны лежать методы с нужными сигнатурами, сам workflow --- объект этого класса
-            \begin{itemize}
-                \item Обычно он один, но в теории ничто не мешает хранить в нём побочные эффекты
-                \item Не путайте WorkflowBuilder с монадическим типом, это другое
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \section{CPS}
-
-    \begin{frame}[fragile]
-        \frametitle{Отступление про CPS}
-        \framesubtitle{C\#, код без CPS}
-        \begin{minted}{fsharp}
-public int Divide(int a, int b)
-{
-    if (b == 0)
-    {
-        throw new InvalidOperationException("div by 0");
-    }
-    else
-    {
-        return a / b;
-    }
-}
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{C\#, то же с CPS}
-        \begin{minted}{fsharp}
-public T Divide<T>(int a, int b, Func<T> ifZero
-        , Func<int, T> ifSuccess)
-{
-    if (b == 0)
-    {
-        return ifZero();
-    }
-    else
-    {
-        return ifSuccess(a / b);
-    }
-}
-        \end{minted}
-        Вызывающий решает, что делать, а не вызываемый.
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{То же на F\#}
-        Без CPS:
-        \begin{minted}{fsharp}
-let divide a b =
-    if (b = 0) 
-    then invalidOp "div by 0"
-    else (a / b)
-        \end{minted}
-        С CPS:
-        \begin{minted}{fsharp}
-let divide ifZero ifSuccess a b = 
-    if (b = 0) 
-    then ifZero()
-    else ifSuccess (a / b)
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Примеры}
-        \begin{minted}{fsharp}
-let ifZero1 () = printfn "bad"
-let ifSuccess1 x = printfn "good %i" x
-let divide1  = divide ifZero1 ifSuccess1
-
-let ifZero2() = None
-let ifSuccess2 x = Some x
-let divide2  = divide ifZero2 ifSuccess2
-
-let ifZero3() = failwith "div by 0"
-let ifSuccess3 x = x
-let divide3  = divide ifZero3 ifSuccess3
-        \end{minted}
-    \end{frame}
-
     \section{Bind}
 
-    \begin{frame}[fragile]
-        \frametitle{let, <<многословный>> синтаксис}
+    \begin{frame}[fragile]{Как это сделать}
+        \framesubtitle{let, \enquote{многословный} синтаксис}
         \begin{minted}{fsharp}
 let x = something
         \end{minted}
@@ -303,7 +180,7 @@ let x = 1 in
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Теперь вспомним про Workflow-ы}
+        \frametitle{Можно обобщить до выполнения произвольного действия при вызове}
         \begin{minted}{fsharp}
 let pipeInto expr f =
   expr |> f
@@ -420,6 +297,46 @@ let resistance r1 r2 r3 =
         return r
     }
         \end{minted}
+    \end{frame}
+    
+    \section{Как работают CE}
+
+    \begin{frame}{WorkflowBuilder}
+        \begin{itemize}
+            \item Bind создаёт цепочку continuation passing style-функций, возможно, с побочными эффектами
+            \item Есть тип-обёртка (или монадический тип), в котором хранится состояние вычисления
+            \begin{itemize}
+                \item Или, более функционально, которое представляет \emph{действие} при вычислении
+            \end{itemize}
+            \item let! вызывает Bind, return --- Return, Bind принимает обёрнутое значение и функцию-continuation, return по необёрнутому значению делает обёрнутое
+            \begin{itemize}
+                \item На самом деле, это просто композиция функций, но хитрая, потому что монадический тип
+            \end{itemize} 
+            \item WorkflowBuilder --- это просто класс, в котором должны лежать методы с нужными сигнатурами, сам workflow --- объект этого класса
+            \begin{itemize}
+                \item Обычно он один, но в теории ничто не мешает хранить в нём побочные эффекты
+                \item Не путайте WorkflowBuilder с монадическим типом, это другое
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Railway-oriented programming}
+        \framesubtitle{Монадический тип может управлять вычислением}
+        \begin{center}
+            \includegraphics[width=0.6\textwidth]{validationExample.png}
+
+            \vspace{0.5cm}
+
+            \includegraphics[width=0.7\textwidth]{railroads.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}{Что на самом деле делает Bind}
+        \begin{center}
+            \includegraphics[width=0.7\textwidth]{bindRailroads.png}
+        \end{center}
+
+        \attribution{\url{https://github.com/swlaschin/RailwayOrientedProgramming/blob/master/Railway_Oriented_Programming_Slideshare.pdf}}
     \end{frame}
 
     \begin{frame}[fragile]
@@ -711,7 +628,7 @@ assertEqual result1 result2
         Три закона монад обеспечивают адекватность их композиции.
     \end{frame}
 
-    \section{DSL на Workflow}
+    \section{Методы WorkflowBuilder}
 
     \begin{frame}
         \frametitle{Какие ещё методы есть у WorkflowBuilder}
@@ -736,16 +653,31 @@ assertEqual result1 result2
         \end{footnotesize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Можно определять свои методы}
+    \begin{frame}{Подробнее про Run и Delay}
+        Результат вычисления выражения:
+
+        \vspace{1cm}
+
+        \begin{center}
+            \mintinline{text}|builder.Run(builder.Delay(fun () -> {{ cexpr }}))|
+        \end{center}
+    \end{frame}
+
+    \section{Пример DSL на Workflow}
+
+    \begin{frame}[fragile]{Пример, DSL для создвния презентаций}
         \begin{minted}{fsharp}
+// Доменная модель
 type Slide = { Header: string }
 
 type Deck = { Title: string; Slides: Slide list }
 
+// WorkflowBuilder
 type SlideBuilder() =
     member inline _.Yield(()) = ()
 
+    // Можно определять свои операции!
+    // ... но нужен yield
     [<CustomOperation("header")>]
     member inline _.Header((), header: string) : Slide = 
         { Header = header }
@@ -763,8 +695,25 @@ slide {
         \end{minted}
     \end{frame}
 
+    \begin{frame}[fragile]{Сделаем генерацию Deck}
+        \begin{minted}{fsharp}
+[<RequireQualifiedAccess>]
+type DeckProperty =
+    | Title of string
+
+type DeckBuilder() =
+    member inline _.Yield(()) = ()
+    member inline _.Run(DeckProperty.Title title) = { Title = title; Slides = [] }
+
+    [<CustomOperation("title")>]
+    member inline _.Title((), title: string) = DeckProperty.Title title
+
+let deck = DeckBuilder()
+        \end{minted}
+    \end{frame}
+
     \begin{frame}[fragile]
-        \frametitle{Определим набор слайдов}
+        \frametitle{Сделаем генерацию слайдов (пока одного)}
         \begin{minted}{fsharp}
 [<RequireQualifiedAccess>]
 type DeckProperty = Title of string | Slide of Slide
@@ -790,17 +739,60 @@ deck {
     yield slide {
         header "Hello world!"
     }
-
-    yield slide {
-        header "Slide2"
-    }
 }
-
         \end{minted}
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{А можно и без Yield}
+        \frametitle{Сделаем цепочку слайдов}
+        \begin{footnotesize}
+            \begin{minted}{fsharp}
+type DeckBuilder() =
+    (* ... *)
+
+    member inline _.Delay(f: unit -> DeckProperty list) = f()
+    member inline _.Delay(f: unit -> DeckProperty) = [f ()]
+
+    member inline _.Combine(newProp: DeckProperty, 
+            previousProps: DeckProperty list) =
+        newProp :: previousProps
+
+    member inline x.Run(props: DeckProperty list) =
+        props
+        |> List.fold
+            (fun deck prop ->
+                match prop with
+                | DeckProperty.Title title -> { deck with Title = title }
+                | DeckProperty.Slide slide -> { deck with Slides = slide :: deck.Slides })
+            { Title = ""; Slides = [] }
+
+    member inline x.Run(prop: DeckProperty) = x.Run([prop])
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}[fragile]{Теперь можно так}
+        \begin{minted}{fsharp}
+deck {
+    title "Testing Deck with title"
+
+    slide {
+        header "This works"
+    }
+
+    slide {
+        header "...and also this!"
+    }
+
+    slide {
+        header "Much wow!"
+    }
+}
+        \end{minted}
+        Но надо ещё For
+    \end{frame}
+
+    \begin{frame}[fragile]{Итого}
         \begin{ssmall}
             \begin{minted}{fsharp}
 [<RequireQualifiedAccess>]
