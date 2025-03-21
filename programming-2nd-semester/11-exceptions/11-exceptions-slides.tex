@@ -214,14 +214,10 @@ public class MyException : Exception
 [Serializable]
 public class MyException : Exception
 {
-    public MyException() { }
+    public MyException() : base() { }
     public MyException(string message) : base(message) { }
     public MyException(string message, Exception inner) 
         : base(message, inner) { }
-    protected MyException(
-        System.Runtime.Serialization.SerializationInfo info,
-        System.Runtime.Serialization.StreamingContext context)
-            : base(info, context) { }
 }
         \end{minted}
     \end{frame}
@@ -265,20 +261,6 @@ catch (OutOfMemoryException e)
         \begin{footnotesize}
             \begin{minted}{csharp}
 [TestMethod]
-[ExpectedException(typeof(DivideByZeroException))]
-public void DivideTest()
-{
-    var target = new DivisionClass();
-    int numerator = 4;
-    int denominator = 0;
-    int actual = target.Divide(numerator, denominator);
-}
-            \end{minted}
-        \end{footnotesize}
-        или (более правильно)
-        \begin{footnotesize}
-            \begin{minted}{csharp}
-[TestMethod]
 public void DivideTest()
 {
     var target = new DivisionClass();
@@ -317,43 +299,46 @@ public void DivideTest()
         \end{itemize}
     \end{frame}
 
+    \begin{frame}
+        \frametitle{Полезные штуки}
+        \begin{itemize}
+            \item ArgumentNullException, ArgumentOutOfRangeException
+            \begin{itemize}
+                \item ArgumentNullException.ThrowIfNull
+            \end{itemize}
+            \item NotImplementedException, NotSupportedException
+            \item throw можно использовать в выражениях:
+            
+            \mintinline{csharp}|var value = GetValue() ?? throw new InvalidOperationException();|
+            
+            \item Не бросайте Exception, SystemException, NullReferenceException, IndexOutOfRangeException и т.п.
+        \end{itemize}
+    \end{frame}
+
     \begin{frame}[fragile]
         \frametitle{using, IDisposable}
-        \begin{small}
-            \begin{minted}{csharp}
-public static class Program {
-    public static void Main() {
-        var bytesToWrite = new Byte[] { 1, 2, 3, 4, 5 };
-        using (var fs = new FileStream("Temp.dat", FileMode.Create)) {
-            fs.Write(bytesToWrite, 0, bytesToWrite.Length);
-        }
-        File.Delete("Temp.dat");
-    }
+        \begin{minted}{csharp}
+var bytesToWrite = new Byte[] { 1, 2, 3, 4, 5 };
+using (var fs = new FileStream("Temp.dat", FileMode.Create)) {
+    fs.Write(bytesToWrite, 0, bytesToWrite.Length);
 }
-            \end{minted}
-        \end{small}
+File.Delete("Temp.dat");
+        \end{minted}
         Если есть хоть одно поле IDisposable, сам класс должен быть IDisposable!
+
+        Можно без фигурных скобок:
+
+        \begin{minted}{csharp}
+var bytesToWrite = new Byte[] { 1, 2, 3, 4, 5 };
+using var fs = new FileStream("Temp.dat", FileMode.Create);
+        \end{minted}
     \end{frame}
 
     \section{Особенности современного C\#}
 
     \begin{frame}[fragile]
         \frametitle{Особенности современного C\#}
-        \framesubtitle{Кортежи и деконструкция}
-        \begin{minted}{csharp}
-static (int prev, int cur) Fibonacci(int n)
-{
-    var (prevPrev, prev) = n <= 2 ? (0, 1) : Fibonacci(n - 1);
-    return (prev, prevPrev + prev);
-}
-
-var (_, result) = Fibonacci(7);
-Console.WriteLine(result);
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Именованные поля кортежей}
+        \framesubtitle{Именованные поля кортежей}
         \begin{minted}{csharp}
 int count = 5;
 string label = "Colors used in the map";
@@ -662,4 +647,40 @@ foreach (var element in single)
         \end{minted}
     \end{frame}
 
+    \begin{frame}[fragile]
+        \frametitle{Params collections (C\# 13)}
+        \begin{minted}{csharp}
+public void Concat<T>(params ReadOnlySpan<T> items)
+{
+    for (int i = 0; i < items.Length; i++)
+    {
+        Console.Write(items[i]);
+        Console.Write(" ");
+    }
+    Console.WriteLine();
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Ключевое слово field (C\# 14)}
+        \begin{minted}{csharp}
+private string _msg;
+public string Message
+{
+    get => _msg;
+    set => _msg = value 
+        ?? throw new ArgumentNullException(nameof(value));
+}
+        \end{minted}
+        vs
+        \begin{minted}{csharp}
+public string Message
+{
+    get;
+    set => field = value 
+        ?? throw new ArgumentNullException(nameof(value));
+}
+        \end{minted}
+    \end{frame}
 \end{document}
