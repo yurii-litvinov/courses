@@ -54,7 +54,7 @@
     \begin{frame}[fragile]
         \frametitle{Делегаты}
         \begin{minted}{csharp}
-public delegate void Feedback(Int32 value);
+public delegate void Feedback(int value);
         \end{minted}
         \begin{itemize}
             \item Типобезопасный callback
@@ -74,9 +74,8 @@ public delegate void Feedback(Int32 value);
 public delegate int HashFunction(string str, int hashSize);
 
 private static class HashFunctions {
-    public static int Hash1(string str, int hashSize) {
-        return str[0] % hashSize;
-    }
+    public static int Hash1(string str, int hashSize)
+        => return str[0] % hashSize;
 
     public static int Hash2(string str, int hashSize) {
         int result = 0;
@@ -121,11 +120,8 @@ public class EventLoop {
     \begin{frame}[fragile]
         \frametitle{Использование}
         \begin{minted}{csharp}
-static void Main(string[] args)
-{
-    var eventLoop = new EventLoop();
-    eventLoop.Run();
-}
+var eventLoop = new EventLoop();
+eventLoop.Run();
         \end{minted}
     \end{frame}
 
@@ -171,15 +167,12 @@ public class Game
     \begin{frame}[fragile]
         \frametitle{Main}
         \begin{minted}{csharp}
-static void Main(string[] args)
-{
-    var eventLoop = new EventLoop();
-    var game = new Game();
-    eventLoop.Run(
-        new ArrowHandler(game.OnLeft), 
-        new ArrowHandler(game.OnRight)
-    );
-}
+var eventLoop = new EventLoop();
+var game = new Game();
+eventLoop.Run(
+    new ArrowHandler(game.OnLeft), 
+    new ArrowHandler(game.OnRight)
+);
         \end{minted}
     \end{frame}
 
@@ -304,29 +297,6 @@ public int Invoke(int value) {
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{Вызов делегатов из цепочки вручную}
-        \begin{small}
-            \begin{minted}{csharp}
-Delegate[] arrayOfDelegates = leftHandler.GetInvocationList();
-foreach (ArrowHandler handler in arrayOfDelegates) {
-    try {
-        handler.Invoke();
-    }
-    catch (InvalidOperationException e) {
-        Object component = handler.Target;
-        Console.WriteLine(
-                "Failed to call handler from {1}{2}{0} Error: {3}{0}{0}",
-                Environment.NewLine,
-                ((component == null) ? "" : component.GetType() + "."),
-                handler.GetMethodInfo().Name,
-                e.Message);
-    }
-}
-            \end{minted}
-        \end{small}
-    \end{frame}
-
-    \begin{frame}[fragile]
         \frametitle{Шаблонные типы делегатов}
         \begin{minted}{csharp}
 public delegate int HashFunction(string str, int hashSize);
@@ -368,20 +338,18 @@ eventLoop.RightHandler += logger.RightPressed;
     \begin{frame}[fragile]
         \frametitle{Анонимные методы}
         \begin{minted}{csharp}
-static void Main(string[] args) {
-    var eventLoop = new EventLoop();
-    var game = new Game();
-    eventLoop.LeftHandler += game.OnLeft;
-    eventLoop.RightHandler += game.OnRight;
-    var log = new List<string>();
-    eventLoop.LeftHandler += delegate {
-        log.Add("left");
-    };
-    eventLoop.RightHandler += delegate {
-        log.Add("right");
-    };
-    eventLoop.Run();
-}
+var eventLoop = new EventLoop();
+var game = new Game();
+eventLoop.LeftHandler += game.OnLeft;
+eventLoop.RightHandler += game.OnRight;
+var log = new List<string>();
+eventLoop.LeftHandler += delegate {
+    log.Add("left");
+};
+eventLoop.RightHandler += delegate {
+    log.Add("right");
+};
+eventLoop.Run();
         \end{minted}
     \end{frame}
 
@@ -408,22 +376,20 @@ static Func<Point, Point> CreateRemapFunction(
         \frametitle{Замыкания (2, пример использования)}
         \begin{small}
             \begin{minted}{csharp}
-static void Main(string[] args) {
-    var rect1 = new Rectangle() {
-        topLeft = new Point() { x = 0, y = 0 },
-        bottomRight = new Point() { x = 2, y = 2 }
-    };
-    var rect2 = new Rectangle() {
-        topLeft = new Point() { x = 0, y = 0 },
-        bottomRight = new Point() { x = 4, y = 6 }
-    };
+var rect1 = new Rectangle() {
+    topLeft = new Point() { x = 0, y = 0 },
+    bottomRight = new Point() { x = 2, y = 2 }
+};
+var rect2 = new Rectangle() {
+    topLeft = new Point() { x = 0, y = 0 },
+    bottomRight = new Point() { x = 4, y = 6 }
+};
 
-    var remap = CreateRemapFunction(rect1, rect2);
-    var point = new Point() { x = 1, y = 1 };
-    var transformedPoint = remap(point);
-    Console.WriteLine("Transformed point: x = {0}, y = {1}", 
-          transformedPoint.x, transformedPoint.y);
-}
+var remap = CreateRemapFunction(rect1, rect2);
+var point = new Point() { x = 1, y = 1 };
+var transformedPoint = remap(point);
+Console.WriteLine("Transformed point: x = {0}, y = {1}", 
+        transformedPoint.x, transformedPoint.y);
             \end{minted}
         \end{small}
     \end{frame}
@@ -434,21 +400,15 @@ static void Main(string[] args) {
             \begin{minted}{csharp}
 delegate void F();
 
-class Program
+var delegates = new F[10];
+for (var i = 0; i < 10; ++i)
 {
-    static void Main(string[] args)
-    {
-        var delegates = new F[10];
-        for (var i = 0; i < 10; ++i)
-        {
-            delegates[i] = delegate { Console.WriteLine(i); };
-        }
+    delegates[i] = delegate { Console.WriteLine(i); };
+}
 
-        foreach (var f in delegates)
-        {
-            f();
-        }
-    }
+foreach (var f in delegates)
+{
+    f();
 }
             \end{minted}
         \end{small}
@@ -487,22 +447,16 @@ private sealed class <>c__DisplayClass0_0
             \begin{minted}{csharp}
 delegate void F();
 
-class Program
+var delegates = new F[10];
+for (var i = 0; i < 10; ++i)
 {
-    static void Main(string[] args)
-    {
-        var delegates = new F[10];
-        for (var i = 0; i < 10; ++i)
-        {
-            var localI = i;
-            delegates[i] = delegate { Console.WriteLine(localI); };
-        }
+    var localI = i;
+    delegates[i] = delegate { Console.WriteLine(localI); };
+}
 
-        foreach (var f in delegates)
-        {
-            f();
-        }
-    }
+foreach (var f in delegates)
+{
+    f();
 }
             \end{minted}
         \end{small}
@@ -614,16 +568,14 @@ internal class MailManager {
         Вспомогательный метод, кидающий событие
         \begin{itemize}
             \item Сюда идёт проверка списка подписчиков на null
-            \item Вызов лучше делать потокобезопасным
+            \item Пример ниже не вполне хорош в плане потокобезопасности
         \end{itemize}
         \vspace{5mm}
         \begin{minted}{csharp}
 internal class MailManager {
     ...
     protected virtual void OnNewMail(NewMailEventArgs e) {
-        EventHandler<NewMailEventArgs> temp = 
-                Volatile.Read(ref NewMail);
-        if (temp != null) 
+        if (NewMail != null) 
             temp(this, e);
     }
     ...
@@ -642,7 +594,7 @@ internal class MailManager {
         \begin{minted}{csharp}
 internal class MailManager {
     public void SimulateNewMail(string from, string to, string subject) {
-        NewMailEventArgs e = new NewMailEventArgs(from, to, subject);
+        NewMailEventArgs e = new(from, to, subject);
         OnNewMail(e);
     }
 }
@@ -658,8 +610,7 @@ internal sealed class Fax {
 
     private void FaxMsg(object sender, NewMailEventArgs e) {
         Console.WriteLine("Faxing mail message:");
-        Console.WriteLine(" From={0}, To={1}, Subject={2}",
-                e.From, e.To, e.Subject);
+        Console.WriteLine($" From={e.From}, To={e.To}, Subject={e.Subject}");
     }
 
     public void Unregister(MailManager mm)
@@ -676,9 +627,8 @@ public event EventHandler<FooEventArgs> Foo {
     remove { eventSet.Remove(fooEventKey, value); }
 }
 
-protected virtual void OnFoo(FooEventArgs e) {
-    eventSet.Raise(fooEventKey, this, e);
-}
+protected virtual void OnFoo(FooEventArgs e)
+    => eventSet.Raise(fooEventKey, this, e);
         \end{minted}
         \vspace{7mm}
         eventSet --- рукописный словарь с цепочками обработчиков, не поместившийся в презентацию
@@ -729,8 +679,6 @@ public class Game
         \frametitle{Результат (3)}
         \begin{footnotesize}
             \begin{minted}{csharp}
-static void Main(string[] args)
-{
     var eventLoop = new EventLoop();
     var game = new Game();
     eventLoop.LeftHandler += game.OnLeft;
@@ -742,7 +690,6 @@ static void Main(string[] args)
     eventLoop.RightHandler += (sender, eventArgs) => log.Add("right");
 
     eventLoop.Run();
-}
             \end{minted}
         \end{footnotesize}
     \end{frame}
