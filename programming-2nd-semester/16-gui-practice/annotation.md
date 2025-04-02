@@ -5,5 +5,5 @@
 
 ---
 
-- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/14-gui-practice/14-gui-practice-slides.pdf
-- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/14-gui-practice/14-gui-practice-text.pdf
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/16-gui-practice/16-gui-practice-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/16-gui-practice/16-gui-practice-text.pdf
