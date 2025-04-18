@@ -18,5 +18,5 @@
 
 ---
 
-- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/18-uml/18-uml-slides.pdf
-- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/18-uml/18-uml-text.pdf
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/23-uml/23-uml-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/23-uml/23-uml-text.pdf

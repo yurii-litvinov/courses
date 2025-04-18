@@ -20,5 +20,5 @@
 
 ---
 
-- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/15-generics/15-generics-slides.pdf
-- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/15-generics/15-generics-text.pdf
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/19-generics/19-generics-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/19-generics/19-generics-text.pdf

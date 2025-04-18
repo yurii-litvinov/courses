@@ -14,4 +14,4 @@
 
 ---
 
-- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/17-linq/17-linq-slides.pdf
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/21-linq/21-linq-slides.pdf

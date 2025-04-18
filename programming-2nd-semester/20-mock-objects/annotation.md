@@ -7,4 +7,4 @@
 
 ---
 
-- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/16-mock-objects/16-mock-objects-slides.pdf
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/20-mock-objects/20-mock-objects-slides.pdf

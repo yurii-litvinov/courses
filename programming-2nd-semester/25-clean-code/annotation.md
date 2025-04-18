@@ -23,5 +23,5 @@
 
 ---
 
-- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/20-clean-code/20-clean-code-slides.pdf
-- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/20-clean-code/20-clean-code-text.pdf
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/25-clean-code/25-clean-code-slides.pdf
+- Текст: https://github.com/yurii-litvinov/courses/blob/master/programming-2nd-semester/25-clean-code/25-clean-code-text.pdf
