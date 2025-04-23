@@ -14,4 +14,4 @@
 
 ---
 
-- Слайды: https://github.com/yurii-litvinov/courses/blob/master/structures-and-algorithms/09-syntax-analysis-2/09-syntax-analysis-2-slides.pdf
+- Слайды: https://github.com/yurii-litvinov/courses/blob/master/programming-4th-semester/09-syntax-analysis-2/09-syntax-analysis-2-slides.pdf
