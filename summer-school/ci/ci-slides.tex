@@ -1,112 +1,11 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Непрерывная интеграция}{11.07.2024}
+\slidetitle{Непрерывная интеграция, оформление репозитория}{09.07.2025}
 
 \begin{document}
 
     \begin{frame}[plain]
         \titlepage
-    \end{frame}
-
-    \section{Системы сборки}
-
-    \begin{frame}
-        \frametitle{Системы сборки}
-        \begin{itemize}
-            \item Среда разработки не всегда доступна
-            \begin{itemize}
-                \item Continuous Integration-сервера автоматически выполняют сборку после каждого коммита, там некому открыть IDE и нажать на кнопку \enquote{запустить}
-            \end{itemize}
-            \item Воспроизводимость сборки
-            \begin{itemize}
-                \item Если чтобы собрать программу надо открыть проект, скопировать пару десятков файлов, поправить кое-какие пути и делать это в полнолуние, то возможны ошибки
-            \end{itemize}
-            \item Автоматизация сборки
-            \begin{itemize}
-                \item git clone
-                \item одна консольная команда, которая всё делает за нас
-                \item ...
-                \item готовое к работе приложение
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Сборка вручную без IDE}
-        \begin{itemize}
-            \item gcc
-            \begin{footnotesize}
-                \begin{minted}{text}
-    g++ <имя .c-файла>
-                \end{minted}
-            \end{footnotesize}
-            или, например,
-            \begin{footnotesize}
-                \begin{minted}{text}
-    g++ -Wall -o helloworld helloworld.c
-                \end{minted}
-            \end{footnotesize}
-            \item Если проект большой, это быстро становится грустно
-            \begin{itemize}
-                \item Десятки тысяч файлов --- не редкость
-            \end{itemize}
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{make}
-        \begin{itemize}
-            \item Стандарт де-факто по \enquote{низкоуровневым} правилам сборки
-            \item Сама ничего не знает про языки программирования, компиляторы и прочие подобные штуки
-            \item Знает про цели, зависимости, временные штампы и правила
-            \begin{itemize}
-                \item Смотрит на зависимости цели, если у хоть одной временной штамп свежее цели, запускается правило для цели
-                \item В процессе цель может обновить свой временной штамп, что приведёт к исполнению правил для зависящих от неё целей
-                \item Цели и зависимости образуют направленный ациклический граф (DAG)
-                \item make выполняет топологическую сортировку графа зависимостей
-                \item Правила применяются в порядке от листьев к корню
-            \end{itemize}
-            \item Правила сборки описываются в Makefile
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Пример}
-        \begin{footnotesize}
-            \begin{minted}{make}
-target [target ...]: [component ...]
-    [command 1]
-    .
-    .
-    .
-    [command n]
-            \end{minted}
-        \end{footnotesize}
-        Пример:
-        \begin{footnotesize}
-            \begin{minted}{text}
-hello: ; @echo "hello"
-            \end{minted}
-        \end{footnotesize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Высокоуровневые системы сборки}
-        \begin{itemize}
-            \item C/C++:
-            \begin{itemize}
-                \item CMake --- кроссплатформенная система сборки, очень популярна в C++ open source-сообществе
-                \item MSBuild --- система сборки Visual Studio
-                \item qmake, qbs --- системы сборки от фреймворка Qt
-            \end{itemize}
-            \item JVM:
-            \begin{itemize}
-                \item Maven --- старая, но популярная и \enquote{архитектурно правильная}
-                \item Gradle --- несколько более \enquote{императивна}, нынче более популярна, поддерживает Kotlin
-            \end{itemize}
-            \item .NET --- dotnet CLI, FAKE
-        \end{itemize}
-        Написание скриптов сборки для большого проекта --- отдельная и довольно трудоёмкая задача
     \end{frame}
 
     \section{Continuous Integration}
@@ -193,32 +92,41 @@ hello: ; @echo "hello"
 
     \begin{frame}[fragile]
         \frametitle{Типичный Workflow для сборки}
-        \begin{scriptsize}
-            \begin{minted}{yaml}
+        \begin{minted}{yaml}
 name: Build
 on: [push, pull_request]
 jobs:
-    build-Ubuntu:
+    build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-dotnet@v4
-              with:
-                  dotnet-version: '7.x'
-            - name: Build
-              run: for f in $(find . -name "*.sln"); do dotnet build $f; done
-            - name: Run tests
-              run: for f in $(find . -name "*.sln"); do dotnet test $f; done
-    build-Windows:
-        runs-on: windows-latest
+                with:
+                    dotnet-version: '9.x'
+            - name: Build and run tests
+                run: dotnet test
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Матрица сборки}
+        \begin{minted}{yaml}
+name: Build
+on: [push, pull_request]
+jobs:
+    build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ubuntu-latest, windows-latest]
         steps:
-            ...
-            - name: Build
-              run: For /R %%I in (*.sln) do dotnet build %%I
-            - name: Run tests
-              run: For /R %%I in (*.sln) do dotnet test %%I
-            \end{minted}
-        \end{scriptsize}
+            - uses: actions/checkout@v4
+            - uses: actions/setup-dotnet@v4
+                with:
+                    dotnet-version: '9.x'
+            - name: Build and run tests
+                run: dotnet test
+        \end{minted}
     \end{frame}
 
     \begin{frame}[fragile]
@@ -239,23 +147,6 @@ jobs:
         run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
         env:
           First_Name: Mona
-            \end{minted}
-        \end{scriptsize}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Матрица сборки}
-        \begin{scriptsize}
-            \begin{minted}{yaml}
-runs-on: ${{ matrix.os }}
-strategy:
-  matrix:
-    os: [ubuntu-18.04, ubuntu-20.04]
-    node: [10, 12, 14]
-steps:
-  - uses: actions/setup-node@v2
-    with:
-      node-version: ${{ matrix.node }}
             \end{minted}
         \end{scriptsize}
     \end{frame}
@@ -283,7 +174,7 @@ steps:
     \section{Оформление репозитория}
 
     \begin{frame}
-        \frametitle{Оформление репозитория}
+        \frametitle{Оформление репозитория (1)}
         \begin{itemize}
             \item README.md --- самая важная часть любого репозитория
             \begin{itemize}
@@ -293,12 +184,66 @@ steps:
                 \item Как собрать и запустить
                 \item Если проект большой, то куда писать баги и как поучаствовать в разработке
             \end{itemize}
-            \item CI обязательно
-            \item Внешние анализаторы типа Codacy или CodeCov --- опционально, но чем больше --- тем лучше
+            \item Настроена секция About, указаны темы (topics)
+            \item Адекватные сообщения к коммитам
+            \begin{itemize}
+                \item См. \url{https://www.conventionalcommits.org/en/v1.0.0/}
+            \end{itemize}
+            \item Настроена защита веток (это в Settings на GitHub)
+            \item Настроен Dependabot, CodeQL
+            \item Выкладываются релизы (раздел Releases репозитория)
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Оформление репозитория (2)}
+        \begin{itemize}
             \item .gitignore (и .gitattributes, если используете кириллицу и не хотите эльфийские руны в диффах)
+            \begin{itemize}
+                \item Никаких результатов сборки в репо быть не должно
+            \end{itemize}
+            \item CI обязательно
+            \item Модульные тесты в CI --- обязательно
+            \item Линтер --- обязательно
+            \item Внешние анализаторы типа Codacy или CodeCov --- опционально, но чем больше --- тем лучше
+            \item Техническая документация по коду --- прямо в README, в вики или в комментариях в коде
+            \begin{itemize}
+                \item Настроена автоматическая сборка и деплой документации на GitHub Pages
+            \end{itemize}
             \item Лицензия --- обязательно
         \end{itemize}
     \end{frame}
+
+    \begin{frame}
+        \frametitle{Оформление пуллреквеста}
+        \begin{itemize}
+            \item Короткое, но понятное и отражающее суть дела название
+            \item Описание пуллреквеста
+            \begin{itemize}
+                \item Список предлагаемых изменений --- если применимо, со ссылками на закрытые issues, в формате \# номер
+                \item Описание работы предлагаемой функциональности:
+                \begin{itemize}
+                    \item Если фронтенд, с gif-кой с демо
+                    \item Если оптимизация, то замеры производительности (статистически корректные)
+                    \item Если бэкенд, то описание новых методов API и сценариев использования и т.д.
+                    \item Даже если делаете пуллреквест к лучшим друзьям в репо
+                \end{itemize}
+                \item Техническое описание изменений
+                \begin{itemize}
+                    \item Можно диаграмму классов UML и текст, можно просто текстом
+                \end{itemize}
+            \end{itemize}
+            \item Модульные тесты на новый код
+            \item CI проходит, новые тесты проходят
+            \item Проверена лицензионная совместимость
+            \item Стиль кодирования и коментариев к коммитам соответствуют принятым
+            \begin{itemize}
+                \item Если надо склеить коммиты в один, склеены в один
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \section{Лицензии}
 
     \begin{frame}
         \frametitle{Лицензия}
