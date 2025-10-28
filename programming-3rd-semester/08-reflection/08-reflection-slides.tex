@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Рефлексия}{24.10.2024}
+\slidetitle{Рефлексия}{28.10.2025}
 
 \begin{document}
 
@@ -89,7 +89,7 @@ var a = Assembly.LoadFrom(@"http://example.com/ExampleAssembly.dll");
             \begin{itemize}
                 \item Например, для другой целевой платформы
             \end{itemize}
-            \item Живёт в отдельном NuGet-пакете System.Reflection.MetadataLoadContex
+            \item Живёт в отдельном NuGet-пакете System.Reflection.MetadataLoadContext
             \item MetadataAssemblyResolver --- абстракция алгоритма поиска нужной сборки
             \begin{itemize}
                 \item PathAssemblyResolver --- ищет сборки в переданных путях
@@ -117,7 +117,7 @@ var a = Assembly.LoadFrom(@"http://example.com/ExampleAssembly.dll");
             \item Сборка с сильным именем может ссылаться только на сборки с сильными именами
             \item В современном .NET не очень актуально
             \begin{itemize}
-                \item В силу уклона в контейнеризацию и \enquote{xcopy deployment}
+                \item В силу уклона в веб и контейнеризацию
             \end{itemize}
         \end{itemize}
     \end{frame}
