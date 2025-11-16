@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Внутреннее представление данных}{02.10.2024}
+\slidetitle{Внутреннее представление данных}{17.11.2025}
 
 \begin{document}
     
@@ -25,7 +25,7 @@
                     \begin{itemize}
                         \item int s = sizeof(int) * 8
                     \end{itemize}
-                    \item Обратите внимание, что ВСЁ хранится как набор бит
+                    \item Обратите внимание, что ВСЁ хранится как набор битов
                     \begin{itemize}
                         \item ``3'' --- литерал, лишь удобная форма записи 00...0011 в коде
                     \end{itemize}
@@ -143,7 +143,7 @@ printf("0x%02X%02X%02X%02X\n", b[0], b[1], b[2], b[3]);
                 \end{itemize}
                 \item Например:
                 \begin{itemize}
-                    \item $3,1415926 = 0, 31415926 * 10^1$
+                    \item $3,1415926 = 0,31415926 * 10^1$
                     \item $1000=0,1 * 10^4$
                     \item $0,123456789 = 0,123456789 * 10^0$
                     \item $0,0000107_8 = 0,107_8 * 8^{-4}$
@@ -189,6 +189,9 @@ printf("0x%02X%02X%02X%02X\n", b[0], b[1], b[2], b[3]);
                     \begin{center}
                         \includegraphics[width=0.8\textwidth]{nan.png}
                     \end{center}
+                    \begin{itemize}
+                        \item Бывает \emph{тихой} и \emph{сигнальной}
+                    \end{itemize}
                     \item Бесконечности:
                     \begin{center}
                         \includegraphics[width=0.8\textwidth]{infinity.png}
@@ -210,24 +213,24 @@ printf("%f", x);
     \begin{frame}
         \frametitle{Строки}
          Строка как последовательность символов (их кодов) --- таблица символов
+        \begin{itemize}
+            \item ASCII (American Standard Code for Information Interchange)
             \begin{itemize}
-                \item ASCII (American Standard Code for Information Interchange)
+                \item 8 бит на символ (0 -- 255), 0 -- 127 стандартны, 128 -- 255 --- для локальных алфавитов
+                \item Кодовые страницы
                 \begin{itemize}
-                    \item 8 бит на символ (0 -- 255), 0 -- 127 стандартны, 128 -- 255 --- для локальных алфавитов
-                    \item Кодовые страницы
-                    \begin{itemize}
-                        \item cp866
-                        \item cp1251
-                        \item koi8-r
-                        \item ...
-                    \end{itemize}
+                    \item cp866
+                    \item cp1251
+                    \item koi8-r
+                    \item ...
                 \end{itemize}
-                \item Unicode
             \end{itemize}
-            Строка как последовательность байт --- кодировка
-            \begin{itemize}
-                \item UCS-16BE, UCS16-LE, UTF-8
-            \end{itemize}
+            \item Unicode
+        \end{itemize}
+        Строка как последовательность байт --- кодировка
+        \begin{itemize}
+            \item UCS-16BE, UCS16-LE, UTF-8
+        \end{itemize}
     \end{frame}
 
     \begin{frame}
