@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitleext{Функциональное программирование на языке F\#}{13.02.2025}{Введение}
+\slidetitleext{Функциональное программирование на языке F\#}{11.02.2026}{Введение}
 
 \begin{document}
     
@@ -26,7 +26,6 @@
                 \item ООП в F\#
                 \item Асинхронное и многопоточное программирование в F\#
                 \item Компиляторы
-                \item Может, ещё про анализ данных и машинное обучение
             \end{itemize}
         \end{itemize}
     \end{frame}
@@ -41,13 +40,13 @@
                     \item Доклад
                     \item Сдача и учёт через HwProj 2
                     \begin{itemize}
-                        \item \url{https://hwproj.ru/courses/40031}
+                        \item \url{https://hwproj.ru/courses/50070}
                     \end{itemize}
                 \end{itemize}
             \end{column}
             \begin{column}{0.4\textwidth}
                 \begin{center}
-                    \includegraphics[width=0.7\textwidth]{courseLink2025.png}
+                    \includegraphics[width=0.7\textwidth]{courseLink2026.png}
                 \end{center}
             \end{column}
         \end{columns}
@@ -56,7 +55,6 @@
     \begin{frame}
         \frametitle{Критерии оценивания}
         \begin{itemize}
-            \item Как в прошлом семестре, ECTS
             \item Баллы за домашние задачи, баллы за контрольную
             \item Общий балл за домашки: $MAX(0, (n/N – 0.6)) * 2.5 * 100$
             \item Общий балл за контрольные: $n/N * 100$
@@ -182,8 +180,8 @@ let rec sumFirst3 ls acc i =
             \end{itemize}
             \item Более декларативно
             \begin{itemize}
-                \item Ленивость
-                \item Распараллеливание
+                \item В теории --- ленивость
+                \item Ещё более в теории --- распараллеливание
             \end{itemize}
             \item Модульность и переиспользуемость
             \item Программы более выразительны
@@ -243,8 +241,8 @@ let calculate =
         \begin{itemize}
             \item Типизированный функциональный язык для платформы .NET
             \item НЕ чисто функциональный (можно императивный стиль и ООП)
-            \item Первый раз представлен публике в 2005 г., актуальная версия --- 9.0 (12 ноября 2024 года)
-            \item Создавался под влиянием OCaml (практически диалект OCaml под .NET)
+            \item Первый раз представлен публике в 2005 г., актуальная версия --- 10.0 (11 ноября 2025 года)
+            \item Создавался под влиянием OCaml (практически диалект OCaml под .NET, но со своей важной спецификой)
             \item Использует .NET CLI
             \item Компилируемый и интерпретируемый
             \item Иногда используется в промышленности, в отличие от многих чисто функциональных языков
@@ -255,7 +253,7 @@ let calculate =
         \frametitle{Что скачать и поставить}
         \begin{itemize}
             \item Visual Studio Community
-            \item .NET 9 + Visual Studio Code + Ionide
+            \item .NET 10 + Visual Studio Code + Ionide
             \item Прямо в браузере: \url{https://dotnetfiddle.net/}
             \item Rider
         \end{itemize}

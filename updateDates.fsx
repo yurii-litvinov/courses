@@ -2,13 +2,13 @@
 
 /// Configuration parameters:
 /// Relative path to a directory with presentations (that has separate subdirectories for each pair).
-let directoryPath = "software-design"
+let directoryPath = "programming-4th-semester"
 
-/// Date of a firs pair of a course, in dd.mm.yyyy format. Starting from pair in fromPair parameter.
-let startDate = "03.09.2025"
+/// Date of a first pair of a course, in dd.mm.yyyy format. Starting from pair in fromPair parameter.
+let startDate = "05.02.2026"
 
 /// A list of control work pairs that don't have their own slides or text, starting with 1.
-let controlWorkPairNumbers = []
+let controlWorkPairNumbers = [7; 9]
 
 /// All pairs before this pair will be left unmodified.
 let fromPair = 1
@@ -21,7 +21,7 @@ let twoPairsAWeek = false
 let secondPairStartDate = "03.09.2025"
 
 /// A list of holidays (and other days we need to skip for some reason), in dd.mm.yyyy format.
-let holidays = ["08.03.2025"; "01.05.2025"; "08.05.2025"; "09.05.2025"; "12.06.2025"; "04.11.2025"; "31.12.2025"]
+let holidays = ["23.02.3036"; "08.03.2026"; "09.03.2026"; "01.05.2026"; "09.05.2026"; "12.06.2026"; "04.11.2026"; "31.12.2026"]
 
 open System.IO
 open System
