@@ -8,6 +8,8 @@
         \titlepage
     \end{frame}
 
+    \section{Введение}
+
     \begin{frame}
         \frametitle{Формальные вопросы}
         \begin{outline}
@@ -67,6 +69,346 @@
                 \2 Профиляторы, Perf
         \end{outline}
         Сначала будет просто, потом тяжело, потом снова просто
+    \end{frame}
+
+    \section{Летучка}
+
+    \begin{frame}{Внезапная летучка}
+        \begin{enumerate}
+            \item Напишите команду для того, чтобы получить исполняемый файл \enquote{executable} из программы в файле \enquote{program.c}
+            \item Что должно и чего не должно быть в файле с расширением .h? Зачем они нужны?
+            \item Напишите функцию, которая принимает массив чисел и его размер и возвращает новый массив, состоящий из квадратов чисел исходного массива
+        \end{enumerate}
+        \vspace{1cm}
+        \begin{outline}
+            \1 Время: 10 минут
+            \1 Писать и сдавать ручкой на листочке
+                \2 Не забудьте подписать
+            \1 Максимум 3 балла в плюс к домашкам
+        \end{outline}
+    \end{frame}
+
+    \section{Напоминание про структуры и указатели}
+
+    \begin{frame}[fragile]
+        \frametitle{Структуры}
+        \begin{outline}
+            \1 Способ группировки родственных по смыслу значений
+            \1 Структура --- это тип
+                \2 В памяти представляется как поля, лежащие друг за другом, возможно, с ``дырками'' (padding)
+                \2 Объявляется вне функции
+            \1 Объявление структуры:
+            \begin{minted}{c}
+struct Point {
+    int x;
+    int y;
+};
+            \end{minted}
+            \1 Использование:
+            \begin{minted}{c}
+void main() {
+    struct Point p;
+    p.x = 10;
+}
+            \end{minted}
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Структуры (2)}
+        \begin{outline}
+            \1 Или, чтобы \mintinline{c}{struct} каждый раз не писать:
+            \begin{minted}{cpp}
+typedef struct {
+    int x;
+    int y;
+} Point;
+            \end{minted}
+                \2 \mintinline{c}{typedef} --- объявление синонима типа
+            \1 Использование:
+            \begin{minted}{c}
+void main() {
+    Point p = {10, 20};
+    printf("(%d, %d)", p.x, p.y);
+}
+            \end{minted}
+            \1 Продвинутая инициализация:
+            \begin{minted}{c}
+Point p = {.x = 10, .y = 20};
+            \end{minted}
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Указатели и структуры}
+        \begin{outline}
+            \1 Структуры и указатели настолько часто используются вместе, что есть оператор -> (разыменовать указатель на структуру и обратиться к её полю)
+                \2 
+                \begin{footnotesize}
+                    \begin{minted}{c}
+int main() {
+    Point* p = malloc(sizeof(Point));
+    if (p == NULL) {
+        return -1;
+    }
+    p->x = 10;
+    p->y = 20;
+    printf("(%d, %d)", p->x, p->y);
+    free(p);
+
+    return 0;
+}                    \end{minted}
+                \end{footnotesize}
+                \2 То же самое, что \mintinline{c}|(*p).x| и \mintinline{c}|(*p).y|
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Операция взятия адреса}
+        \begin{outline}
+            \1 
+                \begin{minted}{c}
+int main() {
+    Point p1 = { 10, 20 };
+    Point* p = &p1;
+    int *test = &(p1.x);
+    printf("(%d, %d)\n", p->x, p->y);
+    *test = 30;
+    printf("(%d, %d)\n", p->x, p->y);
+    printf("(%d, %d)\n", p1.x, p1.y);
+}
+                \end{minted}
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Структуры и строки}
+        \begin{footnotesize}
+            \begin{minted}{c}
+typedef struct {
+    char *name;
+    char phone[30];
+} PhoneBookEntry;
+
+int main() {
+    PhoneBookEntry entry;
+    const char* name = "Ivan Ivanov";
+    entry.name = malloc(sizeof(char) * (strlen(name) + 1));
+    if (entry.name == NULL) {
+        return -1;
+    }
+    strcpy(entry.name, name);
+    strcpy(entry.phone, "+7 (911) 123-45-67");
+    printf("%s - %s", entry.name, entry.phone);
+    free(entry.name);
+    return 0;
+}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Полезные операции со строками}
+        Модуль string.h/cstring:
+        \begin{outline}
+            \1 strcpy --- скопировать строку в буфер
+            \1 strcmp --- сравнить две строки
+            \1 strcat --- склеить две строки (в буфере должно быть достаточно места!)
+            \1 strlen --- узнать длину строки
+            \1 strstr --- найти подстроку в строке
+            \1 Строки нельзя сравнивать ==
+            \1 Строки нельзя присваивать =
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Чтение строки прямо в структуру}
+        \begin{minted}{c}
+int main() {
+    PhoneBookEntry entry;
+    entry.name = malloc(sizeof(char) * 30);
+    if (entry.name == NULL) {
+        return -1;
+    }
+    scanf("%s", entry.name);
+    scanf("%[^\n]", entry.phone);
+
+    printf("%s - %s", entry.name, entry.phone);
+
+    free(entry.name);
+    return 0;
+}
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Структуры могут указывать сами на себя}
+        \begin{footnotesize}
+            \begin{minted}{c}
+typedef struct ListElement {
+    int value;
+    struct ListElement *next;
+} ListElement;
+
+int main() {
+    ListElement* element1 = malloc(sizeof(ListElement));
+    element1->value = 1;
+    ListElement* element2 = malloc(sizeof(ListElement));
+    element2->value = 2;
+    element2->next = NULL;
+    element1->next = element2;
+
+    printf("%i - %i", element1->value, element1->next->value);
+
+    free(element1);
+    free(element2);
+
+    return 0;
+}
+            \end{minted}
+        \end{footnotesize}
+    \end{frame}
+
+    \section{Работа с файлами}
+
+    \begin{frame}
+        \frametitle{Файлы}
+        \begin{outline}
+            \1 Последовательность байтов на диске
+                \2 Бывают \enquote{сырые} и \enquote{текстовые}
+                    \3 Самому файлу всё равно, это лишь способы интерпретации его содержимого
+                \2 Режимы доступа: r, w, a, r+, w+, a+
+                \2 Курсор
+                \2 EOF
+            \1 Функции для работы с файлами:
+                \2 fopen, fclose, fprintf, fscanf, fseek, ftell, fgets
+            \1 Файлы надо не забывать закрывать
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример, как писать в файл}
+        \begin{minted}{cpp}
+int main() {
+    FILE* out = fopen("ololo.txt", "w");
+    if (out == NULL) {
+        return -1;
+    }
+    fwrite("Ololo\n", sizeof(char), 6, out);
+    fprintf(out, "%s", "Ololo");
+    fclose(out);
+    return 0;
+}
+        \end{minted}
+        \begin{outline}
+            \1 stdin/stdout --- это тоже файлы
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Пример, как читать из файла}
+        \begin{scriptsize}
+            \begin{minted}{cpp}
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("test.txt", "r");
+    if (file == NULL) {
+        printf("file not found!");
+        return 1;
+    }
+    char *data[100] = {0};
+    int linesRead = 0;
+    while (!feof(file)) {
+        char *buffer = malloc(sizeof(char) * 100);
+        const int readBytes = fscanf(file, "%s", buffer);
+        if (readBytes < 0) {
+            break;
+        }
+        data[linesRead] = buffer;
+        ++linesRead;
+    }
+    fclose(file);
+    ...
+}
+
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Тонкости}
+        \begin{outline}
+            \1 Чтение строки целиком: \mintinline{cpp}|fscanf(file, "|\%\mintinline{cpp}|[^\n]", buffer);|
+            \1 Или: \mintinline{cpp}|fgets(buffer, sizeof(buffer), file);|
+            \1 Working directory
+                \2 Свойства проекта -> Отладка -> Рабочая папка
+                \2 По умолчанию \$(ProjectDir), папка с .vcxproj
+        \end{outline}
+    \end{frame}
+
+    \section{Напоминание про модули}
+
+    \begin{frame}[fragile]
+        \frametitle{Модули}
+        \begin{outline}
+            \1 Способ группировки кода в логически обособленные группы
+            \1 В C это реализуется с помощью заголовочных файлов и файлов с реализацией
+                \2 .h и .c
+            \1 В отдельный модуль выносятся объявления типов данных и функции, которые делают одно дело
+                \2 Например, разные функции сортировки
+                \2 Или всё для работы с матрицами
+            \1 В интерфейсную часть модуля выносится только то, что может использовать другой код
+                \2 Меньше знаешь --- крепче спишь
+            \1 Функции, используемые только для реализации, пишутся только в .c-файле
+                \2 Например, функция разделения массива для быстрой сортировки или swap
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]
+        \frametitle{Модули}
+        \begin{scriptsize}
+            Заголовочный файл:
+            \begin{minted}{c}
+#pragma once
+
+// Комментарий к функции 1
+int function1(int x, int y);
+
+// Комментарий к функции 2
+void function2();
+            \end{minted}
+            .c-файл:
+            \begin{minted}{c}
+#include <имя заголовочного файла.h>
+
+#include <все остальные библиотеки>
+
+int function1(int x, int y)
+{
+    ...
+}
+
+void function2()
+{
+    ...
+}
+            \end{minted}
+        \end{scriptsize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Тонкости}
+        \begin{outline}
+            \1 Реализации функций в .h-файле писать нельзя
+                \2 Иначе будет беда, если один .h-ник подключат в два .c-шника
+            \1 Комментарии обязательны
+            \1 \#pragma once обязательна
+            \1 Подключать \enquote{свой} заголовочный файл в .c обязательно
+            \1 Файлы .h/.c всегда ходят парами, кроме файла с main
+            \1 .c --- это \emph{единица трансляции}, на \emph{каждый} .c запускается компилятор
+                \2 Ключевое слово static у функции делает её невидимой для линковщика, что \emph{надо} использовать для внутренних функций
+        \end{outline}
     \end{frame}
 
 \end{document}
