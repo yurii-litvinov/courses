@@ -2,6 +2,8 @@
 
 \slidetitle{Файлы и память}{14.02.2026}
 
+\usepackage{xurl}
+
 \begin{document}
 
     \begin{frame}[plain]
@@ -10,22 +12,22 @@
 
     \section{Введение}
 
-    \begin{frame}
-        \frametitle{Формальные вопросы}
+    \begin{frame}{Формальные вопросы}
         \begin{outline}
             \1 Занятия по субботам на второй и третьей паре в 3389
                 \2 В расписании аж четыре пары, по две для каждой подгруппы
             \1 Курс на HwProj: \url{https://hwproj.ru/courses/50071}
             \1 Будут три контрольные, на 4-й паре
             \1 Будут \enquote{Летучки}
+            \1 Каждую неделю будут выбираться несколько \emph{счастливчиков}, которые будут сдавать домашние работы вживую
+                \2 Подозрительный на творчество БЯМ код увеличивает шансы быть избранным
             \1 В конце курса будут доклады
             \1 \emph{Конец курса в начале апреля!}
                 \2 Зачёт будет прямо посреди семестра!
         \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Критерии оценивания}
+    \begin{frame}{Критерии оценивания}
         \begin{outline}
             \1 Баллы:
                 \2 За домашки (их будет мало, но объёмные)
@@ -40,8 +42,7 @@
         \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Примерные баллы}
+    \begin{frame}{Примерные баллы}
         \begin{tabu} {| X[0.9 l p] | X[1 l p] | X[1 l p] | }
             \tabucline-
             Балл за домашку         & Балл за контрольные   & Оценка ECTS  \\
@@ -56,8 +57,7 @@
         \end{tabu}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Что будет в курсе}
+    \begin{frame}{Что будет в курсе}
         \begin{outline}
             \1 Алгоритмы и структуры данных
                 \2 Деревья, деревья поиска, самобалансирующиеся деревья
@@ -72,6 +72,21 @@
     \end{frame}
 
     \section{Летучка}
+
+    \begin{frame}
+
+        \begin{center}
+            \LARGE
+
+            \structure{Внезапная летучка}
+
+            \vspace{1em}
+
+            \Large
+            Доставайте листочки и ручки
+        \end{center}
+
+    \end{frame}
 
     \begin{frame}{Внезапная летучка}
         \begin{enumerate}
@@ -88,191 +103,9 @@
         \end{outline}
     \end{frame}
 
-    \section{Напоминание про структуры и указатели}
-
-    \begin{frame}[fragile]
-        \frametitle{Структуры}
-        \begin{outline}
-            \1 Способ группировки родственных по смыслу значений
-            \1 Структура --- это тип
-                \2 В памяти представляется как поля, лежащие друг за другом, возможно, с ``дырками'' (padding)
-                \2 Объявляется вне функции
-            \1 Объявление структуры:
-            \begin{minted}{c}
-struct Point {
-    int x;
-    int y;
-};
-            \end{minted}
-            \1 Использование:
-            \begin{minted}{c}
-void main() {
-    struct Point p;
-    p.x = 10;
-}
-            \end{minted}
-        \end{outline}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Структуры (2)}
-        \begin{outline}
-            \1 Или, чтобы \mintinline{c}{struct} каждый раз не писать:
-            \begin{minted}{cpp}
-typedef struct {
-    int x;
-    int y;
-} Point;
-            \end{minted}
-                \2 \mintinline{c}{typedef} --- объявление синонима типа
-            \1 Использование:
-            \begin{minted}{c}
-void main() {
-    Point p = {10, 20};
-    printf("(%d, %d)", p.x, p.y);
-}
-            \end{minted}
-            \1 Продвинутая инициализация:
-            \begin{minted}{c}
-Point p = {.x = 10, .y = 20};
-            \end{minted}
-        \end{outline}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Указатели и структуры}
-        \begin{outline}
-            \1 Структуры и указатели настолько часто используются вместе, что есть оператор -> (разыменовать указатель на структуру и обратиться к её полю)
-                \2 
-                \begin{footnotesize}
-                    \begin{minted}{c}
-int main() {
-    Point* p = malloc(sizeof(Point));
-    if (p == NULL) {
-        return -1;
-    }
-    p->x = 10;
-    p->y = 20;
-    printf("(%d, %d)", p->x, p->y);
-    free(p);
-
-    return 0;
-}                    \end{minted}
-                \end{footnotesize}
-                \2 То же самое, что \mintinline{c}|(*p).x| и \mintinline{c}|(*p).y|
-        \end{outline}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Операция взятия адреса}
-        \begin{outline}
-            \1 
-                \begin{minted}{c}
-int main() {
-    Point p1 = { 10, 20 };
-    Point* p = &p1;
-    int *test = &(p1.x);
-    printf("(%d, %d)\n", p->x, p->y);
-    *test = 30;
-    printf("(%d, %d)\n", p->x, p->y);
-    printf("(%d, %d)\n", p1.x, p1.y);
-}
-                \end{minted}
-        \end{outline}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Структуры и строки}
-        \begin{footnotesize}
-            \begin{minted}{c}
-typedef struct {
-    char *name;
-    char phone[30];
-} PhoneBookEntry;
-
-int main() {
-    PhoneBookEntry entry;
-    const char* name = "Ivan Ivanov";
-    entry.name = malloc(sizeof(char) * (strlen(name) + 1));
-    if (entry.name == NULL) {
-        return -1;
-    }
-    strcpy(entry.name, name);
-    strcpy(entry.phone, "+7 (911) 123-45-67");
-    printf("%s - %s", entry.name, entry.phone);
-    free(entry.name);
-    return 0;
-}
-            \end{minted}
-        \end{footnotesize}
-    \end{frame}
-
-    \begin{frame}
-        \frametitle{Полезные операции со строками}
-        Модуль string.h/cstring:
-        \begin{outline}
-            \1 strcpy --- скопировать строку в буфер
-            \1 strcmp --- сравнить две строки
-            \1 strcat --- склеить две строки (в буфере должно быть достаточно места!)
-            \1 strlen --- узнать длину строки
-            \1 strstr --- найти подстроку в строке
-            \1 Строки нельзя сравнивать ==
-            \1 Строки нельзя присваивать =
-        \end{outline}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Чтение строки прямо в структуру}
-        \begin{minted}{c}
-int main() {
-    PhoneBookEntry entry;
-    entry.name = malloc(sizeof(char) * 30);
-    if (entry.name == NULL) {
-        return -1;
-    }
-    scanf("%s", entry.name);
-    scanf("%[^\n]", entry.phone);
-
-    printf("%s - %s", entry.name, entry.phone);
-
-    free(entry.name);
-    return 0;
-}
-        \end{minted}
-    \end{frame}
-
-    \begin{frame}[fragile]
-        \frametitle{Структуры могут указывать сами на себя}
-        \begin{footnotesize}
-            \begin{minted}{c}
-typedef struct ListElement {
-    int value;
-    struct ListElement *next;
-} ListElement;
-
-int main() {
-    ListElement* element1 = malloc(sizeof(ListElement));
-    element1->value = 1;
-    ListElement* element2 = malloc(sizeof(ListElement));
-    element2->value = 2;
-    element2->next = NULL;
-    element1->next = element2;
-
-    printf("%i - %i", element1->value, element1->next->value);
-
-    free(element1);
-    free(element2);
-
-    return 0;
-}
-            \end{minted}
-        \end{footnotesize}
-    \end{frame}
-
     \section{Работа с файлами}
 
-    \begin{frame}
-        \frametitle{Файлы}
+    \begin{frame}{Файлы}
         \begin{outline}
             \1 Последовательность байтов на диске
                 \2 Бывают \enquote{сырые} и \enquote{текстовые}
@@ -286,8 +119,7 @@ int main() {
         \end{outline}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Пример, как писать в файл}
+    \begin{frame}[fragile]{Пример, как писать в файл}
         \begin{minted}{cpp}
 int main() {
     FILE* out = fopen("ololo.txt", "w");
@@ -305,8 +137,7 @@ int main() {
         \end{outline}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Пример, как читать из файла}
+    \begin{frame}[fragile]{Пример, как читать из файла}
         \begin{scriptsize}
             \begin{minted}{cpp}
 #include <stdio.h>
@@ -336,21 +167,21 @@ int main() {
         \end{scriptsize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Тонкости}
+    \begin{frame}{Тонкости}
         \begin{outline}
             \1 Чтение строки целиком: \mintinline{cpp}|fscanf(file, "|\%\mintinline{cpp}|[^\n]", buffer);|
             \1 Или: \mintinline{cpp}|fgets(buffer, sizeof(buffer), file);|
             \1 Working directory
-                \2 Свойства проекта -> Отладка -> Рабочая папка
-                \2 По умолчанию \$(ProjectDir), папка с .vcxproj
+                \2 Обычно ваша текущая директория в терминале
+            \1 Работать с файлом как с массивом элементов некоторого типа может быть удобно
+                \2 Можно отобразить файл в память
+                    \3 См. mmap в Linux
         \end{outline}
     \end{frame}
 
     \section{Напоминание про модули}
 
-    \begin{frame}[fragile]
-        \frametitle{Модули}
+    \begin{frame}{Модули}
         \begin{outline}
             \1 Способ группировки кода в логически обособленные группы
             \1 В C это реализуется с помощью заголовочных файлов и файлов с реализацией
@@ -365,8 +196,7 @@ int main() {
         \end{outline}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{Модули}
+    \begin{frame}[fragile]{Модули}
         \begin{scriptsize}
             Заголовочный файл:
             \begin{minted}{c}
@@ -397,19 +227,104 @@ void function2()
         \end{scriptsize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Тонкости}
+    \begin{frame}{Тонкости}
         \begin{outline}
             \1 Реализации функций в .h-файле писать нельзя
                 \2 Иначе будет беда, если один .h-ник подключат в два .c-шника
+                \2 Бывают интересные исключения~--- header-only library
             \1 Комментарии обязательны
             \1 \#pragma once обязательна
             \1 Подключать \enquote{свой} заголовочный файл в .c обязательно
             \1 Файлы .h/.c всегда ходят парами, кроме файла с main
-            \1 .c --- это \emph{единица трансляции}, на \emph{каждый} .c запускается компилятор
-                \2 Ключевое слово static у функции делает её невидимой для линковщика, что \emph{надо} использовать для внутренних функций
         \end{outline}
     \end{frame}
 
-\end{document}
+    \begin{frame}{Немного о терминологии}
+        \begin{outline}
+            \1 Формально в Си нет модулей
+            \1 Есть~--- единицы трансляции (translation unit)
+                \2 Обычно это .c после препроцессора, именно из них компилятор делает объектные файлы
+            \1 Единица трансляции определяет область видимости
+                \2 По умолчанию все функции доступны извне (extern)
+                \2 Ключевое слово \mintinline{c}{static} у функции делает её невидимой для линковщика, его стоит использовать для внутренних функций
+            \1 Осторожно: \mintinline{c}{static}~--- многозначное ключевое слово
+        \end{outline}
+    \end{frame}
 
+    \section{Системные вызовы}
+
+    \begin{frame}{Системные вызовы}
+        \begin{outline}
+            \1 Способ обратиться к ОС, обычно для некоторого взаимодействия
+            \1 Типичные системные вызовы:
+                \2 Выделение памяти
+                \2 Запуск приложений
+                \2 Работа с файлами (открытие, чтение, запись, закрытие)
+                \2 Узнать системную информацию (время, ядро, на котором исполняемся)
+            \1 Специфичны для ОС
+                \2 Делает приложение непереносимым
+                \2 Для Linux читать man 2 syscalls
+        \end{outline}
+    \end{frame}
+
+    \section{Виртуальная память}
+
+    \begin{frame}{Идея виртуальной памяти}
+        Проблема:
+        \begin{outline}
+            \1 Памяти мало, процессов много
+            \1 Хотим удовлетворить всех с минимальными потерями для себя
+        \end{outline}
+
+        Идея:
+        \begin{outline}
+            \1 Дадим каждому приложению собственное адресное пространство~--- виртуальную память
+            \1 Отобрать виртуальную память в физическую заставим ОС
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}{Побочные эффекты}
+        \begin{outline}
+            \1 Каждое приложение получает свой непрерывный \enquote{массив байтов}, возможно даже большего размера, чем доступно физически
+            \1 Возможность перемещать данные из сильно ограниченной RAM, например, на SSD
+        \end{outline}
+
+    \end{frame}
+
+    \begin{frame}{Возможные определения}
+        \framesubtitle{По Я.А. Кириленко}
+
+        Виртуальная организация памяти~--- это процесс расширения логической памяти за пределы физической
+
+        \vspace{1em}
+
+        Виртуальная память~--- это техника, позволяющая исполнять процессы, которые могут находиться в памяти не полностью
+    \end{frame}
+
+    \begin{frame}{Страничная организация (при поддержке ЦПУ)}
+        \framesubtitle{По Я.А. Кириленко}
+
+        Страницы --- это части, на которые разбивается пространство виртуальных адресов
+
+        Страницы всегда имеют фиксированный размер (часто 4 КиБ)
+
+        \begin{center}
+            \includegraphics[width=0.6\linewidth]{virtual-memory.png}
+        \end{center}
+
+    \end{frame}
+
+    \begin{frame}{Ещё одна красивая картинка}
+
+        Теперь с адресным пространством процесса.
+        Полезно, что мы не теряем память между стеком и кучей.
+
+        \begin{center}
+            \includegraphics[width=0.5\linewidth]{virtual-memory-2.png}
+        \end{center}
+
+        Картинка из неплохой статьи: \url{https://web.archive.org/web/20161210164858/http://jpauli.github.io/2015/04/16/segmentation-fault.html}
+
+        Или на русском: \url{https://habr.com/ru/companies/nix/articles/277759/}
+    \end{frame}
+\end{document}
