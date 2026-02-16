@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle[Лекция 1: Введение в робототехнику]{Алгоритмические основы робототехники}{11.02.2025}
+\slidetitle[Лекция 1: Введение в робототехнику]{Алгоритмические основы робототехники}{17.02.2026}
 
 \begin{document}
 
@@ -10,92 +10,73 @@
 
     \section{Организационное}
 
-    \begin{frame}
-        \frametitle{Организационное}
-        \begin{itemize}
-            \item Семинары с одной вводной лекцией, две пары в неделю
-            \item В конце устный экзамен и аттестация по докладам
-            \begin{itemize}
-                \item Два доклада на полчаса
-                \item Два вопроса без подготовки
-            \end{itemize}
-            \item Материалы лекций, темы докладов на \url{https://hwproj.ru/courses/40030}
-            \item Балльная система
-            \begin{itemize}
-                \item 5 баллов за доклад
-                \item 10 баллов за экзамен
-                \item Итоговая оценка: $(\textrm{<сумма оценок>} -\ 5) * 10$
-            \end{itemize}
-            \item Коммуникации --- в команде курса в Teams
-            \begin{itemize}
-                \item Также пишите в Teams в личку
-            \end{itemize}
-        \end{itemize}
+    \begin{frame}{Организационное}
+        \begin{outline}
+            \1 Семинары с одной вводной лекцией, две пары в неделю
+            \1 В конце устный экзамен и аттестация по докладам
+                \2 Два доклада на полчаса
+                \2 Два вопроса без подготовки
+            \1 Материалы лекций, темы докладов на \url{https://hwproj.ru/courses/50079}
+            \1 Балльная система
+                \2 5 баллов за доклад
+                \2 10 баллов за экзамен
+                \2 Итоговая оценка: $(\textrm{<сумма оценок>} -\ 5) * 10$
+            \1 Коммуникации --- в чате потока
+                \2 Также пишите в личку
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Зачем этот курс}
-        \begin{itemize}
-            \item Робототехника в общем смысле~--- очень перспективна
-            \begin{itemize}
-                \item Беспилотные автомобили, БПЛА, \enquote{интернет вещей}
-            \end{itemize}
-            \item Курс~--- краткий обзор того, что вообще бывает, какая наука за этим стоит, чем можно заниматься в магистратуре
-            \item Немного общего низкоуровневого программирования, что никогда не лишне
-            \item Речь в основном про наземные мобильные роботы
-            \item Фокус на алгоритмике:
-            \begin{itemize}
-                \item Не про паяльники и резьбу по дереву, не про теорию управления, не про искусственный интеллект
-            \end{itemize}
-            \item Кому нужны робототехники-программисты: \enquote{Сколтех}, ресурсный центр \enquote{Робототехника и БАС} СПбГУ, \enquote{Геоскан}, АО \enquote{Кама}, \enquote{Кибертех}, ЦНИИ РТК, \dots
-        \end{itemize}
+    \begin{frame}{Зачем этот курс}
+        \begin{outline}
+            \1 Робототехника в общем смысле~--- очень перспективна
+                \2 Беспилотные автомобили, БПЛА, \enquote{интернет вещей}
+            \1 Курс~--- краткий обзор того, что вообще бывает, какая наука за этим стоит, чем можно заниматься в магистратуре
+            \1 Немного общего низкоуровневого программирования, что никогда не лишне
+            \1 Речь в основном про наземные мобильные роботы
+            \1 Фокус на алгоритмике:
+                \2 Не про паяльники и резьбу по дереву, не про теорию управления, не про искусственный интеллект
+            \1 Кому нужны робототехники-программисты: \enquote{Сколтех}, ресурсный центр \enquote{Робототехника и БАС} СПбГУ, \enquote{Геоскан}, АО \enquote{Кама}, \enquote{Кибертех}, ЦНИИ РТК, \dots
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Что будет в курсе}
-        \begin{itemize}
-            \item Кинематика мобильного робота: виды и конфигурации колёс, \enquote{стандартная} трёхколёсная тележка, другие варианты кинематики (в т.ч. шагающие роботы)
-            \item Сенсорика: типы и физические принципы работы сенсоров, работа с ошибками измерений.
-            \item Отдельно видеокамеры, стереокамеры, сенсоры глубины
-            \item Алгоритмы машинного зрения, сегментация
-            \item Локализация, behavior-driven алгоритмы, belief representation, представление карты
-            \item SLAM
-            \item Планирование и \enquote{стратегическая} навигация
-            \item Аппаратные робототехнические платформы, от Arduino до KUKA
-            \item Программные платформы, ROS
-        \end{itemize}
+    \begin{frame}{Что будет в курсе}
+        \begin{outline}
+            \1 Кинематика мобильного робота: виды и конфигурации колёс, \enquote{стандартная} трёхколёсная тележка, другие варианты кинематики (в т.ч. шагающие роботы)
+            \1 Сенсорика: типы и физические принципы работы сенсоров, работа с ошибками измерений.
+            \1 Отдельно видеокамеры, стереокамеры, сенсоры глубины
+            \1 Алгоритмы машинного зрения, сегментация
+            \1 Локализация, behavior-driven алгоритмы, belief representation, представление карты
+            \1 SLAM
+            \1 Планирование и \enquote{стратегическая} навигация
+            \1 Аппаратные робототехнические платформы, от Arduino до KUKA
+            \1 Программные платформы, ROS
+        \end{outline}
     \end{frame}
 
     \section{Введение}
 
-    \begin{frame}
-        \frametitle{Робототехника? Какая робототехника?}
+    \begin{frame}{Робототехника? Какая робототехника?}
         Робототехника --- наука об автономных технических системах, или о разработке и применении роботов.
-        \begin{itemize}
-            \item Слово \enquote{Робот} придумал Карел Чапек ещё в 1920
-            \item Часто под роботами понимают вообще автоматические машины для замены человека в труде
-            \item Следуя традициям СПбГУ, будем понимать под роботами таковые машины \emph{с обратной связью}
-            \item Есть ещё \emph{кибернетика} --- наука об управлении, раздел прикладной математики
-        \end{itemize}
+        \begin{outline}
+            \1 Слово \enquote{Робот} придумал Карел Чапек ещё в 1920
+            \1 Часто под роботами понимают вообще автоматические машины для замены человека в труде
+            \1 Следуя традициям СПбГУ, будем понимать под роботами таковые машины \emph{с обратной связью}
+            \1 Есть ещё \emph{кибернетика} --- наука об управлении, раздел прикладной математики
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Какие роботы бывают}
+    \begin{frame}{Какие роботы бывают}
         \begin{columns}
             \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item Стационарные (манипулятивные) роботы
-                    \begin{itemize}
-                        \item Промышленные роботы-манипуляторы
-                        \item Дельта-роботы
-                    \end{itemize}
-                    \item Мобильные роботы
-                    \begin{itemize}
-                        \item Колёсные (гусеничные)
-                        \item БПЛА, подводные/надводные
-                        \item Шагающие
-                    \end{itemize}
-                \end{itemize}
+                \begin{outline}
+                    \1 Стационарные (манипулятивные) роботы
+                        \2 Промышленные роботы-манипуляторы
+                        \2 Дельта-роботы
+                    \1 Мобильные роботы
+                        \2 Колёсные (гусеничные)
+                        \2 БПЛА, подводные/надводные
+                        \2 Шагающие
+                \end{outline}
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
@@ -109,16 +90,15 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Робототехника на матмехе}
+    \begin{frame}{Робототехника на матмехе}
         \begin{columns}
             \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item Образовательный конструктор ТРИК
-                    \item Среда программирования TRIK Studio/QReal:Robots
-                    \item Ресурсный центр \enquote{Робототехника и БАС}
-                    \item Кафедра теоретической кибернетики
-                \end{itemize}
+                \begin{outline}
+                    \1 Образовательный конструктор ТРИК
+                    \1 Среда программирования TRIK Studio/QReal:Robots
+                    \1 Ресурсный центр \enquote{Робототехника и БАС}
+                    \1 Кафедра теоретической кибернетики
+                \end{outline}
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
@@ -130,8 +110,7 @@
 
     \section{Алгоритмические основы}
 
-    \begin{frame}
-        \frametitle{Общая схема управления роботом}
+    \begin{frame}{Общая схема управления роботом}
         \framesubtitle{Sense-compute-control}
         \begin{center}
             \includegraphics[width=0.6\textwidth]{controlLoop.png}
@@ -139,41 +118,34 @@
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Базовые схемы управления}
-        \begin{itemize}
-            \item Задача: имея установочное значение, вырабатывать управляющее воздействие так, чтобы система оставалась к установочному значению как можно ближе
-            \item Релейный регулятор: скачкообразное переключение управляющего воздействия при достижении порогового значения
-            \item Пропорциональный регулятор: управляющее воздействие пропорционально отклонению от установочного значения
-            \item Пропорционально-дифференциальный регулятор: управляющее воздействие пропорционально отклонению от установочного значения и скорости изменения отклонения
-            \item ПИД-регулятор: управляющее воздействие пропорционально всему выше и длительности отклонения
-        \end{itemize}
+    \begin{frame}{Базовые схемы управления}
+        \begin{outline}
+            \1 Задача: имея установочное значение, вырабатывать управляющее воздействие так, чтобы система оставалась к установочному значению как можно ближе
+            \1 Релейный регулятор: скачкообразное переключение управляющего воздействия при достижении порогового значения
+            \1 Пропорциональный регулятор: управляющее воздействие пропорционально отклонению от установочного значения
+            \1 Пропорционально-дифференциальный регулятор: управляющее воздействие пропорционально отклонению от установочного значения и скорости изменения отклонения
+            \1 ПИД-регулятор: управляющее воздействие пропорционально всему выше и длительности отклонения
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Демо}
+    \begin{frame}{Демо}
         \begin{center}
             \Huge{Демо на TRIK Studio}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Продвинутые подходы}
+    \begin{frame}{Продвинутые подходы}
         \begin{columns}
             \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item Behavior-driven
-                    \begin{itemize}
-                        \item Условие-реакция
-                        \item Конечные автоматы
-                        \item Дерево поведений
-                    \end{itemize}
-                    \item Локализация и планирование
-                    \begin{itemize}
-                        \item Локализация по ориентирам
-                        \item SLAM
-                    \end{itemize}
-                \end{itemize}
+                \begin{outline}
+                    \1 Behavior-driven
+                        \2 Условие-реакция
+                        \2 Конечные автоматы
+                        \2 Дерево поведений
+                    \1 Локализация и планирование
+                        \2 Локализация по ориентирам
+                        \2 SLAM
+                \end{outline}
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
@@ -186,52 +158,41 @@
 
     \section{Кинематика}
 
-    \begin{frame}
-        \frametitle{Дьявол кроется в деталях}
+    \begin{frame}{Дьявол кроется в деталях}
         \framesubtitle{Кинематика робота}
-        \begin{itemize}
-            \item Виды задач
-            \begin{itemize}
-                \item Прямая кинематическая задача --- есть модель и набор управляющих воздействий, какое положение робот займёт в пространстве?
-                \item Обратная кинематическая задача --- есть модель и целевое положение робота, каков набор управляющих воздействий?
-            \end{itemize}
-            \item Степени свободы --- сколько независимых параметров описывают состояние модели
-            \begin{itemize}
-                \item Не всегда всеми ими можно управлять
-                \item Голономность
-            \end{itemize}
-            \item Модели:
-            \begin{itemize}
-                \item Шагающие --- 2, 4, 6 ног
-                \item Колёсные --- четыре известных вида колеса, включая \enquote{шведские} и шар, более десятка известных конфигураций колёсных тележек
-                \begin{itemize}
-                    \item \enquote{Автомобильное} управление (Аккермана), дифференциальное (\enquote{танковое}), омниколёса, \enquote{Synchro drive}
-                \end{itemize}
-            \end{itemize}
-        \end{itemize}
+        \begin{outline}
+            \1 Виды задач
+                \2 Прямая кинематическая задача --- есть модель и набор управляющих воздействий, какое положение робот займёт в пространстве?
+                \2 Обратная кинематическая задача --- есть модель и целевое положение робота, каков набор управляющих воздействий?
+            \1 Степени свободы --- сколько независимых параметров описывают состояние модели
+                \2 Не всегда всеми ими можно управлять
+                \2 Голономность
+            \1 Модели:
+                \2 Шагающие --- 2, 4, 6 ног
+                \2 Колёсные --- четыре известных вида колеса, включая \enquote{шведские} и шар, более десятка известных конфигураций колёсных тележек
+                    \3 \enquote{Автомобильное} управление (Аккермана), дифференциальное (\enquote{танковое}), омниколёса, \enquote{Synchro drive}
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Пример: синхропривод}
+    \begin{frame}{Пример: синхропривод}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{synchroDrive.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Поза робота}
+    \begin{frame}{Поза робота}
         \framesubtitle{Для трёхколёсной дифференциальной тележки}
         \begin{columns}
             \begin{column}{0.6\textwidth}
-                \begin{itemize}
-                    \item Глобальная система координат
-                    \item Поза:
+                \begin{outline}
+                    \1 Глобальная система координат
+                    \1 Поза:
                         $$\xi_I = \begin{bmatrix} x \\ y \\ \theta \end{bmatrix}$$
-                    \item Прямая кинематическая модель:
+                    \1 Прямая кинематическая модель:
                         $$\dot{\xi_I} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{\theta} \end{bmatrix} = f(l, r, \theta, \dot{\phi_1}, \dot{\phi_2})$$
-                    \item Каждая модель накладывает ограничения на возможные движения
-                \end{itemize}
+                    \1 Каждая модель накладывает ограничения на возможные движения
+                \end{outline}
             \end{column}
             \begin{column}{0.4\textwidth}
                 \begin{center}
@@ -242,8 +203,7 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Задача управления}
+    \begin{frame}{Задача управления}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{inverseKinematics.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
@@ -252,76 +212,60 @@
 
     \section{Сенсорика}
 
-    \begin{frame}
-        \frametitle{Виды сенсоров}
-        \begin{itemize}
-            \item Тактильные: кнопки, бамперы, неконтактные датчики
-            \item Энкодеры, разных видов: оптические, магнитные и т.п.
-            \item Датчики направления: компас, гироскоп, инклинометр
-            \item Датчики ориентиров: ГНСС, RF-метки и т.п.
-            \item Активные расстояния: УЗ, ИК, лазерные, радар, структурный свет
-            \item Движения/скорости: допплеровские радар или звуковые
-            \item Машинное зрение: камеры разных видов, стереопары, лидары
-        \end{itemize}
+    \begin{frame}{Виды сенсоров}
+        \begin{outline}
+            \1 Тактильные: кнопки, бамперы, неконтактные датчики
+            \1 Энкодеры, разных видов: оптические, магнитные и т.п.
+            \1 Датчики направления: компас, гироскоп, инклинометр
+            \1 Датчики ориентиров: ГНСС, RF-метки и т.п.
+            \1 Активные расстояния: УЗ, ИК, лазерные, радар, структурный свет
+            \1 Движения/скорости: допплеровские радар или звуковые
+            \1 Машинное зрение: камеры разных видов, стереопары, лидары
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Трудности}
-        \begin{itemize}
-            \item Шумы, фильтрация
-            \begin{itemize}
-                \item Случайные и систематические ошибки
-                \item Скользящее среднее, медианный фильтр, фильтр Калмана
-            \end{itemize}
-            \item Sensor aliasing
-            \item Представление неопределённости
-            \begin{itemize}
-                \item Одна гипотеза, несколько гипотез
-            \end{itemize}
-            \item Sensor fusion
-            \item Распространение ошибки
-        \end{itemize}
+    \begin{frame}{Трудности}
+        \begin{outline}
+            \1 Шумы, фильтрация
+                \2 Случайные и систематические ошибки
+                \2 Скользящее среднее, медианный фильтр, фильтр Калмана
+            \1 Sensor aliasing
+            \1 Представление неопределённости
+                \2 Одна гипотеза, несколько гипотез
+            \1 Sensor fusion
+            \1 Распространение ошибки
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Распространение ошибки}
+    \begin{frame}{Распространение ошибки}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{poseUncertainity.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{\enquote{Высокоуровневая} сенсорика}
-        \begin{itemize}
-            \item Depth from focus
-            \item Feature-based-стерео --- много разных алгоритмов сопоставления точек на кадрах с разных ракурсов
-            \begin{itemize}
-                \item Дескриптор --- некое характерное представление точки, не зависящее от ракурса
-            \end{itemize}
-            \item Оптический поток (тоже feature-based), визуальная одометрия
-            \item Поиск границ, поиск геометрических примитивов
-            \begin{itemize}
-                \item Лапласиан гауссиана, оператор Кэнни, преобразование Хафа
-            \end{itemize}
-            \item Сегментация, кластеризация (сейчас в основном машобуч)
-            \begin{itemize}
-                \item DBSCAN, RANSAC
-            \end{itemize}
-            \item Whole-image features --- гистограммы, \enquote{отпечатки}
-        \end{itemize}
+    \begin{frame}{\enquote{Высокоуровневая} сенсорика}
+        \begin{outline}
+            \1 Depth from focus
+            \1 Feature-based-стерео --- много разных алгоритмов сопоставления точек на кадрах с разных ракурсов
+                \2 Дескриптор --- некое характерное представление точки, не зависящее от ракурса
+            \1 Оптический поток (тоже feature-based), визуальная одометрия
+            \1 Поиск границ, поиск геометрических примитивов
+                \2 Лапласиан гауссиана, оператор Кэнни, преобразование Хафа
+            \1 Сегментация, кластеризация (сейчас в основном машобуч)
+                \2 DBSCAN, RANSAC
+            \1 Whole-image features --- гистограммы, \enquote{отпечатки}
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Преобразование Хафа}
+    \begin{frame}{Преобразование Хафа}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{houghTransform.png}
             \attribution{\url{https://ru.wikipedia.org/wiki/Преобразование_Хафа}}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Общая схема сенсорики на CV}
+    \begin{frame}{Общая схема сенсорики на CV}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{cvScheme.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
@@ -330,8 +274,7 @@
 
     \section{Локализация}
 
-    \begin{frame}
-        \frametitle{Задача навигации}
+    \begin{frame}{Задача навигации}
         Behavior-driven-навигация:
         \begin{center}
             \includegraphics[width=0.5\textwidth]{behaviorNavigation.png}
@@ -344,35 +287,30 @@
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Определение положения}
+    \begin{frame}{Определение положения}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{uncertainity.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Belief representation}
+    \begin{frame}{Belief representation}
         \begin{center}
             \includegraphics[width=0.45\textwidth]{beliefRepresentation.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Представление карты}
+    \begin{frame}{Представление карты}
         \begin{columns}
             \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item Непрерывное --- геометрические примитивы
-                    \item Дискретное:
-                    \begin{itemize}
-                        \item Сетка
-                        \item Сетка с переменным размером ячейки
-                        \item Топологическое (в виде графа локаций)
-                    \end{itemize}
-                \end{itemize}
+                \begin{outline}
+                    \1 Непрерывное --- геометрические примитивы
+                    \1 Дискретное:
+                        \2 Сетка
+                        \2 Сетка с переменным размером ячейки
+                        \2 Топологическое (в виде графа локаций)
+                \end{outline}
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
@@ -383,35 +321,31 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Локализация}
-        \begin{itemize}
-            \item Инерциальная навигация, проприоцепция
-            \item Локализация по ориентирам
-            \item Марковская --- поддерживаем набор предположений о том, где мы, уточняем по сенсорам
-            \item Фильтр Калмана --- оптимизируем предсказанное положение робота и данные сенсоров
-            \item Simultaneous Localization And Mapping --- строим карту и пытаемся определить своё положение на ней
-        \end{itemize}
+    \begin{frame}{Локализация}
+        \begin{outline}
+            \1 Инерциальная навигация, проприоцепция
+            \1 Локализация по ориентирам
+            \1 Марковская --- поддерживаем набор предположений о том, где мы, уточняем по сенсорам
+            \1 Фильтр Калмана --- оптимизируем предсказанное положение робота и данные сенсоров
+            \1 Simultaneous Localization And Mapping --- строим карту и пытаемся определить своё положение на ней
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Схема локализации фильтром Калмана}
+    \begin{frame}{Схема локализации фильтром Калмана}
         \begin{center}
             \includegraphics[width=0.6\textwidth]{kalmanLocalization.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Схема SLAM}
+    \begin{frame}{Схема SLAM}
         \begin{center}
             \includegraphics[width=0.65\textwidth]{slam.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Проблема замыкания траектории}
+    \begin{frame}{Проблема замыкания траектории}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{slamErrors.png}
             \attribution{R. Siegwart, I.R. Nourbakhsh, Introduction to Autonomous Mobile Robots}
@@ -420,25 +354,19 @@
 
     \section{Навигация}
 
-    \begin{frame}
-        \frametitle{Задача навигации}
-        \begin{itemize}
-            \item Задача: зная карту и своё положение на ней, достичь позиции (или группы позиций) $p$ в момент времени не позже $n$
-            \item Но есть нюансы:
-            \begin{itemize}
-                \item Мы достигаем не позиции $p$, а состояния, в котором верим, что достигли позиции $p$, то есть строим траекторию не по карте, а по нашим представлениям
-                \item Как правило, мы не знаем точной карты
-                \item Карта может меняться со временем
-                \begin{itemize}
-                    \item Задача обхода препятствий
-                \end{itemize}
-            \end{itemize}
-            \item integrated planning and execution
-        \end{itemize}
+    \begin{frame}{Задача навигации}
+        \begin{outline}
+            \1 Задача: зная карту и своё положение на ней, достичь позиции (или группы позиций) $p$ в момент времени не позже $n$
+            \1 Но есть нюансы:
+                \2 Мы достигаем не позиции $p$, а состояния, в котором верим, что достигли позиции $p$, то есть строим траекторию не по карте, а по нашим представлениям
+                \2 Как правило, мы не знаем точной карты
+                \2 Карта может меняться со временем
+                    \3 Задача обхода препятствий
+            \1 integrated planning and execution
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Слоистая архитектура системы навигации}
+    \begin{frame}{Слоистая архитектура системы навигации}
         \begin{columns}
             \begin{column}{0.5\textwidth}
                 \begin{center}
@@ -456,15 +384,14 @@
 
     \section{Программно-инженерные аспекты}
 
-    \begin{frame}
-        \frametitle{Аппаратные платформы}
+    \begin{frame}{Аппаратные платформы}
         \begin{columns}
             \begin{column}{0.55\textwidth}
-                \begin{itemize}
-                    \item Готовые роботы --- KUKA
-                    \item Платы \enquote{сделай сам} --- Arduino в различных вариациях, Raspberry Pi, \dots
-                    \item Образовательные/платформы для прототипирования --- ТРИК, Vex, Fishertechnik
-                \end{itemize}
+                \begin{outline}
+                    \1 Готовые роботы --- KUKA
+                    \1 Платы \enquote{сделай сам} --- Arduino в различных вариациях, Raspberry Pi, \dots
+                    \1 Образовательные/платформы для прототипирования --- ТРИК, Vex, Fishertechnik
+                \end{outline}
             \end{column}
             \begin{column}{0.45\textwidth}
                 \begin{center}
@@ -475,16 +402,15 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Симуляторы}
+    \begin{frame}{Симуляторы}
         \begin{columns}
             \begin{column}{0.5\textwidth}
-                \begin{itemize}
-                    \item Player/Stage/Gazebo
-                    \item Webots
-                    \item CoppeliaSim (бывший V-REP)
-                    \item Microsoft AirSim
-                \end{itemize}
+                \begin{outline}
+                    \1 Player/Stage/Gazebo
+                    \1 Webots
+                    \1 CoppeliaSim (бывший V-REP)
+                    \1 Microsoft AirSim
+                \end{outline}
             \end{column}
             \begin{column}{0.5\textwidth}
                 \begin{center}
@@ -495,16 +421,15 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Программные платформы}
+    \begin{frame}{Программные платформы}
         \begin{columns}
             \begin{column}{0.4\textwidth}
-                \begin{itemize}
-                    \item ROS/ROS2
-                    \item Player
-                    \item RT-middleware
-                    \item YARP
-                \end{itemize}
+                \begin{outline}
+                    \1 ROS/ROS2
+                    \1 Player
+                    \1 RT-middleware
+                    \1 YARP
+                \end{outline}
             \end{column}
             \begin{column}{0.6\textwidth}
                 \begin{center}
@@ -517,8 +442,7 @@
 
     \section{Заключение}
 
-    \begin{frame}
-        \frametitle{Книжка}
+    \begin{frame}{Книжка}
         \begin{columns}
             \begin{column}{0.5\textwidth}
                 Roland Siegwart, Illah Reza Nourbakhsh, Introduction to Autonomous Mobile Robots, MIT Press, 2004, 321 pages
