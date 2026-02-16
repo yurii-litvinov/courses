@@ -10,44 +10,37 @@
 
     \section{Организационное}
 
-    \begin{frame}
-        \frametitle{Организационное}
-        \begin{itemize}
-            \item Лекционно-практический курс, будем практиковаться по большей части прямо на парах
-            \item В конце теоретический зачёт
-            \item Балльная система ECTS
-            \begin{itemize}
-                \item 60\% за теорзачёт, 40\% за работу на парах
-                \item Можно доделывать дома за половину баллов
-                \item Прежде всего, проектирование, но будут и задачи на покодить
-                \item Будут групповые и индивидуальные задания
-            \end{itemize}
-            \item Материалы и задания будут выкладываться в HwProj
-            \begin{itemize}
-                \item \url{https://hwproj.ru/courses/40032}
-            \end{itemize}
-            \item Коммуникация в Teams, в канале команды курса
-        \end{itemize}
+    \begin{frame}{Организационное}
+        \begin{outline}
+            \1 Лекционно-практический курс, будем практиковаться по большей части прямо на парах
+            \1 В конце теоретический зачёт
+            \1 Балльная система ECTS
+                \2 60\% за теорзачёт, 40\% за работу на парах
+                \2 Прежде всего, проектирование
+                    \3 Начинаем на практике -> доделываем дома -> обсуждаем на следующей практике
+                    \3 -50\% баллов за пропуск дедлайна
+                \2 Будут групповые и индивидуальные задания
+            \1 Материалы и задания будут выкладываться в HwProj
+                \2 \url{https://hwproj.ru/courses/50077}
+            \1 Коммуникация в чате потока в Telegram, можно писать в личку
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Что будет в курсе}
-        \begin{itemize}
-            \item Объектно-ориентированное проектирование
-            \item Моделирование, язык UML и, немного, другие визуальные языки
-            \item Шаблоны проектирования и антипаттерны
-            \item Архитектурные стили
-            \item Предметно-ориентированное проектирование
-            \item Проектирование распределённых приложений
-            \item Развёртывание и DevOps
-            \item Примеры архитектур (если успеем)
-        \end{itemize}
+    \begin{frame}{Что будет в курсе}
+        \begin{outline}
+            \1 Объектно-ориентированное проектирование
+            \1 Моделирование, язык UML и, немного, другие визуальные языки
+            \1 Шаблоны проектирования и антипаттерны
+            \1 Архитектурные стили
+            \1 Предметно-ориентированное проектирование
+            \1 Проектирование распределённых приложений
+            \1 Развёртывание и DevOps
+        \end{outline}
     \end{frame}
 
     \section{Введение}
 
-    \begin{frame}
-        \frametitle{Программа и программный продукт}
+    \begin{frame}{Программа и программный продукт}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{brooksSquare.png}
         \end{center}
@@ -57,8 +50,7 @@
         \end{textblock}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Размер типичного ПО}
+    \begin{frame}{Размер типичного ПО}
         \begin{footnotesize}
             \begin{center}
                 \begin{tabu} {| X[0.6 l p] | X[1 l p] |}
@@ -81,25 +73,20 @@
         \end{footnotesize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектура}
+    \begin{frame}{Архитектура}
         \begin{columns}
             \begin{column}{0.7\textwidth}
-                \begin{itemize}
-                    \item Совокупность важнейших решений об организации программной системы
-                    \begin{itemize}
-                        \item Эволюционирующий свод знаний
-                        \item Разные точки зрения
-                        \item Разный уровень детализации
-                    \end{itemize}
-                    \item Для чего
-                    \begin{itemize}
-                        \item База для реализации, \enquote{фундамент} системы
-                        \item Инструмент для оценки трудоёмкости и отслеживания прогресса
-                        \item Средство обеспечения переиспользования
-                        \item Средство анализа системы ещё до того, как она реализована
-                    \end{itemize}
-                \end{itemize}
+                \begin{outline}
+                    \1 Совокупность важнейших решений об организации программной системы
+                        \2 Эволюционирующий свод знаний
+                        \2 Разные точки зрения
+                        \2 Разный уровень детализации
+                    \1 Для чего
+                        \2 База для реализации, \enquote{фундамент} системы
+                        \2 Инструмент для оценки трудоёмкости и отслеживания прогресса
+                        \2 Средство обеспечения переиспользования
+                        \2 Средство анализа системы ещё до того, как она реализована
+                \end{outline}
             \end{column}
             \begin{column}{0.3\textwidth}
                 \includegraphics[width=\textwidth]{whatArchitecture.png}
@@ -110,62 +97,52 @@
 
     \section{Профессия \enquote{Архитектор}}
 
-    \begin{frame}
-        \frametitle{Профессия \enquote{Архитектор}}
-        \begin{itemize}
-            \item Архитектор --- специально выделенный человек (или группа людей), отвечающий за:
-            \begin{itemize}
-                \item разработку и описание архитектуры системы
-                \item доведение её до всех заинтересованных лиц
-                \item контроль реализации архитектуры
-                \item поддержание её актуального состояния по ходу разработки и сопровождения
-            \end{itemize}
-        \end{itemize}
+    \begin{frame}{Профессия \enquote{Архитектор}}
+        \begin{outline}
+            \1 Архитектор --- специально выделенный человек (или группа людей), отвечающий за:
+                \2 разработку и описание архитектуры системы
+                \2 доведение её до всех заинтересованных лиц
+                \2 контроль реализации архитектуры
+                \2 поддержание её актуального состояния по ходу разработки и сопровождения
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Трудовые функции архитектора}
+    \begin{frame}{Трудовые функции архитектора}
         \framesubtitle{По профстандарту 06.003}
-        \begin{itemize}
-            \item Выявление и согласование требований к программной системе с точки зрения архитектуры
-            \item Выбор и моделирование архитектурного решения для реализации программной системы
-            \item Разработка разделов по архитектуре проектных и эксплуатационных документов программной системы
-            \item Контроль реализации и испытаний программной системы с точки зрения архитектуры
-            \item Сопровождение эксплуатации программной системы с точки зрения архитектуры
-        \end{itemize}
+        \begin{outline}
+            \1 Выявление и согласование требований к программной системе с точки зрения архитектуры
+            \1 Выбор и моделирование архитектурного решения для реализации программной системы
+            \1 Разработка разделов по архитектуре проектных и эксплуатационных документов программной системы
+            \1 Контроль реализации и испытаний программной системы с точки зрения архитектуры
+            \1 Сопровождение эксплуатации программной системы с точки зрения архитектуры
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектор vs разработчик}
+    \begin{frame}{Архитектор vs разработчик}
         \begin{center}
             \includegraphics[width=0.35\textwidth]{architectVsDeveloper.png}
         \end{center}
-        \begin{itemize}
-            \item Широта знаний
-            \item Коммуникационные навыки
-            \item Часто архитектор играет роль разработчика и наоборот
-            \begin{itemize}
-                \item Архитектор в \enquote{башне из слоновой кости} --- это плохо
-            \end{itemize}
-        \end{itemize}
+        \begin{outline}
+            \1 Широта знаний
+            \1 Коммуникационные навыки
+            \1 Часто архитектор играет роль разработчика и наоборот
+                \2 Архитектор в \enquote{башне из слоновой кости} --- это плохо
+        \end{outline}
     \end{frame}
 
     \section{Пример: ПО для осциллографа}
 
-    \begin{frame}
-        \frametitle{Пример: ПО для осциллографа}
+    \begin{frame}{Пример: ПО для осциллографа}
         \begin{columns}
             \begin{column}{0.6\textwidth}
-                \begin{itemize}
-                    \item Считывать параметры сигнала
-                    \item Оцифровывать и сохранять их
-                    \item Выполнять разные фильтрации и преобразования
-                    \item Отображать результаты на экране
-                    \begin{itemize}
-                        \item С тач-скрином и встроенным хелпом
-                    \end{itemize}
-                    \item Возможность настройки под конкретные задачи
-                \end{itemize}
+                \begin{outline}
+                    \1 Считывать параметры сигнала
+                    \1 Оцифровывать и сохранять их
+                    \1 Выполнять разные фильтрации и преобразования
+                    \1 Отображать результаты на экране
+                        \2 С тач-скрином и встроенным хелпом
+                    \1 Возможность настройки под конкретные задачи
+                \end{outline}
             \end{column}
             \begin{column}{0.4\textwidth}
                 \begin{center}
@@ -180,235 +157,174 @@
         \end{tiny}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Вариант 1: объектная модель}
+    \begin{frame}{Вариант 1: объектная модель}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeObjects.png}
             \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Вариант 2: слоистая архитектура}
+    \begin{frame}{Вариант 2: слоистая архитектура}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeLayers.png}
             \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Вариант 3: каналы и фильтры}
+    \begin{frame}{Вариант 3: каналы и фильтры}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeFilters.png}
             \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Вариант 4: модифицированные каналы и фильтры}
+    \begin{frame}{Вариант 4: модифицированные каналы и фильтры}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{oscilloscopeModifiedFilters.png}
             \attribution{Garlan D., Shaw M. An introduction to software architecture}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Выводы}
-        \begin{itemize}
-            \item Можем делать утверждения о свойствах системы, базируясь на её структурных свойствах
-            \begin{itemize}
-                \item Не написав ни строчки кода и даже не выбрав язык реализации
-            \end{itemize}
-            \item Рассуждения очень субъективны
-            \begin{itemize}
-                \item Многое зависит от интуиции и вкуса архитектора, однако ошибки очень дороги
-            \end{itemize}
-            \item Можно выделить \emph{архитектурные стили} --- \enquote{архитектуры архитектур}
-            \item Можно выделить \emph{архитектурные точки зрения} и \emph{архитектурные виды}
-            \item Разный уровень детализации
-        \end{itemize}
+    \begin{frame}{Выводы}
+        \begin{outline}
+            \1 Можем делать утверждения о свойствах системы, базируясь на её структурных свойствах
+                \2 Не написав ни строчки кода и даже не выбрав язык реализации
+            \1 Рассуждения очень субъективны
+                \2 Многое зависит от интуиции и вкуса архитектора, однако ошибки очень дороги
+            \1 Можно выделить \emph{архитектурные стили} --- \enquote{архитектуры архитектур}
+            \1 Можно выделить \emph{архитектурные точки зрения} и \emph{архитектурные виды}
+            \1 Разный уровень детализации
+        \end{outline}
     \end{frame}
 
     \section{Архитектурные виды}
 
-    \begin{frame}
-        \frametitle{Архитектурные виды}
+    \begin{frame}{Архитектурные виды}
         \framesubtitle{Стандарт IEEE 1016-2009}
-        \begin{itemize}
-            \item Контекст --- фиксирует окружение системы
-            \begin{itemize}
-                \item Диаграммы активностей UML, IDEF0 (SADT)
-            \end{itemize}
-            \item Композиция --- описывает крупные части системы и их предназначение
-            \begin{itemize}
-                \item Диаграммы компонентов UML, IDEF0
-            \end{itemize}
-            \item Логическая структура --- структура системы в терминах классов, интерфейсов и отношений между ними
-            \begin{itemize}
-                \item Диаграммы классов UML, диаграммы объектов UML
-            \end{itemize}
-        \end{itemize}
+        \begin{outline}
+            \1 Контекст --- фиксирует окружение системы
+                \2 Диаграммы активностей UML, IDEF0 (SADT)
+            \1 Композиция --- описывает крупные части системы и их предназначение
+                \2 Диаграммы компонентов UML, IDEF0
+            \1 Логическая структура --- структура системы в терминах классов, интерфейсов и отношений между ними
+                \2 Диаграммы классов UML, диаграммы объектов UML
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектурные виды (2)}
-        \begin{itemize}
-            \item Зависимости --- определяет связи по данным между элементами
-            \begin{itemize}
-                \item Диаграммы компонентов UML, диаграммы пакетов UML
-            \end{itemize}
-            \item Информационная структура --- определяет персистентные данные в системе
-            \begin{itemize}
-                \item Диаграммы классов UML, IDEF1x, ER, ORM
-            \end{itemize}
-            \item Использование шаблонов --- документирование использования локальных паттернов проектирования
-            \begin{itemize}
-                \item Диаграммы классов UML, диаграммы пакетов UML, диаграммы коллабораций UML
-            \end{itemize}
-        \end{itemize}
+    \begin{frame}{Архитектурные виды (2)}
+        \begin{outline}
+            \1 Зависимости --- определяет связи по данным между элементами
+                \2 Диаграммы компонентов UML, диаграммы пакетов UML
+            \1 Информационная структура --- определяет персистентные данные в системе
+                \2 Диаграммы классов UML, IDEF1x, ER, ORM
+            \1 Использование шаблонов --- документирование использования локальных паттернов проектирования
+                \2 Диаграммы классов UML, диаграммы пакетов UML, диаграммы коллабораций UML
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектурные виды (3)}
-        \begin{itemize}
-            \item Интерфейсы --- специфицирует информацию о внешних и внутренних интерфейсах
-            \begin{itemize}
-                \item IDL, диаграммы компонентов UML, макеты пользовательского интерфейса, неформальные описания сценариев использования
-            \end{itemize}
-            \item Структура системы --- рекурсивное описание внутренней структуры компонентов системы
-            \begin{itemize}
-                \item Диаграммы композитных структур UML, диаграммы классов UML, диаграммы пакетов UML
-            \end{itemize}
-            \item Взаимодействия --- описывает взаимодействие между сущностями
-            \begin{itemize}
-                \item Диаграммы композитных структур UML, диаграммы взаимодействия UML, диаграммы последовательностей UML
-            \end{itemize}
-        \end{itemize}
+    \begin{frame}{Архитектурные виды (3)}
+        \begin{outline}
+            \1 Интерфейсы --- специфицирует информацию о внешних и внутренних интерфейсах
+                \2 IDL, диаграммы компонентов UML, макеты пользовательского интерфейса, неформальные описания сценариев использования
+            \1 Структура системы --- рекурсивное описание внутренней структуры компонентов системы
+                \2 Диаграммы композитных структур UML, диаграммы классов UML, диаграммы пакетов UML
+            \1 Взаимодействия --- описывает взаимодействие между сущностями
+                \2 Диаграммы композитных структур UML, диаграммы взаимодействия UML, диаграммы последовательностей UML
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектурные виды (4)}
-        \begin{itemize}
-            \item Динамика состояний --- описание состояний и правил переходов между состояниями
-            \begin{itemize}
-                \item Диаграммы конечных автоматов UML, диаграммы Харела, сети Петри
-            \end{itemize}
-            \item Алгоритмы --- описывает в деталях поведение каждой сущности
-            \begin{itemize}
-                \item Диаграммы активностей UML, псевдокод, настоящие языки программирования
-            \end{itemize}
-            \item Ресурсы --- описывает использование внешних ресурсов
-            \begin{itemize}
-                \item Диаграммы развёртывания UML, диаграммы классов UML, OCL
-            \end{itemize}
-        \end{itemize}
+    \begin{frame}{Архитектурные виды (4)}
+        \begin{outline}
+            \1 Динамика состояний --- описание состояний и правил переходов между состояниями
+                \2 Диаграммы конечных автоматов UML, диаграммы Харела, сети Петри
+            \1 Алгоритмы --- описывает в деталях поведение каждой сущности
+                \2 Диаграммы активностей UML, псевдокод, настоящие языки программирования
+            \1 Ресурсы --- описывает использование внешних ресурсов
+                \2 Диаграммы развёртывания UML, диаграммы классов UML, OCL
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Ещё про архитектурные виды}
-        \begin{itemize}
-            \item Пример --- \url{http://robotics.ee.uwa.edu.au/courses/design/examples/example_design.pdf}
-            \item Ни один вид не обязателен
-            \item Активно используются визуальные языки
-            \begin{itemize}
-                \item В основном как дополнение к тексту
-            \end{itemize}
-            \item Моделирование принципиально важно для архитектуры
-            \begin{itemize}
-                \item Нельзя абстрагироваться от сложности, но можно декомпозировать сложность
-            \end{itemize}
-        \end{itemize}
+    \begin{frame}{Ещё про архитектурные виды}
+        \begin{outline}
+            \1 Пример --- \url{http://robotics.ee.uwa.edu.au/courses/design/examples/example_design.pdf}
+            \1 Ни один вид не обязателен
+            \1 Активно используются визуальные языки
+                \2 В основном как дополнение к тексту
+            \1 Моделирование принципиально важно для архитектуры
+                \2 Нельзя абстрагироваться от сложности, но можно декомпозировать сложность
+        \end{outline}
     \end{frame}
 
     \section{Роль архитектуры в жизненном цикле}
 
-    \begin{frame}
-        \frametitle{Роль архитектуры в жизненном цикле}
+    \begin{frame}{Роль архитектуры в жизненном цикле}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{architectureLifeCycle.png}
             \attribution{Z. Quin, ``Software Architecture''}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектура и требования}
+    \begin{frame}{Архитектура и требования}
         \begin{center}
             \includegraphics[width=0.8\textwidth]{useCaseDiagram.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Требования}
-        \begin{itemize}
-            \item Функциональные --- то, \emph{что} система должна делать
-            \item Нефункциональные --- то, \emph{как} система должна это делать
-            \begin{itemize}
-                \item Эффективность
-                \item Масштабируемость
-                \item Удобство использования
-                \item Надёжность
-                \item Безопасность
-                \item Сопровождаемость и расширяемость
-                \item ...
-            \end{itemize}
-            \item Ограничения
-            \begin{itemize}
-                \item Технические
-                \item Бизнес-ограничения
-            \end{itemize}
-        \end{itemize}
+    \begin{frame}{Требования}
+        \begin{outline}
+            \1 Функциональные --- то, \emph{что} система должна делать
+            \1 Нефункциональные --- то, \emph{как} система должна это делать
+                \2 Эффективность
+                \2 Масштабируемость
+                \2 Удобство использования
+                \2 Надёжность
+                \2 Безопасность
+                \2 Сопровождаемость и расширяемость
+                \2 ...
+            \1 Ограничения
+                \2 Технические
+                \2 Бизнес-ограничения
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектура и проектирование}
+    \begin{frame}{Архитектура и проектирование}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{trikRuntimeComponents.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектура и проектирование --- задачи}
-        \begin{itemize}
-            \item Декомпозиция задачи
-            \item Определение границ компонентов
-            \item Определение интерфейсов между компонентами
-            \item Общие для всей системы вопросы
-            \begin{itemize}
-                \item Стратегия обработки ошибок
-                \item Стратегия логирования
-                \item Стратегия обновлений
-                \item Стратегия разделения доступа
-                \item Вопросы локализации
-                \item ...
-            \end{itemize}
-            \item Анализ и верификация архитектуры
-        \end{itemize}
+    \begin{frame}{Архитектура и проектирование --- задачи}
+        \begin{outline}
+            \1 Декомпозиция задачи
+            \1 Определение границ компонентов
+            \1 Определение интерфейсов между компонентами
+            \1 Общие для всей системы вопросы
+                \2 Стратегия обработки ошибок
+                \2 Стратегия логирования
+                \2 Стратегия обновлений
+                \2 Стратегия разделения доступа
+                \2 Вопросы локализации
+                \2 ...
+            \1 Анализ и верификация архитектуры
+        \end{outline}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектура и разработка}
-        \begin{itemize}
-            \item \emph{prescriptive architecture} --- архитектура, как её определил архитектор
-            \item \emph{descriptive architecture} --- архитектура, как она есть в системе
-            \begin{itemize}
-                \item Архитектура у ПО есть всегда, как вес у камня
-            \end{itemize}
-            \item \emph{architectural drift} --- \enquote{сползание} фактической архитектуры
-            \begin{itemize}
-                \item появление в ней важных решений, которых нет в описательной архитектуре
-            \end{itemize}
-            \item \emph{architectural erosion} --- \enquote{размывание} архитектуры
-            \begin{itemize}
-                \item отклонения от описательной архитектуры, нарушения ограничений
-            \end{itemize}
-            \item Антипаттерн \enquote{\emph{Big ball of mud}} --- результат эрозии
-        \end{itemize}
+    \begin{frame}{Архитектура и разработка}
+        \begin{outline}
+            \1 \emph{prescriptive architecture} --- архитектура, как её определил архитектор
+            \1 \emph{descriptive architecture} --- архитектура, как она есть в системе
+                \2 Архитектура у ПО есть всегда, как вес у камня
+            \1 \emph{architectural drift} --- \enquote{сползание} фактической архитектуры
+                \2 появление в ней важных решений, которых нет в описательной архитектуре
+            \1 \emph{architectural erosion} --- \enquote{размывание} архитектуры
+                \2 отклонения от описательной архитектуры, нарушения ограничений
+            \1 Антипаттерн \enquote{\emph{Big ball of mud}} --- результат эрозии
+        \end{outline}
     \end{frame}
 
     \section{Пример: Hadoop}
 
-    \begin{frame}
-        \frametitle{Пример: Hadoop}
+    \begin{frame}{Пример: Hadoop}
         \framesubtitle{As-designed}
         \begin{center}
             \includegraphics[width=0.6\textwidth]{hadoopPrescriptive.png}
@@ -416,8 +332,7 @@
         \begin{scriptsize}\textcolor{gray}{Special thanks to prof. Nenad Medvidovic (USC) for kind permission for using his slides}\end{scriptsize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Hadoop as-built}
+    \begin{frame}{Hadoop as-built}
         \framesubtitle{HDFS}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{hadoopDescriptive.png}
@@ -425,8 +340,7 @@
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Hadoop as-built}
+    \begin{frame}{Hadoop as-built}
         \framesubtitle{HDFS + MapReduce}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{hdfsMapReduce.png}
@@ -434,8 +348,7 @@
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Hadoop as-built}
+    \begin{frame}{Hadoop as-built}
         \framesubtitle{Полная архитектура}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{hadoopFull.png}
@@ -443,8 +356,7 @@
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Hadoop as-built}
+    \begin{frame}{Hadoop as-built}
         \framesubtitle{Граф зависимостей}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{hadoopDependencies.png}
