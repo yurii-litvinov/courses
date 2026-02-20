@@ -1,0 +1,68 @@
+\documentclass{../../slides-style}
+
+\slidetitle{Практика по деревьям}{21.02.2026}
+
+\begin{document}
+    
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+    
+    \begin{frame}{Задача в целом}
+        Реализовать абстрактный тип данных \enquote{Множество} на основе бинарного дерева поиска
+        \begin{outline}
+            \1 Две части: на паре и дома
+                \2 На паре можно получить 3 балла, дома 7
+            \1 Командная работа \enquote{по-взрослому}
+                \2 Общий репозиторий (лучше создать с нуля)
+                \2 Парное программирование на старте
+                \2 Взаимодействие через пуллреквесты и ревью
+            \1 Команды по 2-3 человека
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}{На паре}
+        \begin{outline}
+            \1 Создать репозиторий для проекта
+            \1 Вместе спроектировать структуру проекта и написать общий заголовочный файл
+            \1 Описать общую структуру для дерева и его узла
+                \2 С соблюдением правил сокрытия деталей реализации
+            \1 Решить задачи A, B и C (ниже), либо совместно за одним ноутбуком, либо параллельно
+                \2 Узнайте, что такое co-authored-by на GitHub
+            \1 Настроить CI (с clang-format и clang-tidy)
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}{Задача A --- Структура и вставка}
+        \begin{outline}
+            \1 Опишите абстрактный тип данных --- двоичное дерево поиска (BST) --- и его структуру
+            \1 Реализуйте функции:
+                \2 \mintinline{c}|void bstInsert(BST* tree, int value)| --- вставить значение в дерево
+                \2 \mintinline{c}|bool bstContains(BST* tree, int value)| --- вернуть \mintinline{c}|true|, если значение есть в дереве
+                \2 \mintinline{c}|void bstFree(BST* tree)| --- освободить всю память, занятую деревом
+            \1 Напишите main с несколькими простыми проверками: вставьте несколько элементов и убедитесь, что `bstContains` возвращает правильные результаты
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}{Задача B --- Обходы}
+        \begin{outline}
+            \1 Реализуйте функции обхода дерева (рекурсивно), печатающие элементы:
+                \2 \mintinline{c}|void bstInorder(BST* tree)|
+                \2 \mintinline{c}|void bstPreorder(BST* tree)|
+                \2 \mintinline{c}|void bstPostorder(BST* tree)|
+            \1 Все функции должны корректно работать на пустом дереве
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}{Задача C --- Статистика дерева}
+        \begin{outline}
+            \1 Реализуйте функции:
+                \2 \mintinline{c}|int bstHeight(BST* tree)| --- высота дерева
+                \2 \mintinline{c}|int bstSize(BST* tree)| --- количество узлов
+                \2 \mintinline{c}|int bstMin(BST* tree)| --- минимальное значение
+                \2 \mintinline{c}|int bstMax(BST* tree)| --- максимальное значение
+            \1 Для bstMin и bstMax определите поведение на пустом дереве и задокументируйте его в заголовочном файле
+        \end{outline}
+    \end{frame}
+
+\end{document}
