@@ -1,0 +1,335 @@
+\documentclass{../../slides-style}
+
+\usepackage{booktabs}
+
+\slidetitle{Профилирование производительности}{28.02.2026}
+
+% (c) Николай Пономарев
+
+\subject{Использование инструментов сбора и анализа данных о производительности на примере perf tools.  }
+
+\begin{document}
+
+\begin{frame}[plain, noframenumbering]
+    \titlepage
+\end{frame}
+
+\section{Мотивация}
+
+\begin{frame}{Зачем это вообще нужно}
+    \begin{itemize}
+        \item Если вдруг программа работает медленно...
+        \item Можно угадать, где проблема
+        \item Можно измерить, где проблема~--- заняться \textbf{профилированием}
+        \item Иногда хватит первого, но второе работает чаще
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Пример этой пары}
+    \begin{columns}
+        \column{0.48\textwidth}
+        \begin{block}{Программа A}
+            \texttt{sum += a[\alert{i}][\alert{j}];}
+        \end{block}
+        \column{0.48\textwidth}
+        \begin{block}{Программа B}
+            \texttt{sum += a[\alert{j}][\alert{i}];}
+        \end{block}
+    \end{columns}
+
+    \bigskip
+    \begin{itemize}
+        \item \texttt{double a[4096][4096]}
+        \item Одинаковое число операций: $4096^2$ сложений
+        \item Одинаковый результат
+        \item Спойлер: разница в скорости --- в несколько раз
+        \item Будем разбираться
+    \end{itemize}
+\end{frame}
+
+\section{Иерархия памяти}
+
+\begin{frame}{Cache line}
+    \begin{itemize}
+        \item Процессор не подгружает один байт
+        \item Единица обмена --- \textbf{64 байта} (cache line, линия кеша)
+        \item При доступе к \enquote{близкому} элементу~--- обратимся в кеш
+        \item При доступе к \enquote{далекому} элементу~--- пойдём в ОЗУ, а это дорого
+    \end{itemize}
+
+    \bigskip
+    Spatial locality --- работает быстрее, потому что кэш
+
+    Cache miss --- работает медленнее, потому что RAM
+
+\end{frame}
+
+\begin{frame}{Иерархия памяти}
+    \begin{center}
+        \begin{scriptsize}
+            \begin{tabular}{lrrr}
+                \toprule
+                Уровень  & Размер (типично) & Латентность (такты) & Латентность (нс) \\
+                \midrule
+                Регистры & $<$ 1 КБ         & $\sim$1             & $<$1             \\
+                L1 cache & 32--64 КБ        & $\sim$4--5          & $\sim$1--2       \\
+                L2 cache & 256 КБ -- 2 МБ   & $\sim$10--15        & $\sim$3--5       \\
+                L3 cache & 4--64 МБ         & $\sim$30--50        & $\sim$10--20     \\
+                RAM      & ГБ               & $\sim$150--300      & $\sim$50--100    \\
+                \bottomrule
+            \end{tabular}
+        \end{scriptsize}
+    \end{center}
+
+    \smallskip
+    {\tiny Типичные значения для современных x86 процессоров; конкретные цифры зависят от микроархитектуры и частоты}
+
+    \bigskip
+
+    Пока процессор ждёт данные из RAM, он мог бы выполнить $\sim$200 инструкций
+\end{frame}
+
+\begin{frame}{Как лежит массив в памяти}
+    \texttt{double a[M][N]} в C хранится строка за строкой (row-major):
+
+    \bigskip
+    \begin{center}
+        \ttfamily\small
+        {\renewcommand{\arraystretch}{1.2}
+            \begin{tabular}{|c|c|c|c|c|c|c|c|}
+                \hline
+                a[0][0]                                  & a[0][1]                                 & a[0][2] & a[0][3] & a[1][0] & a[1][1] & a[1][2] & \ldots \\
+                \hline
+                \multicolumn{4}{|c|}{\rmfamily строка 0} & \multicolumn{4}{c|}{\rmfamily строка 1}                                                            \\
+                \hline
+            \end{tabular}
+        }
+    \end{center}
+
+    \bigskip
+    \begin{columns}
+        \column{0.48\textwidth}
+        \begin{block}{\texttt{a[i][j]}, внешний \texttt{i}}
+            Последовательный доступ\\
+            Cache-friendly
+        \end{block}
+        \column{0.48\textwidth}
+        \begin{alertblock}{\texttt{a[j][i]}, внешний \texttt{j}}
+            Прыжок на $N \times 8$ байт\\
+            При $N=4096$: \textbf{32~768 байт}\\
+            Cache-hostile
+        \end{alertblock}
+    \end{columns}
+\end{frame}
+
+\section{perf}
+
+\begin{frame}{perf}
+    \begin{itemize}
+        \item Стандартный инструмент профилирования в Linux
+        \item Использует PMU (Performance Monitoring Unit) --- счётчики прямо в железе
+        \item Низкий overhead, не замедляет программу принципиально
+    \end{itemize}
+
+    \bigskip
+    \begin{center}
+        \begin{tabular}{ll}
+            \toprule
+            \texttt{perf stat}     & сводные счётчики по всей программе        \\
+            \texttt{perf record}   & записать профиль с сэмплингом             \\
+            \texttt{perf report}   & интерактивный TUI с hot-spot'ами          \\
+            \texttt{perf annotate} & ассемблерный листинг с \% времени         \\
+            \texttt{perf top}      & аналог top для анализа производительности \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Что именно считает perf}
+    \begin{itemize}
+        \item \textbf{Hardware events} --- считаются прямо в железе (PMU)
+              \begin{itemize}
+                  \item \texttt{cycles} --- тактов процессора
+                  \item \texttt{instructions} --- выполненных инструкций
+                  \item \texttt{cache-misses} --- промахов мимо кэша
+                  \item \texttt{branch-misses} --- неверно предсказанных ветвлений
+              \end{itemize}
+
+              \bigskip
+        \item \textbf{Software events} --- считаются ядром
+              \begin{itemize}
+                  \item \texttt{task-clock} --- реальное время CPU
+                  \item \texttt{page-faults} --- промахов в таблице страниц
+              \end{itemize}
+
+              \bigskip
+        \item \textbf{Tracepoints} --- системные вызовы, планировщик, сеть
+    \end{itemize}
+
+    \bigskip
+
+    \textbf{IPC} (Instructions Per Cycle) --- сколько инструкций за такт
+
+    IPC $< 1$ --- процессор ждёт данные
+\end{frame}
+
+\section{Демонстрация}
+
+\begin{frame}[fragile]{Программы для анализа}
+    \begin{columns}[T]
+        \column{0.48\textwidth}
+        \inputminted[]{c}{row.c}
+        \column{0.48\textwidth}
+        \inputminted[]{c}{col.c}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Собираем и запускаем}
+    \begin{minted}{console}
+$ gcc -O0 -g -o row row.c
+$ gcc -O0 -g -o col col.c
+
+$ /usr/bin/time ./row
+$ /usr/bin/time ./col
+\end{minted}
+
+    \begin{itemize}
+        \item Просто \texttt{time} может быть встроенной функцией оболочки
+        \item Строго говоря, измерения~--- отдельная наука, об этом расскажут
+        \item Начать упрощать себе жизнь можно с hyperfine: \url{https://github.com/sharkdp/hyperfine}
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{perf stat}
+    \begin{minted}{console}
+$ perf stat ./row
+$ perf stat ./col
+\end{minted}
+
+    \bigskip
+    \begin{center}
+        \begin{tabular}{lll}
+            \toprule
+            Метрика               & row          & col                      \\
+            \midrule
+            \texttt{task-clock}   & $\sim$500 мс & $\sim$2500 мс            \\
+            \texttt{instructions} & $\approx$ X  & $\approx$ X              \\
+            \texttt{cache-misses} & мало         & \alert{\textbf{огромно}} \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{perf record + perf report}
+    \begin{minted}{console}
+$ perf record -g ./col
+$ perf report
+\end{minted}
+
+    \bigskip
+    В TUI:
+    \begin{itemize}
+        \item \textbf{Enter} на \texttt{main} --- раскрыть call graph
+        \item \textbf{a} --- ассемблерный листинг
+        \item \texttt{movsd} --- загрузка \texttt{double} из памяти --- самое \enquote{горячее} место
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Flame Graphs}
+    \begin{itemize}
+        \item Некоторое развитие \texttt{perf report}
+        \item Визуализация профиля: ось X --- время, ось Y --- стек вызовов
+        \item Широкий прямоугольник --- много времени в этой функции
+        \item Позволяет быстро найти горячие пути в больших программах
+    \end{itemize}
+
+    \bigskip
+    \begin{minted}{console}
+$ perf record -g ./col
+$ perf script | stackcollapse-perf.pl | flamegraph.pl > out.svg
+\end{minted}
+
+    \bigskip
+    \begin{itemize}
+        \item Скрипты: \url{https://github.com/brendangregg/FlameGraph}
+        \item Современный вариант без Perl: \texttt{inferno} (Rust)
+    \end{itemize}
+\end{frame}
+
+\section{Выводы}
+
+\begin{frame}[fragile]{А если собрать с -O2?}
+    \begin{minted}{console}
+$ gcc -O2 -g -o col_opt col.c
+$ perf stat ./col_opt
+$ perf stat ./row       # -O0!
+\end{minted}
+
+    \bigskip
+    \begin{itemize}
+        \item \texttt{col\_opt} быстрее \texttt{col}
+        \item Но медленнее \texttt{row} без всяких оптимизаций
+    \end{itemize}
+
+    \bigskip
+
+    Компилятор не знает паттерн доступа к памяти, а вот программист...
+
+\end{frame}
+
+\begin{frame}{Типичные ошибки при профилировании}
+    \begin{itemize}
+        \item Профилируйте c хотя бы \texttt{-O2 -g}
+              \begin{itemize}
+                  \item В CMake используйте \texttt{RelWithDebInfo}
+              \end{itemize}
+
+              \bigskip
+        \item Запускайте много раз
+
+              \bigskip
+        \item Корректность алгоритма важнее скорости
+
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Что оптимизировать и в каком порядке}
+    \begin{enumerate}
+        \item \textbf{Компилятор} (\texttt{-O2}, \texttt{-O3}, \texttt{-march=<...>})
+              \begin{itemize}
+                  \item Бесплатно, включайте всегда
+                  \item Loop unrolling, инлайнинг, векторизация
+              \end{itemize}
+
+              \bigskip
+        \item \textbf{Алгоритм и структуры данных}
+              \begin{itemize}
+                  \item Порядки величин
+                  \item Cache-friendly vs cache-hostile
+              \end{itemize}
+
+              \bigskip
+        \item \textbf{Микрооптимизации} (SIMD, intrinsics)
+              \begin{itemize}
+                  \item Проценты
+                  \item Сложность реализации кратно выше
+              \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Полезные ссылки}
+    \begin{itemize}
+        \item Большой практический гид по perf с примерами
+              \begin{itemize}
+                  \item \url{https://brendangregg.com/perf.html}
+              \end{itemize}
+
+        \item \texttt{man perf-stat}, \texttt{man perf-record}
+    \end{itemize}
+\end{frame}
+
+
+\end{document}
