@@ -8,6 +8,39 @@
         \titlepage
     \end{frame}
 
+    \section{Летучка}
+
+    \begin{frame}
+        \begin{center}
+            \LARGE
+
+            \structure{Летучка!}
+
+            \vspace{1em}
+
+            \Large
+            Доставайте листочки и ручки
+        \end{center}
+    \end{frame}
+
+    \begin{frame}{Летучка}
+        \begin{enumerate}
+            \item Дана матрица инцидентности графа $M$. Представьте этот граф визуально в виде узлов и дуг.
+            $$
+            M = \begin{pmatrix}
+            1 & 0 & 0 & 0 & -1 \\
+            -1 & -1 & 1 & 0 & 0 \\
+            0 & 0 & -1 & -1 & 0 \\
+            0 & 1 & 0 & 1 & 1
+            \end{pmatrix}
+            $$
+            \item Дан граф $G = (V, E)$. Какова временная асимптотическая сложность алгоритма поиска в ширину (BFS) в худшем случае?
+            
+            \item Реализуйте функцию \mintinline{c}|void neighbors(int v, int size, int** graph)|,\\
+            которая по матрице смежности и номеру вершины выводит на консоль все смежные вершины.
+        \end{enumerate}
+    \end{frame}
+
     \section{Работа компилятора}
 
     \begin{frame}{Напоминание о процессе компиляции кода на C}
