@@ -1,0 +1,16 @@
+digraph WeightedGraph {
+    rankdir=LR;
+    node [shape=circle, style=filled, fillcolor=lightblue, fontsize=12];
+    edge [fontsize=10, color=black, arrowsize=0.8];
+    
+    1 [label="1"];
+    2 [label="2"];
+    3 [label="3"];
+    4 [label="4"];
+    
+    1 -> 2 [label="3", weight=3];
+    1 -> 3 [label="1", weight=1];
+    2 -> 4 [label="2", weight=2];
+    3 -> 2 [label="1", weight=1];
+    3 -> 4 [label="5", weight=5];
+}
