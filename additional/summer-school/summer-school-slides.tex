@@ -7,7 +7,11 @@
 
 \usetheme{SPbGU}
 
+% dluciv...
+\newfontfamily{\cyrillicfont}{FreeSans}
+\newfontfamily{\cyrillicfonttt}{FreeSans}
 \setmainfont{FreeSans}
+\newfontfamily{\russianfont}{FreeSans}
 \newfontfamily{\russianfonttt}{FreeSans}
 
 \definecolor{links}{HTML}{2A1B81}
@@ -88,10 +92,16 @@
 \end{frame}
 }
 
+    \begin{frame}
+        \begin{center}
+            \includegraphics[height=0.95\paperheight]{scintro.jpg}
+        \end{center}
+    \end{frame}
+
     \begin{frame}{Что такое Летняя проектная школа?}
         \begin{outline}
             \1 Командная проектная работа в течение июля по 20 часов в неделю
-            \1 Ориентирована на 1-2 курсы, 3-4 курсы часто выступают кураторами
+            \1 Ориентирована на 1--2 курсы, 3--4 курсы часто выступают кураторами
             \1 Проекты от индустрии, кафедр или исследовательских коллективов
                 \2 кураторы-практики, \enquote{daily} и ревью кода
                 \2 защиты перед комиссией из кураторов
@@ -122,7 +132,7 @@
                 \2 потребовало изменения календарного графика и введения факультативной практики в чётных семестрах
                     \3 одна РПП с тремя траекториями
             \1 Познакомить студентов со своим стеком и завлечь
-        \end{outline}            
+        \end{outline}
         \end{block}
     \end{frame}
 
@@ -176,6 +186,20 @@
             Лекций сотрудников ИП & 9   & 6   & $\sim$6 \\
             % \bottomrule
         \end{tabu}
+    \end{frame}
+
+    \begin{frame}{Приеры проектов ЛШ-2026}
+        \begin{outline}
+            \1 Системное программирование и архитектуры\\ стек: C/C++, Linux, perf, Git
+                \2 \textbf{Миграция на RISC-V:} кросс-компиляция и профилирование приложений в эмуляторах и на реальных платах
+                \2 \textbf{Инструменты для ПЛИС:} разработка open-source линтера и форматтера для языка SystemVerilog
+
+            \1 Искусственный интеллект и анализ данных\\ стек: Python, PyTorch, Hugging Face, NumPy
+                \2 \textbf{Компактное распознавание речи:} легковесная модель для русского языка с гибридным декодером Kimi Delta Attention и анализом устойчивости к шумам
+
+            \1 Автоматическое доказательство и верификация\\ стек: SMT-решатели, Automated Reasoning, формальные методы
+                \2 \textbf{Верификация битовых векторов:} реализация техники int-blasting для SMT-решателей экспонент и анализ эффективности проверки формул с битовыми сдвигами
+        \end{outline}
     \end{frame}
 
 \end{document}
