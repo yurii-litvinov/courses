@@ -1,6 +1,6 @@
 \documentclass{../../slides-style}
 
-\slidetitle{Паттерны и архитектурные стили}{21.07.2025}
+\slidetitle{Паттерны и архитектурные стили}{13.07.2026}
 
 \begin{document}
 
@@ -10,8 +10,7 @@
 
     \section{Введение}
 
-    \begin{frame}
-        \frametitle{Паттерны проектирования}
+    \begin{frame}{Паттерны проектирования}
         \textbf{Шаблон проектирования} --- это повторимая архитектурная конструкция, являющаяся решением некоторой типичной технической проблемы
         \begin{itemize}
             \item Подходит для класса проблем
@@ -22,27 +21,24 @@
         \end{itemize}
     \end{frame}
  
-    \begin{frame}
-        \frametitle{Архитектурные стили}
+    \begin{frame}{Архитектурные стили}
         Архитектурный стиль --- набор решений, которые
         \begin{enumerate}
             \item применимы в выбранном контексте разработки,
             \item задают ограничения на принимаемые архитектурные решения, специфичные для определённых систем в этом контексте,
             \item приводят к желаемым положительным качествам получаемой системы.
         \end{enumerate}
-        Архитектурные шаблоны более <<стратегичны>> и более размыты, чем паттерны
+        Архитектурные шаблоны более \enquote{стратегичны} и более размыты, чем паттерны
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Паттерны и архитектурные стили}
+    \begin{frame}{Паттерны и архитектурные стили}
         \begin{center}
             \includegraphics[width=0.5\textwidth]{architecturalStyles.png}
             \attribution{N. Medvidovic}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Книжка про паттерны}
+    \begin{frame}{Книжка про паттерны}
         \begin{columns}
             \begin{column}{0.6\textwidth}
                 Приемы объектно-ориентированного проектирования. Паттерны проектирования
@@ -59,8 +55,7 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Пример: Model-View-Controller}
+    \begin{frame}{Пример: Model-View-Controller}
         \begin{center}
             \includegraphics[width=0.65\textwidth]{mvc.png}
             \attribution{N. Medvidovic}
@@ -70,20 +65,19 @@
             \item Если в модели что-то меняется, она оповещает представление (представления)
             \item Через контроллер проходит всё взаимодействие с пользователем
             \begin{itemize}
-                \item Естественное место для паттерна <<Команда>> и Undo/Redo
+                \item Естественное место для паттерна \enquote{Команда} и Undo/Redo
             \end{itemize}
         \end{itemize}
     \end{frame}
 
     \section{Паттерны проектирования}
 
-    \subsection{Паттерн <<Команда>>}
+    \subsection{Паттерн \enquote{Команда}}
 
-    \begin{frame}
-        \frametitle{Паттерн <<Команда>>, мотивация}
+    \begin{frame}{Паттерн \enquote{Команда}, мотивация}
         \begin{itemize}
             \item Хотим отделить инициацию запроса от его исполнения
-            \item Хотим, чтобы тот, кто <<активирует>> запрос, не знал, как он исполняется
+            \item Хотим, чтобы тот, кто \enquote{активирует} запрос, не знал, как он исполняется
             \item При этом хотим, чтобы тот, кто знает, когда исполнится запрос, не знал, когда он будет активирован
             \item Но зачем?
             \begin{itemize}
@@ -95,50 +89,43 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Решение: обернём действие в объект}
+    \begin{frame}{Решение: обернём действие в объект}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{commandExample.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Команда вставки}
+    \begin{frame}{Команда вставки}
         \begin{center}
             \includegraphics[width=0.75\textwidth]{pasteCommand.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Команда открытия документа}
+    \begin{frame}{Команда открытия документа}
         \begin{center}
             \includegraphics[width=0.75\textwidth]{openDocumentCommand.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Составная команда}
+    \begin{frame}{Составная команда}
         \begin{center}
             \includegraphics[width=0.75\textwidth]{compositeCommand.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Паттерн <<Команда>>}
+    \begin{frame}{Паттерн \enquote{Команда}}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{command.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Взаимодействие объектов}
+    \begin{frame}{Взаимодействие объектов}
         \begin{center}
             \includegraphics[width=0.9\textwidth]{commandSequence.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Команда, применимость}
+    \begin{frame}{Команда, применимость}
         \begin{itemize}
             \item Параметризовать объекты выполняемым действием
             \item Определять, ставить в очередь и выполнять запросы в разное время
@@ -148,11 +135,10 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{<<Команда>> (Command), детали реализации}
+    \begin{frame}{\enquote{Команда} (Command), детали реализации}
         \begin{itemize}
-            \item Насколько <<умной>> должна быть команда
-            \item Отмена и повторение операций --- тоже от хранения всего состояния в команде до <<вычислимого>> отката
+            \item Насколько \enquote{умной} должна быть команда
+            \item Отмена и повторение операций --- тоже от хранения всего состояния в команде до \enquote{вычислимого} отката
             \begin{itemize}
                 \item Undo-стек и Redo-стек
                 \item Может потребоваться копировать команды
@@ -162,8 +148,7 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{<<Команда>>, пример}
+    \begin{frame}[fragile]{\enquote{Команда}, пример}
         \begin{itemize}
             \item Qt, класс QAction:
             \begin{minted}{c++}
@@ -182,10 +167,9 @@ fileToolBar->addAction(openAct);
         \end{itemize}
     \end{frame}
 
-    \subsection{Паттерн <<Абстрактная фабрика>>}
+    \subsection{Паттерн \enquote{Абстрактная фабрика}}
 
-    \begin{frame}
-        \frametitle{<<Абстрактная фабрика>>, мотивация}
+    \begin{frame}{\enquote{Абстрактная фабрика}, мотивация}
         \begin{itemize}
             \item Хотим поддержать разные стили UI
             \begin{itemize}
@@ -198,8 +182,7 @@ fileToolBar->addAction(openAct);
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Создание виджетов}
+    \begin{frame}{Создание виджетов}
         \mintinline{c++}|ScrollBar* bar = new RoundedScrollBar;|
         
         \vspace{2mm}
@@ -211,15 +194,13 @@ fileToolBar->addAction(openAct);
         \mintinline{c++}|ScrollBar* bar = guiFactory->createScrollBar();|
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Фабрика виджетов}
+    \begin{frame}{Фабрика виджетов}
         \begin{center}
             \includegraphics[width=0.95\textwidth]{widgetFactory.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Паттерн <<Абстрактная фабрика>>}
+    \begin{frame}{Паттерн \enquote{Абстрактная фабрика}}
         \framesubtitle{Abstract Factory}
         \begin{columns}
             \begin{column}{0.4\textwidth}
@@ -238,12 +219,11 @@ fileToolBar->addAction(openAct);
         \end{columns}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{<<Абстрактная фабрика>>, детали реализации}
+    \begin{frame}{\enquote{Абстрактная фабрика}, детали реализации}
         \begin{columns}
             \begin{column}{0.5\textwidth}
                 \begin{itemize}
-                    \item Хорошо комбинируются с паттерном <<Одиночка>>
+                    \item Хорошо комбинируются с паттерном \enquote{Одиночка}
                     \item Если семейств продуктов много, то фабрика может инициализироваться \textit{прототипами}, тогда не надо создавать сотню подклассов
                 \end{itemize}
             \end{column}
@@ -260,10 +240,9 @@ fileToolBar->addAction(openAct);
         \end{itemize}
     \end{frame}
 
-    \subsection{Паттерн <<Заместитель>>}
+    \subsection{Паттерн \enquote{Заместитель}}
 
-    \begin{frame}
-        \frametitle{Управление доступом к объектам}
+    \begin{frame}{Управление доступом к объектам}
         \begin{itemize}
             \item Встраивание в документ графических объектов
             \begin{itemize}
@@ -278,22 +257,20 @@ fileToolBar->addAction(openAct);
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Отложенная загрузка изображения}
+    \begin{frame}{Отложенная загрузка изображения}
         \begin{center}
             \includegraphics[width=0.7\textwidth]{proxyExampleClassDiagram.png}
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Паттерн <<Заместитель>>}
+    \begin{frame}{Паттерн \enquote{Заместитель}}
         \framesubtitle{Proxy}
         \begin{center}
             \includegraphics[width=0.6\textwidth]{proxy.png}
         \end{center}
         \begin{itemize}
             \item Замещение удалённых объектов
-            \item Создание <<тяжёлых>> объектов по требованию
+            \item Создание \enquote{тяжёлых} объектов по требованию
             \item Контроль доступа
             \item Умные указатели
             \begin{itemize}
@@ -305,8 +282,7 @@ fileToolBar->addAction(openAct);
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{<<Заместитель>>, детали реализации}
+    \begin{frame}{\enquote{Заместитель}, детали реализации}
         \begin{center}
             \includegraphics[width=0.6\textwidth]{proxy.png}
         \end{center}
@@ -323,10 +299,9 @@ fileToolBar->addAction(openAct);
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{<<Заместитель>>, детали реализации (2)}
+    \begin{frame}{\enquote{Заместитель}, детали реализации (2)}
         \begin{itemize}
-            \item Реализация <<вручную>> всех методов проксируемого объекта
+            \item Реализация \enquote{вручную} всех методов проксируемого объекта
             \begin{itemize}
                 \item Сотня методов по одной строчке каждый
                 \item C\#/F\#: \mintinline{csharp}|public void do() => realSubject.do();|
@@ -339,10 +314,9 @@ fileToolBar->addAction(openAct);
         \end{itemize}
     \end{frame}
 
-    \subsection{Паттерн <<Итератор>>}
+    \subsection{Паттерн \enquote{Итератор}}
 
-    \begin{frame}
-        \frametitle{<<Итератор>> (Iterator)}
+    \begin{frame}{\enquote{Итератор} (Iterator)}
         Инкапсулирует способ обхода коллекции.
         \begin{center}
             \includegraphics[width=0.6\textwidth]{iterator.png}
@@ -354,7 +328,7 @@ fileToolBar->addAction(openAct);
     \end{frame}
 
     \begin{frame}[fragile]
-        \frametitle{<<Итератор>>, примеры}
+        \frametitle{\enquote{Итератор}, примеры}
         \begin{itemize}
             \item Java-стиль:
             \begin{minted}{java}
@@ -376,8 +350,7 @@ public interface IEnumerator<T>
         \end{itemize}
     \end{frame}
 
-    \begin{frame}[fragile]
-        \frametitle{<<Итератор>>, детали реализации (1)}
+    \begin{frame}[fragile]{\enquote{Итератор}, детали реализации (1)}
         \begin{itemize}
             \item Внешние итераторы
             \begin{minted}{csharp}
@@ -393,13 +366,12 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{<<Итератор>>, детали реализации (2)}
+    \begin{frame}{\enquote{Итератор}, детали реализации (2)}
         \begin{itemize}
             \item Итераторы и курсоры
             \item Устойчивые и неустойчивые итераторы
             \begin{itemize}
-                \item Паттерн <<Наблюдатель>>
+                \item Паттерн \enquote{Наблюдатель}
                 \item Даже обнаружение модификации коллекции может быть непросто
             \end{itemize}
             \item Дополнительные операции
@@ -408,8 +380,7 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
 
     \section{Архитектурные стили}
 
-    \begin{frame}
-        \frametitle{Архитектурные стили}
+    \begin{frame}{Архитектурные стили}
         \begin{itemize}
             \item Именованная коллекция архитектурных решений
             \item Менее узкоспециализированные, чем паттерны
@@ -421,8 +392,7 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
         \end{center}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Архитектурные стили}
+    \begin{frame}{Архитектурные стили}
         \begin{columns}
             \begin{column}{0.5\textwidth}
                 \begin{itemize}
@@ -441,13 +411,12 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
 
     \subsection{Слоистый стиль}
 
-    \begin{frame}
-        \frametitle{Слоистый стиль}
+    \begin{frame}{Слоистый стиль}
         \framesubtitle{Layered style}
         \begin{itemize}
             \item Иерархическая организация системы
             \begin{itemize}
-                \item Многоуровневый <<клиент-сервер>>
+                \item Многоуровневый \enquote{клиент-сервер}
                 \item Каждый слой предоставляет интерфейс для использования слоями выше
             \end{itemize}
             \item Каждый слой работает как:
@@ -459,8 +428,7 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Слоистый стиль, подробности}
+    \begin{frame}{Слоистый стиль, подробности}
         \begin{columns}
             \begin{column}{0.5\textwidth}
                 \begin{itemize}
@@ -489,8 +457,7 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
 
     \subsection{Каналы и фильтры}
 
-    \begin{frame}
-        \frametitle{Каналы и фильтры}
+    \begin{frame}{Каналы и фильтры}
         \framesubtitle{Pipes and filters}
         \begin{itemize}
             \item Компоненты --- это фильтры, преобразующие данные из входных каналов в данные в выходных каналах
@@ -508,8 +475,7 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Каналы и фильтры, подробности}
+    \begin{frame}{Каналы и фильтры, подробности}
         \begin{itemize}
             \item Преимущества:
             \begin{itemize}
@@ -528,15 +494,14 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
             \begin{itemize}
                 \item Последовательное исполнение
                 \item Проблемы с интерактивными приложениями
-                \item Пропускная способность определяется самым <<узким>> элементом
+                \item Пропускная способность определяется самым \enquote{узким} элементом
             \end{itemize}
         \end{itemize}
     \end{frame}
 
     \subsection{Стили с неявным вызовом}
 
-    \begin{frame}
-        \frametitle{Стили с неявным вызовом}
+    \begin{frame}{Стили с неявным вызовом}
         \begin{itemize}
             \item Оповещение о событии вместо явного вызова метода
             \begin{itemize}
@@ -557,8 +522,7 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
         \end{itemize}
     \end{frame}
 
-    \begin{frame}
-        \frametitle{Стили с неявным вызовом, преимущества и недостатки}
+    \begin{frame}{Стили с неявным вызовом, преимущества и недостатки}
         \begin{itemize}
             \item Преимущества:
             \begin{itemize}
@@ -584,8 +548,7 @@ collection.ToList().ForEach(t => Console.WriteLine(t));
 
     \subsection{Peer-to-peer}
 
-    \begin{frame}
-        \frametitle{Peer-to-peer}
+    \begin{frame}{Peer-to-peer}
         \begin{itemize}
             \item Состояние и поведение распределены между компонентами, которые могут выступать как клиенты и как серверы
             \item Компоненты: имеют своё состояние и свой поток управления

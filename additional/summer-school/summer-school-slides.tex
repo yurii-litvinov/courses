@@ -1,0 +1,205 @@
+\documentclass[xetex,mathserif,serif,aspectratio=1610]{beamer}
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
+\usepackage{csquotes}
+\usepackage{outlines}
+\usepackage{tabu}
+
+\usetheme{SPbGU}
+
+% dluciv...
+% \newfontfamily{\cyrillicfont}{FreeSans}
+% \newfontfamily{\cyrillicfonttt}{FreeSans}
+\setmainfont{FreeSans}
+% \newfontfamily{\russianfont}{FreeSans}
+\newfontfamily{\russianfonttt}{FreeSans}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\definecolor{spbuterracota}{rgb}{0.62,0.18,0.13}
+\definecolor{spbupantone}{rgb}{0.66,0.68,0.71}
+
+\setbeamercolor{section in toc}{fg=black,bg=white}
+\setbeamercolor*{palette primary}{fg=white, bg=spbuterracota}
+\setbeamercolor*{palette secondary}{fg=white, bg=spbuterracota!66!black}
+\setbeamercolor*{palette tertiary}{fg=white, bg=spbuterracota!33!black}
+\setbeamercolor*{palette quaternary}{fg=white, bg=black}
+
+\setbeamercolor*{sidebar}{fg=white,bg=spbupantone} %\setbeamercolor*{sidebar}{fg=white,bg=spbuterracota!80!spbupantone}
+
+\setbeamercolor*{palette sidebar primary}{fg=white}
+\setbeamercolor*{palette sidebar secondary}{fg=white}
+\setbeamercolor*{palette sidebar tertiary}{fg=white}
+\setbeamercolor*{palette sidebar quaternary}{fg=white} %\setbeamercolor*{palette sidebar quaternary}{fg=spbuterracota!25!white}
+
+%\setbeamercolor*{titlelike}{parent=palette primary,fg=spbuterracota,bg=spbupantone}
+
+\setbeamercolor*{block title}{use=structure,fg=white,bg=spbuterracota} %Framed eqns.
+\setbeamercolor*{block body}{parent=normal text,use=block title,bg=spbupantone!20!white}
+
+\setbeamercolor*{local structure}{fg=spbuterracota} %Bullet points
+
+%\setbeamercolor{title}{fg=blue}
+\setbeamercolor*{author in head/foot}{parent=palette secondary,fg=white,bg=spbuterracota}
+\setbeamercolor*{title in head/foot}{parent=palette secondary,bg=spbupantone!50!white}
+\setbeamercolor*{date in head/foot}{parent=palette secondary,fg=spbuterracota,bg=spbupantone}
+
+%\setbeamercolor*{separation line}{}
+%\setbeamercolor*{fine separation line}{}
+
+\setbeamercolor*{alerted text}{fg=red,bg=yellow}
+
+\colorlet{linkcolor}{spbuterracota}
+\hypersetup{unicode,colorlinks,linkcolor=linkcolor,urlcolor=linkcolor}
+
+\beamertemplatenavigationsymbolsempty
+
+\useinnertheme{circles}
+
+\title{Летняя проектная школа СПбГУ}
+\author[Юрий Литвинов, Дмитрий Луцив]{Юрий Литвинов \newline \textcolor{gray}{\small\texttt{y.litvinov@spbu.ru}}
+    \vspace{5mm} \newline Дмитрий Луцив \newline \textcolor{gray}{\small\texttt{d.lutsiv@spbu.ru}}
+}
+\date{}
+
+\begin{document}
+
+{
+\setbeamertemplate{footline}{}
+% Лого университета или организации, отображается в шапке титульного листа
+\begin{frame}
+    \thispagestyle{empty}
+    \includegraphics[width=1.4cm]{pictures/SPbGU_Logo.png}
+\vspace{-35pt}
+\hspace{-10pt}
+\begin{center}
+   \begin{tabular}{c}
+        \scriptsize{Санкт-Петербургский государственный университет} \\
+        \scriptsize{Кафедра системного программирования}
+    \end{tabular}
+\titlepage
+\end{center}
+
+\btVFill
+
+\begin{center}
+  \vspace{5pt}
+  \scriptsize{Долгопрудный\\
+                 2026}
+  \end{center}
+
+\end{frame}
+}
+
+    \begin{frame}
+        \begin{center}
+            \includegraphics[height=0.95\paperheight]{scintro.jpg}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}{Что такое Летняя проектная школа?}
+        \begin{outline}
+            \1 Командная проектная работа в течение июля по 20 часов в неделю
+            \1 Ориентирована на 1--2 курсы, 3--4 курсы часто выступают кураторами
+            \1 Проекты от индустрии, кафедр или исследовательских коллективов
+                \2 кураторы-практики, \enquote{daily} и ревью кода
+                \2 защиты перед комиссией из кураторов
+            \1 Научно-развлекательная программа из лекций и мастер-классов%
+                \2 приглашаются докладчики из интересных индустриальных и научных проектов
+            \1 С 2026 года~--- учебный трек
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}{Что это даёт?..}
+        \begin{block}{\ldots студентам}
+        \begin{outline}
+            \1 Эквивалент плюс одного семестра практики программирования
+            \1 Опыт командной работы и применения индустриальных практик
+                \2 git, CI, Scrum-based, разные языки программирования
+            \1 Многие проекты многолетние
+            \1 Многие проекты вырастают до учебных практик и ВКР
+        \end{outline}
+        \end{block}
+
+        \pause
+
+        \begin{block}{\ldots преподавателям и партнёрам}
+        \begin{outline}
+            \1 Отзыв преподавателей из отпуска
+            \1 С 2027 года~--- педнагрузка по факультативной практике
+                \2 в т.ч. для индустриальных партнёров по постановлению 270 Минцифры
+                \2 потребовало изменения календарного графика и введения факультативной практики в чётных семестрах
+                    \3 одна РПП с тремя траекториями
+            \1 Познакомить студентов со своим стеком и завлечь
+        \end{outline}
+        \end{block}
+    \end{frame}
+
+    \begin{frame}{Организация школы в целом}
+        \begin{outline}
+            \1 Подготовка и издание приказа (май)
+            \1 Сбор предложений о проектах и лекциях (май--июнь)
+            \1 Составление расписания (конец июня)
+                \2 общие мероприятия
+                \2 проектные активности
+            \1 Трекинг школы (июль)
+                \2 сбор статистики, отчёт перед индустриальными партнёрами
+                \2 результаты защит, награждения
+        \end{outline}
+
+        \pause
+
+        \begin{outline}
+            \1 Смешанный формат общих мероприятий и проектных активностей
+                \2 очно эффективнее, дистанционно --- популярнее
+            \1 Выездные дни к индустриальным партнёрам
+            \1 Возможны развлекательно-просветительские мероприятия
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}{Организация типового проекта}
+        \begin{outline}
+            \1 Идея (весна)
+            \1 Представление проекта (июнь)
+            \1 Отбор участников, возможно собеседование или тест (первая неделя после сессии)
+            \1 Установочная встреча, внутрипроектные лекции, распределение задач (начало июля)
+            \1 Работа в команде (первая половина июля)
+            \1 Презентация промежуточных результатов (середина июля)
+            \1 Работа в команде (вторая половина июля)
+            \1 Финальная презентация (конец июля)
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}{Статистика последних лет}
+        \begin{tabu} to \textwidth {X[4,l] X[1,c] X[1,c] X[2,c]}
+            % \toprule
+            \textbf{Показатель} & \textbf{2024} & \textbf{2025} & \textbf{2026} \\
+            Приступило & 70  & 40  & 50 \\
+            Всего заявлено тем проектов & 22  & 26  & 13 \\
+            Тем дошло до финальной презентации & 20  & 18  & \textit{школа идёт} \\
+            Участников на финальной презентации & 53  & 37  & \textit{школа идёт} \\
+            Всего проведено общих лекций & 15  & 18  & 8 \\
+            Уникальных лекторов & 9   & 10  & $\sim$6--8 \\
+            Тем от ИП на финальной презентации & 18  & 10  & \textit{школа идёт} \\
+            Выступило по темам ИП & 48  & 28  & \textit{школа идёт} \\
+            Лекций сотрудников ИП & 9   & 6   & $\sim$6 \\
+            % \bottomrule
+        \end{tabu}
+    \end{frame}
+
+    \begin{frame}{Примеры проектов ЛШ-2026}
+        \begin{outline}
+            \1 Системное программирование и архитектуры\\ стек: C/C++, Linux, perf, Git
+                \2 \textbf{Миграция на RISC-V:} кросс-компиляция и профилирование приложений в эмуляторах и на реальных платах
+                \2 \textbf{Инструменты для ПЛИС:} разработка open-source линтера и форматтера для языка SystemVerilog
+
+            \1 Искусственный интеллект и анализ данных\\ стек: Python, PyTorch, Hugging Face, NumPy
+                \2 \textbf{Компактное распознавание речи:} легковесная модель для русского языка с гибридным декодером Kimi Delta Attention и анализом устойчивости к шумам
+
+            \1 Автоматическое доказательство и верификация\\ стек: SMT-решатели, Automated Reasoning, формальные методы
+                \2 \textbf{Верификация битовых векторов:} реализация техники int-blasting для SMT-решателей экспонент и анализ эффективности проверки формул с битовыми сдвигами
+        \end{outline}
+    \end{frame}
+
+\end{document}
