@@ -6,6 +6,9 @@
 
     \begin{frame}[plain]
         \titlepage
+        \begin{textblock}{3}(4.5,-0.5)
+            \includegraphics[width=\textwidth]{javaLogo.png}
+        \end{textblock}
     \end{frame}
 
     \section{Введение}
@@ -70,6 +73,87 @@
             \1 Несколько странная реализация генериков
             \1 Много разных реализаций виртуальной машины
         \end{outline}
+    \end{frame}
+
+    \begin{frame}{Странные аббревиатуры}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{outline}
+                    \1 JVM (Java Virtual Machine) --- то, что исполняет байт-код
+                        \2 JIT-компилятор, сборщик мусора и т.п.
+                    \1 JRE (Java Runtime Environment) --- среда исполнения (JVM + набор библиотек)
+                    \1 JDK (Java Development Kit) --- набор разработчика
+                        \2 Компилятор, утилиты для работы с JAR, jshell, javadoc и т.п.
+                \end{outline}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.7\textwidth]{jvm-jre-jdk.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}{Реализации JDK}
+        \begin{columns}
+            \begin{column}{0.7\textwidth}
+                \begin{outline}
+                    \1 OpenJDK --- реализация с открытым исходным кодом от Oracle
+                        \2 Что-то вроде референсной реализации, не очень для продуктового окружения
+                    \1 Oracle JDK --- официальный JDK от Oracle, платный для коммерческого использования
+                    \1 Eclipse Temurin --- бесплатная вендор-нейтральная реализация
+                    \1 Azul Zulu --- неплохой коммерческий дистрибутив
+                    \1 Axiom JDK, SberJDK --- российские дистрибутивы на базе OpenJDK
+                \end{outline}
+            \end{column}
+            \begin{column}{0.3\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.7\textwidth]{openJdkLogo.png}
+
+                    \vspace{5mm}
+                    \includegraphics[width=0.7\textwidth]{oracleJdkLogo.png}
+
+                    \vspace{5mm}
+                    \includegraphics[width=0.7\textwidth]{temurinLogo.png}
+
+                    \vspace{5mm}
+                    \includegraphics[width=0.7\textwidth]{azulLogo.png}
+
+                    \vspace{5mm}
+                    \includegraphics[width=0.7\textwidth]{axiomLogo.png}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}{Какие ещё языки есть на платформе Java}
+        \begin{columns}
+            \begin{column}{0.7\textwidth}
+                \begin{outline}
+                    \1 Kotlin --- \enquote{Java done right}, официальный язык для разработки под Android и неплохой выбор для Enterprise-разработки
+                    \1 Scala --- в основном функциональный язык, для сурового бэкенда
+                        \2 Не стал суперпопулярен, хотя вовсе не эзотерика --- сложный
+                    \1 Groovy --- в основном для мелких скриптов (например, систем сборки)
+                    \1 Clojure --- диалект LISP для JVM (функциональный)
+                        \2 Скорее эзотерика
+                    \1 Многие другие
+                \end{outline}
+            \end{column}
+            \begin{column}{0.3\textwidth}
+                \begin{center}
+                    \includegraphics[width=0.7\textwidth]{kotlinLogo.png}
+
+                    \vspace{5mm}
+                    \includegraphics[width=0.7\textwidth]{scalaLogo.png}
+
+                    \vspace{5mm}
+                    \includegraphics[width=0.7\textwidth]{groovyLogo.png}
+
+                    \vspace{5mm}
+                    \includegraphics[width=0.7\textwidth]{clojureLogo.png}
+                \end{center}
+            \end{column}
+        \end{columns}
     \end{frame}
 
     \section{Типы}
@@ -179,9 +263,9 @@
                 \2 Settings --- это в основном настройки самой среды
                 \2 Project Structure --- это настройки проекта
                     \3 Версия языка (есть отдельно версия языка и отдельно версия SDK)
-                    \3 Модули --- в какой папке код, в какой тесты, в какой ресурсы; IDEA компилит только папки, отмеченные как Sources или Tests
+                    \3 Модули --- в какой папке код, в какой тесты, в какой ресурсы; IntelliJ компилит только папки, отмеченные как Sources или Tests
             \1 Справа вверху --- конфигурации запуска. Там можно настроить, например, параметры командной строки
-            \1 Знание основных хоткеев может спасти жизнь на контрольной
+            \1 Знание основных хоткеев сильно ускоряет разработку
         \end{outline}
     \end{frame}
 
