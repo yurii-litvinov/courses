@@ -51,7 +51,7 @@ f(new MutablePair<Apple, Apple>(apple1, apple2));  // Ошибка компил�
         \begin{minted}{java}
 public void f(MutablePair<Object, Object> x)
 {
-    x.SetLeft(new Battleship());
+    x.setLeft(new Battleship());
 }
             \end{minted}
         \end{small}
@@ -107,7 +107,7 @@ printNames(animals);
                 \2 Перегрузить метод, различающийся только параметром-типом
                 \2 Вызвать \mintinline{java}|instanceof List<String>| --- только \mintinline{java}|instanceof List<?>|
                 \2 Создать статическое поле типа параметра-типа
-                    \3 Статическое поле одно на класс, а для всех инстанциаций генериков класс один
+                    \3 Статическое поле одно на класс, а для всех инстанцирований генериков класс один
             \1 Приведение к параметру-типу может привести к \mintinline{java}|ClassCastException| в рантайме
             \1 Чем хорошо: не нужен каст при передаче в метод, принимающий сырую коллекцию (старый код)
         \end{outline}
@@ -168,7 +168,7 @@ public void doWork(Object t) {
         \begin{outline}
             \1 В enum можно объявлять поля и методы --- обычные и статические
             \1 Конструктор enum всегда private
-                \2 Явный \mintinline{java}|private| --- ошибка компиляции
+                \2 Явный \mintinline{java}|public| или \mintinline{java}|protected| --- ошибка компиляции
                 \2 Неявный --- конструктор package-private, но вызвать всё равно можно только из тела enum
             \1 Конструктор вызывается при инициализации констант, поэтому константы объявляются первыми
             \1 Данные в константах --- основной способ использования
@@ -242,7 +242,7 @@ public enum Operation {
                 \2 Константы --- синглтоны, \mintinline{java}|==| безопасен
                 \2 \mintinline{java}|equals| тоже работает, но не нужен
             \1 Нельзя менять порядок объявления констант, если код использует \mintinline{java}|ordinal()|
-                \2 И незачем его использовать --- он для реализации ENumSet/EnumMap и прочей внутренней машинерии
+                \2 И незачем его использовать --- он для реализации EnumSet/EnumMap и прочей внутренней машинерии
             \1 В switch-выражениях компилятор проверяет, что все варианты enum-а покрыты, в старых switch --- нет
         \end{outline}
     \end{frame}
@@ -333,6 +333,7 @@ Comparator<String> c = new Comparator<String>() {
         \begin{outline}
             \1 Вложенные и локальные классы могут обращаться к private-полям и методам внешнего класса
                 \2 Технически private-поля они читать не могут, компилятор генерирует Bridge-методы
+                    \3 Точнее, Access-методы, но смысл у них такой же, как у Bridge в генериках
                     \3 На уровне байт-кода обращаться к private-членам нельзя, JVM не даст, поэтому некий костыль
             \1 Концептуально вложенный класс --- часть реализации внешнего
             \1 Анонимные и локальные классы, объявленные в \emph{статических} методах, OuterClass.this, естественно, не имеют
@@ -376,6 +377,7 @@ Comparator<String> c = new Comparator<String>() {
                 \2 Например, \mintinline{java}|Runnable r = () -> System.out.println("Hi")| или \mintinline{java}|list.stream().filter(s -> s.length() > 3)|
             \1 Замыкания --- как в анонимных классах, effectively final-переменные и поля объемлющего класса
                 \2 Лямбда имеет OuterClass.this и держит на него ссылку
+                    \3 На самом деле, только когда есть захват в замыкание
                 \2 В C\# захват переменных \enquote{по ссылке}, так что нет ограничения на effectively final, но есть способ прострелить себе ногу
             \1 Лямбда --- объект
         \end{outline}
@@ -419,7 +421,7 @@ Runnable r = () -> { throw new IOException(); }; // не компилирует�
                 \2 Если их несколько --- ошибка компиляции
                     \3 Тогда явно указываем тип: \mintinline{java}|f((FuncInt) () -> System.out.println("Hi"));| или \mintinline{java}|FuncInt lambda = () -> System.out.println("Hi");|
             \1 Лямбда не создаёт класс в исходном коде
-                \2 В байткоде --- bootstrap‑метод + вызов \mintinline{java}|invokedynamic|
+                \2 В байткоде --- bootstrap-метод + вызов \mintinline{java}|invokedynamic|
                 \2 При первом вызове JVM решает, что делать (сгенерить реальный объект, заинлайнить, ...)
                 \2 При последующих вызовах переиспользуется результат первого
             \1 Анонимный класс и лямбда ведут себя по-разному при захвате \mintinline{java}|this|
@@ -446,7 +448,7 @@ Runnable r = () -> { throw new IOException(); }; // не компилирует�
         \begin{outline}
             \1 \mintinline{java}|Throwable| --- всё, что можно бросить и поймать
                 \2 \mintinline{java}|Error| --- фатальные ошибки JVM и ресурсов (OutOfMemoryError, StackOverflowError), обычно не обрабатываем
-                \2 \mintinline{java}|Exception| --- предсказуемые, но не ожидаемые ошибки, обрабатываем
+                \2 \mintinline{java}|Exception| --- предсказуемые ошибки, обрабатываем
             \1 RuntimeException и его наследники --- unchecked
                 \2 NullPointerException, IndexOutOfBoundsException, IllegalArgumentException
             \1 Остальные Exception --- checked
@@ -529,10 +531,10 @@ int priority = switch (level) {
                 \2 Используется для хранения немутабельных данных (Data Transfer Objects)
                 \2 Спасает от кучи boilerplate-кода
             \1 \mintinline{java}|sealed| (Java 17) --- контролируемое наследование
-                \2 Перечисляет разрешённых наследников: \mintinline{java}|permits Shape, Circle|
+                \2 Перечисляет разрешённых наследников: \mintinline{java}|permits Square, Circle|
                 \2 В паре с pattern matching компилятор проверяет полноту switch
-                \2 enum-ы как раз sealed
-                \2 В Kotlin тоже есть sealed, но там все наследники должны быть в одном файле, в Java они явно перечисляются и могут быть где угодно
+                \2 enum-ы как раз sealed (если надо, иначе final)
+                \2 В Kotlin тоже есть sealed, с той же семантикой
         \end{outline}
     \end{frame}
 
@@ -549,7 +551,7 @@ public class Main {
     }
 }
 
-// теперь (Java 21+, preview)
+// теперь
 System.out.println("Hello!");
                     \end{minted}
                 \end{footnotesize}
@@ -570,7 +572,7 @@ System.out.println("Hello!");
             \1 Нужна много где, от создания плагинных систем в приложениях до сериализации и юнит-тестов
             \1 Реализуется хранением информации о типах в скомпилированной программе
                 \2 В нашем случае в байт-коде
-                    \3 В Java рефлексия \enquote{уважает} стирание типов --- параметры-типы генериков ей недоступны
+                    \3 В Java рефлексия \enquote{уважает} стирание типов --- параметры-типы генериков недоступны у объектов в рантайме
             \1 Как правило, язык дополнительно расширяется аннотациями (или атрибутами)
                 \2 Произвольная информация, \enquote{надеваемая} на сущности программы, которую можно использовать в рантайме
         \end{outline}
@@ -607,11 +609,9 @@ System.out.println("Hello!");
                 \2 \mintinline{java}|SOURCE| --- виден компилятору (Override, SuppressWarnings)
                     \3 Линтеры, кодогенераторы и т.п.
                 \2 \mintinline{java}|CLASS| --- остаётся в class-файле, но не виден в рантайме
-                    \3 Для инструментов, работающих с байт-кодом (AOT-компилятторы, обфускаторы и т.п.)
+                    \3 Для инструментов, работающих с байт-кодом (AOT-компиляторы, обфускаторы и т.п.)
                 \2 Retention --- аннотация к аннотациям, указывается при объявлении аннотации
             \1 Чтение: \mintinline{java}|clazz.getAnnotation(Deprecated.class)|, аннотации на методах и параметрах
-            \1 Стирание проявляется и здесь:
-                \2 Нельзя получить тип параметра поля: \mintinline{java}|List<String> field| виден рефлексией только как \mintinline{java}|List|
             \1 Аннотации не влияют на поведение сами по себе
         \end{outline}
     \end{frame}
@@ -653,6 +653,8 @@ public class TestRunner {
             \1 Безопасность: рефлексия позволяет обходить приватность, поэтому её ограничивают в песочницах и в module-info.java
         \end{outline}
     \end{frame}
+
+    \section{Lombok}
 
     \begin{frame}{Lombok}
         \begin{outline}
