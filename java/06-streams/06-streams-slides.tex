@@ -1,0 +1,92 @@
+\documentclass{../../slides-style}
+
+\slidetitle{Практика по Stream API}{24.10.2026}
+
+\begin{document}
+
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+
+    \section{Stream API}
+
+    \begin{frame}{Stream API}
+        \begin{outline}
+            \1 Работа с последовательностями элементов в функциональном стиле
+                \2 Появились в Java 8
+            \1 Поток (Stream) --- абстракция конвейера обработки данных (не контейнер)
+            \1 Источник: \mintinline{java}|list.stream()|, \mintinline{java}|Arrays.stream(...)|, \mintinline{java}|Files.lines(...)|, \mintinline{java}|Stream.of(...)|, ...
+            \1 Промежуточные операции: filter, map, sorted, distinct, ...
+                \2 Ленивые, т.е. ничего не делают, пока не попросят следующий элемент
+            \1 Терминальные операции: collect, forEach, count, findFirst, ...
+                \2 Выполняют операцию, возвращают результат (или побочный эффект)
+                \2 Забирают данные из потока, так что повторно использовать его нельзя
+                    \3 Контейнер, на базе которого поток создан, не меняют
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]{Пример}
+        \begin{minted}{java}
+var activeUsersList = list.stream()
+    .filter(User::isActive)
+    .map(User::getName)
+    .toList();
+        \end{minted}
+    \end{frame}
+
+    \begin{frame}{Популярные операции}
+        \begin{outline}
+            \1 filter --- принимает предикат, возвращает поток с элементами, удовлетворяющими предикату
+            \1 map --- применяет функцию к каждому элементу потока, возвращает поток результатов
+                \2 flatMap --- если результат функции --- поток, склеивает потоки-результаты в один большой (\enquote{уплощает} коллекцию)
+            \1 collect --- группирует (или агрегирует) данные в потоке
+                \2 Collectors --- фабрика популярных коллекторов, например, \mintinline{java}|Collectors.groupingBy| и \mintinline{java}|Collectors.summingInt|
+            \1 sorted, distinct --- сортирует, выкидывает повторы
+            \1 Ещё есть parallelStream --- возвращает поток, в котором операции сами выполняются параллельно
+                \2 Можно прострелить себе ногу ошибками синхронизации, плохо работают на небольших коллекциях
+        \end{outline}
+    \end{frame}
+
+    \begin{frame}[fragile]{Более развёрнутый пример}
+        \begin{small}
+            Без Stream API
+            \begin{minted}{java}
+List<String> result = new ArrayList<>();
+for (User u : users) {
+    if (u.isActive() && u.getAge() >= 18) {
+        result.add(u.getName());
+    }
+}
+result.sort(Comparator.comparing(User::getName));
+        \end{minted}
+
+            \vspace{5mm}
+            С Stream API:
+            \begin{minted}{java}
+users.stream()
+    .filter(User::isActive)
+    .filter(u -> u.getAge() >= 18)
+    .sorted(Comparator.comparing(User::getName))
+    .map(User::getName)
+    .toList(); // До Java 16 — collect(Collectors.toList())
+            \end{minted}
+        \end{small}
+    \end{frame}
+
+    \section{Задача}
+
+    \begin{frame}{Задача на пару}
+        Реализовать с помощью Java Stream API:
+        \begin{outline}
+            \1 Методы в \href{https://gist.github.com/yurii-litvinov/527f289e454c296f7505ccaf79873428\#file-firstparttasks-java}{FirstPartTasks} и \href{https://gist.github.com/yurii-litvinov/527f289e454c296f7505ccaf79873428\#file-secondparttasks-java}{SecondPartTasks}
+            \1 Тесты
+                \2 Тесты в \href{https://gist.github.com/yurii-litvinov/527f289e454c296f7505ccaf79873428\#file-firstparttaskstest-java}{FirstPartTasksTest} должны проходить как есть
+                \2 Тесты в \href{https://gist.github.com/yurii-litvinov/527f289e454c296f7505ccaf79873428\#file-secondparttaskstest-java}{SecondPartTasksTest} надо написать самостоятельно
+            \1 Писать в максимально функциональном стиле
+            \1 Зависимости для тестов:
+                \2 \href{https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter}{JUnit}
+                \2 \href{https://mvnrepository.com/artifact/com.google.guava/guava}{Guava}
+        \end{outline}
+    \end{frame}
+
+\end{document}
